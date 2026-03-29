@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DarkKitchenWebApi", "DarkKitchenWebApi\DarkKitchenWebApi.csproj", "{E8152EA0-A21A-4D6E-8E9D-492C8E9AFE59}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dominio", "Dominio", "{2205AA3F-B6B5-4096-9181-8FB4F7E03C96}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebApi", "WebApi", "{244C2AD0-1F2F-40F5-92F7-7050B71AC24F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LogicaDeNegocio", "LogicaDeNegocio", "{071A66E5-5C58-4ADD-9EFD-D0055EF05575}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pruebas", "Pruebas", "{F2BA8B15-8C93-4DC1-A162-38693D2199EA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Almacenamiento", "Almacenamiento", "{613E4475-988C-441F-B392-42C9C39AE8E7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LogicaDeNegocioAbstracciones", "LogicaDeNegocioAbstracciones", "{24DFC3C8-C09D-4E1D-A01E-7C1F0F6E6288}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contratos", "Contratos", "{AA7A41DD-9C5E-4ACC-988C-C0D1A3361FEC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mapeo", "Mapeo", "{ED90B497-4BBE-415C-B5F5-4DE639260D3C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AlmacenamientoAbstracciones", "AlmacenamientoAbstracciones", "{7D506078-2491-4C02-B33F-1C15C7822414}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pruebas", "Pruebas\Pruebas.csproj", "{D5E992D6-541D-4486-BF30-C3FC1BAFAFA8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E8152EA0-A21A-4D6E-8E9D-492C8E9AFE59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8152EA0-A21A-4D6E-8E9D-492C8E9AFE59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8152EA0-A21A-4D6E-8E9D-492C8E9AFE59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8152EA0-A21A-4D6E-8E9D-492C8E9AFE59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5E992D6-541D-4486-BF30-C3FC1BAFAFA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5E992D6-541D-4486-BF30-C3FC1BAFAFA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5E992D6-541D-4486-BF30-C3FC1BAFAFA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5E992D6-541D-4486-BF30-C3FC1BAFAFA8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E8152EA0-A21A-4D6E-8E9D-492C8E9AFE59} = {244C2AD0-1F2F-40F5-92F7-7050B71AC24F}
+		{D5E992D6-541D-4486-BF30-C3FC1BAFAFA8} = {F2BA8B15-8C93-4DC1-A162-38693D2199EA}
+	EndGlobalSection
+EndGlobal
