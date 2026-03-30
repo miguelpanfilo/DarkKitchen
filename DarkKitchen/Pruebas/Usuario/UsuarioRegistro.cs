@@ -2,6 +2,7 @@ using Almacenamiento;
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
+using Dominio.Excepciones;
 using LogicaDeNegocio;
 using Moq;
 
@@ -42,14 +43,12 @@ public class UsuarioServiceTests
     {
         var repositorioUsuario = new RepositorioUsuario();
 
-        var usuario = new Usuario
-        {
-            Nombre = "Miguel",
-            Apellido = "Lopez",
-            Email = "miguel@gmail.com",
-            Telefono = "099123456",
-            Clave = "Password@2026Ok"
-        };
+        var usuario = new Usuario(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            "099123456",
+            "Password@2026Ok");
 
         repositorioUsuario.Add(usuario);
 
@@ -62,15 +61,14 @@ public class UsuarioServiceTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioException))]
+    [ExpectedException(typeof(UsuarioExcepcion))]
     public void CrearUsuario_SinNombre_LanzaExcepcion()
     {
         var usuario = new Usuario(
-            "",
+            string.Empty,
             "Lopez",
             "miguel@gmail.com",
             "099123456",
-            "Password@2026Ok"
-        );
+            "Password@2026Ok");
     }
 }

@@ -15,14 +15,13 @@ public class UsuarioService
 
     public RegistrarClienteResponseDTO RegistrarCliente(RegistrarClienteRequest request)
     {
-        var usuario = new Usuario
-        {
-            Nombre = request.Nombre,
-            Apellido = request.Apellido,
-            Email = request.Email,
-            Telefono = request.Telefono,
-            Clave = request.Clave
-        };
+        var usuario = new Usuario(
+            request.Nombre,
+            request.Apellido,
+            request.Email,
+            request.Telefono,
+            request.Clave
+        );
 
         var usuarioGuardado = _repo.Add(usuario);
 
