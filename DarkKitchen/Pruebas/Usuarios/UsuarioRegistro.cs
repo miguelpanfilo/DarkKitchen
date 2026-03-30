@@ -128,4 +128,17 @@ public class UsuarioServiceTests
             "Password@2026Ok"
         );
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void CrearUsuario_EmailSinArroba_LanzaExcepcion()
+    {
+        var usuario = new Usuario(
+            "Miguel",
+            "Lopez",
+            "miguelgmail.com",
+            "099123456",
+            "Password@2026Ok"
+        );
+    }
 }
