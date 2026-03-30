@@ -12,14 +12,9 @@ public class Usuario
     public string Clave { get; set; } = string.Empty;
     public Usuario(string nombre, string apellido, string email, string telefono, string clave)
     {
-        if (string.IsNullOrWhiteSpace(nombre))
+        if (string.IsNullOrWhiteSpace(nombre) || string.IsNullOrWhiteSpace(apellido))
         {
-            throw new UsuarioExcepcion("El nombre no puede estar vacío");
-        }
-
-        if (string.IsNullOrWhiteSpace(apellido))
-        {
-            throw new UsuarioExcepcion("El apellido no puede estar vacío");
+            throw new UsuarioExcepcion("El nombre ni el apellido pueden estar vacío");
         }
 
         if (apellido.Length > 25)
