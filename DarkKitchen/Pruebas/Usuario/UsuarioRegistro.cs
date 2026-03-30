@@ -1,4 +1,7 @@
-
+using AlmacenamientoAbstracciones;
+using Contratos;
+using Dominio;
+using LogicaDeNegocio;
 using Moq;
 
 namespace Pruebas.Usuarios;
@@ -16,7 +19,7 @@ public class UsuarioServiceTests
 
         var service = new UsuarioService(repoMock.Object);
 
-        var request = new RegistrarRequest
+        var request = new RegistrarClienteRequest
         {
             Nombre = "Miguel",
             Apellido = "Lopez",
