@@ -141,4 +141,17 @@ public class UsuarioServiceTests
             "Password@2026Ok"
         );
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void CrearUsuario_EmailSinDominioValido_LanzaExcepcion()
+    {
+        var usuario = new Usuario(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail",
+            "099123456",
+            "Password@2026Ok"
+        );
+    }
 }
