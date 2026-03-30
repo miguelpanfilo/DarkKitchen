@@ -19,7 +19,7 @@ public class Usuario
 
         if (string.IsNullOrWhiteSpace(apellido))
         {
-            throw new UsuarioExcepcion("El nombre no puede estar vacío");
+            throw new UsuarioExcepcion("El apellido no puede estar vacío");
         }
 
         Nombre = nombre;
