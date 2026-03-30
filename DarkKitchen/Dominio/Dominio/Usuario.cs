@@ -22,6 +22,11 @@ public class Usuario
             throw new UsuarioExcepcion("El apellido debe tener entre 3 y 25 caracteres");
         }
 
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            throw new UsuarioExcepcion("El email no puede estar vacío");
+        }
+
         Nombre = nombre;
         Apellido = apellido;
         Email = email;
