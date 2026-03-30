@@ -12,16 +12,40 @@ public class Usuario
     public string Clave { get; set; } = string.Empty;
     public Usuario(string nombre, string apellido, string email, string telefono, string clave)
     {
-        if (string.IsNullOrWhiteSpace(nombre) || string.IsNullOrWhiteSpace(apellido))
+        ValidarNombre(nombre);
+        ValidarApellido(apellido);
+        ValidarEmail(email);
+
+        Nombre = nombre;
+        Apellido = apellido;
+        Email = email;
+        Telefono = telefono;
+        Clave = clave;
+    }
+
+    private void ValidarNombre(string nombre)
+    {
+        if (string.IsNullOrWhiteSpace(nombre))
         {
-            throw new UsuarioExcepcion("El nombre ni el apellido pueden estar vacío");
+            throw new UsuarioExcepcion("El nombre no puede estar vacío");
+        }
+    }
+
+    private void ValidarApellido(string apellido)
+    {
+        if (string.IsNullOrWhiteSpace(apellido))
+        {
+            throw new UsuarioExcepcion("El apellido no puede estar vacío");
         }
 
-        if (apellido.Length > 25 || apellido.Length<3)
+        if (apellido.Length < 3 || apellido.Length > 25)
         {
             throw new UsuarioExcepcion("El apellido debe tener entre 3 y 25 caracteres");
         }
+    }
 
+    private void ValidarEmail(string email)
+    {
         if (string.IsNullOrWhiteSpace(email))
         {
             throw new UsuarioExcepcion("El email no puede estar vacío");
@@ -32,17 +56,21 @@ public class Usuario
             throw new UsuarioExcepcion("El email debe tener un formato válido");
         }
 
+        if (email.Contains(" "))
+        {
+            throw new UsuarioExcepcion("El email no debe contener espacios");
+        }
+
         var partes = email.Split('@');
 
-        if (partes.Length != 2 || !partes[1].Contains('.'))
+        if (partes.Length != 2 || !partes[1].Contains('.')||string.IsNullOrWhiteSpace(partes[0]))
         {
             throw new UsuarioExcepcion("El email debe tener un formato válido");
         }
 
-        Nombre = nombre;
-        Apellido = apellido;
-        Email = email;
-        Telefono = telefono;
-        Clave = clave;
+        if (partes[1].StartsWith(".") || partes[1].EndsWith("."))
+        {
+            throw new UsuarioExcepcion("El dominio no es válido");
+        }
     }
 }
