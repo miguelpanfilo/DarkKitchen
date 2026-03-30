@@ -28,4 +28,8 @@
       <ProjectReference Include="..\LogicaDeNegocio\LogicaDeNegocio\LogicaDeNegocio.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Usuario\" />
+    </ItemGroup>
+
 </Project>
