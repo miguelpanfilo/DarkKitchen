@@ -17,12 +17,7 @@ public class Usuario
             throw new UsuarioExcepcion("El nombre ni el apellido pueden estar vacío");
         }
 
-        if (apellido.Length > 25)
-        {
-            throw new UsuarioExcepcion("El apellido debe tener entre 3 y 25 caracteres");
-        }
-
-        if (apellido.Length <3)
+        if (apellido.Length > 25 || apellido.Length<3)
         {
             throw new UsuarioExcepcion("El apellido debe tener entre 3 y 25 caracteres");
         }
