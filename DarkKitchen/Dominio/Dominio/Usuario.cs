@@ -15,6 +15,7 @@ public class Usuario
         ValidarNombre(nombre);
         ValidarApellido(apellido);
         ValidarEmail(email);
+        ValidarTelefonoNoVacio(telefono);
 
         Nombre = nombre;
         Apellido = apellido;
@@ -71,6 +72,14 @@ public class Usuario
         if (partes[1].StartsWith(".") || partes[1].EndsWith("."))
         {
             throw new UsuarioExcepcion("El dominio no es válido");
+        }
+    }
+
+    private void ValidarTelefonoNoVacio(string telefono)
+    {
+        if (string.IsNullOrWhiteSpace(telefono))
+        {
+            throw new UsuarioExcepcion("El teléfono no puede estar vacío");
         }
     }
 }
