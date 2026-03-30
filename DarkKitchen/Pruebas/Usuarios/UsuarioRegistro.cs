@@ -89,7 +89,8 @@ public class UsuarioServiceTests
 
     public void CrearUsuario_ConApellidoMas25_LanzaExcepcion()
     {
-        var apellidoLargo = new string('a', 26);
+        var largoIncorrectoDeApellido = 26;
+        var apellidoLargo = new string('a', largoIncorrectoDeApellido);
 
         var usuario = new Usuario(
             "Miguel",
@@ -104,7 +105,8 @@ public class UsuarioServiceTests
 
     public void CrearUsuario_ConApellidoMenosDe3_LanzaExcepcion()
     {
-        var apellidoCorto = new string('a', 2);
+        var largoCortoDeApellido = 2;
+        var apellidoCorto = new string('a', largoCortoDeApellido);
 
         var usuario = new Usuario(
             "Miguel",
@@ -112,5 +114,18 @@ public class UsuarioServiceTests
             "miguel@gmail.com",
             "099123456",
             "Password@2026Ok");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void RegistrarCliente_EmailVacio_LanzaExcepcion()
+    {
+        var usuario = new Usuario(
+            "Miguel",
+            "Lopez",
+            string.Empty,
+            "099123456",
+            "Password@2026Ok"
+        );
     }
 }
