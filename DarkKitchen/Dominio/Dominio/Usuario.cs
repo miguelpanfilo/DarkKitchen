@@ -27,6 +27,11 @@ public class Usuario
             throw new UsuarioExcepcion("El email no puede estar vacío");
         }
 
+        if (!email.Contains("@"))
+        {
+            throw new UsuarioExcepcion("El email debe tener un formato válido");
+        }
+
         Nombre = nombre;
         Apellido = apellido;
         Email = email;
