@@ -62,7 +62,7 @@ public class UsuarioServiceTests
 
     [TestMethod]
     [ExpectedException(typeof(UsuarioExcepcion))]
-    public void CrearUsuario_SinNombre_LanzaExcepcion()
+    public void RegistrarCliente_SinNombre_LanzaExcepcion()
     {
         var usuario = new Usuario(
             string.Empty,
@@ -74,7 +74,7 @@ public class UsuarioServiceTests
 
     [TestMethod]
     [ExpectedException(typeof(UsuarioExcepcion))]
-    public void CrearUsuario_SinApellido_LanzaExcepcion()
+    public void RegistrarCliente_SinApellido_LanzaExcepcion()
     {
         var usuario = new Usuario(
             "Miguel",
@@ -87,7 +87,7 @@ public class UsuarioServiceTests
     [TestMethod]
     [ExpectedException(typeof(UsuarioExcepcion))]
 
-    public void CrearUsuario_ConApellidoMas25_LanzaExcepcion()
+    public void RegistrarCliente_ConApellidoMas25_LanzaExcepcion()
     {
         var largoIncorrectoDeApellido = 26;
         var apellidoLargo = new string('a', largoIncorrectoDeApellido);
@@ -103,7 +103,7 @@ public class UsuarioServiceTests
     [TestMethod]
     [ExpectedException(typeof(UsuarioExcepcion))]
 
-    public void CrearUsuario_ConApellidoMenosDe3_LanzaExcepcion()
+    public void RegistrarCliente_ConApellidoMenosDe3_LanzaExcepcion()
     {
         var largoCortoDeApellido = 2;
         var apellidoCorto = new string('a', largoCortoDeApellido);
@@ -131,7 +131,7 @@ public class UsuarioServiceTests
 
     [TestMethod]
     [ExpectedException(typeof(UsuarioExcepcion))]
-    public void CrearUsuario_EmailSinArroba_LanzaExcepcion()
+    public void RegistrarCliente_EmailSinArroba_LanzaExcepcion()
     {
         var usuario = new Usuario(
             "Miguel",
@@ -144,13 +144,26 @@ public class UsuarioServiceTests
 
     [TestMethod]
     [ExpectedException(typeof(UsuarioExcepcion))]
-    public void CrearUsuario_EmailSinDominioValido_LanzaExcepcion()
+    public void RegistrarCliente_EmailSinDominioValido_LanzaExcepcion()
     {
         var usuario = new Usuario(
             "Miguel",
             "Lopez",
             "miguel@gmail",
             "099123456",
+            "Password@2026Ok"
+        );
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void RegistrarCliente_TelefonoVacio_LanzaExcepcion()
+    {
+        var usuario = new Usuario(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            string.Empty,
             "Password@2026Ok"
         );
     }
