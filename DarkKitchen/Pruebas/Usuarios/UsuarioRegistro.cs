@@ -98,4 +98,19 @@ public class UsuarioServiceTests
             "099123456",
             "Password@2026Ok");
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+
+    public void CrearUsuario_ConApellidoMenosDe3_LanzaExcepcion()
+    {
+        var apellidoCorto = new string('a', 2);
+
+        var usuario = new Usuario(
+            "Miguel",
+            apellidoCorto,
+            "miguel@gmail.com",
+            "099123456",
+            "Password@2026Ok");
+    }
 }
