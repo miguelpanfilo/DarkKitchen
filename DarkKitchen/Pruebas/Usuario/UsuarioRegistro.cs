@@ -1,3 +1,4 @@
+using Almacenamiento;
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
@@ -39,7 +40,7 @@ public class UsuarioServiceTests
     [TestMethod]
     public void Add_UsuarioValido_GuardaUsuarioEnMemoria()
     {
-        var repo = new RepositorioUsuarioMemoria();
+        var repo = new RepositorioUsuario();
 
         var usuario = new Usuario
         {
@@ -60,4 +61,3 @@ public class UsuarioServiceTests
         Assert.AreEqual("miguel@gmail.com", usuarios[0].Email);
     }
 }
-
