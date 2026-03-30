@@ -38,9 +38,9 @@ public class UsuarioServiceTests
     }
 
     [TestMethod]
-    public void Add_UsuarioValido_GuardaUsuarioEnMemoria()
+    public void RegistrarCliente_UsuarioValido_EnMemoria()
     {
-        var repo = new RepositorioUsuario();
+        var repositorioUsuario = new RepositorioUsuario();
 
         var usuario = new Usuario
         {
@@ -51,13 +51,26 @@ public class UsuarioServiceTests
             Clave = "Password@2026Ok"
         };
 
-        repo.Add(usuario);
+        repositorioUsuario.Add(usuario);
 
-        var usuarios = repo.GetAll();
+        var usuarios = repositorioUsuario.GetAll();
 
         Assert.AreEqual(1, usuarios.Count);
         Assert.AreEqual("Miguel", usuarios[0].Nombre);
         Assert.AreEqual("Lopez", usuarios[0].Apellido);
         Assert.AreEqual("miguel@gmail.com", usuarios[0].Email);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioException))]
+    public void CrearUsuario_SinNombre_LanzaExcepcion()
+    {
+        var usuario = new Usuario(
+            "",
+            "Lopez",
+            "miguel@gmail.com",
+            "099123456",
+            "Password@2026Ok"
+        );
     }
 }
