@@ -21,7 +21,7 @@ public class UsuarioService
             Apellido = request.Apellido,
             Email = request.Email,
             Telefono = request.Telefono,
-            Password = request.Password
+            Clave = request.Clave
         };
 
         var usuarioGuardado = _repo.Add(usuario);
