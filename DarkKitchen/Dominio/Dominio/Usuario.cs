@@ -32,6 +32,13 @@ public class Usuario
             throw new UsuarioExcepcion("El email debe tener un formato válido");
         }
 
+        var partes = email.Split('@');
+
+        if (partes.Length != 2 || !partes[1].Contains('.'))
+        {
+            throw new UsuarioExcepcion("El email debe tener un formato válido");
+        }
+
         Nombre = nombre;
         Apellido = apellido;
         Email = email;
