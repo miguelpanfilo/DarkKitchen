@@ -22,12 +22,7 @@ public class Usuario
         ValidarApellido(apellido);
         ValidarTelefonoNoVacio(telefono);
         ValidarClave(clave);
-        if (!clave.Any(c => !char.IsLetterOrDigit(c)))
-        {
-            throw new UsuarioExcepcion("La clave debe tener al menos un símbolo");
-        }
-
-        Nombre = nombre;
+       Nombre = nombre;
         Apellido = apellido;
         Email = email;
         Telefono = telefono;
@@ -75,6 +70,11 @@ public class Usuario
         if (!clave.Any(char.IsDigit))
         {
             throw new UsuarioExcepcion("La clave debe tener al menos un número");
+        }
+
+        if (!clave.Any(c => !char.IsLetterOrDigit(c)))
+        {
+            throw new UsuarioExcepcion("La clave debe tener al menos un símbolo");
         }
     }
 
