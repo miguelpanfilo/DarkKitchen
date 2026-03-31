@@ -14,7 +14,7 @@ public class UsuarioService
     public UsuarioService(IRepositorioUsuario repo, IValidadorTelefono validadorTelefono)
     {
         _repo = repo;
-        _validadorTelefono=validadorTelefono;
+        _validadorTelefono = validadorTelefono;
     }
 
     public RegistrarClienteResponseDTO RegistrarCliente(RegistrarClienteRequest request)
@@ -24,14 +24,13 @@ public class UsuarioService
             throw new UsuarioExcepcion("El teléfono no es válido");
         }
 
-        var usuario = new Usuario(
+        var usuario = Usuario.Crear(
             request.Nombre,
             request.Apellido,
             request.Email,
             request.Telefono,
             request.Clave
         );
-
         var usuarioGuardado = _repo.Add(usuario);
 
         return new RegistrarClienteResponseDTO

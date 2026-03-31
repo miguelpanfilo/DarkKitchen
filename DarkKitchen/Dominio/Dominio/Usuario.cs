@@ -10,12 +10,16 @@ public class Usuario
     public string Email { get; set; } = string.Empty;
     public string Telefono { get; set; } = string.Empty;
     public string Clave { get; set; } = string.Empty;
-    public Usuario(string nombre, string apellido, string email, string telefono, string clave)
+    public static Usuario Crear(string nombre, string apellido, string email, string telefono, string clave)
+    {
+        return new Usuario(nombre, apellido, email, telefono, clave);
+    }
+
+    private Usuario(string nombre, string apellido, string email, string telefono, string clave)
     {
         ValidarNombre(nombre);
         ValidarApellido(apellido);
         ValidarEmail(email);
-        ValidarTelefonoNoVacio(telefono);
 
         Nombre = nombre;
         Apellido = apellido;

@@ -51,7 +51,7 @@ public class UsuarioServiceTests
     {
         var repositorioUsuario = new RepositorioUsuario();
 
-        var usuario = new Usuario(
+        var usuario = Usuario.Crear(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
@@ -72,7 +72,7 @@ public class UsuarioServiceTests
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void RegistrarCliente_SinNombre_LanzaExcepcion()
     {
-        var usuario = new Usuario(
+        var usuario = Usuario.Crear(
             string.Empty,
             "Lopez",
             "miguel@gmail.com",
@@ -84,7 +84,7 @@ public class UsuarioServiceTests
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void RegistrarCliente_SinApellido_LanzaExcepcion()
     {
-        var usuario = new Usuario(
+        var usuario = Usuario.Crear(
             "Miguel",
             string.Empty,
             "miguel@gmail.com",
@@ -94,13 +94,12 @@ public class UsuarioServiceTests
 
     [TestMethod]
     [ExpectedException(typeof(UsuarioExcepcion))]
-
     public void RegistrarCliente_ConApellidoMas25_LanzaExcepcion()
     {
         var largoIncorrectoDeApellido = 26;
         var apellidoLargo = new string('a', largoIncorrectoDeApellido);
 
-        var usuario = new Usuario(
+        var usuario = Usuario.Crear(
             "Miguel",
             apellidoLargo,
             "miguel@gmail.com",
@@ -110,13 +109,12 @@ public class UsuarioServiceTests
 
     [TestMethod]
     [ExpectedException(typeof(UsuarioExcepcion))]
-
     public void RegistrarCliente_ConApellidoMenosDe3_LanzaExcepcion()
     {
         var largoCortoDeApellido = 2;
         var apellidoCorto = new string('a', largoCortoDeApellido);
 
-        var usuario = new Usuario(
+        var usuario = Usuario.Crear(
             "Miguel",
             apellidoCorto,
             "miguel@gmail.com",
@@ -128,7 +126,7 @@ public class UsuarioServiceTests
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void RegistrarCliente_EmailVacio_LanzaExcepcion()
     {
-        var usuario = new Usuario(
+        var usuario = Usuario.Crear(
             "Miguel",
             "Lopez",
             string.Empty,
@@ -141,7 +139,7 @@ public class UsuarioServiceTests
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void RegistrarCliente_EmailSinArroba_LanzaExcepcion()
     {
-        var usuario = new Usuario(
+        var usuario = Usuario.Crear(
             "Miguel",
             "Lopez",
             "miguelgmail.com",
@@ -154,7 +152,7 @@ public class UsuarioServiceTests
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void RegistrarCliente_EmailSinDominioValido_LanzaExcepcion()
     {
-        var usuario = new Usuario(
+        var usuario = Usuario.Crear(
             "Miguel",
             "Lopez",
             "miguel@gmail",
@@ -167,13 +165,28 @@ public class UsuarioServiceTests
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void RegistrarCliente_TelefonoVacio_LanzaExcepcion()
     {
-        var usuario = new Usuario(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            string.Empty,
-            "Password@2026Ok"
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        validadorTelefonoMock
+            .Setup(v => v.EsValido(It.IsAny<string>()))
+            .Returns(false);
+
+        var usuarioServicio = new UsuarioService(
+            repoMock.Object,
+            validadorTelefonoMock.Object
         );
+
+        var solicitudDeRegistro = new RegistrarClienteRequest
+        {
+            Nombre = "Miguel",
+            Apellido = "Lopez",
+            Email = "miguel@gmail.com",
+            Telefono = string.Empty,
+            Clave = "Password@2026Ok"
+        };
+
+        usuarioServicio.RegistrarCliente(solicitudDeRegistro);
     }
 
     [TestMethod]
