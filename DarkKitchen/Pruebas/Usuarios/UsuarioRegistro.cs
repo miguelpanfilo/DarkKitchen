@@ -441,4 +441,19 @@ public class UsuarioServiceTests
             string.Empty
         );
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void CrearUsuario_ClaveMenorA15_LanzaExcepcion()
+    {
+        var palabraDeLargo13 = 13;
+        var claveMenor15Caracteres = new string('a', palabraDeLargo13);
+
+        Usuario.Crear(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            "099123456",
+            claveMenor15Caracteres);
+    }
 }
