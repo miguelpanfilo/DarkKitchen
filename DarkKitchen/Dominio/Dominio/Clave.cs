@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using Dominio.Excepciones;
 
 namespace Dominio;
@@ -7,11 +9,11 @@ public sealed class Clave
     private const int LargoMinimo = 15;
     private const int LargoMaximo = 25;
 
-    public string Valor { get; private set; }
+    public string Hash { get; private set; }
 
-    private Clave(string valor)
+    private Clave(string hash)
     {
-        Valor = valor;
+        Hash = hash;
     }
 
     public static bool Validar(string? clave)
@@ -61,7 +63,16 @@ public sealed class Clave
             throw new UsuarioExcepcion("La clave no tiene el formato válido");
         }
 
-        return new Clave(clave!);
+        var hash = HashearMd5(clave!);
+        return new Clave(hash);
+    }
+
+    private static string HashearMd5(string texto)
+    {
+        using var md5 = MD5.Create();
+        var bytes = Encoding.UTF8.GetBytes(texto);
+        var hash = md5.ComputeHash(bytes);
+        return Convert.ToHexString(hash);
     }
 
     private static bool TieneSecuenciaDeNumeros(string clave)
@@ -77,8 +88,14 @@ public sealed class Clave
         return false;
     }
 
-    public override string ToString()
+    public bool Verificar(string clave)
     {
-        return Valor;
+        var hashIngresado = HashearMd5(clave);
+        return string.Equals(hashIngresado, Hash);
+    }
+
+    public string ObtenerHash()
+    {
+        return Hash;
     }
 }

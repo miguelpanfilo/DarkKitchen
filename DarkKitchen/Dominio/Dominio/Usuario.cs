@@ -9,8 +9,7 @@ public class Usuario
     public string Apellido { get; private set; } = string.Empty;
     public Email Email { get; private set; }
     public string Telefono { get; private set; } = string.Empty;
-    public Clave Clave { get; private set; } = null!;
-
+    public Clave Clave { get; private set; }
     public static Usuario Crear(string nombre, string apellido, string email, string telefono, string clave)
     {
         var emailValido = Email.Crear(email);

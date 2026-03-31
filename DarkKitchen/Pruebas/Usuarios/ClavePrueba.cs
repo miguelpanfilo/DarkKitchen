@@ -152,13 +152,58 @@ public class ClavePrueba
     }
 
     [TestMethod]
-    public void Crear_ClaveValida_RetornaObjetoClave()
+    public void Crear_ClaveValida_GeneraHashNoVacio()
     {
         var clave = "Password@2Ok6Abc";
 
         Clave resultado = Clave.Crear(clave);
 
         Assert.IsNotNull(resultado);
-        Assert.AreEqual(clave, resultado.Valor);
+        Assert.IsFalse(string.IsNullOrWhiteSpace(resultado.ObtenerHash()));
+    }
+
+    [TestMethod]
+    public void Crear_MismaClave_GeneraMismoHash()
+    {
+        var clave = "Password@2Ok6Abc";
+
+        Clave clave1 = Clave.Crear(clave);
+        Clave clave2 = Clave.Crear(clave);
+
+        Assert.AreEqual(clave1.ObtenerHash(), clave2.ObtenerHash());
+    }
+
+    [TestMethod]
+    public void Crear_DistintaClave_GeneraHashDistinto()
+    {
+        var clave1 = "Password@2Ok6Abc";
+        var clave2 = "Password@3Ok7Abc";
+
+        Clave resultado1 = Clave.Crear(clave1);
+        Clave resultado2 = Clave.Crear(clave2);
+
+        Assert.AreNotEqual(resultado1.ObtenerHash(), resultado2.ObtenerHash());
+    }
+
+    [TestMethod]
+    public void Verificar_ClaveCorrecta_RetornaTrue()
+    {
+        var claveTexto = "Password@2Ok6Abc";
+        Clave clave = Clave.Crear(claveTexto);
+
+        var esCorrecta = clave.Verificar(claveTexto);
+
+        Assert.IsTrue(esCorrecta);
+    }
+
+    [TestMethod]
+    public void Verificar_ClaveIncorrecta_RetornaFalse()
+    {
+        var claveTexto = "Password@2Ok6Abc";
+        Clave clave = Clave.Crear(claveTexto);
+
+        var esCorrecta = clave.Verificar("Password@3Ok7Abc");
+
+        Assert.IsFalse(esCorrecta);
     }
 }
