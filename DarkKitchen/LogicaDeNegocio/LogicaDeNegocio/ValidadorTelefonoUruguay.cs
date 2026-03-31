@@ -1,4 +1,5 @@
 using LogicaDeNegocioAbstracciones;
+
 namespace LogicaDeNegocio;
 
 public class ValidadorTelefonoUruguay : IValidadorTelefono
@@ -20,7 +21,13 @@ public class ValidadorTelefonoUruguay : IValidadorTelefono
             return false;
         }
 
-        if (!telefono.StartsWith("09"))
+        var prefijosValidos = new[]
+        {
+            "091", "092", "093", "094",
+            "095", "096", "097", "098", "099"
+        };
+
+        if (!prefijosValidos.Any(p => telefono.StartsWith(p)))
         {
             return false;
         }
