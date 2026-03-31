@@ -22,10 +22,6 @@ public class Usuario
         ValidarApellido(apellido);
         ValidarTelefonoNoVacio(telefono);
         ValidarClave(clave);
-        if (!clave.Any(char.IsLower))
-        {
-            throw new UsuarioExcepcion("La clave debe tener al menos una minúscula");
-        }
 
         Nombre = nombre;
         Apellido = apellido;
@@ -67,9 +63,9 @@ public class Usuario
             throw new UsuarioExcepcion("La clave debe tener entre 15 y 25 caracteres");
         }
 
-        if (!clave.Any(char.IsUpper))
+        if (!clave.Any(char.IsUpper) || !clave.Any(char.IsLower))
         {
-            throw new UsuarioExcepcion("La clave debe tener al menos una mayúscula");
+            throw new UsuarioExcepcion("La clave debe tener al menos una mayúscula y una minuscula");
         }
     }
 
