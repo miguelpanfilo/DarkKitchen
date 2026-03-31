@@ -80,6 +80,33 @@ public class UsuarioServiceTests
     }
 
     [TestMethod]
+    public void CrearUsuario_NombreMinimoValido_NoLanzaExcepcion()
+    {
+        var usuario = Usuario.Crear(
+            "M",
+            "Lopez",
+            "miguel@gmail.com",
+            "099123456",
+            "Password@2Ok6Abc"
+        );
+
+        Assert.IsNotNull(usuario);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void CrearUsuario_NombreNulo_LanzaExcepcion()
+    {
+        Usuario.Crear(
+            null!,
+            "Lopez",
+            "miguel@gmail.com",
+            "099123456",
+            "Password@2Ok6Abc"
+        );
+    }
+
+    [TestMethod]
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void RegistrarCliente_SinApellido_LanzaExcepcion()
     {
@@ -328,6 +355,19 @@ public class UsuarioServiceTests
         };
 
         usuarioServicio.RegistrarCliente(solicitudDeRegistro);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void CrearUsuario_EmailNulo_LanzaExcepcion()
+    {
+        Usuario.Crear(
+            "Miguel",
+            "Lopez",
+            null!,
+            "099123456",
+            "Password@2Ok6Abc"
+        );
     }
 
     [TestMethod]
