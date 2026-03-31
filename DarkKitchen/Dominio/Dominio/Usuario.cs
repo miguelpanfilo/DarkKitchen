@@ -21,6 +21,11 @@ public class Usuario
         ValidarNombre(nombre);
         ValidarApellido(apellido);
         ValidarTelefonoNoVacio(telefono);
+        if (clave.Length < 15)
+        {
+            throw new UsuarioExcepcion("La clave debe tener al menos 15 caracteres");
+        }
+
         ValidarClave(clave);
 
         Nombre = nombre;
