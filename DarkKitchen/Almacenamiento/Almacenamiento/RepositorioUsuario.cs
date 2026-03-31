@@ -7,8 +7,12 @@ public class RepositorioUsuario : IRepositorioUsuario
 {
     private readonly List<Usuario> _usuarios = new();
 
+    private int _ultimoId = 0;
+
     public Usuario Add(Usuario usuario)
     {
+        _ultimoId++;
+        usuario.Id = _ultimoId;
         _usuarios.Add(usuario);
         return usuario;
     }
