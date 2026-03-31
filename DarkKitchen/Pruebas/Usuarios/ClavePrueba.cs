@@ -11,7 +11,7 @@ public class ClavePrueba
     {
         string? clave = null;
 
-        bool esValida = Clave.Validar(clave);
+        var esValida = Clave.Validar(clave);
 
         Assert.IsFalse(esValida);
     }
@@ -19,9 +19,9 @@ public class ClavePrueba
     [TestMethod]
     public void Validar_ClaveVacia_RetornaFalso()
     {
-        string clave = string.Empty;
+        var clave = string.Empty;
 
-        bool esValida = Clave.Validar(clave);
+        var esValida = Clave.Validar(clave);
 
         Assert.IsFalse(esValida);
     }
@@ -29,9 +29,9 @@ public class ClavePrueba
     [TestMethod]
     public void Validar_ClaveConSoloEspacios_RetornaFalso()
     {
-        string clave = "   ";
+        var clave = "   ";
 
-        bool esValida = Clave.Validar(clave);
+        var esValida = Clave.Validar(clave);
 
         Assert.IsFalse(esValida);
     }
@@ -39,9 +39,8 @@ public class ClavePrueba
     [TestMethod]
     public void Validar_ClaveMenorA15_RetornaFalso()
     {
-        string clave = "Passw!rdAbc9Xy";
-
-        bool esValida = Clave.Validar(clave);
+        var clave = "Passw!rdAbc9Xy";
+        var esValida = Clave.Validar(clave);
 
         Assert.IsFalse(esValida);
     }
@@ -49,9 +48,9 @@ public class ClavePrueba
     [TestMethod]
     public void Validar_ClaveMayorA25_RetornaFalso()
     {
-        string clave = "Password!Abc9XyzKlmNoPqR";
+        var clave = "Password!Abc9XyzKlmNoPqRst";
 
-        bool esValida = Clave.Validar(clave);
+        var esValida = Clave.Validar(clave);
 
         Assert.IsFalse(esValida);
     }
@@ -59,9 +58,9 @@ public class ClavePrueba
     [TestMethod]
     public void Validar_ClaveSinMayuscula_RetornaFalso()
     {
-        string clave = "password!abc9xyz";
+        var clave = "password!abc9xyz";
 
-        bool esValida = Clave.Validar(clave);
+        var esValida = Clave.Validar(clave);
 
         Assert.IsFalse(esValida);
     }
@@ -69,9 +68,9 @@ public class ClavePrueba
     [TestMethod]
     public void Validar_ClaveSinMinuscula_RetornaFalso()
     {
-        string clave = "PASSWORD!ABC9XYZ";
+        var clave = "PASSWORD!ABC9XYZ";
 
-        bool esValida = Clave.Validar(clave);
+        var esValida = Clave.Validar(clave);
 
         Assert.IsFalse(esValida);
     }
@@ -79,9 +78,9 @@ public class ClavePrueba
     [TestMethod]
     public void Validar_ClaveSinNumero_RetornaFalso()
     {
-        string clave = "Password!AbcXyz";
+        var clave = "Password!AbcXyz";
 
-        bool esValida = Clave.Validar(clave);
+        var esValida = Clave.Validar(clave);
 
         Assert.IsFalse(esValida);
     }
@@ -89,9 +88,9 @@ public class ClavePrueba
     [TestMethod]
     public void Validar_ClaveSinSimbolo_RetornaFalso()
     {
-        string clave = "PasswordAbc9Xyz";
+        var clave = "PasswordAbc9Xyz";
 
-        bool esValida = Clave.Validar(clave);
+        var esValida = Clave.Validar(clave);
 
         Assert.IsFalse(esValida);
     }
@@ -99,9 +98,9 @@ public class ClavePrueba
     [TestMethod]
     public void Validar_ClaveConSecuenciaDeNumeros_RetornaFalso()
     {
-        string clave = "Password!Ab12Xy";
+        var clave = "Password!Ab12Xy";
 
-        bool esValida = Clave.Validar(clave);
+        var esValida = Clave.Validar(clave);
 
         Assert.IsFalse(esValida);
     }
@@ -109,9 +108,9 @@ public class ClavePrueba
     [TestMethod]
     public void Validar_ClaveDe15Caracteres_RetornaTrue()
     {
-        string clave = "Password!Abc9Xy";
+        var clave = "Password!Abc9Xy";
 
-        bool esValida = Clave.Validar(clave);
+        var esValida = Clave.Validar(clave);
 
         Assert.IsTrue(esValida);
     }
@@ -119,9 +118,9 @@ public class ClavePrueba
     [TestMethod]
     public void Validar_ClaveDe25Caracteres_RetornaTrue()
     {
-        string clave = "Password!Abc9XyzKlmNoPq";
+        var clave = "Password!Abc9XyzKlmNoPqR";
 
-        bool esValida = Clave.Validar(clave);
+        var esValida = Clave.Validar(clave);
 
         Assert.IsTrue(esValida);
     }
@@ -129,9 +128,9 @@ public class ClavePrueba
     [TestMethod]
     public void Validar_ClaveCorrecta_RetornaTrue()
     {
-        string clave = "Password@2Ok6Abc";
+        var clave = "Password@2Ok6Abc";
 
-        bool esValida = Clave.Validar(clave);
+        var esValida = Clave.Validar(clave);
 
         Assert.IsTrue(esValida);
     }
@@ -147,7 +146,7 @@ public class ClavePrueba
     [TestMethod]
     public void Crear_ClaveInvalida_LanzaUsuarioExcepcion()
     {
-        string clave = "abc";
+        var clave = "abc";
 
         Assert.ThrowsException<UsuarioExcepcion>(() => Clave.Crear(clave));
     }
@@ -155,7 +154,7 @@ public class ClavePrueba
     [TestMethod]
     public void Crear_ClaveValida_RetornaObjetoClave()
     {
-        string clave = "Password@2Ok6Abc";
+        var clave = "Password@2Ok6Abc";
 
         Clave resultado = Clave.Crear(clave);
 

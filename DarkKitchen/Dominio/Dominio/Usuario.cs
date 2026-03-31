@@ -5,28 +5,30 @@ namespace Dominio;
 public class Usuario
 {
     public int Id { get; set; }
-    public string Nombre { get; set; } = string.Empty;
-    public string Apellido { get; set; } = string.Empty;
+    public string Nombre { get; private set; } = string.Empty;
+    public string Apellido { get; private set; } = string.Empty;
     public Email Email { get; private set; }
-    public string Telefono { get; set; } = string.Empty;
-    public string Clave { get; set; } = string.Empty;
+    public string Telefono { get; private set; } = string.Empty;
+    public Clave Clave { get; private set; } = null!;
+
     public static Usuario Crear(string nombre, string apellido, string email, string telefono, string clave)
     {
         var emailValido = Email.Crear(email);
-        return new Usuario(nombre, apellido, emailValido, telefono, clave);
+        var claveObj = Clave.Crear(clave);
+
+        return new Usuario(nombre, apellido, emailValido, telefono, claveObj);
     }
 
-    private Usuario(string nombre, string apellido, Email email, string telefono, string clave)
+    private Usuario(string nombre, string apellido, Email email, string telefono, Clave clave)
     {
         ValidarNombre(nombre);
         ValidarApellido(apellido);
         ValidarTelefonoNoVacio(telefono);
-        ValidarClave(clave);
 
-       Nombre = nombre;
-        Apellido = apellido;
+        Nombre = nombre.Trim();
+        Apellido = apellido.Trim();
         Email = email;
-        Telefono = telefono;
+        Telefono = telefono.Trim();
         Clave = clave;
     }
 
@@ -45,56 +47,10 @@ public class Usuario
             throw new UsuarioExcepcion("El apellido no puede estar vacío");
         }
 
-        if (apellido.Length < 3 || apellido.Length > 25)
+        if (apellido.Trim().Length < 3 || apellido.Trim().Length > 25)
         {
             throw new UsuarioExcepcion("El apellido debe tener entre 3 y 25 caracteres");
         }
-    }
-
-    private void ValidarClave(string clave)
-    {
-        if (string.IsNullOrWhiteSpace(clave))
-        {
-            throw new UsuarioExcepcion("La clave no puede estar vacía");
-        }
-
-        if (clave.Length < 15 || clave.Length > 25)
-        {
-            throw new UsuarioExcepcion("La clave debe tener entre 15 y 25 caracteres");
-        }
-
-        if (!clave.Any(char.IsUpper) || !clave.Any(char.IsLower))
-        {
-            throw new UsuarioExcepcion("La clave debe tener al menos una mayúscula y una minuscula");
-        }
-
-        if (!clave.Any(char.IsDigit))
-        {
-            throw new UsuarioExcepcion("La clave debe tener al menos un número");
-        }
-
-        if (!clave.Any(c => !char.IsLetterOrDigit(c)))
-        {
-            throw new UsuarioExcepcion("La clave debe tener al menos un símbolo");
-        }
-
-        if (TieneSecuenciaDeNumeros(clave))
-        {
-            throw new UsuarioExcepcion("La clave no debe contener secuencias de números");
-        }
-    }
-
-    private static bool TieneSecuenciaDeNumeros(string clave)
-    {
-        for (var i = 0; i < clave.Length - 1; i++)
-        {
-            if (char.IsDigit(clave[i]) && char.IsDigit(clave[i + 1]))
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private void ValidarTelefonoNoVacio(string telefono)
