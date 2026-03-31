@@ -22,6 +22,10 @@ public class Usuario
         ValidarApellido(apellido);
         ValidarTelefonoNoVacio(telefono);
         ValidarClave(clave);
+        if (!clave.Any(char.IsDigit))
+        {
+            throw new UsuarioExcepcion("La clave debe tener al menos un número");
+        }
 
         Nombre = nombre;
         Apellido = apellido;
