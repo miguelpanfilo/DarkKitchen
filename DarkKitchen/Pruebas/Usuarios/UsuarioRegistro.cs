@@ -122,6 +122,22 @@ public class UsuarioServiceTests
     }
 
     [TestMethod]
+    public void CrearUsuario_ApellidoMaximoValido_NoLanzaExcepcion()
+    {
+        var apellido = new string('a', 25);
+
+        var usuario = Usuario.Crear(
+            "Miguel",
+            apellido,
+            "miguel@gmail.com",
+            "099123456",
+            "Password!2026Ok"
+        );
+
+        Assert.IsNotNull(usuario);
+    }
+
+    [TestMethod]
     public void CrearUsuario_ApellidoMinimoValido_NoLanzaExcepcion()
     {
         var usuario = Usuario.Crear(
