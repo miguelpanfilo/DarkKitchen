@@ -481,8 +481,7 @@ public class UsuarioServiceTests
             "Lopez",
             "miguel@gmail.com",
             "099123456",
-            "password!abc9xy"
-        );
+            "password!abc9xy");
     }
 
     [TestMethod]
@@ -494,8 +493,7 @@ public class UsuarioServiceTests
             "Lopez",
             "miguel@gmail.com",
             "099123456",
-            "PASSWORD!ABC9XY"
-        );
+            "PASSWORD!ABC9XY");
     }
 
     [TestMethod]
@@ -507,8 +505,7 @@ public class UsuarioServiceTests
             "Lopez",
             "miguel@gmail.com",
             "099123456",
-            "Password!AbcXyz"
-        );
+            "Password!AbcXyz");
     }
 
     [TestMethod]
@@ -520,7 +517,18 @@ public class UsuarioServiceTests
             "Lopez",
             "miguel@gmail.com",
             "099123456",
-            "PasswordAbc123Xy"
-        );
+            "PasswordAbc123Xy");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void CrearUsuario_ClaveConSecuenciaDeNumeros_LanzaExcepcion()
+    {
+        Usuario.Crear(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            "099123456",
+            "Password!Ab12Xy");
     }
 }
