@@ -428,4 +428,17 @@ public class UsuarioServiceTests
         Assert.IsNotNull(resultado);
         Assert.AreEqual("miguel@gmail.com", resultado.Email);
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void CrearUsuario_ClaveVacia_LanzaExcepcion()
+    {
+        Usuario.Crear(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            "099123456",
+            string.Empty
+        );
+    }
 }
