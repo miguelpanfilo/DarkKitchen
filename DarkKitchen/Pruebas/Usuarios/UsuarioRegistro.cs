@@ -392,4 +392,40 @@ public class UsuarioServiceTests
 
         Assert.AreEqual("miguel@gmail.com", usuario.Email.ToString());
     }
+
+    [TestMethod]
+    public void RegistrarCliente_EmailNoDuplicado_RegistroExitoso()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        repoMock.Setup(r => r.ExisteEmail(It.IsAny<string>()))
+            .Returns(false);
+
+        repoMock.Setup(r => r.Add(It.IsAny<Usuario>()))
+            .Returns((Usuario u) => u);
+
+        validadorTelefonoMock
+            .Setup(v => v.EsValido(It.IsAny<string>()))
+            .Returns(true);
+
+        var usuarioServicio = new UsuarioService(
+            repoMock.Object,
+            validadorTelefonoMock.Object
+        );
+
+        var solicitud = new RegistrarClienteRequest
+        {
+            Nombre = "Miguel",
+            Apellido = "Lopez",
+            Email = "miguel@gmail.com",
+            Telefono = "099123456",
+            Clave = "Password!2026Ok"
+        };
+
+        var resultado = usuarioServicio.RegistrarCliente(solicitud);
+
+        Assert.IsNotNull(resultado);
+        Assert.AreEqual("miguel@gmail.com", resultado.Email);
+    }
 }
