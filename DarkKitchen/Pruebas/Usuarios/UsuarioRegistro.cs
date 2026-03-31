@@ -167,4 +167,31 @@ public class UsuarioServiceTests
             "Password@2026Ok"
         );
     }
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void RegistrarCliente_TelefonoInvalido_LanzaExcepcion()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        validadorTelefonoMock
+            .Setup(v => v.EsValido(It.IsAny<string>()))
+            .Returns(false);
+
+        var usuarioServicio = new UsuarioService(
+            repoMock.Object,
+            validadorTelefonoMock.Object
+        );
+
+        var solicitudDeRegistro = new RegistrarClienteRequest
+        {
+            Nombre = "Miguel",
+            Apellido = "Lopez",
+            Email = "miguel@gmail.com",
+            Telefono = "123",
+            Clave = "Password@2026Ok"
+        };
+
+        usuarioServicio.RegistrarCliente(solicitudDeRegistro);
+    }
 }
