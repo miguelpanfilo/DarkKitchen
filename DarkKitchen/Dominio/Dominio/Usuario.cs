@@ -21,10 +21,7 @@ public class Usuario
         ValidarNombre(nombre);
         ValidarApellido(apellido);
         ValidarTelefonoNoVacio(telefono);
-        if (string.IsNullOrWhiteSpace(clave))
-        {
-            throw new UsuarioExcepcion("La clave no puede estar vacía");
-        }
+        ValidarClave(clave);
 
         Nombre = nombre;
         Apellido = apellido;
@@ -54,33 +51,11 @@ public class Usuario
         }
     }
 
-    private void ValidarEmail(string email)
+    private void ValidarClave(string clave)
     {
-        if (string.IsNullOrWhiteSpace(email))
+        if (string.IsNullOrWhiteSpace(clave))
         {
-            throw new UsuarioExcepcion("El email no puede estar vacío");
-        }
-
-        if (!email.Contains("@"))
-        {
-            throw new UsuarioExcepcion("El email debe tener un formato válido");
-        }
-
-        if (email.Contains(" "))
-        {
-            throw new UsuarioExcepcion("El email no debe contener espacios");
-        }
-
-        var partes = email.Split('@');
-
-        if (partes.Length != 2 || !partes[1].Contains('.')||string.IsNullOrWhiteSpace(partes[0]))
-        {
-            throw new UsuarioExcepcion("El email debe tener un formato válido");
-        }
-
-        if (partes[1].StartsWith(".") || partes[1].EndsWith("."))
-        {
-            throw new UsuarioExcepcion("El dominio no es válido");
+            throw new UsuarioExcepcion("La clave no puede estar vacía");
         }
     }
 
