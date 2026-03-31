@@ -216,4 +216,37 @@ public class UsuarioServiceTests
 
         usuarioServicio.RegistrarCliente(solicitudDeRegistro);
     }
+
+    [TestMethod]
+    public void RegistrarCliente_TelefonoValidoUruguay_RegistroExitoso()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        validadorTelefonoMock
+            .Setup(v => v.EsValido(It.IsAny<string>()))
+            .Returns(true);
+
+        repoMock.Setup(r => r.Add(It.IsAny<Usuario>()))
+            .Returns((Usuario u) => u);
+
+        var usuarioServicio = new UsuarioService(
+            repoMock.Object,
+            validadorTelefonoMock.Object
+        );
+
+        var solicitudDeRegistro = new RegistrarClienteRequest
+        {
+            Nombre = "Miguel",
+            Apellido = "Lopez",
+            Email = "miguel@gmail.com",
+            Telefono = "099123456",
+            Clave = "Password@2026Ok"
+        };
+
+        var resultado = usuarioServicio.RegistrarCliente(solicitudDeRegistro);
+
+        Assert.IsNotNull(resultado);
+        Assert.AreEqual("Miguel", resultado.Nombre);
+    }
 }
