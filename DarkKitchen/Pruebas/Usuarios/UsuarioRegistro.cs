@@ -330,4 +330,36 @@ public class UsuarioServiceTests
         Assert.AreEqual(primerUsuarioAgregado, userAgregadoPrimero.Id);
         Assert.AreEqual(segundoUsuarioAgregado, userAgregadoSegundo.Id);
     }
+
+    [TestMethod]
+    public void Add_Usuario_SeAsignaIdMayorACero()
+    {
+        var repo = new RepositorioUsuario();
+
+        var usuario = Usuario.Crear(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            "099123456",
+            "Password@2026Ok"
+        );
+
+        var resultado = repo.Add(usuario);
+
+        Assert.IsTrue(resultado.Id > 0);
+    }
+
+    [TestMethod]
+    public void CrearUsuario_EmailSeNormaliza_Correctamente()
+    {
+        var usuario = Usuario.Crear(
+            "Miguel",
+            "Lopez",
+            "  MIGUEL@gmail.com  ",
+            "099123456",
+            "Password!2026Ok"
+        );
+
+        Assert.AreEqual("miguel@gmail.com", usuario.Email.ToString());
+    }
 }
