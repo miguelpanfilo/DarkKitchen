@@ -31,13 +31,19 @@ public class UsuarioService
             request.Telefono,
             request.Clave
         );
+
+        if (_repo.ExisteEmail(usuario.Email.ToString()))
+        {
+            throw new UsuarioExcepcion("El email ya está registrado");
+        }
+
         var usuarioGuardado = _repo.Add(usuario);
 
         return new RegistrarClienteResponseDTO
         {
             Nombre = usuarioGuardado.Nombre,
             Apellido = usuarioGuardado.Apellido,
-            Email = usuarioGuardado.Email
+            Email = usuarioGuardado.Email.ToString()
         };
     }
 }

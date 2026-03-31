@@ -7,19 +7,19 @@ public class Usuario
     public int Id { get; set; }
     public string Nombre { get; set; } = string.Empty;
     public string Apellido { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
+    public Email Email { get; private set; }
     public string Telefono { get; set; } = string.Empty;
     public string Clave { get; set; } = string.Empty;
     public static Usuario Crear(string nombre, string apellido, string email, string telefono, string clave)
     {
-        return new Usuario(nombre, apellido, email, telefono, clave);
+        var emailValido = Email.Crear(email);
+        return new Usuario(nombre, apellido, emailValido, telefono, clave);
     }
 
-    private Usuario(string nombre, string apellido, string email, string telefono, string clave)
+    private Usuario(string nombre, string apellido, Email email, string telefono, string clave)
     {
         ValidarNombre(nombre);
         ValidarApellido(apellido);
-        ValidarEmail(email);
 
         Nombre = nombre;
         Apellido = apellido;

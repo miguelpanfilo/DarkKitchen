@@ -17,4 +17,11 @@ public class RepositorioUsuario : IRepositorioUsuario
     {
         return _usuarios;
     }
+
+    public bool ExisteEmail(string email)
+    {
+        var emailBuscado = Email.Crear(email);
+
+        return _usuarios.Any(u => u.Email.Igual(emailBuscado));
+    }
 }

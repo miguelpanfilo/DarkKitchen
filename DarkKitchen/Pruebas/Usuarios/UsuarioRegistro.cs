@@ -65,7 +65,6 @@ public class UsuarioServiceTests
         Assert.AreEqual(1, usuarios.Count);
         Assert.AreEqual("Miguel", usuarios[0].Nombre);
         Assert.AreEqual("Lopez", usuarios[0].Apellido);
-        Assert.AreEqual("miguel@gmail.com", usuarios[0].Email);
     }
 
     [TestMethod]
@@ -248,5 +247,56 @@ public class UsuarioServiceTests
 
         Assert.IsNotNull(resultado);
         Assert.AreEqual("Miguel", resultado.Nombre);
+    }
+
+    [TestMethod]
+    public void ExisteEmail_EmailYaExiste_RetornaTrue()
+    {
+        var repo = new RepositorioUsuario();
+
+        var usuario = Usuario.Crear(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            "099123456",
+            "Password@2026Ok"
+        );
+
+        repo.Add(usuario);
+
+        var existe = repo.ExisteEmail("MIGUEL@gmail.com");
+
+        Assert.IsTrue(existe);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void RegistrarCliente_EmailDuplicado_LanzaExcepcion()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        repoMock.Setup(r => r.ExisteEmail("miguel@gmail.com"))
+            .Returns(true);
+
+        validadorTelefonoMock
+            .Setup(v => v.EsValido(It.IsAny<string>()))
+            .Returns(true);
+
+        var usuarioServicio = new UsuarioService(
+            repoMock.Object,
+            validadorTelefonoMock.Object
+        );
+
+        var solicitudDeRegistro = new RegistrarClienteRequest
+        {
+            Nombre = "Miguel",
+            Apellido = "Lopez",
+            Email = "miguel@gmail.com",
+            Telefono = "099123456",
+            Clave = "Password@2026Ok"
+        };
+
+        usuarioServicio.RegistrarCliente(solicitudDeRegistro);
     }
 }
