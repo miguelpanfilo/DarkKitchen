@@ -299,4 +299,35 @@ public class UsuarioServiceTests
 
         usuarioServicio.RegistrarCliente(solicitudDeRegistro);
     }
+
+    [TestMethod]
+    public void Add_UsuarioNuevo_SeAsignaIdIncremental()
+    {
+        var repo = new RepositorioUsuario();
+
+        var usuario1 = Usuario.Crear(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            "099123456",
+            "Password@2026Ok"
+        );
+
+        var usuario2 = Usuario.Crear(
+            "Juan",
+            "Perez",
+            "juan@gmail.com",
+            "099999999",
+            "Password@2026Ok"
+        );
+
+        var userAgregadoPrimero = repo.Add(usuario1);
+        var userAgregadoSegundo = repo.Add(usuario2);
+
+        var primerUsuarioAgregado = 1;
+        var segundoUsuarioAgregado = 2;
+
+        Assert.AreEqual(primerUsuarioAgregado, userAgregadoPrimero.Id);
+        Assert.AreEqual(segundoUsuarioAgregado, userAgregadoSegundo.Id);
+    }
 }
