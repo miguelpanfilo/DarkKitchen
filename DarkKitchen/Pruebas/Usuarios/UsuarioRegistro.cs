@@ -35,7 +35,7 @@ public class UsuarioServiceTests
             Apellido = "Lopez",
             Email = "miguel@gmail.com",
             Telefono = "099123456",
-            Clave = "Password@2026Ok"
+            Clave = "Password@2Ok6Abc"
         };
 
         var resultado = usuarioServicio.RegistrarCliente(solicitudDeRegistro);
@@ -56,7 +56,7 @@ public class UsuarioServiceTests
             "Lopez",
             "miguel@gmail.com",
             "099123456",
-            "Password@2026Ok");
+            "Password@2Ok6Abc");
 
         repositorioUsuario.Add(usuario);
 
@@ -131,7 +131,7 @@ public class UsuarioServiceTests
             apellido,
             "miguel@gmail.com",
             "099123456",
-            "Password!2026Ok"
+            "Password@2Ok6Abc"
         );
 
         Assert.IsNotNull(usuario);
@@ -145,7 +145,7 @@ public class UsuarioServiceTests
             "Lop",
             "miguel@gmail.com",
             "099123456",
-            "Password!2026Ok"
+            "Password@2Ok6Abc"
         );
 
         Assert.IsNotNull(usuario);
@@ -270,7 +270,7 @@ public class UsuarioServiceTests
             Apellido = "Lopez",
             Email = "miguel@gmail.com",
             Telefono = "099123456",
-            Clave = "Password@2026Ok"
+            Clave = "Password@2Ok6Abc"
         };
 
         var resultado = usuarioServicio.RegistrarCliente(solicitudDeRegistro);
@@ -289,7 +289,7 @@ public class UsuarioServiceTests
             "Lopez",
             "miguel@gmail.com",
             "099123456",
-            "Password@2026Ok"
+            "PPassword@2Ok6Abc"
         );
 
         repo.Add(usuario);
@@ -324,7 +324,7 @@ public class UsuarioServiceTests
             Apellido = "Lopez",
             Email = "miguel@gmail.com",
             Telefono = "099123456",
-            Clave = "Password@2026Ok"
+            Clave = "Password@2Ok6Abc"
         };
 
         usuarioServicio.RegistrarCliente(solicitudDeRegistro);
@@ -340,7 +340,7 @@ public class UsuarioServiceTests
             "Lopez",
             "miguel@gmail.com",
             "099123456",
-            "Password@2026Ok"
+            "Password@2Ok6Abc"
         );
 
         var usuario2 = Usuario.Crear(
@@ -348,7 +348,7 @@ public class UsuarioServiceTests
             "Perez",
             "juan@gmail.com",
             "099999999",
-            "Password@2026Ok"
+            "Password@2Ok6Abc"
         );
 
         var userAgregadoPrimero = repo.Add(usuario1);
@@ -371,7 +371,7 @@ public class UsuarioServiceTests
             "Lopez",
             "miguel@gmail.com",
             "099123456",
-            "Password@2026Ok"
+            "Password@2Ok6Abc"
         );
 
         var resultado = repo.Add(usuario);
@@ -387,7 +387,7 @@ public class UsuarioServiceTests
             "Lopez",
             "  MIGUEL@gmail.com  ",
             "099123456",
-            "Password!2026Ok"
+            "Password@2Ok6Abc"
         );
 
         Assert.AreEqual("miguel@gmail.com", usuario.Email.ToString());
@@ -420,7 +420,7 @@ public class UsuarioServiceTests
             Apellido = "Lopez",
             Email = "miguel@gmail.com",
             Telefono = "099123456",
-            Clave = "Password!2026Ok"
+            Clave = "Password@2Ok6Abc"
         };
 
         var resultado = usuarioServicio.RegistrarCliente(solicitud);
@@ -530,5 +530,33 @@ public class UsuarioServiceTests
             "miguel@gmail.com",
             "099123456",
             "Password!Ab12Xy");
+    }
+
+    [TestMethod]
+    public void CrearUsuario_ClaveDe15Caracteres_Valida_NoLanzaExcepcion()
+    {
+        var usuario = Usuario.Crear(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            "099123456",
+            "Password!Abc9Xy"
+        );
+
+        Assert.IsNotNull(usuario);
+    }
+
+    [TestMethod]
+    public void CrearUsuario_ClaveDe25Caracteres_Valida_NoLanzaExcepcion()
+    {
+        var usuario = Usuario.Crear(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            "099123456",
+            "Password!Abc9XyzKlmNoPq"
+        );
+
+        Assert.IsNotNull(usuario);
     }
 }
