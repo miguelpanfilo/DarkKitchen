@@ -484,4 +484,17 @@ public class UsuarioServiceTests
             "password!abc9xy"
         );
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void CrearUsuario_ClaveSinMinuscula_LanzaExcepcion()
+    {
+        Usuario.Crear(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            "099123456",
+            "PASSWORD!ABC9XY"
+        );
+    }
 }
