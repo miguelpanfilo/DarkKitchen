@@ -4,6 +4,7 @@ using Contratos;
 using Dominio;
 using Dominio.Excepciones;
 using LogicaDeNegocio;
+using LogicaDeNegocioAbstracciones;
 using Moq;
 
 namespace Pruebas.Usuarios;
@@ -15,11 +16,18 @@ public class UsuarioServiceTests
     public void RegistrarCliente_DatosValidos_RetornaUsuario()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
 
         repoMock.Setup(r => r.Add(It.IsAny<Usuario>()))
             .Returns((Usuario u) => u);
 
-        var usuarioServicio = new UsuarioService(repoMock.Object);
+        validadorTelefonoMock
+            .Setup(v => v.EsValido(It.IsAny<string>()))
+            .Returns(true);
+
+        var usuarioServicio = new UsuarioService(
+            repoMock.Object,
+            validadorTelefonoMock.Object);
 
         var solicitudDeRegistro = new RegistrarClienteRequest
         {
@@ -167,6 +175,7 @@ public class UsuarioServiceTests
             "Password@2026Ok"
         );
     }
+
     [TestMethod]
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void RegistrarCliente_TelefonoInvalido_LanzaExcepcion()
