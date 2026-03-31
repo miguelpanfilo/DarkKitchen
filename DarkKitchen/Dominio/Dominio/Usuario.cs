@@ -22,6 +22,7 @@ public class Usuario
         ValidarApellido(apellido);
         ValidarTelefonoNoVacio(telefono);
         ValidarClave(clave);
+
        Nombre = nombre;
         Apellido = apellido;
         Email = email;
@@ -76,6 +77,24 @@ public class Usuario
         {
             throw new UsuarioExcepcion("La clave debe tener al menos un símbolo");
         }
+
+        if (TieneSecuenciaDeNumeros(clave))
+        {
+            throw new UsuarioExcepcion("La clave no debe contener secuencias de números");
+        }
+    }
+
+    private static bool TieneSecuenciaDeNumeros(string clave)
+    {
+        for (var i = 0; i < clave.Length - 1; i++)
+        {
+            if (char.IsDigit(clave[i]) && char.IsDigit(clave[i + 1]))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void ValidarTelefonoNoVacio(string telefono)
