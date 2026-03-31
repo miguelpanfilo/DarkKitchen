@@ -122,6 +122,20 @@ public class UsuarioServiceTests
     }
 
     [TestMethod]
+    public void CrearUsuario_ApellidoMinimoValido_NoLanzaExcepcion()
+    {
+        var usuario = Usuario.Crear(
+            "Miguel",
+            "Lop",
+            "miguel@gmail.com",
+            "099123456",
+            "Password!2026Ok"
+        );
+
+        Assert.IsNotNull(usuario);
+    }
+
+    [TestMethod]
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void RegistrarCliente_EmailVacio_LanzaExcepcion()
     {
