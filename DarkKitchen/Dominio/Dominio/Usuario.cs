@@ -20,6 +20,11 @@ public class Usuario
     {
         ValidarNombre(nombre);
         ValidarApellido(apellido);
+        ValidarTelefonoNoVacio(telefono);
+        if (string.IsNullOrWhiteSpace(clave))
+        {
+            throw new UsuarioExcepcion("La clave no puede estar vacía");
+        }
 
         Nombre = nombre;
         Apellido = apellido;
