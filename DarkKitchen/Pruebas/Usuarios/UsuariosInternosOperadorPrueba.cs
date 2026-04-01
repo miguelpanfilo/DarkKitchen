@@ -101,4 +101,27 @@ public class UsuariosInternosOperadorPrueba
         Assert.AreEqual("admin@gmail.com", usuario.Email.ToString());
         Assert.AreEqual(RolUsuario.Administrativo, usuario.Rol);
     }
+
+    [TestMethod]
+    public void MapeoAResponseDTO_UsuarioValido_MapeaCorrectamente()
+    {
+        var usuario = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+
+        usuario.Id = 10;
+
+        var response = usuario.MapeoAResponseDTO();
+
+        Assert.AreEqual(10, response.Id);
+        Assert.AreEqual("Juan", response.Nombre);
+        Assert.AreEqual("Perez", response.Apellido);
+        Assert.AreEqual("admin@gmail.com", response.Email);
+        Assert.AreEqual("Administrativo", response.Rol);
+    }
 }
