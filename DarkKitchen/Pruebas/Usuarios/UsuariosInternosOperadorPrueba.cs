@@ -124,4 +124,13 @@ public class UsuariosInternosOperadorPrueba
         Assert.AreEqual("admin@gmail.com", response.Email);
         Assert.AreEqual("Administrativo", response.Rol);
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void MapeoAResponseDTO_UsuarioNull_LanzaExcepcionControlada()
+    {
+        Usuario usuario = null!;
+
+        usuario.MapeoAResponseDTO();
+    }
 }

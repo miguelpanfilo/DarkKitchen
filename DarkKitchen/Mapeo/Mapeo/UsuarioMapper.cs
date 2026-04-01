@@ -27,4 +27,16 @@ public static class UsuarioMapper
 
         return rolEnum;
     }
+
+    public static UsuarioResponse MapeoAResponseDTO(this Usuario? usuario)
+    {
+        return new UsuarioResponse
+        {
+            Id = usuario.Id,
+            Nombre = usuario.Nombre,
+            Apellido = usuario.Apellido,
+            Email = usuario.Email.ToString(),
+            Rol = usuario.Rol.ToString()
+        };
+    }
 }
