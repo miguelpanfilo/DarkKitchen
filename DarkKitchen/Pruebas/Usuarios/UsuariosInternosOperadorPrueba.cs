@@ -4,6 +4,7 @@ using Dominio;
 using Dominio.Excepciones;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
+using Mapeo;
 using Moq;
 
 namespace Pruebas.Usuarios;
