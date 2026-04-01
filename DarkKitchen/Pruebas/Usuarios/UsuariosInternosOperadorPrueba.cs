@@ -82,6 +82,39 @@ public class UsuariosInternosOperadorPrueba
     }
 
     [TestMethod]
+    public void CrearUsuarioInterno_TelefonoInvalido_NoLlamaAdd()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        validadorTelefonoMock
+            .Setup(v => v.EsValido("123"))
+            .Returns(false);
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        var request = new CrearUsuarioInternoRequest
+        {
+            Nombre = "Juan",
+            Apellido = "Perez",
+            Email = "admin@gmail.com",
+            Telefono = "123",
+            Clave = "PasswordSeguraee3!",
+            Rol = "Administrativo"
+        };
+
+        try
+        {
+            service.CrearUsuarioInterno(request);
+        }
+        catch (UsuarioExcepcion)
+        {
+        }
+
+        repoMock.Verify(r => r.Add(It.IsAny<Usuario>()), Times.Never);
+    }
+
+    [TestMethod]
     public void CrearUsuarioInterno_DatosValidos_LlamaAddUnaVez()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
