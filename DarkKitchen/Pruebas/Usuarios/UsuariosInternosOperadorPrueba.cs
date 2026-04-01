@@ -82,6 +82,36 @@ public class UsuariosInternosOperadorPrueba
     }
 
     [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void CrearUsuarioInterno_EmailYaRegistrado_LanzaExcepcion()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        validadorTelefonoMock
+            .Setup(v => v.EsValido("099123456"))
+            .Returns(true);
+
+        repoMock
+            .Setup(r => r.ExisteEmail("admin@gmail.com"))
+            .Returns(true);
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        var request = new CrearUsuarioInternoRequest
+        {
+            Nombre = "Juan",
+            Apellido = "Perez",
+            Email = "admin@gmail.com",
+            Telefono = "099123456",
+            Clave = "PasswordSeguraee3!",
+            Rol = "Administrativo"
+        };
+
+        service.CrearUsuarioInterno(request);
+    }
+
+    [TestMethod]
     public void MapeoDTOAUserInterno_DatosValidos_MapeaCorrectamente()
     {
         var request = new CrearUsuarioInternoRequest
