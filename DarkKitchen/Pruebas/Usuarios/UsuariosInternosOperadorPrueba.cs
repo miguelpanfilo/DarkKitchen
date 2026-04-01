@@ -1,6 +1,7 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
+using Dominio.Excepciones;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
 using Moq;
@@ -51,5 +52,31 @@ public class UsuariosInternosOperadorPrueba
         Assert.AreEqual("Perez", resultado.Apellido);
         Assert.AreEqual("admin@gmail.com", resultado.Email);
         Assert.AreEqual("Administrativo", resultado.Rol);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void CrearUsuarioInterno_TelefonoInvalido_LanzaExcepcion()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        validadorTelefonoMock
+            .Setup(v => v.EsValido("123"))
+            .Returns(false);
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        var request = new CrearUsuarioInternoRequest
+        {
+            Nombre = "Juan",
+            Apellido = "Perez",
+            Email = "admin@gmail.com",
+            Telefono = "123",
+            Clave = "PasswordSeguraee3!",
+            Rol = "Administrativo"
+        };
+
+        service.CrearUsuarioInterno(request);
     }
 }
