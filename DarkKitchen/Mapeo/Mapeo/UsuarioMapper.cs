@@ -28,8 +28,13 @@ public static class UsuarioMapper
         return rolEnum;
     }
 
-    public static UsuarioResponse MapeoAResponseDTO(this Usuario? usuario)
+    public static UsuarioResponse MapeoAResponseDTO(this Usuario usuario)
     {
+        if (usuario == null)
+        {
+            throw new UsuarioExcepcion("El usuario no puede ser null");
+        }
+
         return new UsuarioResponse
         {
             Id = usuario.Id,
