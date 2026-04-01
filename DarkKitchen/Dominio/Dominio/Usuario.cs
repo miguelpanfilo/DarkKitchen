@@ -15,9 +15,9 @@ public class Usuario
     public static Usuario CrearCliente(string nombre, string apellido, string email, string telefono, string clave)
     {
         var emailValido = Email.Crear(email);
-        var claveObj = Clave.Crear(clave);
+        var claveHasheada = Clave.Crear(clave);
 
-        return new Usuario(nombre, apellido, emailValido, telefono, claveObj, RolUsuario.Cliente);
+        return new Usuario(nombre, apellido, emailValido, telefono, claveHasheada, RolUsuario.Cliente);
     }
 
     private Usuario(string nombre, string apellido, Email email, string telefono, Clave clave, RolUsuario rol)
