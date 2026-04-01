@@ -1,11 +1,13 @@
 using AlmacenamientoAbstracciones;
+using Contratos;
 using Dominio;
+using LogicaDeNegocio;
 using Moq;
 
 namespace Pruebas.InicioSesion;
 
 [TestClass]
-public class AuthServiceTests
+public class ServicioInicioSesionTests
 {
     [TestMethod]
     public void Login_CredencialesValidas_RetornaSesion()
@@ -30,7 +32,10 @@ public class AuthServiceTests
             .Setup(r => r.Add(It.IsAny<Sesion>()))
             .Returns((Sesion s) => s);
 
-        var service = new AuthService(repoUsuarioMock.Object, repoSesionMock.Object);
+        var service = new ServicioInicioSesion(
+            repoUsuarioMock.Object,
+            repoSesionMock.Object
+        );
 
         var request = new LoginRequest
         {

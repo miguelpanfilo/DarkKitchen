@@ -28,4 +28,11 @@ public class RepositorioUsuario : IRepositorioUsuario
 
         return _usuarios.Any(u => u.Email.Igual(emailBuscado));
     }
+
+    public Usuario? ObtenerPorEmail(string email)
+    {
+        var emailBuscado = Email.Crear(email);
+
+        return _usuarios.FirstOrDefault(u => u.Email.Igual(emailBuscado));
+    }
 }
