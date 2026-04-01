@@ -51,7 +51,7 @@ public class UsuarioServiceTests
     {
         var repositorioUsuario = new RepositorioUsuario();
 
-        var usuario = Usuario.Crear(
+        var usuario = Usuario.CrearCliente(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
@@ -71,7 +71,7 @@ public class UsuarioServiceTests
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void RegistrarCliente_SinNombre_LanzaExcepcion()
     {
-        var usuario = Usuario.Crear(
+        var usuario = Usuario.CrearCliente(
             string.Empty,
             "Lopez",
             "miguel@gmail.com",
@@ -82,7 +82,7 @@ public class UsuarioServiceTests
     [TestMethod]
     public void CrearUsuario_NombreMinimoValido_NoLanzaExcepcion()
     {
-        var usuario = Usuario.Crear(
+        var usuario = Usuario.CrearCliente(
             "M",
             "Lopez",
             "miguel@gmail.com",
@@ -97,7 +97,7 @@ public class UsuarioServiceTests
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void CrearUsuario_NombreNulo_LanzaExcepcion()
     {
-        Usuario.Crear(
+        Usuario.CrearCliente(
             null!,
             "Lopez",
             "miguel@gmail.com",
@@ -110,7 +110,7 @@ public class UsuarioServiceTests
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void RegistrarCliente_SinApellido_LanzaExcepcion()
     {
-        var usuario = Usuario.Crear(
+        var usuario = Usuario.CrearCliente(
             "Miguel",
             string.Empty,
             "miguel@gmail.com",
@@ -125,7 +125,7 @@ public class UsuarioServiceTests
         var largoIncorrectoDeApellido = 26;
         var apellidoLargo = new string('a', largoIncorrectoDeApellido);
 
-        var usuario = Usuario.Crear(
+        var usuario = Usuario.CrearCliente(
             "Miguel",
             apellidoLargo,
             "miguel@gmail.com",
@@ -140,7 +140,7 @@ public class UsuarioServiceTests
         var largoCortoDeApellido = 2;
         var apellidoCorto = new string('a', largoCortoDeApellido);
 
-        var usuario = Usuario.Crear(
+        var usuario = Usuario.CrearCliente(
             "Miguel",
             apellidoCorto,
             "miguel@gmail.com",
@@ -153,7 +153,7 @@ public class UsuarioServiceTests
     {
         var apellido = new string('a', 25);
 
-        var usuario = Usuario.Crear(
+        var usuario = Usuario.CrearCliente(
             "Miguel",
             apellido,
             "miguel@gmail.com",
@@ -167,7 +167,7 @@ public class UsuarioServiceTests
     [TestMethod]
     public void CrearUsuario_ApellidoMinimoValido_NoLanzaExcepcion()
     {
-        var usuario = Usuario.Crear(
+        var usuario = Usuario.CrearCliente(
             "Miguel",
             "Lop",
             "miguel@gmail.com",
@@ -182,7 +182,7 @@ public class UsuarioServiceTests
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void RegistrarCliente_EmailVacio_LanzaExcepcion()
     {
-        var usuario = Usuario.Crear(
+        var usuario = Usuario.CrearCliente(
             "Miguel",
             "Lopez",
             string.Empty,
@@ -195,7 +195,7 @@ public class UsuarioServiceTests
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void RegistrarCliente_EmailSinArroba_LanzaExcepcion()
     {
-        var usuario = Usuario.Crear(
+        var usuario = Usuario.CrearCliente(
             "Miguel",
             "Lopez",
             "miguelgmail.com",
@@ -208,7 +208,7 @@ public class UsuarioServiceTests
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void RegistrarCliente_EmailSinDominioValido_LanzaExcepcion()
     {
-        var usuario = Usuario.Crear(
+        var usuario = Usuario.CrearCliente(
             "Miguel",
             "Lopez",
             "miguel@gmail",
@@ -311,7 +311,7 @@ public class UsuarioServiceTests
     {
         var repo = new RepositorioUsuario();
 
-        var usuario = Usuario.Crear(
+        var usuario = Usuario.CrearCliente(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
@@ -361,7 +361,7 @@ public class UsuarioServiceTests
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void CrearUsuario_EmailNulo_LanzaExcepcion()
     {
-        Usuario.Crear(
+        Usuario.CrearCliente(
             "Miguel",
             "Lopez",
             null!,
@@ -375,7 +375,7 @@ public class UsuarioServiceTests
     {
         var repo = new RepositorioUsuario();
 
-        var usuario1 = Usuario.Crear(
+        var usuario1 = Usuario.CrearCliente(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
@@ -383,7 +383,7 @@ public class UsuarioServiceTests
             "Password@2Ok6Abc"
         );
 
-        var usuario2 = Usuario.Crear(
+        var usuario2 = Usuario.CrearCliente(
             "Juan",
             "Perez",
             "juan@gmail.com",
@@ -406,7 +406,7 @@ public class UsuarioServiceTests
     {
         var repo = new RepositorioUsuario();
 
-        var usuario = Usuario.Crear(
+        var usuario = Usuario.CrearCliente(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
@@ -422,7 +422,7 @@ public class UsuarioServiceTests
     [TestMethod]
     public void CrearUsuario_EmailSeNormaliza_Correctamente()
     {
-        var usuario = Usuario.Crear(
+        var usuario = Usuario.CrearCliente(
             "Miguel",
             "Lopez",
             "  MIGUEL@gmail.com  ",
@@ -473,7 +473,7 @@ public class UsuarioServiceTests
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void CrearUsuario_ClaveVacia_LanzaExcepcion()
     {
-        Usuario.Crear(
+        Usuario.CrearCliente(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
@@ -489,7 +489,7 @@ public class UsuarioServiceTests
         var palabraDeLargo13 = 13;
         var claveMenor15Caracteres = new string('a', palabraDeLargo13);
 
-        Usuario.Crear(
+        Usuario.CrearCliente(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
@@ -504,7 +504,7 @@ public class UsuarioServiceTests
         var palabraDeLargo26 = 26;
         var claveMayorA25Caracteres = new string('a', palabraDeLargo26);
 
-        Usuario.Crear(
+        Usuario.CrearCliente(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
@@ -516,7 +516,7 @@ public class UsuarioServiceTests
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void CrearUsuario_ClaveSinMayuscula_LanzaExcepcion()
     {
-        Usuario.Crear(
+        Usuario.CrearCliente(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
@@ -528,7 +528,7 @@ public class UsuarioServiceTests
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void CrearUsuario_ClaveSinMinuscula_LanzaExcepcion()
     {
-        Usuario.Crear(
+        Usuario.CrearCliente(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
@@ -540,7 +540,7 @@ public class UsuarioServiceTests
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void CrearUsuario_ClaveSinNumero_LanzaExcepcion()
     {
-        Usuario.Crear(
+        Usuario.CrearCliente(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
@@ -552,7 +552,7 @@ public class UsuarioServiceTests
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void CrearUsuario_ClaveSinSimbolo_LanzaExcepcion()
     {
-        Usuario.Crear(
+        Usuario.CrearCliente(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
@@ -564,7 +564,7 @@ public class UsuarioServiceTests
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void CrearUsuario_ClaveConSecuenciaDeNumeros_LanzaExcepcion()
     {
-        Usuario.Crear(
+        Usuario.CrearCliente(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
@@ -575,7 +575,7 @@ public class UsuarioServiceTests
     [TestMethod]
     public void CrearUsuario_ClaveDe15Caracteres_Valida_NoLanzaExcepcion()
     {
-        var usuario = Usuario.Crear(
+        var usuario = Usuario.CrearCliente(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
@@ -589,7 +589,7 @@ public class UsuarioServiceTests
     [TestMethod]
     public void CrearUsuario_ClaveDe25Caracteres_Valida_NoLanzaExcepcion()
     {
-        var usuario = Usuario.Crear(
+        var usuario = Usuario.CrearCliente(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",

@@ -10,7 +10,7 @@ public class Usuario
     public Email Email { get; private set; }
     public string Telefono { get; private set; } = string.Empty;
     public Clave Clave { get; private set; }
-    public static Usuario Crear(string nombre, string apellido, string email, string telefono, string clave)
+    public static Usuario CrearCliente(string nombre, string apellido, string email, string telefono, string clave)
     {
         var emailValido = Email.Crear(email);
         var claveObj = Clave.Crear(clave);

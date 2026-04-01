@@ -24,7 +24,7 @@ public class UsuarioService
             throw new UsuarioExcepcion("El teléfono no es válido");
         }
 
-      var usuario = Usuario.Crear(
+      var usuario = Usuario.CrearCliente(
             request.Nombre,
             request.Apellido,
             request.Email,
