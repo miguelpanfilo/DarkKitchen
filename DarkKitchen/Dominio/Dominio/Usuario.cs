@@ -71,7 +71,9 @@ public class Usuario
         string clave,
         RolUsuario rol)
     {
-        if (rol != RolUsuario.Preparador && rol != RolUsuario.Administrativo)
+        var esRolValido = rol == RolUsuario.Preparador || rol == RolUsuario.Administrativo;
+
+        if (!esRolValido)
         {
             throw new UsuarioExcepcion("El rol interno no es válido");
         }
