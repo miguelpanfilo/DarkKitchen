@@ -289,4 +289,18 @@ public class UsuariosInternosOperadorPrueba
 
         request.MapeoDTOAUserInterno();
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void CrearInterno_RolCliente_LanzaExcepcion()
+    {
+        Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Cliente
+        );
+    }
 }
