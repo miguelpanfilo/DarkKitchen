@@ -8,10 +8,7 @@ public static class UsuarioMapper
 {
     public static Usuario MapeoDTOAUserInterno(this CrearUsuarioInternoRequest request)
     {
-        if (!Enum.TryParse<RolUsuario>(request.Rol, true, out var rolEnum))
-        {
-            throw new UsuarioExcepcion("El rol interno no es válido");
-        }
+        var rolEnum = ParsearRol(request.Rol);
 
         return Usuario.CrearInterno(
             request.Nombre,
@@ -21,6 +18,16 @@ public static class UsuarioMapper
             request.Clave,
             rolEnum
         );
+    }
+
+    private static RolUsuario ParsearRol(string rol)
+    {
+        if (!Enum.TryParse<RolUsuario>(rol, true, out var rolEnum))
+        {
+            throw new UsuarioExcepcion("El rol interno no es válido");
+        }
+
+        return rolEnum;
     }
 
     public static UsuarioResponse MapeoAResponseDTO(this Usuario usuario)
