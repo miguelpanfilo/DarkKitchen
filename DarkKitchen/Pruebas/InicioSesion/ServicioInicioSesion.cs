@@ -78,4 +78,40 @@ public class ServicioInicioSesionTests
         Assert.AreEqual("Credenciales inválidas", ex.Message);
         repoSesionMock.Verify(r => r.Add(It.IsAny<Sesion>()), Times.Never);
     }
+
+    [TestMethod]
+    public void Login_ClaveIncorrecta_LanzaExcepcion()
+    {
+        var repoUsuarioMock = new Mock<IRepositorioUsuario>();
+        var repoSesionMock = new Mock<IRepositorioSesion>();
+
+        var usuario = Usuario.CrearCliente(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            "099123456",
+            "Password@2Ok6Abc"
+        );
+        usuario.Id = 1;
+
+        repoUsuarioMock
+            .Setup(r => r.ObtenerPorEmail("miguel@gmail.com"))
+            .Returns(usuario);
+
+        var servicio = new ServicioInicioSesion(
+            repoUsuarioMock.Object,
+            repoSesionMock.Object
+        );
+
+        var request = new LoginRequest
+        {
+            Email = "miguel@gmail.com",
+            Clave = "OtraClave@1aaaaaaaaaa"
+        };
+
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() => servicio.Login(request));
+
+        Assert.AreEqual("Credenciales inválidas", ex.Message);
+        repoSesionMock.Verify(r => r.Add(It.IsAny<Sesion>()), Times.Never);
+    }
 }
