@@ -86,22 +86,37 @@ public class UsuarioService
         };
     }
 
-    public UsuarioResponse ModificarNombreUsuarioInterno(int idUsuarioAModificar, int idUsuarioLogueado, ModificarUsuarioNombreRequest request)
+    public UsuarioResponse ModificarNombreUsuarioInterno(
+        int idUsuarioAModificar,
+        int idUsuarioLogueado,
+        ModificarUsuarioNombreRequest request)
     {
-        var usuario = _repo.FindById(idUsuarioAModificar);
+        ValidarNoAutoModificacion(idUsuarioAModificar, idUsuarioLogueado);
+
+        var usuario = ObtenerUsuarioExistente(idUsuarioAModificar);
+
+        usuario.ModificarNombre(request.Nombre);
+
+        return usuario.MapeoAResponseDTO();
+    }
+
+    private void ValidarNoAutoModificacion(int idUsuarioAModificar, int idUsuarioLogueado)
+    {
+        if (idUsuarioAModificar == idUsuarioLogueado)
+        {
+            throw new UsuarioExcepcion("Un usuario no puede modificarse a sí mismo");
+        }
+    }
+
+    private Usuario ObtenerUsuarioExistente(int id)
+    {
+        var usuario = _repo.FindById(id);
 
         if (usuario == null)
         {
             throw new UsuarioExcepcion("El usuario no existe");
         }
 
-        if (idUsuarioAModificar == idUsuarioLogueado)
-        {
-            throw new UsuarioExcepcion("Un usuario no puede modificarse a sí mismo");
-        }
-
-        usuario.ModificarNombre(request.Nombre);
-
-        return usuario.MapeoAResponseDTO();
+        return usuario;
     }
 }
