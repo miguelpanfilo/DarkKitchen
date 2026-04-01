@@ -270,4 +270,65 @@ public class ServicioInicioSesionTests
 
         Assert.AreNotEqual(Guid.Empty, response.SessionId);
     }
+
+    [TestMethod]
+    public void Login_ClaveIncorrecta_NoGuardaSesion()
+    {
+        var repoUsuarioMock = new Mock<IRepositorioUsuario>();
+        var repoSesionMock = new Mock<IRepositorioSesion>();
+
+        var usuario = Usuario.CrearCliente(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            "099123456",
+            "Password@2Ok6Abc"
+        );
+        usuario.Id = 1;
+
+        repoUsuarioMock
+            .Setup(r => r.ObtenerPorEmail("miguel@gmail.com"))
+            .Returns(usuario);
+
+        var servicio = new ServicioInicioSesion(
+            repoUsuarioMock.Object,
+            repoSesionMock.Object
+        );
+
+        var request = new LoginRequest
+        {
+            Email = "miguel@gmail.com",
+            Clave = "Incorrecta@123456"
+        };
+
+        Assert.ThrowsException<UsuarioExcepcion>(() => servicio.Login(request));
+
+        repoSesionMock.Verify(r => r.Add(It.IsAny<Sesion>()), Times.Never);
+    }
+
+    [TestMethod]
+    public void Login_EmailNoExiste_NoGuardaSesion()
+    {
+        var repoUsuarioMock = new Mock<IRepositorioUsuario>();
+        var repoSesionMock = new Mock<IRepositorioSesion>();
+
+        repoUsuarioMock
+            .Setup(r => r.ObtenerPorEmail("miguel@gmail.com"))
+            .Returns((Usuario?)null);
+
+        var servicio = new ServicioInicioSesion(
+            repoUsuarioMock.Object,
+            repoSesionMock.Object
+        );
+
+        var request = new LoginRequest
+        {
+            Email = "miguel@gmail.com",
+            Clave = "Password@2Ok6Abc"
+        };
+
+        Assert.ThrowsException<UsuarioExcepcion>(() => servicio.Login(request));
+
+        repoSesionMock.Verify(r => r.Add(It.IsAny<Sesion>()), Times.Never);
+    }
 }

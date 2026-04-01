@@ -20,28 +20,28 @@ public class ServicioInicioSesion
 
     public LoginResponse Login(LoginRequest request)
     {
-        var usuario = _repoUsuario.ObtenerPorEmail(request.Email);
+        var usuarioMailIngresado = _repoUsuario.ObtenerPorEmail(request.Email);
 
-        if (usuario == null)
+        if (usuarioMailIngresado == null)
         {
             throw new UsuarioExcepcion("Credenciales inválidas");
         }
 
-        if (!usuario.Clave.Verificar(request.Clave))
+        if (!usuarioMailIngresado.Clave.Verificar(request.Clave))
         {
             throw new UsuarioExcepcion("Credenciales inválidas");
         }
 
         var expiracion = DateTime.Now.AddHours(2);
-        var sesion = new Sesion(usuario.Id, expiracion);
+        var sesion = new Sesion(usuarioMailIngresado.Id, expiracion);
 
         var sesionGuardada = _repoSesion.Add(sesion);
 
         return new LoginResponse
         {
             SessionId = sesionGuardada.SessionId,
-            UsuarioId = usuario.Id,
-            Rol = usuario.Rol.ToString(),
+            UsuarioId = usuarioMailIngresado.Id,
+            Rol = usuarioMailIngresado.Rol.ToString(),
             Expiracion = sesionGuardada.Expiracion
         };
     }
