@@ -40,7 +40,7 @@ public class UsuariosInternosOperadorPrueba
             Apellido = "Perez",
             Email = "admin@gmail.com",
             Telefono = "099123456",
-            Clave = "PasswordSegura123!",
+            Clave = "PasswordSeguraee3!",
             Rol = "Administrativo"
         };
 

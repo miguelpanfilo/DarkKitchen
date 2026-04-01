@@ -46,4 +46,42 @@ public class UsuarioService
             Email = usuarioGuardado.Email.ToString()
         };
     }
+
+    public UsuarioResponse CrearUsuarioInterno(CrearUsuarioInternoRequest request)
+    {
+        if (!_validadorTelefono.EsValido(request.Telefono))
+        {
+            throw new UsuarioExcepcion("El teléfono no es válido");
+        }
+
+        if (_repo.ExisteEmail(request.Email))
+        {
+            throw new UsuarioExcepcion("El email ya está registrado");
+        }
+
+        if (!Enum.TryParse<RolUsuario>(request.Rol, true, out var rol))
+        {
+            throw new UsuarioExcepcion("El rol interno no es válido");
+        }
+
+        var usuario = Usuario.CrearInterno(
+            request.Nombre,
+            request.Apellido,
+            request.Email,
+            request.Telefono,
+            request.Clave,
+            rol
+        );
+
+        var usuarioGuardado = _repo.Add(usuario);
+
+        return new UsuarioResponse
+        {
+            Id = usuarioGuardado.Id,
+            Nombre = usuarioGuardado.Nombre,
+            Apellido = usuarioGuardado.Apellido,
+            Email = usuarioGuardado.Email.ToString(),
+            Rol = usuarioGuardado.Rol.ToString()
+        };
+    }
 }

@@ -62,4 +62,23 @@ public class Usuario
             throw new UsuarioExcepcion("El teléfono no puede estar vacío");
         }
     }
+
+    public static Usuario CrearInterno(
+        string nombre,
+        string apellido,
+        string email,
+        string telefono,
+        string clave,
+        RolUsuario rol)
+    {
+        if (rol != RolUsuario.Preparador && rol != RolUsuario.Administrativo)
+        {
+            throw new UsuarioExcepcion("El rol interno no es válido");
+        }
+
+        var emailValido = Email.Crear(email);
+        var claveValida = Clave.Crear(clave);
+
+        return new Usuario(nombre, apellido, emailValido, telefono, claveValida, rol);
+    }
 }
