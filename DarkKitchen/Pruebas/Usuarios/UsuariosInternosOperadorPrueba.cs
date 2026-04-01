@@ -386,9 +386,48 @@ public class UsuariosInternosOperadorPrueba
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "",
+            string.Empty,
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
+    }
+
+    [TestMethod]
+    public void CrearUsuarioInterno_DatosValidos_LlamaExisteEmailUnaVez()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        validadorTelefonoMock
+            .Setup(v => v.EsValido("099123456"))
+            .Returns(true);
+
+        repoMock
+            .Setup(r => r.ExisteEmail("admin@gmail.com"))
+            .Returns(false);
+
+        repoMock
+            .Setup(r => r.Add(It.IsAny<Usuario>()))
+            .Returns((Usuario u) =>
+            {
+                u.Id = 10;
+                return u;
+            });
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        var request = new CrearUsuarioInternoRequest
+        {
+            Nombre = "Juan",
+            Apellido = "Perez",
+            Email = "admin@gmail.com",
+            Telefono = "099123456",
+            Clave = "PasswordSeguraee3!",
+            Rol = "Administrativo"
+        };
+
+        service.CrearUsuarioInterno(request);
+
+        repoMock.Verify(r => r.ExisteEmail("admin@gmail.com"), Times.Once);
     }
 }
