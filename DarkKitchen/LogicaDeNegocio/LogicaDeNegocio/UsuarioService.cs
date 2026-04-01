@@ -95,6 +95,11 @@ public class UsuarioService
             throw new UsuarioExcepcion("El usuario no existe");
         }
 
+        if (idUsuarioAModificar == idUsuarioLogueado)
+        {
+            throw new UsuarioExcepcion("Un usuario no puede modificarse a sí mismo");
+        }
+
         usuario.ModificarNombre(request.Nombre);
 
         return usuario.MapeoAResponseDTO();
