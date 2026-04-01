@@ -33,12 +33,12 @@ public class ModificarUsuarioInternoPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var request = new ModificarUsuarioNombreRequest
+        var request = new ModificarUsuarioRequest
         {
             Nombre = "Carlos"
         };
 
-        var resultado = service.ModificarNombreUsuarioInterno(5, 99, request);
+        var resultado = service.ModificarUsuarioInterno(5, 99, request);
 
         Assert.AreEqual(5, resultado.Id);
         Assert.AreEqual("Carlos", resultado.Nombre);
@@ -70,12 +70,12 @@ public class ModificarUsuarioInternoPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var request = new ModificarUsuarioNombreRequest
+        var request = new ModificarUsuarioRequest
         {
             Nombre = "Carlos"
         };
 
-        service.ModificarNombreUsuarioInterno(5, 5, request);
+        service.ModificarUsuarioInterno(5, 5, request);
     }
 
     [TestMethod]
@@ -100,13 +100,13 @@ public class ModificarUsuarioInternoPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var request = new ModificarUsuarioNombreApellidoRequest
+        var request = new ModificarUsuarioRequest()
         {
             Nombre = "Carlos",
             Apellido = "Gomez"
         };
 
-        var resultado = service.ModificarNombreYApellidoUsuarioInterno(5, 99, request);
+        var resultado = service.ModificarUsuarioInterno(5, 99, request);
 
         Assert.AreEqual(5, resultado.Id);
         Assert.AreEqual("Carlos", resultado.Nombre);

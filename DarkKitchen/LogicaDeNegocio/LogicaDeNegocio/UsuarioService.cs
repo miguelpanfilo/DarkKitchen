@@ -76,42 +76,43 @@ public class UsuarioService
 
         var usuarioGuardado = _repo.Add(usuario);
 
-        return new UsuarioResponse
-        {
-            Id = usuarioGuardado.Id,
-            Nombre = usuarioGuardado.Nombre,
-            Apellido = usuarioGuardado.Apellido,
-            Email = usuarioGuardado.Email.ToString(),
-            Rol = usuarioGuardado.Rol.ToString()
-        };
+        return usuarioGuardado.MapeoAResponseDTO();
     }
 
-    public UsuarioResponse ModificarNombreUsuarioInterno(
+    public UsuarioResponse ModificarUsuarioInterno(
         int idUsuarioAModificar,
         int idUsuarioLogueado,
-        ModificarUsuarioNombreRequest request)
+        ModificarUsuarioRequest request)
     {
         ValidarNoAutoModificacion(idUsuarioAModificar, idUsuarioLogueado);
 
         var usuario = ObtenerUsuarioExistente(idUsuarioAModificar);
 
-        usuario.ModificarNombre(request.Nombre);
+        ModificarDatosDelUsuario(usuario, request);
 
         return usuario.MapeoAResponseDTO();
     }
 
-    public UsuarioResponse ModificarNombreYApellidoUsuarioInterno(
-        int idUsuarioAModificar,
-        int idUsuarioLogueado,
-        ModificarUsuarioNombreApellidoRequest request)
+    private void ModificarDatosDelUsuario(Usuario usuario, ModificarUsuarioRequest request)
     {
-        ValidarNoAutoModificacion(idUsuarioAModificar, idUsuarioLogueado);
+        var nombreActualizado = ObtenerNombreActualizado(request, usuario);
+        var apellidoActualizado = ObtenerApellidoActualizado(request, usuario);
 
-        var usuario = ObtenerUsuarioExistente(idUsuarioAModificar);
+        usuario.ModificarNombreYApellido(nombreActualizado, apellidoActualizado);
+    }
 
-        usuario.ModificarNombreYApellido(request.Nombre, request.Apellido);
+    private static string ObtenerNombreActualizado(ModificarUsuarioRequest request, Usuario usuario)
+    {
+        return string.IsNullOrWhiteSpace(request.Nombre)
+            ? usuario.Nombre
+            : request.Nombre;
+    }
 
-        return usuario.MapeoAResponseDTO();
+    private static string ObtenerApellidoActualizado(ModificarUsuarioRequest request, Usuario usuario)
+    {
+        return string.IsNullOrWhiteSpace(request.Apellido)
+            ? usuario.Apellido
+            : request.Apellido;
     }
 
     private void ValidarNoAutoModificacion(int idUsuarioAModificar, int idUsuarioLogueado)
