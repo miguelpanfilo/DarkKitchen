@@ -303,4 +303,18 @@ public class UsuariosInternosOperadorPrueba
             RolUsuario.Cliente
         );
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void CrearInterno_NombreVacio_LanzaExcepcion()
+    {
+        Usuario.CrearInterno(
+            string.Empty,
+            "Perez",
+            "admin@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+    }
 }
