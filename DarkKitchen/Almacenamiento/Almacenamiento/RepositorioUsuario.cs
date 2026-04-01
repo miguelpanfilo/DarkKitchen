@@ -35,4 +35,9 @@ public class RepositorioUsuario : IRepositorioUsuario
 
         return _usuarios.FirstOrDefault(u => u.Email.Igual(emailBuscado));
     }
+
+    public Usuario? FindById(int id)
+    {
+        return _usuarios.FirstOrDefault(u => u.Id == id);
+    }
 }

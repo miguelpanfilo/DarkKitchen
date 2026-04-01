@@ -8,4 +8,5 @@ public interface IRepositorioUsuario
     List<Usuario> GetAll();
     bool ExisteEmail(string email);
     Usuario? ObtenerPorEmail(string email);
+    Usuario? FindById(int id);
 }

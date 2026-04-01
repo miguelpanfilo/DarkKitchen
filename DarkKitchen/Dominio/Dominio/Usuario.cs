@@ -83,4 +83,10 @@ public class Usuario
 
         return new Usuario(nombre, apellido, emailValido, telefono, claveValida, rol);
     }
+
+    public void ModificarNombre(string nombre)
+    {
+        ValidarNombre(nombre);
+        Nombre = nombre.Trim();
+    }
 }

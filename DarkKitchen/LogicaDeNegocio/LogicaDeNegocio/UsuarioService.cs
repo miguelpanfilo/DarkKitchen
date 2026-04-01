@@ -3,6 +3,7 @@ using Contratos;
 using Dominio;
 using Dominio.Excepciones;
 using LogicaDeNegocioAbstracciones;
+using Mapeo;
 
 namespace LogicaDeNegocio;
 
@@ -83,5 +84,19 @@ public class UsuarioService
             Email = usuarioGuardado.Email.ToString(),
             Rol = usuarioGuardado.Rol.ToString()
         };
+    }
+
+    public UsuarioResponse ModificarNombreUsuarioInterno(int idUsuarioAModificar, int idUsuarioLogueado, ModificarUsuarioNombreRequest request)
+    {
+        var usuario = _repo.FindById(idUsuarioAModificar);
+
+        if (usuario == null)
+        {
+            throw new UsuarioExcepcion("El usuario no existe");
+        }
+
+        usuario.ModificarNombre(request.Nombre);
+
+        return usuario.MapeoAResponseDTO();
     }
 }
