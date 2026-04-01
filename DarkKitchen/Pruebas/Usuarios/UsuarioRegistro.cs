@@ -599,4 +599,18 @@ public class UsuarioServiceTests
 
         Assert.IsNotNull(usuario);
     }
+
+    [TestMethod]
+    public void CrearCliente_DatosValidos_AsignaRolCliente()
+    {
+        var usuario = Usuario.CrearCliente(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            "099123456",
+            "ClaveSegura#123"
+        );
+
+        Assert.AreEqual(RolUsuario.Cliente, usuario.Rol);
+    }
 }
