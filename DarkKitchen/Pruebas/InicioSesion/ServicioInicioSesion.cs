@@ -444,4 +444,55 @@ public class ServicioInicioSesionTests
         Assert.IsNotNull(response);
         Assert.AreEqual(1, response.UsuarioId);
     }
+
+    [TestMethod]
+    public void Login_CredencialesValidas_GuardaSesionConLaMismaExpiracionQueLaRespuesta()
+    {
+        var repoUsuarioMock = new Mock<IRepositorioUsuario>();
+        var repoSesionMock = new Mock<IRepositorioSesion>();
+        var relojMock = new Mock<IReloj>();
+
+        var fechaFija = new DateTime(2026, 1, 1, 10, 0, 0);
+
+        relojMock
+            .Setup(r => r.Ahora())
+            .Returns(fechaFija);
+
+        var usuario = Usuario.CrearCliente(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            "099123456",
+            "Password@2Ok6Abc"
+        );
+        usuario.Id = 1;
+
+        Sesion? sesionGuardada = null;
+
+        repoUsuarioMock
+            .Setup(r => r.ObtenerPorEmail("miguel@gmail.com"))
+            .Returns(usuario);
+
+        repoSesionMock
+            .Setup(r => r.Add(It.IsAny<Sesion>()))
+            .Callback<Sesion>(s => sesionGuardada = s)
+            .Returns((Sesion s) => s);
+
+        var servicio = new ServicioInicioSesion(
+            repoUsuarioMock.Object,
+            repoSesionMock.Object,
+            relojMock.Object
+        );
+
+        var request = new LoginRequest
+        {
+            Email = "miguel@gmail.com",
+            Clave = "Password@2Ok6Abc"
+        };
+
+        var response = servicio.Login(request);
+
+        Assert.IsNotNull(sesionGuardada);
+        Assert.AreEqual(sesionGuardada.Expiracion, response.Expiracion);
+    }
 }
