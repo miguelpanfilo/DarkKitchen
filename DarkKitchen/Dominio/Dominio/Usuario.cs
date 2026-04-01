@@ -34,7 +34,7 @@ public class Usuario
         Rol = rol;
     }
 
-    private void ValidarNombre(string nombre)
+    private static void ValidarNombre(string nombre)
     {
         if (string.IsNullOrWhiteSpace(nombre))
         {
