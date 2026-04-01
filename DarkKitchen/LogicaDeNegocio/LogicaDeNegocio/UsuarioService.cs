@@ -20,12 +20,12 @@ public class UsuarioService
 
     public RegistrarClienteResponseDTO RegistrarCliente(RegistrarClienteRequest request)
     {
-        if (!_validadorTelefono.EsValido(request.Telefono))
+        if(!_validadorTelefono.EsValido(request.Telefono))
         {
             throw new UsuarioExcepcion("El teléfono no es válido");
         }
 
-      var usuario = Usuario.CrearCliente(
+        var usuario = Usuario.CrearCliente(
             request.Nombre,
             request.Apellido,
             request.Email,
@@ -33,7 +33,7 @@ public class UsuarioService
             request.Clave
         );
 
-        if (_repo.ExisteEmail(usuario.Email.ToString()))
+        if(_repo.ExisteEmail(usuario.Email.ToString()))
         {
             throw new UsuarioExcepcion("El email ya está registrado");
         }
@@ -50,17 +50,17 @@ public class UsuarioService
 
     public UsuarioResponse CrearUsuarioInterno(CrearUsuarioInternoRequest request)
     {
-        if (!_validadorTelefono.EsValido(request.Telefono))
+        if(!_validadorTelefono.EsValido(request.Telefono))
         {
             throw new UsuarioExcepcion("El teléfono no es válido");
         }
 
-        if (_repo.ExisteEmail(request.Email))
+        if(_repo.ExisteEmail(request.Email))
         {
             throw new UsuarioExcepcion("El email ya está registrado");
         }
 
-        if (!Enum.TryParse<RolUsuario>(request.Rol, true, out var rol))
+        if(!Enum.TryParse<RolUsuario>(request.Rol, true, out var rol))
         {
             throw new UsuarioExcepcion("El rol interno no es válido");
         }
@@ -117,7 +117,7 @@ public class UsuarioService
 
     private void ValidarNoAutoModificacion(int idUsuarioAModificar, int idUsuarioLogueado)
     {
-        if (idUsuarioAModificar == idUsuarioLogueado)
+        if(idUsuarioAModificar == idUsuarioLogueado)
         {
             throw new UsuarioExcepcion("Un usuario no puede modificarse a sí mismo");
         }
@@ -127,11 +127,23 @@ public class UsuarioService
     {
         var usuario = _repo.FindById(id);
 
-        if (usuario == null)
+        if(usuario == null)
         {
             throw new UsuarioExcepcion("El usuario no existe");
         }
 
         return usuario;
+    }
+
+    public void ModificarClaveUsuario(int idUsuario, ModificarClaveRequest request)
+    {
+        var usuario = ObtenerUsuarioExistente(idUsuario);
+
+        if (!usuario.VerificarClave(request.ClaveActual))
+        {
+            throw new UsuarioExcepcion("La clave actual no es correcta");
+        }
+
+        usuario.CambiarClave(Clave.Crear(request.ClaveNueva));
     }
 }

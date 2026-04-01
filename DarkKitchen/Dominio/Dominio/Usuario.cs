@@ -98,4 +98,14 @@ public class Usuario
         Nombre = nombre.Trim();
         Apellido = apellido.Trim();
     }
+
+    public bool VerificarClave(string clave)
+    {
+        return Clave.Verificar(clave);
+    }
+
+    public void CambiarClave(Clave nuevaClave)
+    {
+        Clave = nuevaClave;
+    }
 }
