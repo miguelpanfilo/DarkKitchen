@@ -184,6 +184,24 @@ public class UsuariosInternosOperadorPrueba
     }
 
     [TestMethod]
+    public void MapeoDTOAUserInterno_RolEnMinuscula_MapeaCorrectamente()
+    {
+        var request = new CrearUsuarioInternoRequest
+        {
+            Nombre = "Juan",
+            Apellido = "Perez",
+            Email = "admin@gmail.com",
+            Telefono = "099123456",
+            Clave = "PasswordSeguraee3!",
+            Rol = "administrativo"
+        };
+
+        var usuario = request.MapeoDTOAUserInterno();
+
+        Assert.AreEqual(RolUsuario.Administrativo, usuario.Rol);
+    }
+
+    [TestMethod]
     public void CrearUsuarioInterno_EmailYaRegistrado_NoLlamaAdd()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
@@ -206,7 +224,7 @@ public class UsuariosInternosOperadorPrueba
             Email = "admin@gmail.com",
             Telefono = "099123456",
             Clave = "PasswordSeguraee3!",
-            Rol = "Administrativo"
+            Rol = "AdmiNistrAtIvo"
         };
 
         try
