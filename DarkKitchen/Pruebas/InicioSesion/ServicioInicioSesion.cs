@@ -231,4 +231,43 @@ public class ServicioInicioSesionTests
 
         Assert.AreEqual(25, response.UsuarioId);
     }
+
+    [TestMethod]
+    public void Login_CredencialesValidas_GeneraSessionIdNoVacio()
+    {
+        var repoUsuarioMock = new Mock<IRepositorioUsuario>();
+        var repoSesionMock = new Mock<IRepositorioSesion>();
+
+        var usuario = Usuario.CrearCliente(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            "099123456",
+            "Password@2Ok6Abc"
+        );
+        usuario.Id = 1;
+
+        repoUsuarioMock
+            .Setup(r => r.ObtenerPorEmail("miguel@gmail.com"))
+            .Returns(usuario);
+
+        repoSesionMock
+            .Setup(r => r.Add(It.IsAny<Sesion>()))
+            .Returns((Sesion s) => s);
+
+        var servicio = new ServicioInicioSesion(
+            repoUsuarioMock.Object,
+            repoSesionMock.Object
+        );
+
+        var request = new LoginRequest
+        {
+            Email = "miguel@gmail.com",
+            Clave = "Password@2Ok6Abc"
+        };
+
+        var response = servicio.Login(request);
+
+        Assert.AreNotEqual(Guid.Empty, response.SessionId);
+    }
 }
