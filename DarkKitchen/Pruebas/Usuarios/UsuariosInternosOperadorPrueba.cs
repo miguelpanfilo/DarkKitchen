@@ -79,4 +79,25 @@ public class UsuariosInternosOperadorPrueba
 
         service.CrearUsuarioInterno(request);
     }
+
+    [TestMethod]
+    public void MapeoDTOAUserInterno_DatosValidos_MapeaCorrectamente()
+    {
+        var request = new CrearUsuarioInternoRequest
+        {
+            Nombre = "Juan",
+            Apellido = "Perez",
+            Email = "admin@gmail.com",
+            Telefono = "099123456",
+            Clave = "PasswordSeguraee3!",
+            Rol = "Administrativo"
+        };
+
+        var usuario = request.MapeoDTOAUserInterno();
+
+        Assert.AreEqual("Juan", usuario.Nombre);
+        Assert.AreEqual("Perez", usuario.Apellido);
+        Assert.AreEqual("admin@gmail.com", usuario.Email.ToString());
+        Assert.AreEqual(RolUsuario.Administrativo, usuario.Rol);
+    }
 }
