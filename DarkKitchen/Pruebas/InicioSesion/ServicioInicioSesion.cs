@@ -1,6 +1,7 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
+using Dominio.Excepciones;
 using LogicaDeNegocio;
 using Moq;
 
@@ -49,5 +50,32 @@ public class ServicioInicioSesionTests
         Assert.AreEqual(1, response.UsuarioId);
         Assert.AreEqual("Cliente", response.Rol);
         Assert.AreNotEqual(Guid.Empty, response.SessionId);
+    }
+
+    [TestMethod]
+    public void Login_EmailNoExiste_LanzaExcepcion()
+    {
+        var repoUsuarioMock = new Mock<IRepositorioUsuario>();
+        var repoSesionMock = new Mock<IRepositorioSesion>();
+
+        repoUsuarioMock
+            .Setup(r => r.ObtenerPorEmail("miguel@gmail.com"))
+            .Returns((Usuario?)null);
+
+        var servicio = new ServicioInicioSesion(
+            repoUsuarioMock.Object,
+            repoSesionMock.Object
+        );
+
+        var request = new LoginRequest
+        {
+            Email = "miguel@gmail.com",
+            Clave = "Password@2Ok6Abc"
+        };
+
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() => servicio.Login(request));
+
+        Assert.AreEqual("Credenciales inválidas", ex.Message);
+        repoSesionMock.Verify(r => r.Add(It.IsAny<Sesion>()), Times.Never);
     }
 }
