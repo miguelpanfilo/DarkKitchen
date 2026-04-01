@@ -202,4 +202,21 @@ public class UsuariosInternosOperadorPrueba
 
         usuario.MapeoAResponseDTO();
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void MapeoDTOAUserInterno_RolInvalido_LanzaExcepcion()
+    {
+        var request = new CrearUsuarioInternoRequest
+        {
+            Nombre = "Juan",
+            Apellido = "Perez",
+            Email = "admin@gmail.com",
+            Telefono = "099123456",
+            Clave = "PasswordSeguraee3!",
+            Rol = "CualquierCosa"
+        };
+
+        request.MapeoDTOAUserInterno();
+    }
 }
