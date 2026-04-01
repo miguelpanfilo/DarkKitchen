@@ -42,7 +42,7 @@ public class Usuario
         }
     }
 
-    private void ValidarApellido(string apellido)
+    private static void ValidarApellido(string apellido)
     {
         if (string.IsNullOrWhiteSpace(apellido))
         {
@@ -88,5 +88,14 @@ public class Usuario
     {
         ValidarNombre(nombre);
         Nombre = nombre.Trim();
+    }
+
+    public void ModificarNombreYApellido(string nombre, string apellido)
+    {
+        ValidarNombre(nombre);
+        ValidarApellido(apellido);
+
+        Nombre = nombre.Trim();
+        Apellido = apellido.Trim();
     }
 }

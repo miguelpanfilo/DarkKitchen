@@ -100,6 +100,20 @@ public class UsuarioService
         return usuario.MapeoAResponseDTO();
     }
 
+    public UsuarioResponse ModificarNombreYApellidoUsuarioInterno(
+        int idUsuarioAModificar,
+        int idUsuarioLogueado,
+        ModificarUsuarioNombreApellidoRequest request)
+    {
+        ValidarNoAutoModificacion(idUsuarioAModificar, idUsuarioLogueado);
+
+        var usuario = ObtenerUsuarioExistente(idUsuarioAModificar);
+
+        usuario.ModificarNombreYApellido(request.Nombre, request.Apellido);
+
+        return usuario.MapeoAResponseDTO();
+    }
+
     private void ValidarNoAutoModificacion(int idUsuarioAModificar, int idUsuarioLogueado)
     {
         if (idUsuarioAModificar == idUsuarioLogueado)
