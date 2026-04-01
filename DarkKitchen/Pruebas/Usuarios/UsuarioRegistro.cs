@@ -608,7 +608,7 @@ public class UsuarioServiceTests
             "Lopez",
             "miguel@gmail.com",
             "099123456",
-            "ClaveSegura#123"
+            "aaClaveSegura#1a"
         );
 
         Assert.AreEqual(RolUsuario.Cliente, usuario.Rol);

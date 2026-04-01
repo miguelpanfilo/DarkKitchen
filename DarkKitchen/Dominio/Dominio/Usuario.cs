@@ -10,15 +10,17 @@ public class Usuario
     public Email Email { get; private set; }
     public string Telefono { get; private set; } = string.Empty;
     public Clave Clave { get; private set; }
+    public RolUsuario Rol { get; private set; }
+
     public static Usuario CrearCliente(string nombre, string apellido, string email, string telefono, string clave)
     {
         var emailValido = Email.Crear(email);
         var claveObj = Clave.Crear(clave);
 
-        return new Usuario(nombre, apellido, emailValido, telefono, claveObj);
+        return new Usuario(nombre, apellido, emailValido, telefono, claveObj, RolUsuario.Cliente);
     }
 
-    private Usuario(string nombre, string apellido, Email email, string telefono, Clave clave)
+    private Usuario(string nombre, string apellido, Email email, string telefono, Clave clave, RolUsuario rol)
     {
         ValidarNombre(nombre);
         ValidarApellido(apellido);
@@ -29,6 +31,7 @@ public class Usuario
         Email = email;
         Telefono = telefono.Trim();
         Clave = clave;
+        Rol = rol;
     }
 
     private void ValidarNombre(string nombre)
