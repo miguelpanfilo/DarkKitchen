@@ -165,6 +165,58 @@ public class ModificarUsuarioInternoPruebas
     }
 
     [TestMethod]
+    public void ModificarClaveUsuario_UsuarioLogueadoNoEsAdministrativo_LanzaExcepcionConMensajeCorrecto()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        var usuarioAModificar = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioAModificar.Id = 5;
+
+        var usuarioLogueado = Usuario.CrearCliente(
+            "Pedro",
+            "Gomez",
+            "cliente@gmail.com",
+            "099111222",
+            "PasswordSeguraee3!"
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns(usuarioAModificar);
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        var request = new ModificarClaveRequest
+        {
+            ClaveActual = "PasswordSeguraee3!",
+            ClaveNueva = "ClaveNuevaSegura4!"
+        };
+
+        try
+        {
+            service.ModificarClaveUsuario(5, 99, request);
+            Assert.Fail("Se esperaba excepción");
+        }
+        catch (UsuarioExcepcion ex)
+        {
+            Assert.AreEqual("Solo un usuario administrativo puede realizar esta acción", ex.Message);
+        }
+    }
+
+    [TestMethod]
     [ExpectedException(typeof(UsuarioExcepcion))]
     public void ModificarClaveUsuario_ClaveActualIncorrecta_LanzaExcepcion()
     {
