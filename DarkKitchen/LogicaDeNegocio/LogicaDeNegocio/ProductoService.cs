@@ -13,6 +13,6 @@ public class ProductoService
 
     public Producto Crear(Producto producto)
     {
-        throw new NotImplementedException();
+        return _repositorio.Crear(producto);
     }
 }
