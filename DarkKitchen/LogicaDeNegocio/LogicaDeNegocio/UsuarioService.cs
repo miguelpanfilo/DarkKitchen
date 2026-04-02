@@ -206,4 +206,21 @@ public class UsuarioService
             throw new UsuarioExcepcion("Un usuario no puede eliminarse a sí mismo");
         }
     }
+
+    public List<UsuarioResponse> BuscarUsuariosPorNombre(string nombre)
+    {
+        var usuarios = _repo.GetAll();
+
+        var filtrados = new List<UsuarioResponse>();
+
+        foreach (var u in usuarios)
+        {
+            if (u.Nombre == nombre)
+            {
+                filtrados.Add(u.MapeoAResponseDTO());
+            }
+        }
+
+        return filtrados;
+    }
 }
