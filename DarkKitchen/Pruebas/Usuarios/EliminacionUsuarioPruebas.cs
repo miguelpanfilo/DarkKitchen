@@ -1,5 +1,6 @@
 using AlmacenamientoAbstracciones;
 using Dominio;
+using Dominio.Excepciones;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
 using Moq;
@@ -34,5 +35,38 @@ public class EliminacionUsuarioPruebas
         service.EliminarUsuarioInterno(5, 99);
 
         repoMock.Verify(r => r.Remove(5), Times.Once);
+    }
+
+    [TestMethod]
+    public void EliminarUsuarioInterno_SiSeEliminaASiMismo_LanzaExcepcionConMensajeCorrecto()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        var usuarioExistente = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioExistente.Id = 5;
+
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns(usuarioExistente);
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        try
+        {
+            service.EliminarUsuarioInterno(5, 5);
+            Assert.Fail("Se esperaba excepción");
+        }
+        catch (UsuarioExcepcion ex)
+        {
+            Assert.AreEqual("Un usuario no puede eliminarse a sí mismo", ex.Message);
+        }
     }
 }
