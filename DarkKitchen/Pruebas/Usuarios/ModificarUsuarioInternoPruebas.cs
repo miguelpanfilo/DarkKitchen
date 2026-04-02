@@ -152,6 +152,20 @@ public class ModificarUsuarioInternoPruebas
             .Setup(r => r.FindById(5))
             .Returns(usuario);
 
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Juan Martin",
+            "Perez",
+            "admin2@gmail.com",
+            "099123456",
+            "PasswordSeguyyyy3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
+
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
         var request = new ModificarClaveRequest
@@ -159,7 +173,7 @@ public class ModificarUsuarioInternoPruebas
             ClaveActual = "PasswordSeguraee3!", ClaveNueva = "ClaveNuevaSegura4!"
         };
 
-        service.ModificarClaveUsuario(5, request);
+        service.ModificarClaveUsuario(5, 99,request);
 
         Assert.IsTrue(usuario.VerificarClave("ClaveNuevaSegura4!"));
     }
@@ -237,11 +251,25 @@ public class ModificarUsuarioInternoPruebas
             .Setup(r => r.FindById(5))
             .Returns(usuario);
 
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
+
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
         var request = new ModificarClaveRequest { ClaveActual = "Incorrecta123!", ClaveNueva = "ClaveNuevaSegura4!" };
 
-        service.ModificarClaveUsuario(5, request);
+        service.ModificarClaveUsuario(5, 99,request);
     }
 
     [TestMethod]
@@ -264,11 +292,25 @@ public class ModificarUsuarioInternoPruebas
             .Setup(r => r.FindById(5))
             .Returns(usuario);
 
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
+
         var service = new UsuarioService(repoMock.Object, Mock.Of<IValidadorTelefono>());
 
         var request = new ModificarClaveRequest { ClaveActual = "PasswordSeguraee3!", ClaveNueva = "123" };
 
-        service.ModificarClaveUsuario(5, request);
+        service.ModificarClaveUsuario(5, 99,request);
     }
 
     [TestMethod]
@@ -280,6 +322,19 @@ public class ModificarUsuarioInternoPruebas
         repoMock
             .Setup(r => r.FindById(5))
             .Returns((Usuario?)null);
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
 
         var service = new UsuarioService(repoMock.Object, Mock.Of<IValidadorTelefono>());
 
@@ -288,7 +343,7 @@ public class ModificarUsuarioInternoPruebas
             ClaveActual = "PasswordSeguraee3!", ClaveNueva = "ClaveNuevaSegura4!"
         };
 
-        service.ModificarClaveUsuario(5, request);
+        service.ModificarClaveUsuario(5,99, request);
     }
 
     [TestMethod]
@@ -309,6 +364,19 @@ public class ModificarUsuarioInternoPruebas
         repoMock
             .Setup(r => r.FindById(5))
             .Returns(usuario);
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
 
         var service = new UsuarioService(repoMock.Object, Mock.Of<IValidadorTelefono>());
 
@@ -316,7 +384,7 @@ public class ModificarUsuarioInternoPruebas
 
         try
         {
-            service.ModificarClaveUsuario(5, request);
+            service.ModificarClaveUsuario(5,99, request);
         }
         catch(UsuarioExcepcion)
         {
