@@ -87,18 +87,19 @@ public class UsuarioService
         ValidarNoAutoModificacion(idUsuarioAModificar, idUsuarioLogueado);
 
         var usuario = ObtenerUsuarioExistente(idUsuarioAModificar);
+        var telef= request.Telefono;
 
-        ModificarDatosDelUsuario(usuario, request);
+        ModificarDatosDelUsuario(usuario, request, telef);
 
         return usuario.MapeoAResponseDTO();
     }
 
-    private void ModificarDatosDelUsuario(Usuario usuario, ModificarUsuarioRequest request)
+    private void ModificarDatosDelUsuario(Usuario usuario, ModificarUsuarioRequest request, string telef)
     {
         var nombreActualizado = ObtenerNombreActualizado(request, usuario);
         var apellidoActualizado = ObtenerApellidoActualizado(request, usuario);
 
-        usuario.ModificarNombreYApellido(nombreActualizado, apellidoActualizado);
+        usuario.ModificarNombreYApellido(nombreActualizado, apellidoActualizado, telef);
     }
 
     private static string ObtenerNombreActualizado(ModificarUsuarioRequest request, Usuario usuario)

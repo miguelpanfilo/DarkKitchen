@@ -43,7 +43,8 @@ public static class UsuarioMapper
             Nombre = usuario.Nombre,
             Apellido = usuario.Apellido,
             Email = usuario.Email.ToString(),
-            Rol = usuario.Rol.ToString()
+            Rol = usuario.Rol.ToString(),
+            Telefono = usuario.Telefono
         };
     }
 }

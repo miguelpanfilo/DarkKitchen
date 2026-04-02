@@ -90,13 +90,14 @@ public class Usuario
         Nombre = nombre.Trim();
     }
 
-    public void ModificarNombreYApellido(string nombre, string apellido)
+    public void ModificarNombreYApellido(string nombre, string apellido, string telefono)
     {
         ValidarNombre(nombre);
         ValidarApellido(apellido);
 
         Nombre = nombre.Trim();
         Apellido = apellido.Trim();
+        Telefono = telefono.Trim();
     }
 
     public bool VerificarClave(string clave)
