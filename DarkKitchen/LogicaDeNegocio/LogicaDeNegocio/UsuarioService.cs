@@ -100,12 +100,27 @@ public class UsuarioService
         var telefonoActualizado = ObtenerTelefonoActualizado(request, usuario);
         var emailActualizado = ObtenerEmailActualizado(request, usuario);
 
+        ValidarTelefonoSiCambia(usuario, telefonoActualizado);
+        ValidarEmailSiCambia(usuario, emailActualizado);
+
+        usuario.ModificarDatos(nombreActualizado, apellidoActualizado, telefonoActualizado, emailActualizado);
+    }
+
+    private void ValidarTelefonoSiCambia(Usuario usuario, string telefonoActualizado)
+    {
         if (telefonoActualizado != usuario.Telefono && !_validadorTelefono.EsValido(telefonoActualizado))
         {
             throw new UsuarioExcepcion("El teléfono no es válido");
         }
+    }
 
-        usuario.ModificarDatos(nombreActualizado, apellidoActualizado, telefonoActualizado, emailActualizado);
+    private void ValidarEmailSiCambia(Usuario usuario, string emailActualizado)
+    {
+        if (!string.Equals(emailActualizado, usuario.Email.ToString(), StringComparison.OrdinalIgnoreCase)
+            && _repo.ExisteEmail(emailActualizado))
+        {
+            throw new UsuarioExcepcion("El email ya está registrado");
+        }
     }
 
     private static string ObtenerEmailActualizado(ModificarUsuarioRequest request, Usuario usuario)
