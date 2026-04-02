@@ -87,19 +87,31 @@ public class UsuarioService
         ValidarNoAutoModificacion(idUsuarioAModificar, idUsuarioLogueado);
 
         var usuario = ObtenerUsuarioExistente(idUsuarioAModificar);
-        var telef= request.Telefono;
 
-        ModificarDatosDelUsuario(usuario, request, telef);
+        ModificarDatosDelUsuario(usuario, request);
 
         return usuario.MapeoAResponseDTO();
     }
 
-    private void ModificarDatosDelUsuario(Usuario usuario, ModificarUsuarioRequest request, string telef)
+    private void ModificarDatosDelUsuario(Usuario usuario, ModificarUsuarioRequest request)
     {
         var nombreActualizado = ObtenerNombreActualizado(request, usuario);
         var apellidoActualizado = ObtenerApellidoActualizado(request, usuario);
+        var telefonoActualizado = ObtenerTelefonoActualizado(request, usuario);
 
-        usuario.ModificarNombreYApellido(nombreActualizado, apellidoActualizado, telef);
+        if (telefonoActualizado != usuario.Telefono && !_validadorTelefono.EsValido(telefonoActualizado))
+        {
+            throw new UsuarioExcepcion("El teléfono no es válido");
+        }
+
+        usuario.ModificarDatos(nombreActualizado, apellidoActualizado, telefonoActualizado);
+    }
+
+    private static string ObtenerApellidoActualizado(ModificarUsuarioRequest request, Usuario usuario)
+    {
+        return string.IsNullOrWhiteSpace(request.Apellido)
+            ? usuario.Apellido
+            : request.Apellido;
     }
 
     private static string ObtenerNombreActualizado(ModificarUsuarioRequest request, Usuario usuario)
@@ -109,11 +121,11 @@ public class UsuarioService
             : request.Nombre;
     }
 
-    private static string ObtenerApellidoActualizado(ModificarUsuarioRequest request, Usuario usuario)
+    private static string ObtenerTelefonoActualizado(ModificarUsuarioRequest request, Usuario usuario)
     {
-        return string.IsNullOrWhiteSpace(request.Apellido)
-            ? usuario.Apellido
-            : request.Apellido;
+        return string.IsNullOrWhiteSpace(request.Telefono)
+            ? usuario.Telefono
+            : request.Telefono;
     }
 
     private void ValidarNoAutoModificacion(int idUsuarioAModificar, int idUsuarioLogueado)

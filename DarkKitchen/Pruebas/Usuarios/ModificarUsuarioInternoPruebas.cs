@@ -290,6 +290,10 @@ public class ModificarUsuarioInternoPruebas
             .Setup(r => r.FindById(5))
             .Returns(usuarioExistente);
 
+        validadorTelefonoMock
+            .Setup(v => v.EsValido("099123456"))
+            .Returns(true);
+
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
         var request = new ModificarUsuarioRequest
@@ -323,6 +327,10 @@ public class ModificarUsuarioInternoPruebas
             .Setup(r => r.FindById(5))
             .Returns(usuarioExistente);
 
+        validadorTelefonoMock
+            .Setup(v => v.EsValido("099123456"))
+            .Returns(true);
+
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
         var request = new ModificarUsuarioRequest();
@@ -331,6 +339,8 @@ public class ModificarUsuarioInternoPruebas
 
         Assert.AreEqual("Juan", resultado.Nombre);
         Assert.AreEqual("Perez", resultado.Apellido);
+        Assert.AreEqual("099123456", resultado.Telefono);
+        Assert.AreEqual("admin@gmail.com", resultado.Email);
     }
 
     [TestMethod]
