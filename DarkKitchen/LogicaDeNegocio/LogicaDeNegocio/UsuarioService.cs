@@ -109,10 +109,10 @@ public class UsuarioService
 
     private void ModificarDatosDelUsuario(Usuario usuario, ModificarUsuarioRequest request)
     {
-        var nombreActualizado = ObtenerNombreActualizado(request, usuario);
-        var apellidoActualizado = ObtenerApellidoActualizado(request, usuario);
-        var telefonoActualizado = ObtenerTelefonoActualizado(request, usuario);
-        var emailActualizado = ObtenerEmailActualizado(request, usuario);
+        var nombreActualizado = CalcularNombreFinal(request, usuario);
+        var apellidoActualizado = CalcularApellidoFinal(request, usuario);
+        var telefonoActualizado = CalcularTelefonoFinal(request, usuario);
+        var emailActualizado = CalcularEmailFinal(request, usuario);
 
         ValidarTelefonoSiCambia(usuario, telefonoActualizado);
         ValidarEmailSiCambia(usuario, emailActualizado);
@@ -137,28 +137,28 @@ public class UsuarioService
         }
     }
 
-    private static string ObtenerEmailActualizado(ModificarUsuarioRequest request, Usuario usuario)
+    private static string CalcularEmailFinal(ModificarUsuarioRequest request, Usuario usuario)
     {
         return string.IsNullOrWhiteSpace(request.Email)
             ? usuario.Email.ToString()
             : request.Email;
     }
 
-    private static string ObtenerApellidoActualizado(ModificarUsuarioRequest request, Usuario usuario)
+    private static string CalcularApellidoFinal(ModificarUsuarioRequest request, Usuario usuario)
     {
         return string.IsNullOrWhiteSpace(request.Apellido)
             ? usuario.Apellido
             : request.Apellido;
     }
 
-    private static string ObtenerNombreActualizado(ModificarUsuarioRequest request, Usuario usuario)
+    private static string CalcularNombreFinal(ModificarUsuarioRequest request, Usuario usuario)
     {
         return string.IsNullOrWhiteSpace(request.Nombre)
             ? usuario.Nombre
             : request.Nombre;
     }
 
-    private static string ObtenerTelefonoActualizado(ModificarUsuarioRequest request, Usuario usuario)
+    private static string CalcularTelefonoFinal(ModificarUsuarioRequest request, Usuario usuario)
     {
         return string.IsNullOrWhiteSpace(request.Telefono)
             ? usuario.Telefono
