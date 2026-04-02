@@ -210,7 +210,7 @@ public class UsuarioService
     public List<UsuarioResponse> BuscarUsuariosPorNombre(string nombre)
     {
         return _repo.GetAll()
-            .Where(u => string.Equals(u.Nombre, nombre, StringComparison.OrdinalIgnoreCase))
+            .Where(u => string.Equals(u.Nombre, nombre))
             .Select(u => u.MapeoAResponseDTO())
             .ToList();
     }
