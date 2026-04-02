@@ -356,4 +356,31 @@ public class ConsultaUsuarioPruebas
 
         Assert.AreEqual(0, resultado.Count);
     }
+
+    [TestMethod]
+    public void BuscarUsuariosPorApellido_ConEspacios_TrimFunciona()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        var usuario = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "juan@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuario.Id = 1;
+
+        repoMock
+            .Setup(r => r.GetAll())
+            .Returns(new List<Usuario> { usuario });
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        var resultado = service.BuscarUsuariosPorApellido(" Perez ");
+
+        Assert.AreEqual(1, resultado.Count);
+    }
 }
