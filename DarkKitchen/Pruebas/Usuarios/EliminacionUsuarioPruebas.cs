@@ -92,4 +92,27 @@ public class EliminacionUsuarioPruebas
             Assert.AreEqual("El usuario no existe", ex.Message);
         }
     }
+
+    [TestMethod]
+    public void EliminarUsuarioInterno_UsuarioNoExiste_NoLlamaRemove()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns((Usuario?)null);
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        try
+        {
+            service.EliminarUsuarioInterno(5, 99);
+        }
+        catch (UsuarioExcepcion)
+        {
+        }
+
+        repoMock.Verify(r => r.Remove(It.IsAny<int>()), Times.Never);
+    }
 }
