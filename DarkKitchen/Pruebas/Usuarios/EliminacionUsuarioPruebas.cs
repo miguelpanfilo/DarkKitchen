@@ -25,16 +25,29 @@ public class EliminacionUsuarioPruebas
             RolUsuario.Administrativo
         );
         usuarioExistente.Id = 5;
+        var usuarioAEliminar = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin2@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioAEliminar.Id = 52;
 
         repoMock
             .Setup(r => r.FindById(5))
             .Returns(usuarioExistente);
 
+        repoMock
+            .Setup(r => r.FindById(52))
+            .Returns(usuarioAEliminar);
+
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        service.EliminarUsuarioInterno(5, 99);
+        service.EliminarUsuarioInterno(52, 5);
 
-        repoMock.Verify(r => r.Remove(5), Times.Once);
+        repoMock.Verify(r => r.Remove(52), Times.Once);
     }
 
     [TestMethod]

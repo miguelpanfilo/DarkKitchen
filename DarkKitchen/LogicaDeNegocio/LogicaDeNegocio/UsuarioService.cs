@@ -187,6 +187,11 @@ public class UsuarioService
     {
         var usuarioLogueado = ObtenerUsuarioExistente(idUsuarioLogueado);
 
+        if (usuarioLogueado.Rol != RolUsuario.Administrativo)
+        {
+            throw new UsuarioExcepcion("No tiene permisos para eliminar usuarios");
+        }
+
         ValidarNoAutoEliminacion(idUsuarioAEliminar, idUsuarioLogueado);
 
         var usuario = ObtenerUsuarioExistente(idUsuarioAEliminar);
