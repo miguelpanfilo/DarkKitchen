@@ -142,4 +142,21 @@ public class ConsultaUsuarioPruebas
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Nombre);
     }
+
+    [TestMethod]
+    public void BuscarUsuariosPorNombre_SinUsuarios_RetornaListaVacia()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        repoMock
+            .Setup(r => r.GetAll())
+            .Returns(new List<Usuario>());
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        var resultado = service.BuscarUsuariosPorNombre("Juan");
+
+        Assert.AreEqual(0, resultado.Count);
+    }
 }
