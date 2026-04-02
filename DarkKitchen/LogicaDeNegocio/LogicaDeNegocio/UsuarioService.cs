@@ -185,9 +185,11 @@ public class UsuarioService
         return usuario;
     }
 
-    public void ModificarClaveUsuario(int idUsuario, ModificarClaveRequest request)
+    public void ModificarClaveUsuario(int idUsuarioAModificar, int idUsuarioLogueado, ModificarClaveRequest request)
     {
-        var usuario = ObtenerUsuarioExistente(idUsuario);
+        ValidarUsuarioEsAdministrativo(idUsuarioLogueado);
+
+        var usuario = ObtenerUsuarioExistente(idUsuarioAModificar);
 
         if (!usuario.VerificarClave(request.ClaveActual))
         {
