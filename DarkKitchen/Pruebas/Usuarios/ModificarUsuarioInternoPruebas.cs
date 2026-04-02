@@ -60,8 +60,7 @@ public class ModificarUsuarioInternoPruebas
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
-    public void ModificarUsuarioInterno_SiSeModificaASiMismo_LanzaExcepcion()
+    public void ModificarUsuarioInterno_SiSeModificaASiMismo_LanzaExcepcionConMensajeCorrecto()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
         var validadorTelefonoMock = new Mock<IValidadorTelefono>();
@@ -84,7 +83,15 @@ public class ModificarUsuarioInternoPruebas
 
         var request = new ModificarUsuarioRequest { Nombre = "Carlos" };
 
-        service.ModificarUsuarioInterno(5, 5, request);
+        try
+        {
+            service.ModificarUsuarioInterno(5, 5, request);
+            Assert.Fail("Se esperaba excepción");
+        }
+        catch (UsuarioExcepcion ex)
+        {
+            Assert.AreEqual("Un usuario no puede modificarse a sí mismo", ex.Message);
+        }
     }
 
     [TestMethod]
@@ -272,8 +279,7 @@ public class ModificarUsuarioInternoPruebas
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
-    public void ModificarClaveUsuario_ClaveActualIncorrecta_LanzaExcepcion()
+    public void ModificarClaveUsuario_ClaveActualIncorrecta_LanzaExcepcionConMensajeCorrecto()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
         var validadorTelefonoMock = new Mock<IValidadorTelefono>();
@@ -288,29 +294,36 @@ public class ModificarUsuarioInternoPruebas
         );
         usuario.Id = 5;
 
-        repoMock
-            .Setup(r => r.FindById(5))
-            .Returns(usuario);
-
         var usuarioLogueado = Usuario.CrearInterno(
-            "Juan",
-            "Perez",
-            "admin@gmail.com",
-            "099123456",
+            "Admin",
+            "Root",
+            "root@gmail.com",
+            "099999999",
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
         usuarioLogueado.Id = 99;
 
-        repoMock
-            .Setup(r => r.FindById(99))
-            .Returns(usuarioLogueado);
+        repoMock.Setup(r => r.FindById(5)).Returns(usuario);
+        repoMock.Setup(r => r.FindById(99)).Returns(usuarioLogueado);
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var request = new ModificarClaveRequest { ClaveActual = "Incorrecta123!", ClaveNueva = "ClaveNuevaSegura4!" };
+        var request = new ModificarClaveRequest
+        {
+            ClaveActual = "Incorrecta123!",
+            ClaveNueva = "ClaveNuevaSegura4!"
+        };
 
-        service.ModificarClaveUsuario(5, 99,request);
+        try
+        {
+            service.ModificarClaveUsuario(5, 99, request);
+            Assert.Fail("Se esperaba excepción");
+        }
+        catch (UsuarioExcepcion ex)
+        {
+            Assert.AreEqual("La clave actual no es correcta", ex.Message);
+        }
     }
 
     [TestMethod]
@@ -726,8 +739,7 @@ public class ModificarUsuarioInternoPruebas
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
-    public void ModificarUsuarioInterno_Telefono_UsuarioNoExiste_LanzaExcepcion()
+    public void ModificarUsuarioInterno_Telefono_UsuarioNoExiste_LanzaExcepcionConMensajeCorrecto()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
 
@@ -735,11 +747,33 @@ public class ModificarUsuarioInternoPruebas
             .Setup(r => r.FindById(5))
             .Returns((Usuario?)null);
 
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Admin",
+            "Root",
+            "root@gmail.com",
+            "099999999",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
+
         var service = new UsuarioService(repoMock.Object, Mock.Of<IValidadorTelefono>());
 
         var request = new ModificarUsuarioRequest { Telefono = "098111222" };
 
-        service.ModificarUsuarioInterno(5, 99, request);
+        try
+        {
+            service.ModificarUsuarioInterno(5, 99, request);
+            Assert.Fail("Se esperaba excepción");
+        }
+        catch (UsuarioExcepcion ex)
+        {
+            Assert.AreEqual("El usuario no existe", ex.Message);
+        }
     }
 
     [TestMethod]
@@ -1169,8 +1203,7 @@ public class ModificarUsuarioInternoPruebas
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
-    public void ModificarUsuarioInterno_UsuarioNoExiste_LanzaExcepcion()
+    public void ModificarUsuarioInterno_UsuarioNoExiste_LanzaExcepcionConMensajeCorrecto()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
         var service = new UsuarioService(repoMock.Object, Mock.Of<IValidadorTelefono>());
@@ -1192,12 +1225,21 @@ public class ModificarUsuarioInternoPruebas
         repoMock
             .Setup(r => r.FindById(99))
             .Returns(usuarioLogueado);
+
         var request = new ModificarUsuarioRequest
         {
             Nombre = "Carlos"
         };
 
-        service.ModificarUsuarioInterno(5, 99, request);
+        try
+        {
+            service.ModificarUsuarioInterno(5, 99, request);
+            Assert.Fail("Se esperaba excepción");
+        }
+        catch (UsuarioExcepcion ex)
+        {
+            Assert.AreEqual("El usuario no existe", ex.Message);
+        }
     }
 
     [TestMethod]
