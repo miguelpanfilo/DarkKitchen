@@ -245,6 +245,11 @@ public class UsuarioService
             {
                 resultado.Add(u.MapeoAResponseDTO());
             }
+
+            if(u.Apellido == request.Apellido)
+            {
+                resultado.Add(u.MapeoAResponseDTO());
+            }
         }
 
         return resultado;
