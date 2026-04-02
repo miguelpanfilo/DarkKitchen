@@ -182,4 +182,11 @@ public class UsuarioService
 
         usuario.CambiarClave(Clave.Crear(request.ClaveNueva));
     }
+
+    public void EliminarUsuarioInterno(int idUsuarioAEliminar, int idUsuarioLogueado)
+    {
+        var usuario = ObtenerUsuarioExistente(idUsuarioAEliminar);
+
+        _repo.Remove(usuario.Id);
+    }
 }

@@ -9,4 +9,5 @@ public interface IRepositorioUsuario
     bool ExisteEmail(string email);
     Usuario? ObtenerPorEmail(string email);
     Usuario? FindById(int id);
+    void Remove(int id);
 }

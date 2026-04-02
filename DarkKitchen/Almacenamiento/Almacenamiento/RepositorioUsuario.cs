@@ -40,4 +40,14 @@ public class RepositorioUsuario : IRepositorioUsuario
     {
         return _usuarios.FirstOrDefault(u => u.Id == id);
     }
+
+    public void Remove(int id)
+    {
+        var usuario = _usuarios.FirstOrDefault(u => u.Id == id);
+
+        if (usuario != null)
+        {
+            _usuarios.Remove(usuario);
+        }
+    }
 }
