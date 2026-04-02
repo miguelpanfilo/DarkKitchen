@@ -210,4 +210,25 @@ public class ModificarUsuarioInternoPruebas
 
         service.ModificarClaveUsuario(5, request);
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void ModificarClaveUsuario_UsuarioNoExiste_LanzaExcepcion()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns((Usuario?)null);
+
+        var service = new UsuarioService(repoMock.Object, Mock.Of<IValidadorTelefono>());
+
+        var request = new ModificarClaveRequest
+        {
+            ClaveActual = "PasswordSeguraee3!",
+            ClaveNueva = "ClaveNuevaSegura4!"
+        };
+
+        service.ModificarClaveUsuario(5, request);
+    }
 }
