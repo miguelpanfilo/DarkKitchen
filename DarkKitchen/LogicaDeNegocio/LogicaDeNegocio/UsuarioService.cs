@@ -207,33 +207,6 @@ public class UsuarioService
         }
     }
 
-    public List<UsuarioResponse> BuscarUsuariosPorNombre(string nombre)
-    {
-        var nombreEnMinuscula=nombre.ToLower();
-        return _repo.GetAll()
-            .Where(u => string.Equals(u.Nombre.ToLower(), nombreEnMinuscula))
-            .Select(u => u.MapeoAResponseDTO())
-            .ToList();
-    }
-
-    public List<UsuarioResponse> BuscarUsuariosPorApellido(string apellido)
-    {
-        var apellidoNormalizado = apellido.Trim();
-
-        var usuarios = _repo.GetAll();
-        var resultado = new List<UsuarioResponse>();
-
-        foreach (var u in usuarios)
-        {
-            if (string.Equals(u.Apellido, apellidoNormalizado, StringComparison.OrdinalIgnoreCase))
-            {
-                resultado.Add(u.MapeoAResponseDTO());
-            }
-        }
-
-        return resultado;
-    }
-
     public List<UsuarioResponse> BuscarUsuarios(BuscarUsuariosRequest request)
     {
         var usuarios = _repo.GetAll();

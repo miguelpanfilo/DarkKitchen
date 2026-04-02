@@ -42,8 +42,12 @@ public class ConsultaUsuarioPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var resultado = service.BuscarUsuariosPorNombre("Juan");
+        var request = new BuscarUsuariosRequest
+        {
+            Nombre = "Juan"
+        };
 
+        var resultado = service.BuscarUsuarios(request);
         Assert.AreEqual(2, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Nombre);
         Assert.AreEqual("Juan", resultado[1].Nombre);
@@ -71,8 +75,12 @@ public class ConsultaUsuarioPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var resultado = service.BuscarUsuariosPorNombre("Juan");
+        var request = new BuscarUsuariosRequest
+        {
+            Nombre = "Juan"
+        };
 
+        var resultado = service.BuscarUsuarios(request);
         Assert.AreEqual(0, resultado.Count);
     }
 
@@ -108,8 +116,12 @@ public class ConsultaUsuarioPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var resultado = service.BuscarUsuariosPorNombre("Juan");
+        var request = new BuscarUsuariosRequest
+        {
+            Nombre = "Juan"
+        };
 
+        var resultado = service.BuscarUsuarios(request);
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Nombre);
         Assert.AreEqual("Perez", resultado[0].Apellido);
@@ -137,8 +149,12 @@ public class ConsultaUsuarioPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var resultado = service.BuscarUsuariosPorNombre("juan");
+        var request = new BuscarUsuariosRequest
+        {
+            Nombre = "juan"
+        };
 
+        var resultado = service.BuscarUsuarios(request);
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Nombre);
     }
@@ -155,8 +171,12 @@ public class ConsultaUsuarioPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var resultado = service.BuscarUsuariosPorNombre("Juan");
+        var request = new BuscarUsuariosRequest
+        {
+            Nombre = "Juan"
+        };
 
+        var resultado = service.BuscarUsuarios(request);
         Assert.AreEqual(0, resultado.Count);
     }
 
@@ -182,8 +202,12 @@ public class ConsultaUsuarioPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var resultado = service.BuscarUsuariosPorNombre("Juan");
+        var request = new BuscarUsuariosRequest
+        {
+            Nombre = "Juan"
+        };
 
+        var resultado = service.BuscarUsuarios(request);
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual(100, resultado[0].Id);
         Assert.AreEqual("Juan", resultado[0].Nombre);
@@ -225,8 +249,12 @@ public class ConsultaUsuarioPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var resultado = service.BuscarUsuariosPorApellido("Perez");
+        var request = new BuscarUsuariosRequest
+        {
+            Apellido = "Perez"
+        };
 
+        var resultado = service.BuscarUsuarios(request);
         Assert.AreEqual(2, resultado.Count);
         Assert.AreEqual("Perez", resultado[0].Apellido);
         Assert.AreEqual("Perez", resultado[1].Apellido);
@@ -264,8 +292,12 @@ public class ConsultaUsuarioPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var resultado = service.BuscarUsuariosPorApellido("PeReZ");
+        var request = new BuscarUsuariosRequest
+        {
+            Apellido = "PeReZ"
+        };
 
+        var resultado = service.BuscarUsuarios(request);
         Assert.AreEqual(2, resultado.Count);
         Assert.AreEqual("Perez", resultado[0].Apellido);
         Assert.AreEqual("Perez", resultado[1].Apellido);
@@ -293,8 +325,12 @@ public class ConsultaUsuarioPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var resultado = service.BuscarUsuariosPorApellido("Perez");
+        var request = new BuscarUsuariosRequest
+        {
+            Apellido = "Perez"
+        };
 
+        var resultado = service.BuscarUsuarios(request);
         Assert.AreEqual(0, resultado.Count);
     }
 
@@ -330,8 +366,12 @@ public class ConsultaUsuarioPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var resultado = service.BuscarUsuariosPorApellido("Perez");
+        var request = new BuscarUsuariosRequest
+        {
+            Apellido = "Perez"
+        };
 
+        var resultado = service.BuscarUsuarios(request);
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Nombre);
         Assert.AreEqual("Perez", resultado[0].Apellido);
@@ -352,8 +392,12 @@ public class ConsultaUsuarioPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var resultado = service.BuscarUsuariosPorApellido("Perez");
+        var request = new BuscarUsuariosRequest
+        {
+            Apellido = "Perez"
+        };
 
+        var resultado = service.BuscarUsuarios(request);
         Assert.AreEqual(0, resultado.Count);
     }
 
@@ -379,8 +423,12 @@ public class ConsultaUsuarioPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var resultado = service.BuscarUsuariosPorApellido(" Perez ");
+        var request = new BuscarUsuariosRequest
+        {
+            Apellido = "Perez"
+        };
 
+        var resultado = service.BuscarUsuarios(request);
         Assert.AreEqual(1, resultado.Count);
     }
 
@@ -406,7 +454,12 @@ public class ConsultaUsuarioPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var resultado = service.BuscarUsuariosPorApellido(" Perez ");
+        var request = new BuscarUsuariosRequest
+        {
+            Apellido = "Perez"
+        };
+
+        var resultado = service.BuscarUsuarios(request);
 
         Assert.AreEqual(1, resultado.Count);
     }
