@@ -491,4 +491,31 @@ public class UsuariosInternosOperadorPrueba
 
         validadorTelefonoMock.Verify(v => v.EsValido("099123456"), Times.Once);
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void CrearUsuarioInterno_UsuarioNoAdministrativo_LanzaExcepcion()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        var usuarioLogueado = Usuario.CrearCliente(
+            "Juan",
+            "Perez",
+            "cliente@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!"
+        );
+        usuarioLogueado.Id = 5;
+
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns(usuarioLogueado);
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        var request = new CrearUsuarioInternoRequest();
+
+        service.CrearUsuarioInterno(5, request);
+    }
 }
