@@ -185,13 +185,18 @@ public class UsuarioService
 
     public void EliminarUsuarioInterno(int idUsuarioAEliminar, int idUsuarioLogueado)
     {
-        if(idUsuarioAEliminar == idUsuarioLogueado)
-        {
-            throw new UsuarioExcepcion("Un usuario no puede eliminarse a sí mismo");
-        }
+        ValidarNoAutoEliminacion(idUsuarioAEliminar, idUsuarioLogueado);
 
         var usuario = ObtenerUsuarioExistente(idUsuarioAEliminar);
 
         _repo.Remove(usuario.Id);
+    }
+
+    private void ValidarNoAutoEliminacion(int idUsuarioAEliminar, int idUsuarioLogueado)
+    {
+        if (idUsuarioAEliminar == idUsuarioLogueado)
+        {
+            throw new UsuarioExcepcion("Un usuario no puede eliminarse a sí mismo");
+        }
     }
 }
