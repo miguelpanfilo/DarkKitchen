@@ -48,8 +48,15 @@ public class UsuarioService
         };
     }
 
-    public UsuarioResponse CrearUsuarioInterno(CrearUsuarioInternoRequest request)
+    public UsuarioResponse CrearUsuarioInterno(int idUsuarioLogueado, CrearUsuarioInternoRequest request)
     {
+        var usuarioLogueado = ObtenerUsuarioExistente(idUsuarioLogueado);
+
+        if (usuarioLogueado.Rol != RolUsuario.Administrativo)
+        {
+            throw new UsuarioExcepcion("Solo un usuario administrativo puede realizar esta acción");
+        }
+
         if(!_validadorTelefono.EsValido(request.Telefono))
         {
             throw new UsuarioExcepcion("El teléfono no es válido");
