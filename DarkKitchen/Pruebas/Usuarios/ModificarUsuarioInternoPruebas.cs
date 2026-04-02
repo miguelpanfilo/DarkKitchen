@@ -459,4 +459,24 @@ public class ModificarUsuarioInternoPruebas
 
         Assert.AreEqual("099123456", usuarioExistente.Telefono);
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void ModificarUsuarioInterno_Telefono_UsuarioNoExiste_LanzaExcepcion()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns((Usuario?)null);
+
+        var service = new UsuarioService(repoMock.Object, Mock.Of<IValidadorTelefono>());
+
+        var request = new ModificarUsuarioRequest
+        {
+            Telefono = "098111222"
+        };
+
+        service.ModificarUsuarioInterno(5, 99, request);
+    }
 }
