@@ -219,7 +219,7 @@ public class UsuarioService
     public List<UsuarioResponse> BuscarUsuariosPorApellido(string apellido)
     {
         return _repo.GetAll()
-            .Where(u => u.Apellido == apellido)
+            .Where(u => u.Apellido.ToLower() == apellido.ToLower())
             .Select(u => u.MapeoAResponseDTO())
             .ToList();
     }
