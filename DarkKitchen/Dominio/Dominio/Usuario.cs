@@ -40,6 +40,11 @@ public class Usuario
         {
             throw new UsuarioExcepcion("El nombre no puede estar vacío");
         }
+
+        if (nombre.Any(char.IsDigit))
+        {
+            throw new UsuarioExcepcion("El nombre no puede contener números");
+        }
     }
 
     private static void ValidarApellido(string apellido)
