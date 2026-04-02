@@ -637,4 +637,29 @@ public class UsuariosInternosOperadorPrueba
 
         service.CrearUsuarioInterno(5, request);
     }
+
+    [TestMethod]
+    public void CrearUsuarioInterno_UsuarioLogueadoNoExiste_LanzaExcepcion()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        repoMock
+            .Setup(r => r.FindById(1))
+            .Returns((Usuario?)null);
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        var request = new CrearUsuarioInternoRequest();
+
+        try
+        {
+            service.CrearUsuarioInterno(1, request);
+            Assert.Fail("Se esperaba excepción");
+        }
+        catch (UsuarioExcepcion ex)
+        {
+            Assert.AreEqual("El usuario no existe", ex.Message);
+        }
+    }
 }
