@@ -147,4 +147,36 @@ public class ModificarUsuarioInternoPruebas
 
         Assert.IsTrue(usuario.VerificarClave("ClaveNuevaSegura4!"));
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void ModificarClaveUsuario_ClaveActualIncorrecta_LanzaExcepcion()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        var usuario = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuario.Id = 5;
+
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns(usuario);
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        var request = new ModificarClaveRequest
+        {
+            ClaveActual = "Incorrecta123!",
+            ClaveNueva = "ClaveNuevaSegura4!"
+        };
+
+        service.ModificarClaveUsuario(5, request);
+    }
 }

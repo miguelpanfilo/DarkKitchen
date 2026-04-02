@@ -139,11 +139,6 @@ public class UsuarioService
     {
         var usuario = ObtenerUsuarioExistente(idUsuario);
 
-        if (!usuario.VerificarClave(request.ClaveActual))
-        {
-            throw new UsuarioExcepcion("La clave actual no es correcta");
-        }
-
-        usuario.CambiarClave(Clave.Crear(request.ClaveNueva));
+      usuario.CambiarClave(Clave.Crear(request.ClaveNueva));
     }
 }
