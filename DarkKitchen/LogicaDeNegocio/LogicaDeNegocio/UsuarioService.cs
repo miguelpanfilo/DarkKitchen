@@ -50,8 +50,6 @@ public class UsuarioService
 
     public UsuarioResponse CrearUsuarioInterno(int idUsuarioLogueado, CrearUsuarioInternoRequest request)
     {
-        var usuarioLogueado = ObtenerUsuarioExistente(idUsuarioLogueado);
-
         ValidarUsuarioEsAdministrativo(idUsuarioLogueado);
 
         if(!_validadorTelefono.EsValido(request.Telefono))
@@ -201,13 +199,7 @@ public class UsuarioService
 
     public void EliminarUsuarioInterno(int idUsuarioAEliminar, int idUsuarioLogueado)
     {
-        var usuarioLogueado = ObtenerUsuarioExistente(idUsuarioLogueado);
-
-        if (usuarioLogueado.Rol != RolUsuario.Administrativo)
-        {
-            throw new UsuarioExcepcion("No tiene permisos para eliminar usuarios");
-        }
-
+        ValidarUsuarioEsAdministrativo(idUsuarioLogueado);
         ValidarNoAutoEliminacion(idUsuarioAEliminar, idUsuarioLogueado);
 
         var usuario = ObtenerUsuarioExistente(idUsuarioAEliminar);
