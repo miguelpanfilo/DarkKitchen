@@ -382,4 +382,39 @@ public class ModificarUsuarioInternoPruebas
         Assert.AreEqual("Perez", resultado.Apellido);
         Assert.AreEqual("admin@gmail.com", resultado.Email);
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void ModificarUsuarioInterno_TelefonoInvalido_LanzaExcepcion()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        var usuarioExistente = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioExistente.Id = 5;
+
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns(usuarioExistente);
+
+        validadorTelefonoMock
+            .Setup(v => v.EsValido("123"))
+            .Returns(false);
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        var request = new ModificarUsuarioRequest
+        {
+            Telefono = "123"
+        };
+
+        service.ModificarUsuarioInterno(5, 99, request);
+    }
 }
