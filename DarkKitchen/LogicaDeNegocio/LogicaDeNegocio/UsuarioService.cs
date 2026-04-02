@@ -241,12 +241,10 @@ public class UsuarioService
 
         foreach (var u in usuarios)
         {
-            if (u.Nombre == request.Nombre)
-            {
-                resultado.Add(u.MapeoAResponseDTO());
-            }
+            var coincideNombre = string.IsNullOrWhiteSpace(request.Nombre) || u.Nombre == request.Nombre;
+            var coincideApellido = string.IsNullOrWhiteSpace(request.Apellido) || u.Apellido == request.Apellido;
 
-            if(u.Apellido == request.Apellido)
+            if (coincideNombre && coincideApellido)
             {
                 resultado.Add(u.MapeoAResponseDTO());
             }
