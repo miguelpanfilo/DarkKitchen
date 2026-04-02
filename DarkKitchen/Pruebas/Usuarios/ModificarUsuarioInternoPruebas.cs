@@ -767,4 +767,36 @@ public class ModificarUsuarioInternoPruebas
 
         service.ModificarUsuarioInterno(5, 99, request);
     }
+
+    [TestMethod]
+    public void ModificarUsuarioInterno_EmailIgualConDistintoCase_NoConsultaRepositorio()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        var usuarioExistente = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioExistente.Id = 5;
+
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns(usuarioExistente);
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        var request = new ModificarUsuarioRequest
+        {
+            Email = "ADMIN@GMAIL.COM"
+        };
+
+        service.ModificarUsuarioInterno(5, 99, request);
+
+        repoMock.Verify(r => r.ExisteEmail(It.IsAny<string>()), Times.Never);
+    }
 }
