@@ -31,6 +31,20 @@ public class ModificarUsuarioInternoPruebas
             .Setup(r => r.FindById(5))
             .Returns(usuarioExistente);
 
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin12@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioExistente);
+
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
         var request = new ModificarUsuarioRequest { Nombre = "Carlos" };
@@ -87,6 +101,18 @@ public class ModificarUsuarioInternoPruebas
             RolUsuario.Administrativo
         );
         usuarioExistente.Id = 5;
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin2@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
 
         repoMock
             .Setup(r => r.FindById(5))
@@ -265,6 +291,19 @@ public class ModificarUsuarioInternoPruebas
         repoMock
             .Setup(r => r.FindById(5))
             .Returns(usuarioExistente);
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin12@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioExistente);
 
         validadorTelefonoMock
             .Setup(v => v.EsValido("099123456"))
@@ -299,6 +338,19 @@ public class ModificarUsuarioInternoPruebas
         repoMock
             .Setup(r => r.FindById(5))
             .Returns(usuarioExistente);
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
 
         validadorTelefonoMock
             .Setup(v => v.EsValido("099123456"))
@@ -334,6 +386,19 @@ public class ModificarUsuarioInternoPruebas
 
         repoMock
             .Setup(r => r.FindById(5))
+            .Returns(usuarioExistente);
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin12@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(99))
             .Returns(usuarioExistente);
 
         validadorTelefonoMock
@@ -491,6 +556,19 @@ public class ModificarUsuarioInternoPruebas
             RolUsuario.Administrativo
         );
         usuarioExistente.Id = 5;
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin12@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioExistente);
 
         repoMock
             .Setup(r => r.FindById(5))
@@ -524,6 +602,19 @@ public class ModificarUsuarioInternoPruebas
 
         repoMock
             .Setup(r => r.FindById(5))
+            .Returns(usuarioExistente);
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin12@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(99))
             .Returns(usuarioExistente);
 
         repoMock
@@ -565,6 +656,19 @@ public class ModificarUsuarioInternoPruebas
         repoMock
             .Setup(r => r.ExisteEmail("correo-invalido"))
             .Returns(false);
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin12@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioExistente);
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
@@ -596,6 +700,18 @@ public class ModificarUsuarioInternoPruebas
             RolUsuario.Administrativo
         );
         usuarioExistente.Id = 5;
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Admin",
+            "Root",
+            "root@gmail.com",
+            "099999999",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioExistente);
 
         repoMock
             .Setup(r => r.FindById(5))
@@ -678,6 +794,19 @@ public class ModificarUsuarioInternoPruebas
         repoMock
             .Setup(r => r.FindById(5))
             .Returns(usuarioExistente);
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin12@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioExistente);
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
@@ -703,6 +832,19 @@ public class ModificarUsuarioInternoPruebas
             RolUsuario.Administrativo
         );
         usuarioExistente.Id = 5;
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin12@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioExistente);
 
         repoMock
             .Setup(r => r.FindById(5))
@@ -733,9 +875,23 @@ public class ModificarUsuarioInternoPruebas
         );
         usuarioExistente.Id = 5;
 
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Admin",
+            "Root",
+            "root@gmail.com",
+            "099999999",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
         repoMock
             .Setup(r => r.FindById(5))
             .Returns(usuarioExistente);
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
@@ -821,6 +977,19 @@ public class ModificarUsuarioInternoPruebas
 
         repoMock
             .Setup(r => r.FindById(5))
+            .Returns(usuarioExistente);
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin12@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(99))
             .Returns(usuarioExistente);
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);

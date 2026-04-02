@@ -52,10 +52,7 @@ public class UsuarioService
     {
         var usuarioLogueado = ObtenerUsuarioExistente(idUsuarioLogueado);
 
-        if (usuarioLogueado.Rol != RolUsuario.Administrativo)
-        {
-            throw new UsuarioExcepcion("Solo un usuario administrativo puede realizar esta acción");
-        }
+        ValidarUsuarioEsAdministrativo(idUsuarioLogueado);
 
         if(!_validadorTelefono.EsValido(request.Telefono))
         {
@@ -86,11 +83,23 @@ public class UsuarioService
         return usuarioGuardado.MapeoAResponseDTO();
     }
 
+    private void ValidarUsuarioEsAdministrativo(int idUsuarioLogueado)
+    {
+        var usuario = ObtenerUsuarioExistente(idUsuarioLogueado);
+
+        if (usuario.Rol != RolUsuario.Administrativo)
+        {
+            throw new UsuarioExcepcion("Solo un usuario administrativo puede realizar esta acción");
+        }
+    }
+
     public UsuarioResponse ModificarUsuarioInterno(
         int idUsuarioAModificar,
         int idUsuarioLogueado,
         ModificarUsuarioRequest request)
     {
+        ValidarUsuarioEsAdministrativo(idUsuarioLogueado);
+
         ValidarNoAutoModificacion(idUsuarioAModificar, idUsuarioLogueado);
 
         var usuario = ObtenerUsuarioExistente(idUsuarioAModificar);
