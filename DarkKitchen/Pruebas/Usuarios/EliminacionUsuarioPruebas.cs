@@ -69,4 +69,27 @@ public class EliminacionUsuarioPruebas
             Assert.AreEqual("Un usuario no puede eliminarse a sí mismo", ex.Message);
         }
     }
+
+    [TestMethod]
+    public void EliminarUsuarioInterno_UsuarioNoExiste_LanzaExcepcionConMensajeCorrecto()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns((Usuario?)null);
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        try
+        {
+            service.EliminarUsuarioInterno(5, 99);
+            Assert.Fail("Se esperaba excepción");
+        }
+        catch (UsuarioExcepcion ex)
+        {
+            Assert.AreEqual("El usuario no existe", ex.Message);
+        }
+    }
 }
