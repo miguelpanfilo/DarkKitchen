@@ -209,18 +209,9 @@ public class UsuarioService
 
     public List<UsuarioResponse> BuscarUsuariosPorNombre(string nombre)
     {
-        var usuarios = _repo.GetAll();
-
-        var filtrados = new List<UsuarioResponse>();
-
-        foreach (var u in usuarios)
-        {
-            if (u.Nombre == nombre)
-            {
-                filtrados.Add(u.MapeoAResponseDTO());
-            }
-        }
-
-        return filtrados;
+        return _repo.GetAll()
+            .Where(u => string.Equals(u.Nombre, nombre, StringComparison.OrdinalIgnoreCase))
+            .Select(u => u.MapeoAResponseDTO())
+            .ToList();
     }
 }
