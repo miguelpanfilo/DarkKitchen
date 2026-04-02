@@ -426,6 +426,41 @@ public class ModificarUsuarioInternoPruebas
 
     [TestMethod]
     [ExpectedException(typeof(UsuarioExcepcion))]
+    public void ModificarUsuarioInterno_ApellidoMayorAVeinticinco_LanzaExcepcion()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        var usuarioExistente = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioExistente.Id = 5;
+
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns(usuarioExistente);
+
+        validadorTelefonoMock
+            .Setup(v => v.EsValido("099123456"))
+            .Returns(true);
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        var request = new ModificarUsuarioRequest
+        {
+            Apellido = "ApellidoDemasiadoDemasiadoLargo"
+        };
+
+        service.ModificarUsuarioInterno(5, 99, request);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
     public void ModificarUsuarioInterno_Telefono_UsuarioNoExiste_LanzaExcepcion()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
