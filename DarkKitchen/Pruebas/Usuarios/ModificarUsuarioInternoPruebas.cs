@@ -269,4 +269,37 @@ public class ModificarUsuarioInternoPruebas
 
         Assert.IsTrue(usuario.Clave.Verificar("PasswordSeguraee3!"));
     }
+
+    [TestMethod]
+    public void ModificarUsuarioInterno_SoloApellido_RetornaUsuarioConApellidoModificado()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        var usuarioExistente = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioExistente.Id = 5;
+
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns(usuarioExistente);
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        var request = new ModificarUsuarioRequest
+        {
+            Apellido = "Gomez"
+        };
+
+        var resultado = service.ModificarUsuarioInterno(5, 99, request);
+
+        Assert.AreEqual("Juan", resultado.Nombre);
+        Assert.AreEqual("Gomez", resultado.Apellido);
+    }
 }
