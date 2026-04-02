@@ -82,6 +82,28 @@ public class UsuariosInternosOperadorPrueba
     }
 
     [TestMethod]
+    public void CrearUsuarioInterno_NombreConNumeros_LanzaExcepcion()
+    {
+        try
+        {
+            Usuario.CrearInterno(
+                "Ju4n",
+                "Perez",
+                "admin@gmail.com",
+                "099123456",
+                "PasswordSeguraee3!",
+                RolUsuario.Administrativo
+            );
+
+            Assert.Fail("Se esperaba excepción");
+        }
+        catch (UsuarioExcepcion ex)
+        {
+            Assert.AreEqual("El nombre no puede contener números", ex.Message);
+        }
+    }
+
+    [TestMethod]
     public void CrearUsuarioInterno_TelefonoInvalido_NoLlamaAdd()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
