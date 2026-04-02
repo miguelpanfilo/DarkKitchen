@@ -713,4 +713,23 @@ public class ModificarUsuarioInternoPruebas
 
         repoMock.Verify(r => r.ExisteEmail(It.IsAny<string>()), Times.Never);
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(UsuarioExcepcion))]
+    public void ModificarUsuarioInterno_UsuarioNoExiste_LanzaExcepcion()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var service = new UsuarioService(repoMock.Object, Mock.Of<IValidadorTelefono>());
+
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns((Usuario?)null);
+
+        var request = new ModificarUsuarioRequest
+        {
+            Nombre = "Carlos"
+        };
+
+        service.ModificarUsuarioInterno(5, 99, request);
+    }
 }
