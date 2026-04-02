@@ -241,15 +241,24 @@ public class UsuarioService
 
         foreach (var u in usuarios)
         {
-            var coincideNombre = string.IsNullOrWhiteSpace(request.Nombre) || u.Nombre == request.Nombre;
-            var coincideApellido = string.IsNullOrWhiteSpace(request.Apellido) || u.Apellido == request.Apellido;
-
-            if (coincideNombre && coincideApellido)
+            if (CoincideNombre(u, request.Nombre) && CoincideApellido(u, request.Apellido))
             {
                 resultado.Add(u.MapeoAResponseDTO());
             }
         }
 
         return resultado;
+    }
+
+    private static bool CoincideNombre(Usuario usuario, string? nombre)
+    {
+        return string.IsNullOrWhiteSpace(nombre) ||
+               string.Equals(usuario.Nombre, nombre.Trim(), StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool CoincideApellido(Usuario usuario, string? apellido)
+    {
+        return string.IsNullOrWhiteSpace(apellido) ||
+               string.Equals(usuario.Apellido, apellido.Trim(), StringComparison.OrdinalIgnoreCase);
     }
 }
