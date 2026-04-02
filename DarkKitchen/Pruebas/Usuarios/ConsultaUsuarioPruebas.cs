@@ -270,4 +270,31 @@ public class ConsultaUsuarioPruebas
         Assert.AreEqual("Perez", resultado[0].Apellido);
         Assert.AreEqual("Perez", resultado[1].Apellido);
     }
+
+    [TestMethod]
+    public void BuscarUsuariosPorApellido_ApellidoInexistente_RetornaListaVacia()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        var usuario = Usuario.CrearInterno(
+            "Juan",
+            "Gomez",
+            "juan@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuario.Id = 1;
+
+        repoMock
+            .Setup(r => r.GetAll())
+            .Returns(new List<Usuario> { usuario });
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        var resultado = service.BuscarUsuariosPorApellido("Perez");
+
+        Assert.AreEqual(0, resultado.Count);
+    }
 }
