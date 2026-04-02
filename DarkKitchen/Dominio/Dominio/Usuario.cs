@@ -90,7 +90,7 @@ public class Usuario
         Nombre = nombre.Trim();
     }
 
-    public void ModificarDatos(string nombre, string apellido, string telefono)
+    public void ModificarDatos(string nombre, string apellido, string telefono, string email)
     {
         ValidarNombre(nombre);
         ValidarApellido(apellido);
@@ -99,6 +99,7 @@ public class Usuario
         Nombre = nombre.Trim();
         Apellido = apellido.Trim();
         Telefono = telefono.Trim();
+        Email = Email.Crear(email);
     }
 
     public bool VerificarClave(string clave)

@@ -98,13 +98,21 @@ public class UsuarioService
         var nombreActualizado = ObtenerNombreActualizado(request, usuario);
         var apellidoActualizado = ObtenerApellidoActualizado(request, usuario);
         var telefonoActualizado = ObtenerTelefonoActualizado(request, usuario);
+        var emailActualizado = ObtenerEmailActualizado(request, usuario);
 
         if (telefonoActualizado != usuario.Telefono && !_validadorTelefono.EsValido(telefonoActualizado))
         {
             throw new UsuarioExcepcion("El teléfono no es válido");
         }
 
-        usuario.ModificarDatos(nombreActualizado, apellidoActualizado, telefonoActualizado);
+        usuario.ModificarDatos(nombreActualizado, apellidoActualizado, telefonoActualizado, emailActualizado);
+    }
+
+    private static string ObtenerEmailActualizado(ModificarUsuarioRequest request, Usuario usuario)
+    {
+        return string.IsNullOrWhiteSpace(request.Email)
+            ? usuario.Email.ToString()
+            : request.Email;
     }
 
     private static string ObtenerApellidoActualizado(ModificarUsuarioRequest request, Usuario usuario)
