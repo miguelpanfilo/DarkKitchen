@@ -133,6 +133,47 @@ public class ModificarUsuarioInternoPruebas
     }
 
     [TestMethod]
+    public void ModificarClaveUsuario_UsuarioLogueadoNoExiste_LanzaExcepcionConMensajeCorrecto()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var service = new UsuarioService(repoMock.Object, Mock.Of<IValidadorTelefono>());
+
+        var usuarioAModificar = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioAModificar.Id = 5;
+
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns(usuarioAModificar);
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns((Usuario?)null);
+
+        var request = new ModificarClaveRequest
+        {
+            ClaveActual = "PasswordSeguraee3!",
+            ClaveNueva = "ClaveNuevaSegura4!"
+        };
+
+        try
+        {
+            service.ModificarClaveUsuario(5, 99, request);
+            Assert.Fail("Se esperaba excepción");
+        }
+        catch (UsuarioExcepcion ex)
+        {
+            Assert.AreEqual("El usuario no existe", ex.Message);
+        }
+    }
+
+    [TestMethod]
     public void ModificarClaveUsuario_DatosValidos_CambiaLaClave()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
