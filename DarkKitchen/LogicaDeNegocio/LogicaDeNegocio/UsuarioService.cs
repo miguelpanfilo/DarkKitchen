@@ -233,4 +233,20 @@ public class UsuarioService
 
         return resultado;
     }
+
+    public List<UsuarioResponse> BuscarUsuarios(BuscarUsuariosRequest request)
+    {
+        var usuarios = _repo.GetAll();
+        var resultado = new List<UsuarioResponse>();
+
+        foreach (var u in usuarios)
+        {
+            if (u.Nombre == request.Nombre)
+            {
+                resultado.Add(u.MapeoAResponseDTO());
+            }
+        }
+
+        return resultado;
+    }
 }
