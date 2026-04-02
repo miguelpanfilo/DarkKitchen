@@ -33,10 +33,7 @@ public class ModificarUsuarioInternoPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var request = new ModificarUsuarioRequest
-        {
-            Nombre = "Carlos"
-        };
+        var request = new ModificarUsuarioRequest { Nombre = "Carlos" };
 
         var resultado = service.ModificarUsuarioInterno(5, 99, request);
 
@@ -70,10 +67,7 @@ public class ModificarUsuarioInternoPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var request = new ModificarUsuarioRequest
-        {
-            Nombre = "Carlos"
-        };
+        var request = new ModificarUsuarioRequest { Nombre = "Carlos" };
 
         service.ModificarUsuarioInterno(5, 5, request);
     }
@@ -100,11 +94,7 @@ public class ModificarUsuarioInternoPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var request = new ModificarUsuarioRequest()
-        {
-            Nombre = "Carlos",
-            Apellido = "Gomez"
-        };
+        var request = new ModificarUsuarioRequest() { Nombre = "Carlos", Apellido = "Gomez" };
 
         var resultado = service.ModificarUsuarioInterno(5, 99, request);
 
@@ -139,8 +129,7 @@ public class ModificarUsuarioInternoPruebas
 
         var request = new ModificarClaveRequest
         {
-            ClaveActual = "PasswordSeguraee3!",
-            ClaveNueva = "ClaveNuevaSegura4!"
+            ClaveActual = "PasswordSeguraee3!", ClaveNueva = "ClaveNuevaSegura4!"
         };
 
         service.ModificarClaveUsuario(5, request);
@@ -171,11 +160,7 @@ public class ModificarUsuarioInternoPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var request = new ModificarClaveRequest
-        {
-            ClaveActual = "Incorrecta123!",
-            ClaveNueva = "ClaveNuevaSegura4!"
-        };
+        var request = new ModificarClaveRequest { ClaveActual = "Incorrecta123!", ClaveNueva = "ClaveNuevaSegura4!" };
 
         service.ModificarClaveUsuario(5, request);
     }
@@ -202,11 +187,7 @@ public class ModificarUsuarioInternoPruebas
 
         var service = new UsuarioService(repoMock.Object, Mock.Of<IValidadorTelefono>());
 
-        var request = new ModificarClaveRequest
-        {
-            ClaveActual = "PasswordSeguraee3!",
-            ClaveNueva = "123"
-        };
+        var request = new ModificarClaveRequest { ClaveActual = "PasswordSeguraee3!", ClaveNueva = "123" };
 
         service.ModificarClaveUsuario(5, request);
     }
@@ -225,8 +206,7 @@ public class ModificarUsuarioInternoPruebas
 
         var request = new ModificarClaveRequest
         {
-            ClaveActual = "PasswordSeguraee3!",
-            ClaveNueva = "ClaveNuevaSegura4!"
+            ClaveActual = "PasswordSeguraee3!", ClaveNueva = "ClaveNuevaSegura4!"
         };
 
         service.ModificarClaveUsuario(5, request);
@@ -253,17 +233,13 @@ public class ModificarUsuarioInternoPruebas
 
         var service = new UsuarioService(repoMock.Object, Mock.Of<IValidadorTelefono>());
 
-        var request = new ModificarClaveRequest
-        {
-            ClaveActual = "Incorrecta123!",
-            ClaveNueva = "ClaveNuevaSegura4!"
-        };
+        var request = new ModificarClaveRequest { ClaveActual = "Incorrecta123!", ClaveNueva = "ClaveNuevaSegura4!" };
 
         try
         {
             service.ModificarClaveUsuario(5, request);
         }
-        catch (UsuarioExcepcion)
+        catch(UsuarioExcepcion)
         {
         }
 
@@ -296,10 +272,7 @@ public class ModificarUsuarioInternoPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var request = new ModificarUsuarioRequest
-        {
-            Apellido = "Gomez"
-        };
+        var request = new ModificarUsuarioRequest { Apellido = "Gomez" };
 
         var resultado = service.ModificarUsuarioInterno(5, 99, request);
 
@@ -369,10 +342,7 @@ public class ModificarUsuarioInternoPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var request = new ModificarUsuarioRequest
-        {
-            Telefono = "098111222"
-        };
+        var request = new ModificarUsuarioRequest { Telefono = "098111222" };
 
         var resultado = service.ModificarUsuarioInterno(5, 99, request);
 
@@ -410,10 +380,7 @@ public class ModificarUsuarioInternoPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var request = new ModificarUsuarioRequest
-        {
-            Telefono = "123"
-        };
+        var request = new ModificarUsuarioRequest { Telefono = "123" };
 
         service.ModificarUsuarioInterno(5, 99, request);
     }
@@ -444,16 +411,13 @@ public class ModificarUsuarioInternoPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var request = new ModificarUsuarioRequest
-        {
-            Telefono = "123"
-        };
+        var request = new ModificarUsuarioRequest { Telefono = "123" };
 
         try
         {
             service.ModificarUsuarioInterno(5, 99, request);
         }
-        catch (UsuarioExcepcion)
+        catch(UsuarioExcepcion)
         {
         }
 
@@ -472,10 +436,7 @@ public class ModificarUsuarioInternoPruebas
 
         var service = new UsuarioService(repoMock.Object, Mock.Of<IValidadorTelefono>());
 
-        var request = new ModificarUsuarioRequest
-        {
-            Telefono = "098111222"
-        };
+        var request = new ModificarUsuarioRequest { Telefono = "098111222" };
 
         service.ModificarUsuarioInterno(5, 99, request);
     }
@@ -502,10 +463,7 @@ public class ModificarUsuarioInternoPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var request = new ModificarUsuarioRequest
-        {
-            Telefono = "099123456"
-        };
+        var request = new ModificarUsuarioRequest { Telefono = "099123456" };
 
         service.ModificarUsuarioInterno(5, 99, request);
 
@@ -539,10 +497,7 @@ public class ModificarUsuarioInternoPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var request = new ModificarUsuarioRequest
-        {
-            Email = "nuevo@gmail.com"
-        };
+        var request = new ModificarUsuarioRequest { Email = "nuevo@gmail.com" };
 
         var resultado = service.ModificarUsuarioInterno(5, 99, request);
 
@@ -578,17 +533,14 @@ public class ModificarUsuarioInternoPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var request = new ModificarUsuarioRequest
-        {
-            Email = "correo-invalido"
-        };
+        var request = new ModificarUsuarioRequest { Email = "correo-invalido" };
 
         try
         {
             service.ModificarUsuarioInterno(5, 99, request);
             Assert.Fail("Se esperaba excepción");
         }
-        catch (UsuarioExcepcion ex)
+        catch(UsuarioExcepcion ex)
         {
             Assert.AreEqual("El email debe tener un formato válido", ex.Message);
         }
@@ -620,17 +572,14 @@ public class ModificarUsuarioInternoPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var request = new ModificarUsuarioRequest
-        {
-            Email = "repetido@gmail.com"
-        };
+        var request = new ModificarUsuarioRequest { Email = "repetido@gmail.com" };
 
         try
         {
             service.ModificarUsuarioInterno(5, 99, request);
             Assert.Fail("Se esperaba excepción");
         }
-        catch (UsuarioExcepcion ex)
+        catch(UsuarioExcepcion ex)
         {
             Assert.AreEqual("El email ya está registrado", ex.Message);
         }
@@ -662,16 +611,13 @@ public class ModificarUsuarioInternoPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var request = new ModificarUsuarioRequest
-        {
-            Email = "repetido@gmail.com"
-        };
+        var request = new ModificarUsuarioRequest { Email = "repetido@gmail.com" };
 
         try
         {
             service.ModificarUsuarioInterno(5, 99, request);
         }
-        catch (UsuarioExcepcion)
+        catch(UsuarioExcepcion)
         {
         }
 
@@ -700,10 +646,7 @@ public class ModificarUsuarioInternoPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var request = new ModificarUsuarioRequest
-        {
-            Email = null
-        };
+        var request = new ModificarUsuarioRequest { Email = null };
 
         var resultado = service.ModificarUsuarioInterno(5, 99, request);
 
@@ -732,13 +675,42 @@ public class ModificarUsuarioInternoPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var request = new ModificarUsuarioRequest
-        {
-            Email = string.Empty
-        };
+        var request = new ModificarUsuarioRequest { Email = string.Empty };
 
         var resultado = service.ModificarUsuarioInterno(5, 99, request);
 
         Assert.AreEqual("admin@gmail.com", resultado.Email);
+    }
+
+    [TestMethod]
+    public void ModificarUsuarioInterno_EmailIgualAlActual_NoConsultaRepositorio()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        var usuarioExistente = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioExistente.Id = 5;
+
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns(usuarioExistente);
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        var request = new ModificarUsuarioRequest
+        {
+            Email = "admin@gmail.com"
+        };
+
+        service.ModificarUsuarioInterno(5, 99, request);
+
+        repoMock.Verify(r => r.ExisteEmail(It.IsAny<string>()), Times.Never);
     }
 }
