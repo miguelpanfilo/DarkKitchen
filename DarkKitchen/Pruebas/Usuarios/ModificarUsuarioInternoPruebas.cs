@@ -551,4 +551,46 @@ public class ModificarUsuarioInternoPruebas
         Assert.AreEqual("Perez", resultado.Apellido);
         Assert.AreEqual("099123456", resultado.Telefono);
     }
+
+    [TestMethod]
+    public void ModificarUsuarioInterno_EmailFormatoInvalido_LanzaExcepcionConMensajeCorrecto()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        var usuarioExistente = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioExistente.Id = 5;
+
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns(usuarioExistente);
+
+        repoMock
+            .Setup(r => r.ExisteEmail("correo-invalido"))
+            .Returns(false);
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        var request = new ModificarUsuarioRequest
+        {
+            Email = "correo-invalido"
+        };
+
+        try
+        {
+            service.ModificarUsuarioInterno(5, 99, request);
+            Assert.Fail("Se esperaba excepción");
+        }
+        catch (UsuarioExcepcion ex)
+        {
+            Assert.AreEqual("El email debe tener un formato válido", ex.Message);
+        }
+    }
 }
