@@ -215,4 +215,20 @@ public class UsuarioService
             .Select(u => u.MapeoAResponseDTO())
             .ToList();
     }
+
+    public List<UsuarioResponse> BuscarUsuariosPorApellido(string apellido)
+    {
+        var usuarios = _repo.GetAll();
+        var resultado = new List<UsuarioResponse>();
+
+        foreach (var u in usuarios)
+        {
+            if (u.Apellido == apellido)
+            {
+                resultado.Add(u.MapeoAResponseDTO());
+            }
+        }
+
+        return resultado;
+    }
 }
