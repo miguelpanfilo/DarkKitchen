@@ -337,6 +337,7 @@ public class ConsultaUsuarioPruebas
         Assert.AreEqual("Perez", resultado[0].Apellido);
         Assert.AreEqual("099123456", resultado[0].Telefono);
         Assert.AreEqual("juan@gmail.com", resultado[0].Email);
+        Assert.AreEqual("Administrativo", resultado[0].Rol);
     }
 
     [TestMethod]
