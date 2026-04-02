@@ -218,9 +218,19 @@ public class UsuarioService
 
     public List<UsuarioResponse> BuscarUsuariosPorApellido(string apellido)
     {
-        return _repo.GetAll()
-            .Where(u => string.Equals(u.Apellido, apellido, StringComparison.CurrentCultureIgnoreCase))
-            .Select(u => u.MapeoAResponseDTO())
-            .ToList();
+        var apellidoNormalizado = apellido.Trim();
+
+        var usuarios = _repo.GetAll();
+        var resultado = new List<UsuarioResponse>();
+
+        foreach (var u in usuarios)
+        {
+            if (string.Equals(u.Apellido, apellidoNormalizado, StringComparison.OrdinalIgnoreCase))
+            {
+                resultado.Add(u.MapeoAResponseDTO());
+            }
+        }
+
+        return resultado;
     }
 }
