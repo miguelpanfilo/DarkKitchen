@@ -443,10 +443,7 @@ public class ConsultaUsuarioPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var request = new BuscarUsuariosRequest
-        {
-            Nombre = "Juan"
-        };
+        var request = new BuscarUsuariosRequest { Nombre = "Juan" };
 
         var resultado = service.BuscarUsuarios(request);
 
@@ -487,10 +484,7 @@ public class ConsultaUsuarioPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var request = new BuscarUsuariosRequest
-        {
-            Apellido = "Perez"
-        };
+        var request = new BuscarUsuariosRequest { Apellido = "Perez" };
 
         var resultado = service.BuscarUsuarios(request);
 
@@ -536,5 +530,40 @@ public class ConsultaUsuarioPruebas
         var resultado = service.BuscarUsuarios(request);
 
         Assert.AreEqual(2, resultado.Count);
+    }
+
+    [TestMethod]
+    public void BuscarUsuarios_RequestConEspaciosYDistintoCase_RetornaCoincidencias()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        var usuario = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "juan@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuario.Id = 1;
+
+        repoMock
+            .Setup(r => r.GetAll())
+            .Returns(new List<Usuario> { usuario });
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        var request = new BuscarUsuariosRequest
+        {
+            Nombre = " juan ",
+            Apellido = " pErEz "
+        };
+
+        var resultado = service.BuscarUsuarios(request);
+
+        Assert.AreEqual(1, resultado.Count);
+        Assert.AreEqual("Juan", resultado[0].Nombre);
+        Assert.AreEqual("Perez", resultado[0].Apellido);
     }
 }
