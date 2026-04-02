@@ -211,7 +211,7 @@ public class UsuarioService
     {
         var nombreEnMinuscula=nombre.ToLower();
         return _repo.GetAll()
-            .Where(u => string.Equals(u.Nombre, nombreEnMinuscula))
+            .Where(u => string.Equals(u.Nombre.ToLower(), nombreEnMinuscula))
             .Select(u => u.MapeoAResponseDTO())
             .ToList();
     }
