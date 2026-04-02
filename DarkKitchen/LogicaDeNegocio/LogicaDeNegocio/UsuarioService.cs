@@ -185,6 +185,8 @@ public class UsuarioService
 
     public void EliminarUsuarioInterno(int idUsuarioAEliminar, int idUsuarioLogueado)
     {
+        var usuarioLogueado = ObtenerUsuarioExistente(idUsuarioLogueado);
+
         ValidarNoAutoEliminacion(idUsuarioAEliminar, idUsuarioLogueado);
 
         var usuario = ObtenerUsuarioExistente(idUsuarioAEliminar);
