@@ -209,8 +209,9 @@ public class UsuarioService
 
     public List<UsuarioResponse> BuscarUsuariosPorNombre(string nombre)
     {
+        var nombreEnMinuscula=nombre.ToLower();
         return _repo.GetAll()
-            .Where(u => string.Equals(u.Nombre, nombre))
+            .Where(u => string.Equals(u.Nombre, nombreEnMinuscula))
             .Select(u => u.MapeoAResponseDTO())
             .ToList();
     }
