@@ -834,4 +834,27 @@ public class ModificarUsuarioInternoPruebas
 
         repoMock.Verify(r => r.ExisteEmail(It.IsAny<string>()), Times.Never);
     }
+
+    [TestMethod]
+    public void ModificarNombre_NombreConNumeros_LanzaExcepcion()
+    {
+        var usuario = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+
+        try
+        {
+            usuario.ModificarNombre("Ju4n");
+            Assert.Fail("Se esperaba excepción");
+        }
+        catch (UsuarioExcepcion ex)
+        {
+            Assert.AreEqual("El nombre no puede contener números", ex.Message);
+        }
+    }
 }
