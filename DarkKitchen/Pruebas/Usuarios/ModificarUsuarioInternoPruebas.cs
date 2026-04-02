@@ -957,6 +957,20 @@ public class ModificarUsuarioInternoPruebas
             .Setup(r => r.FindById(5))
             .Returns(usuarioExistente);
 
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Admin",
+            "Perez",
+            "admin2@gmail.com",
+            "099999999",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
+
         repoMock
             .Setup(r => r.ExisteEmail("repetido@gmail.com"))
             .Returns(true);
