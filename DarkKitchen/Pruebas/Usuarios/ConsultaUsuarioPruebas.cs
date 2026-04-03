@@ -40,6 +40,19 @@ public class ConsultaUsuarioPruebas
         repoMock
             .Setup(r => r.GetAll())
             .Returns(new List<Usuario> { usuario1, usuario2 });
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Admin",
+            "Root",
+            "root@gmail.com",
+            "099999999",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
@@ -48,7 +61,7 @@ public class ConsultaUsuarioPruebas
             Nombre = "Juan"
         };
 
-        var resultado = service.BuscarUsuarios(request);
+        var resultado = service.BuscarUsuarios(99,request);
         Assert.AreEqual(2, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Nombre);
         Assert.AreEqual("Juan", resultado[1].Nombre);
@@ -80,8 +93,21 @@ public class ConsultaUsuarioPruebas
         {
             Nombre = "Juan"
         };
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Admin",
+            "Root",
+            "root@gmail.com",
+            "099999999",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
 
-        var resultado = service.BuscarUsuarios(request);
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
+
+        var resultado = service.BuscarUsuarios(99,request);
         Assert.AreEqual(0, resultado.Count);
     }
 
@@ -121,8 +147,21 @@ public class ConsultaUsuarioPruebas
         {
             Nombre = "Juan"
         };
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Admin",
+            "Root",
+            "root@gmail.com",
+            "099999999",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
 
-        var resultado = service.BuscarUsuarios(request);
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
+
+        var resultado = service.BuscarUsuarios(99,request);
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Nombre);
         Assert.AreEqual("Perez", resultado[0].Apellido);
@@ -154,8 +193,21 @@ public class ConsultaUsuarioPruebas
         {
             Nombre = "juAn"
         };
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Admin",
+            "Root",
+            "root@gmail.com",
+            "099999999",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
 
-        var resultado = service.BuscarUsuarios(request);
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
+
+        var resultado = service.BuscarUsuarios(99,request);
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Nombre);
     }
@@ -176,8 +228,21 @@ public class ConsultaUsuarioPruebas
         {
             Nombre = "Juan"
         };
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Admin",
+            "Root",
+            "root@gmail.com",
+            "099999999",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
 
-        var resultado = service.BuscarUsuarios(request);
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
+
+        var resultado = service.BuscarUsuarios(99,request);
         Assert.AreEqual(0, resultado.Count);
     }
 
@@ -206,8 +271,21 @@ public class ConsultaUsuarioPruebas
         {
             Nombre = "Juan"
         };
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Admin",
+            "Root",
+            "root@gmail.com",
+            "099999999",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
 
-        var resultado = service.BuscarUsuarios(request);
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
+
+        var resultado = service.BuscarUsuarios(99,request);
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual(100, resultado[0].Id);
         Assert.AreEqual("Juan", resultado[0].Nombre);
@@ -253,8 +331,21 @@ public class ConsultaUsuarioPruebas
         {
             Apellido = "Perez"
         };
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Admin",
+            "Root",
+            "root@gmail.com",
+            "099999999",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
 
-        var resultado = service.BuscarUsuarios(request);
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
+
+        var resultado = service.BuscarUsuarios(99,request);
         Assert.AreEqual(2, resultado.Count);
         Assert.AreEqual("Perez", resultado[0].Apellido);
         Assert.AreEqual("Perez", resultado[1].Apellido);
@@ -296,8 +387,21 @@ public class ConsultaUsuarioPruebas
         {
             Apellido = "PeReZ"
         };
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Admin",
+            "Root",
+            "root@gmail.com",
+            "099999999",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
 
-        var resultado = service.BuscarUsuarios(request);
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
+
+        var resultado = service.BuscarUsuarios(99,request);
         Assert.AreEqual(2, resultado.Count);
         Assert.AreEqual("Perez", resultado[0].Apellido);
         Assert.AreEqual("Perez", resultado[1].Apellido);
@@ -329,8 +433,21 @@ public class ConsultaUsuarioPruebas
         {
             Apellido = "Perez"
         };
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Admin",
+            "Root",
+            "root@gmail.com",
+            "099999999",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
 
-        var resultado = service.BuscarUsuarios(request);
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
+
+        var resultado = service.BuscarUsuarios(99, request);
         Assert.AreEqual(0, resultado.Count);
     }
 
@@ -370,8 +487,21 @@ public class ConsultaUsuarioPruebas
         {
             Apellido = "Perez"
         };
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Admin",
+            "Root",
+            "root@gmail.com",
+            "099999999",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
 
-        var resultado = service.BuscarUsuarios(request);
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
+
+        var resultado = service.BuscarUsuarios(99,request);
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Nombre);
         Assert.AreEqual("Perez", resultado[0].Apellido);
@@ -396,8 +526,21 @@ public class ConsultaUsuarioPruebas
         {
             Apellido = "Perez"
         };
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Admin",
+            "Root",
+            "root@gmail.com",
+            "099999999",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
 
-        var resultado = service.BuscarUsuarios(request);
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
+
+        var resultado = service.BuscarUsuarios(99,request);
         Assert.AreEqual(0, resultado.Count);
     }
 
@@ -421,6 +564,20 @@ public class ConsultaUsuarioPruebas
             .Setup(r => r.GetAll())
             .Returns(new List<Usuario> { usuario });
 
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Admin",
+            "Root",
+            "root@gmail.com",
+            "099999999",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
+
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
         var request = new BuscarUsuariosRequest
@@ -428,7 +585,7 @@ public class ConsultaUsuarioPruebas
             Apellido = "  Perez   "
         };
 
-        var resultado = service.BuscarUsuarios(request);
+        var resultado = service.BuscarUsuarios(99, request);
         Assert.AreEqual(1, resultado.Count);
     }
 
@@ -448,6 +605,20 @@ public class ConsultaUsuarioPruebas
         );
         usuario.Id = 1;
 
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Admin",
+            "Root",
+            "root@gmail.com",
+            "099999999",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
+
         repoMock
             .Setup(r => r.GetAll())
             .Returns(new List<Usuario> { usuario });
@@ -459,7 +630,7 @@ public class ConsultaUsuarioPruebas
             Nombre = "   Juan  "
         };
 
-        var resultado = service.BuscarUsuarios(request);
+        var resultado = service.BuscarUsuarios(99, request);
 
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Nombre);
@@ -481,6 +652,20 @@ public class ConsultaUsuarioPruebas
         );
         usuario.Id = 1;
 
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Admin",
+            "Root",
+            "root@gmail.com",
+            "099999999",
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(usuarioLogueado);
+
         repoMock
             .Setup(r => r.GetAll())
             .Returns(new List<Usuario> { usuario });
@@ -493,7 +678,7 @@ public class ConsultaUsuarioPruebas
             Apellido = " pErEz "
         };
 
-        var resultado = service.BuscarUsuarios(request);
+        var resultado = service.BuscarUsuarios(99,request);
 
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Nombre);
