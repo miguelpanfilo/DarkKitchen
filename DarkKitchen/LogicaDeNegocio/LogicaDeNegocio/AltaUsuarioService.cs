@@ -57,7 +57,7 @@ public class AltaUsuarioService : IAltaUsuarioService
             throw new UsuarioExcepcion("El email ya está registrado");
         }
 
-        var usuario = request.MapeoDTOAUserInterno(telefono, rol);
+        var usuario = UsuarioMapper.MapeoDTOAUserInterno(request, telefono, rol);
 
         var usuarioGuardado = _repo.Add(usuario);
 
