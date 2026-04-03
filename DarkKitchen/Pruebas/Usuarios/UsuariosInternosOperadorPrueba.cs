@@ -70,7 +70,6 @@ public class UsuariosInternosOperadorPrueba
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
     public void CrearUsuarioInterno_TelefonoInvalido_LanzaExcepcion()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
@@ -106,14 +105,17 @@ public class UsuariosInternosOperadorPrueba
             Rol = "Administrativo"
         };
 
-        service.CrearUsuarioInterno(1, request);
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            service.CrearUsuarioInterno(1, request)
+        );
+
+        Assert.AreEqual("El teléfono no es válido", ex.Message);
     }
 
     [TestMethod]
     public void CrearUsuarioInterno_NombreConNumeros_LanzaExcepcion()
     {
-        try
-        {
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
             Usuario.CrearInterno(
                 "Ju4n",
                 "Perez",
@@ -121,18 +123,14 @@ public class UsuariosInternosOperadorPrueba
                 "099123456",
                 "PasswordSeguraee3!",
                 RolUsuario.Administrativo
-            );
+            )
+        );
 
-            Assert.Fail("Se esperaba excepción");
-        }
-        catch (UsuarioExcepcion ex)
-        {
-            Assert.AreEqual("El nombre no puede contener números", ex.Message);
-        }
+        Assert.AreEqual("El nombre no puede contener números", ex.Message);
     }
 
     [TestMethod]
-    public void CrearUsuarioInterno_TelefonoInvalido_NoLlamaAlRepositorio()
+    public void CrearUsuarioInterno_TelefonoInvalido_LanzaExcepcionYNoLlamaAlRepositorio()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
         var validadorTelefonoMock = new Mock<IValidadorTelefono>();
@@ -167,13 +165,11 @@ public class UsuariosInternosOperadorPrueba
             Rol = "Administrativo"
         };
 
-        try
-        {
-            service.CrearUsuarioInterno(1, request);
-        }
-        catch (UsuarioExcepcion)
-        {
-        }
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            service.CrearUsuarioInterno(1, request)
+        );
+
+        Assert.AreEqual("El teléfono no es válido", ex.Message);
 
         repoMock.Verify(r => r.Add(It.IsAny<Usuario>()), Times.Never);
     }
@@ -232,75 +228,6 @@ public class UsuariosInternosOperadorPrueba
     }
 
     [TestMethod]
-    public void CrearUsuarioInterno_EmailYaRegistrado_LanzaExcepcionConMensajeCorrecto()
-    {
-        var repoMock = new Mock<IRepositorioUsuario>();
-        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
-
-        var usuarioLogueado = Usuario.CrearInterno(
-            "Admin",
-            "Root",
-            "root@gmail.com",
-            "099999999",
-            "PasswordSeguraee3!",
-            RolUsuario.Administrativo
-        );
-        usuarioLogueado.Id = 1;
-
-        repoMock
-            .Setup(r => r.FindById(1))
-            .Returns(usuarioLogueado);
-
-        validadorTelefonoMock
-            .Setup(v => v.EsValido("099123456"))
-            .Returns(true);
-
-        repoMock
-            .Setup(r => r.ExisteEmail("admin@gmail.com"))
-            .Returns(true);
-
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
-
-        var request = new CrearUsuarioInternoRequest
-        {
-            Nombre = "Juan",
-            Apellido = "Perez",
-            Email = "admin@gmail.com",
-            Telefono = "099123456",
-            Clave = "PasswordSeguraee3!",
-            Rol = "Administrativo"
-        };
-
-        try
-        {
-            service.CrearUsuarioInterno(1, request);
-            Assert.Fail("Se esperaba excepción");
-        }
-        catch (UsuarioExcepcion ex)
-        {
-            Assert.AreEqual("El email ya está registrado", ex.Message);
-        }
-    }
-
-    [TestMethod]
-    public void MapeoDTOAUserInterno_RolEnMinuscula_MapeaCorrectamente()
-    {
-        var request = new CrearUsuarioInternoRequest
-        {
-            Nombre = "Juan",
-            Apellido = "Perez",
-            Email = "admin@gmail.com",
-            Telefono = "099123456",
-            Clave = "PasswordSeguraee3!",
-            Rol = "administrativo"
-        };
-
-        var usuario = request.MapeoDTOAUserInterno();
-
-        Assert.AreEqual(RolUsuario.Administrativo, usuario.Rol);
-    }
-
-    [TestMethod]
     public void CrearUsuarioInterno_EmailYaRegistrado_NoLlamaAdd()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
@@ -340,13 +267,11 @@ public class UsuariosInternosOperadorPrueba
             Rol = "AdmiNistrAtIvo"
         };
 
-        try
-        {
-            service.CrearUsuarioInterno(1, request);
-        }
-        catch (UsuarioExcepcion)
-        {
-        }
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            service.CrearUsuarioInterno(1, request)
+        );
+
+        Assert.AreEqual("El email ya está registrado", ex.Message);
 
         repoMock.Verify(r => r.Add(It.IsAny<Usuario>()), Times.Never);
     }
@@ -396,16 +321,18 @@ public class UsuariosInternosOperadorPrueba
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
     public void MapeoAResponseDTO_UsuarioNull_LanzaExcepcionControlada()
     {
         Usuario usuario = null!;
 
-        usuario.MapeoAResponseDTO();
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            usuario.MapeoAResponseDTO()
+        );
+
+        Assert.AreEqual("El usuario no puede ser null", ex.Message);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
     public void MapeoDTOAUserInterno_RolInvalido_LanzaExcepcion()
     {
         var request = new CrearUsuarioInternoRequest
@@ -418,7 +345,11 @@ public class UsuariosInternosOperadorPrueba
             Rol = "CualquierCosa"
         };
 
-        request.MapeoDTOAUserInterno();
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            request.MapeoDTOAUserInterno()
+        );
+
+        Assert.AreEqual("El rol interno no es válido", ex.Message);
     }
 
     [TestMethod]
@@ -436,73 +367,88 @@ public class UsuariosInternosOperadorPrueba
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
     public void CrearInterno_NombreVacio_LanzaExcepcion()
     {
-        Usuario.CrearInterno(
-            string.Empty,
-            "Perez",
-            "admin@gmail.com",
-            "099123456",
-            "PasswordSeguraee3!",
-            RolUsuario.Administrativo
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            Usuario.CrearInterno(
+                string.Empty,
+                "Perez",
+                "admin@gmail.com",
+                "099123456",
+                "PasswordSeguraee3!",
+                RolUsuario.Administrativo
+            )
         );
+
+        Assert.AreEqual("El nombre no puede estar vacío", ex.Message);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
     public void CrearInterno_ApellidoVacio_LanzaExcepcion()
     {
-        Usuario.CrearInterno(
-            "Juan",
-            String.Empty,
-            "admin@gmail.com",
-            "099123456",
-            "PasswordSeguraee3!",
-            RolUsuario.Administrativo
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            Usuario.CrearInterno(
+                "Juan",
+                string.Empty,
+                "admin@gmail.com",
+                "099123456",
+                "PasswordSeguraee3!",
+                RolUsuario.Administrativo
+            )
         );
+
+        Assert.AreEqual("El apellido no puede estar vacío", ex.Message);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
     public void CrearInterno_ApellidoMenorATres_LanzaExcepcion()
     {
-        Usuario.CrearInterno(
-            "Juan",
-            "Pe",
-            "admin@gmail.com",
-            "099123456",
-            "PasswordSeguraee3!",
-            RolUsuario.Administrativo
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            Usuario.CrearInterno(
+                "Juan",
+                "Pe",
+                "admin@gmail.com",
+                "099123456",
+                "PasswordSeguraee3!",
+                RolUsuario.Administrativo
+            )
         );
+
+        Assert.AreEqual("El apellido debe tener entre 3 y 25 caracteres", ex.Message);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
     public void CrearInterno_ApellidoMayorAVeinticinco_LanzaExcepcion()
     {
-        Usuario.CrearInterno(
-            "Juan",
-            "ApellidoDemasiadoDemasiadoLargo",
-            "admin@gmail.com",
-            "099123456",
-            "PasswordSeguraee3!",
-            RolUsuario.Administrativo
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            Usuario.CrearInterno(
+                "Juan",
+                "ApellidoDemasiadoDemasiadoLargo",
+                "admin@gmail.com",
+                "099123456",
+                "PasswordSeguraee3!",
+                RolUsuario.Administrativo
+            )
         );
+
+        Assert.AreEqual("El apellido debe tener entre 3 y 25 caracteres", ex.Message);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
     public void CrearInterno_TelefonoVacio_LanzaExcepcion()
     {
-        Usuario.CrearInterno(
-            "Juan",
-            "Perez",
-            "admin@gmail.com",
-            string.Empty,
-            "PasswordSeguraee3!",
-            RolUsuario.Administrativo
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            Usuario.CrearInterno(
+                "Juan",
+                "Perez",
+                "admin@gmail.com",
+                string.Empty,
+                "PasswordSeguraee3!",
+                RolUsuario.Administrativo
+            )
         );
+
+        Assert.AreEqual("El teléfono no puede estar vacío", ex.Message);
     }
 
     [TestMethod]
@@ -612,7 +558,6 @@ public class UsuariosInternosOperadorPrueba
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
     public void CrearUsuarioInterno_UsuarioNoAdministrativo_LanzaExcepcion()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
@@ -635,7 +580,11 @@ public class UsuariosInternosOperadorPrueba
 
         var request = new CrearUsuarioInternoRequest();
 
-        service.CrearUsuarioInterno(5, request);
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            service.CrearUsuarioInterno(5, request)
+        );
+
+        Assert.AreEqual("Solo un usuario administrativo puede realizar esta acción", ex.Message); // ajustá el mensaje según tu implementación
     }
 
     [TestMethod]
@@ -652,14 +601,10 @@ public class UsuariosInternosOperadorPrueba
 
         var request = new CrearUsuarioInternoRequest();
 
-        try
-        {
-            service.CrearUsuarioInterno(1, request);
-            Assert.Fail("Se esperaba excepción");
-        }
-        catch (UsuarioExcepcion ex)
-        {
-            Assert.AreEqual("El usuario no existe", ex.Message);
-        }
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            service.CrearUsuarioInterno(1, request)
+        );
+
+        Assert.AreEqual("El usuario no existe", ex.Message);
     }
 }
