@@ -1,4 +1,4 @@
-﻿namespace Mapping;
+﻿namespace Mapeo;
 
 public class Class1
 {

@@ -1,4 +1,4 @@
-﻿namespace Storage;
+﻿namespace Dominio;
 
 public class Class1
 {
