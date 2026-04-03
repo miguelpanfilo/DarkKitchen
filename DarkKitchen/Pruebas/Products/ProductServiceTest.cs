@@ -29,6 +29,6 @@ public class ProductServiceTest
         var productCreated = service.Create(product);
 
         Assert.IsNotNull(productCreated);
-        Assert.AreEqual("XXXX", productCreated.Name);
+        Assert.AreEqual("Milanesa al pan", productCreated.Name);
     }
 }
