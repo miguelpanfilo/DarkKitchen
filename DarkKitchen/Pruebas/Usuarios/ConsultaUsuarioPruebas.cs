@@ -1,6 +1,7 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
+using Dominio.Excepciones;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
 using Moq;
@@ -497,5 +498,38 @@ public class ConsultaUsuarioPruebas
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Nombre);
         Assert.AreEqual("Perez", resultado[0].Apellido);
+    }
+
+    [TestMethod]
+    public void BuscarUsuarios_UsuarioLogueadoNoEsAdministrativo_LanzaExcepcionConMensajeCorrecto()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        var usuarioLogueado = Usuario.CrearCliente(
+            "Juan",
+            "Perez",
+            "cliente@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!"
+        );
+        usuarioLogueado.Id = 5;
+
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns(usuarioLogueado);
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        var request = new BuscarUsuariosRequest
+        {
+            Nombre = "Juan"
+        };
+
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            service.BuscarUsuarios(5, request)
+        );
+
+        Assert.AreEqual("Solo un usuario administrativo puede realizar esta acción", ex.Message);
     }
 }

@@ -72,15 +72,11 @@ public class EliminacionUsuarioPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        try
-        {
-            service.EliminarUsuarioInterno(5, 5);
-            Assert.Fail("Se esperaba excepción");
-        }
-        catch (UsuarioExcepcion ex)
-        {
-            Assert.AreEqual("Un usuario no puede eliminarse a sí mismo", ex.Message);
-        }
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            service.EliminarUsuarioInterno(5, 5)
+        );
+
+        Assert.AreEqual("Un usuario no puede eliminarse a sí mismo", ex.Message);
     }
 
     [TestMethod]
@@ -95,15 +91,11 @@ public class EliminacionUsuarioPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        try
-        {
-            service.EliminarUsuarioInterno(5, 99);
-            Assert.Fail("Se esperaba excepción");
-        }
-        catch (UsuarioExcepcion ex)
-        {
-            Assert.AreEqual("El usuario no existe", ex.Message);
-        }
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            service.EliminarUsuarioInterno(5, 99)
+        );
+
+        Assert.AreEqual("El usuario no existe", ex.Message);
     }
 
     [TestMethod]
@@ -118,19 +110,17 @@ public class EliminacionUsuarioPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        try
-        {
-            service.EliminarUsuarioInterno(5, 99);
-        }
-        catch (UsuarioExcepcion)
-        {
-        }
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            service.EliminarUsuarioInterno(5, 99)
+        );
+
+        Assert.AreEqual("El usuario no existe", ex.Message);
 
         repoMock.Verify(r => r.Remove(It.IsAny<int>()), Times.Never);
     }
 
     [TestMethod]
-    public void EliminarUsuarioInterno_SiSeEliminaASiMismo_NoLlamaRemove()
+    public void EliminarUsuarioInterno_SiSeEliminaASiMismo_NoLlamaRemove_YLanzaExcepcion()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
         var validadorTelefonoMock = new Mock<IValidadorTelefono>();
@@ -151,19 +141,17 @@ public class EliminacionUsuarioPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        try
-        {
-            service.EliminarUsuarioInterno(5, 5);
-        }
-        catch (UsuarioExcepcion)
-        {
-        }
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            service.EliminarUsuarioInterno(5, 5)
+        );
+
+        Assert.AreEqual("Un usuario no puede eliminarse a sí mismo", ex.Message);
 
         repoMock.Verify(r => r.Remove(It.IsAny<int>()), Times.Never);
     }
 
     [TestMethod]
-    public void EliminarUsuarioInterno_UsuarioLogueadoNoEsAdministrativo_LanzaExcepcion()
+    public void EliminarUsuarioInterno_UsuarioLogueadoNoEsAdministrativo_LanzaExcepcionConMensajeCorrecto()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
         var validadorTelefonoMock = new Mock<IValidadorTelefono>();
@@ -197,15 +185,11 @@ public class EliminacionUsuarioPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        try
-        {
-            service.EliminarUsuarioInterno(10, 5);
-            Assert.Fail("Se esperaba excepción");
-        }
-        catch (UsuarioExcepcion ex)
-        {
-            Assert.AreEqual("No tiene permisos para eliminar usuarios", ex.Message);
-        }
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            service.EliminarUsuarioInterno(10, 5)
+        );
+
+        Assert.AreEqual("Solo un usuario administrativo puede realizar esta acción", ex.Message);
     }
 
     [TestMethod]
@@ -243,13 +227,9 @@ public class EliminacionUsuarioPruebas
 
         var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        try
-        {
-            service.EliminarUsuarioInterno(10, 5);
-        }
-        catch (UsuarioExcepcion)
-        {
-        }
+        Assert.ThrowsException<UsuarioExcepcion>(() =>
+            service.EliminarUsuarioInterno(10, 5)
+        );
 
         repoMock.Verify(r => r.Remove(It.IsAny<int>()), Times.Never);
     }
