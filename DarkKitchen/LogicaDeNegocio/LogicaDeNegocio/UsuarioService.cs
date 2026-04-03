@@ -217,8 +217,10 @@ public class UsuarioService
         }
     }
 
-    public List<UsuarioResponse> BuscarUsuarios(BuscarUsuariosRequest request)
+    public List<UsuarioResponse> BuscarUsuarios(int idUsuarioLogueado, BuscarUsuariosRequest request)
     {
+        ValidarUsuarioEsAdministrativo(idUsuarioLogueado);
+
         var usuarios = _repo.GetAll();
         var resultado = new List<UsuarioResponse>();
 
