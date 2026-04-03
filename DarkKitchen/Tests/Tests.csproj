@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Usuario\" />
+      <Folder Include="User\" />
     </ItemGroup>
 
 </Project>
