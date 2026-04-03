@@ -1,4 +1,4 @@
-﻿namespace BusinessLogic.Abstractions;
+﻿namespace BusinessLogicAbstractions;
 
 public class Class1
 {

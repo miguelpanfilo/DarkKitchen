@@ -1,4 +1,4 @@
-﻿namespace Storage.Abstractions;
+﻿namespace StorageAbstractions;
 
 public class Class1
 {
