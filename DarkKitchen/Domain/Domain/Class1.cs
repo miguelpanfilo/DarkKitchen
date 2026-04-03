@@ -1,4 +1,4 @@
-﻿namespace Contratos;
+﻿namespace Domain;
 
 public class Class1
 {
