@@ -10,7 +10,7 @@ using Moq;
 namespace Pruebas.Usuarios;
 
 [TestClass]
-public class UsuariosInternosOperadorPrueba
+public class AltaUsuarioInterno
 {
     [TestMethod]
     public void CrearUsuarioInterno_DatosValidos_RetornaUsuarioResponse()
@@ -48,7 +48,7 @@ public class UsuariosInternosOperadorPrueba
                 return u;
             });
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service = new AltaUsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
         var request = new CrearUsuarioInternoRequest
         {
@@ -93,7 +93,7 @@ public class UsuariosInternosOperadorPrueba
             .Setup(v => v.EsValido("123"))
             .Returns(false);
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service =new AltaUsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
         var request = new CrearUsuarioInternoRequest
         {
@@ -153,7 +153,7 @@ public class UsuariosInternosOperadorPrueba
             .Setup(v => v.EsValido("123"))
             .Returns(false);
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service = new AltaUsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
         var request = new CrearUsuarioInternoRequest
         {
@@ -210,7 +210,7 @@ public class UsuariosInternosOperadorPrueba
                 return u;
             });
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service = new AltaUsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
         var request = new CrearUsuarioInternoRequest
         {
@@ -255,7 +255,7 @@ public class UsuariosInternosOperadorPrueba
             .Setup(r => r.ExisteEmail("admin@gmail.com"))
             .Returns(true);
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service =new AltaUsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
         var request = new CrearUsuarioInternoRequest
         {
@@ -274,6 +274,49 @@ public class UsuariosInternosOperadorPrueba
         Assert.AreEqual("El email ya está registrado", ex.Message);
 
         repoMock.Verify(r => r.Add(It.IsAny<Usuario>()), Times.Never);
+    }
+
+    [TestMethod]
+    public void CrearUsuarioInterno_RolInvalido_LanzaExcepcion()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        var admin = Usuario.CrearInterno(
+            "Admin",
+            "Root",
+            "root@gmail.com",
+            Telefono.Crear("099999999"),
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        admin.Id = 1;
+
+        repoMock
+            .Setup(r => r.FindById(1))
+            .Returns(admin);
+
+        validadorTelefonoMock
+            .Setup(v => v.EsValido("099123456"))
+            .Returns(true);
+
+        var service = new AltaUsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        var request = new CrearUsuarioInternoRequest
+        {
+            Nombre = "Juan",
+            Apellido = "Perez",
+            Email = "admin@gmail.com",
+            Telefono = "099123456",
+            Clave = "PasswordSeguraee3!",
+            Rol = "CualquierCosa"
+        };
+
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            service.CrearUsuarioInterno(1, request)
+        );
+
+        Assert.AreEqual("El rol interno no es válido", ex.Message);
     }
 
     [TestMethod]
@@ -334,49 +377,6 @@ public class UsuariosInternosOperadorPrueba
         );
 
         Assert.AreEqual("El usuario no puede ser null", ex.Message);
-    }
-
-    [TestMethod]
-    public void CrearUsuarioInterno_RolInvalido_LanzaExcepcion()
-    {
-        var repoMock = new Mock<IRepositorioUsuario>();
-        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
-
-        var admin = Usuario.CrearInterno(
-            "Admin",
-            "Root",
-            "root@gmail.com",
-            Telefono.Crear("099999999"),
-            "PasswordSeguraee3!",
-            RolUsuario.Administrativo
-        );
-        admin.Id = 1;
-
-        repoMock
-            .Setup(r => r.FindById(1))
-            .Returns(admin);
-
-        validadorTelefonoMock
-            .Setup(v => v.EsValido("099123456"))
-            .Returns(true);
-
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
-
-        var request = new CrearUsuarioInternoRequest
-        {
-            Nombre = "Juan",
-            Apellido = "Perez",
-            Email = "admin@gmail.com",
-            Telefono = "099123456",
-            Clave = "PasswordSeguraee3!",
-            Rol = "CualquierCosa"
-        };
-
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
-            service.CrearUsuarioInterno(1, request)
-        );
-
-        Assert.AreEqual("El rol interno no es válido", ex.Message);
     }
 
     [TestMethod]
@@ -507,7 +507,7 @@ public class UsuariosInternosOperadorPrueba
                 return u;
             });
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service = new AltaUsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
         var request = new CrearUsuarioInternoRequest
         {
@@ -560,7 +560,7 @@ public class UsuariosInternosOperadorPrueba
                 return u;
             });
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service = new AltaUsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
         var request = new CrearUsuarioInternoRequest
         {
@@ -596,7 +596,7 @@ public class UsuariosInternosOperadorPrueba
             .Setup(r => r.FindById(5))
             .Returns(usuarioLogueado);
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service = new AltaUsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
         var request = new CrearUsuarioInternoRequest();
 
@@ -617,7 +617,7 @@ public class UsuariosInternosOperadorPrueba
             .Setup(r => r.FindById(1))
             .Returns((Usuario?)null);
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service = new AltaUsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
         var request = new CrearUsuarioInternoRequest();
 

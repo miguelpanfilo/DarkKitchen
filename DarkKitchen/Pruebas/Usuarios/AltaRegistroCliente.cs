@@ -25,9 +25,7 @@ public class UsuarioServiceTests
             .Setup(v => v.EsValido(It.IsAny<string>()))
             .Returns(true);
 
-        var usuarioServicio = new UsuarioService(
-            repoMock.Object,
-            validadorTelefonoMock.Object);
+        var usuarioServicio = new AltaUsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
         var solicitudDeRegistro = new RegistrarClienteRequest
         {
@@ -80,7 +78,7 @@ public class UsuarioServiceTests
     }
 
     [TestMethod]
-    public void CrearUsuario_NombreMinimoValido_NoLanzaExcepcion()
+    public void RegistrarCliente_NombreMinimoValido()
     {
         var usuario = Usuario.CrearCliente(
             "M",
@@ -95,7 +93,7 @@ public class UsuarioServiceTests
 
     [TestMethod]
     [ExpectedException(typeof(UsuarioExcepcion))]
-    public void CrearUsuario_NombreNulo_LanzaExcepcion()
+    public void RegistarCliente_NombreNulo_Error()
     {
         Usuario.CrearCliente(
             null!,
@@ -149,7 +147,7 @@ public class UsuarioServiceTests
     }
 
     [TestMethod]
-    public void CrearUsuario_ApellidoMaximoValido_NoLanzaExcepcion()
+    public void RegistrarCliente_ApellidoMaximoValido()
     {
         var apellido = new string('a', 25);
 
@@ -165,7 +163,7 @@ public class UsuarioServiceTests
     }
 
     [TestMethod]
-    public void CrearUsuario_ApellidoMinimoValido_NoLanzaExcepcion()
+    public void RegistarCliente_ApellidoMinimoValido()
     {
         var usuario = Usuario.CrearCliente(
             "Miguel",
@@ -228,10 +226,7 @@ public class UsuarioServiceTests
             .Setup(v => v.EsValido(It.IsAny<string>()))
             .Returns(false);
 
-        var usuarioServicio = new UsuarioService(
-            repoMock.Object,
-            validadorTelefonoMock.Object
-        );
+        var usuarioServicio = new AltaUsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
         var solicitudDeRegistro = new RegistrarClienteRequest
         {
@@ -256,12 +251,9 @@ public class UsuarioServiceTests
             .Setup(v => v.EsValido(It.IsAny<string>()))
             .Returns(false);
 
-        var usuarioServicio = new UsuarioService(
-            repoMock.Object,
-            validadorTelefonoMock.Object
-        );
+        var usuarioServicio = new AltaUsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
-        var solicitudDeRegistro = new RegistrarClienteRequest
+    var solicitudDeRegistro = new RegistrarClienteRequest
         {
             Nombre = "Miguel",
             Apellido = "Lopez",
@@ -286,10 +278,7 @@ public class UsuarioServiceTests
         repoMock.Setup(r => r.Add(It.IsAny<Usuario>()))
             .Returns((Usuario u) => u);
 
-        var usuarioServicio = new UsuarioService(
-            repoMock.Object,
-            validadorTelefonoMock.Object
-        );
+        var usuarioServicio = new AltaUsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
         var solicitudDeRegistro = new RegistrarClienteRequest
         {
@@ -340,10 +329,7 @@ public class UsuarioServiceTests
             .Setup(v => v.EsValido(It.IsAny<string>()))
             .Returns(true);
 
-        var usuarioServicio = new UsuarioService(
-            repoMock.Object,
-            validadorTelefonoMock.Object
-        );
+        var usuarioServicio = new AltaUsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
         var solicitudDeRegistro = new RegistrarClienteRequest
         {
@@ -458,10 +444,7 @@ public class UsuarioServiceTests
             .Setup(v => v.EsValido(It.IsAny<string>()))
             .Returns(true);
 
-        var usuarioServicio = new UsuarioService(
-            repoMock.Object,
-            validadorTelefonoMock.Object
-        );
+        var usuarioServicio = new AltaUsuarioService(repoMock.Object, validadorTelefonoMock.Object);
 
         var solicitud = new RegistrarClienteRequest
         {
