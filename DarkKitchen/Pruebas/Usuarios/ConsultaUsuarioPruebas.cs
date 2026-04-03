@@ -3,7 +3,6 @@ using Contratos;
 using Dominio;
 using Dominio.Excepciones;
 using LogicaDeNegocio;
-using LogicaDeNegocioAbstracciones;
 using Moq;
 
 namespace Pruebas.Usuarios;
@@ -15,8 +14,6 @@ public class ConsultaUsuarioPruebas
     public void BuscarUsuariosPorNombre_NombreExistente_RetornaUsuariosCoincidentes()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
-        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
-
         var usuario1 = Usuario.CrearInterno(
             "Juan",
             "Perez",
@@ -54,8 +51,7 @@ public class ConsultaUsuarioPruebas
             .Setup(r => r.FindById(99))
             .Returns(usuarioLogueado);
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
-
+        var service = new ConsultaUsuarioServicio(repoMock.Object);
         var request = new BuscarUsuariosRequest
         {
             Nombre = "Juan"
@@ -71,7 +67,6 @@ public class ConsultaUsuarioPruebas
     public void BuscarUsuariosPorNombre_NombreInexistente_RetornaListaVacia()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
-        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
 
         var usuario = Usuario.CrearInterno(
             "Pedro",
@@ -87,7 +82,7 @@ public class ConsultaUsuarioPruebas
             .Setup(r => r.GetAll())
             .Returns(new List<Usuario> { usuario });
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service = new ConsultaUsuarioServicio(repoMock.Object);
 
         var request = new BuscarUsuariosRequest
         {
@@ -115,7 +110,6 @@ public class ConsultaUsuarioPruebas
     public void BuscarUsuariosPorNombre_FiltraSoloLosUsuariosConEseNombre()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
-        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
 
         var usuario1 = Usuario.CrearInterno(
             "Juan",
@@ -141,7 +135,7 @@ public class ConsultaUsuarioPruebas
             .Setup(r => r.GetAll())
             .Returns(new List<Usuario> { usuario1, usuario2 });
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service = new ConsultaUsuarioServicio(repoMock.Object);
 
         var request = new BuscarUsuariosRequest
         {
@@ -171,7 +165,6 @@ public class ConsultaUsuarioPruebas
     public void BuscarUsuariosPorNombre_NombreConDistintoCase_RetornaCoincidencias()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
-        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
 
         var usuario = Usuario.CrearInterno(
             "Juan",
@@ -187,7 +180,7 @@ public class ConsultaUsuarioPruebas
             .Setup(r => r.GetAll())
             .Returns(new List<Usuario> { usuario });
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service = new ConsultaUsuarioServicio(repoMock.Object);
 
         var request = new BuscarUsuariosRequest
         {
@@ -216,13 +209,12 @@ public class ConsultaUsuarioPruebas
     public void BuscarUsuariosPorNombre_SinUsuarios_RetornaListaVacia()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
-        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
 
         repoMock
             .Setup(r => r.GetAll())
             .Returns(new List<Usuario>());
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service = new ConsultaUsuarioServicio(repoMock.Object);
 
         var request = new BuscarUsuariosRequest
         {
@@ -250,7 +242,6 @@ public class ConsultaUsuarioPruebas
     public void BuscarUsuariosPorNombre_MapeaCorrectamenteLosDatosDelUsuario()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
-        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
 
         var usuario = Usuario.CrearCliente(
             "Juan",
@@ -265,7 +256,7 @@ public class ConsultaUsuarioPruebas
             .Setup(r => r.GetAll())
             .Returns(new List<Usuario> { usuario });
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service = new ConsultaUsuarioServicio(repoMock.Object);
 
         var request = new BuscarUsuariosRequest
         {
@@ -299,7 +290,6 @@ public class ConsultaUsuarioPruebas
     public void BuscarUsuariosPorApellido_ApellidoExistente_RetornaUsuariosCoincidentes()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
-        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
 
         var usuario1 = Usuario.CrearInterno(
             "Juan",
@@ -325,7 +315,7 @@ public class ConsultaUsuarioPruebas
             .Setup(r => r.GetAll())
             .Returns(new List<Usuario> { usuario1, usuario2 });
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service = new ConsultaUsuarioServicio(repoMock.Object);
 
         var request = new BuscarUsuariosRequest
         {
@@ -355,7 +345,6 @@ public class ConsultaUsuarioPruebas
     public void BuscarUsuariosPorApellido_NoImportaMaysculasMinusculas_RetornaUsuariosCoincidentes()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
-        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
 
         var usuario1 = Usuario.CrearInterno(
             "Juan",
@@ -381,7 +370,7 @@ public class ConsultaUsuarioPruebas
             .Setup(r => r.GetAll())
             .Returns(new List<Usuario> { usuario1, usuario2 });
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service = new ConsultaUsuarioServicio(repoMock.Object);
 
         var request = new BuscarUsuariosRequest
         {
@@ -411,7 +400,6 @@ public class ConsultaUsuarioPruebas
     public void BuscarUsuariosPorApellido_ApellidoInexistente_RetornaListaVacia()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
-        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
 
         var usuario = Usuario.CrearInterno(
             "Juan",
@@ -427,7 +415,7 @@ public class ConsultaUsuarioPruebas
             .Setup(r => r.GetAll())
             .Returns(new List<Usuario> { usuario });
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service = new ConsultaUsuarioServicio(repoMock.Object);
 
         var request = new BuscarUsuariosRequest
         {
@@ -455,8 +443,6 @@ public class ConsultaUsuarioPruebas
     public void BuscarUsuariosPorApellido_FiltraSoloLosUsuariosConEseApellido()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
-        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
-
         var usuario1 = Usuario.CrearInterno(
             "Juan",
             "Perez",
@@ -481,7 +467,7 @@ public class ConsultaUsuarioPruebas
             .Setup(r => r.GetAll())
             .Returns(new List<Usuario> { usuario1, usuario2 });
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service = new ConsultaUsuarioServicio(repoMock.Object);
 
         var request = new BuscarUsuariosRequest
         {
@@ -514,13 +500,12 @@ public class ConsultaUsuarioPruebas
     public void BuscarUsuariosPorApellido_SinUsuarios_RetornaListaVacia()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
-        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
 
         repoMock
             .Setup(r => r.GetAll())
             .Returns(new List<Usuario>());
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service = new ConsultaUsuarioServicio(repoMock.Object);
 
         var request = new BuscarUsuariosRequest
         {
@@ -548,7 +533,6 @@ public class ConsultaUsuarioPruebas
     public void BuscarUsuariosPorApellido_ConEspacios()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
-        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
 
         var usuario = Usuario.CrearInterno(
             "Juan",
@@ -578,7 +562,7 @@ public class ConsultaUsuarioPruebas
             .Setup(r => r.FindById(99))
             .Returns(usuarioLogueado);
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service = new ConsultaUsuarioServicio(repoMock.Object);
 
         var request = new BuscarUsuariosRequest
         {
@@ -593,7 +577,6 @@ public class ConsultaUsuarioPruebas
     public void BuscarUsuariosPorNombre_ConEspacios()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
-        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
 
         var usuario = Usuario.CrearInterno(
             "Juan",
@@ -623,7 +606,7 @@ public class ConsultaUsuarioPruebas
             .Setup(r => r.GetAll())
             .Returns(new List<Usuario> { usuario });
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service = new ConsultaUsuarioServicio(repoMock.Object);
 
         var request = new BuscarUsuariosRequest
         {
@@ -640,7 +623,6 @@ public class ConsultaUsuarioPruebas
     public void BuscarUsuarios_RequestConEspaciosYDistintoCase_RetornaCoincidencias()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
-        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
 
         var usuario = Usuario.CrearInterno(
             "Juan",
@@ -670,7 +652,7 @@ public class ConsultaUsuarioPruebas
             .Setup(r => r.GetAll())
             .Returns(new List<Usuario> { usuario });
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service = new ConsultaUsuarioServicio(repoMock.Object);
 
         var request = new BuscarUsuariosRequest
         {
@@ -689,7 +671,6 @@ public class ConsultaUsuarioPruebas
     public void BuscarUsuarios_UsuarioLogueadoNoEsAdministrativo_LanzaExcepcionConMensajeCorrecto()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
-        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
 
         var usuarioLogueado = Usuario.CrearCliente(
             "Juan",
@@ -704,7 +685,7 @@ public class ConsultaUsuarioPruebas
             .Setup(r => r.FindById(5))
             .Returns(usuarioLogueado);
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service = new ConsultaUsuarioServicio(repoMock.Object);
 
         var request = new BuscarUsuariosRequest
         {
@@ -722,7 +703,6 @@ public class ConsultaUsuarioPruebas
     public void BuscarUsuarios_UsuarioLogueadoNoEsAdministrativo_NoLlamaGetAllYLanzaExcepcionConMensajeCorrecto()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
-        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
 
         var usuarioLogueado = Usuario.CrearCliente(
             "Juan",
@@ -737,7 +717,7 @@ public class ConsultaUsuarioPruebas
             .Setup(r => r.FindById(5))
             .Returns(usuarioLogueado);
 
-        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+        var service = new ConsultaUsuarioServicio(repoMock.Object);
 
         var request = new BuscarUsuariosRequest
         {
