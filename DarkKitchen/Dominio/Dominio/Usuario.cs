@@ -86,15 +86,21 @@ public class Usuario
         Nombre = nombre.Trim();
     }
 
-    public void ModificarDatos(string nombre, string apellido, Telefono telefono, string email)
+    public void ModificarDatos(string nombre, string apellido, Telefono telefono, string email, RolUsuario rol)
     {
         ValidarNombre(nombre);
         ValidarApellido(apellido);
+
+        if (rol != RolUsuario.Administrativo && rol != RolUsuario.Preparador)
+        {
+            throw new UsuarioExcepcion("El rol interno no es válido");
+        }
 
         Nombre = nombre.Trim();
         Apellido = apellido.Trim();
         Telefono = telefono;
         Email = Email.Crear(email);
+        Rol = rol;
     }
 
     public bool VerificarClave(string clave)

@@ -58,9 +58,10 @@ public class ModificacionUsuarioService : IModificacionUsuarioService
         var emailActualizado = CalcularEmailFinal(request, usuario);
 
         var telefonoFinal = CrearTelefonoFinal(usuario, telefonoActualizado);
+        var rolFinal = CalcularRolFinal(request, usuario);
         ValidarEmailSiCambia(usuario, emailActualizado);
 
-        usuario.ModificarDatos(nombreActualizado, apellidoActualizado, telefonoFinal, emailActualizado);
+        usuario.ModificarDatos(nombreActualizado, apellidoActualizado, telefonoFinal, emailActualizado, rolFinal);
     }
 
     private Telefono CrearTelefonoFinal(Usuario usuario, string telefonoActualizado)
@@ -150,5 +151,20 @@ public class ModificacionUsuarioService : IModificacionUsuarioService
         }
 
         return telefonoCreado;
+    }
+
+    private RolUsuario CalcularRolFinal(ModificarUsuarioRequest request, Usuario usuario)
+    {
+        if (string.IsNullOrWhiteSpace(request.Rol))
+        {
+            return usuario.Rol;
+        }
+
+        if (!Enum.TryParse<RolUsuario>(request.Rol, true, out var rol))
+        {
+            throw new UsuarioExcepcion("El rol interno no es válido");
+        }
+
+        return rol;
     }
 }
