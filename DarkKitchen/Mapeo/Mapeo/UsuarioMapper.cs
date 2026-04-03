@@ -6,28 +6,19 @@ namespace Mapeo;
 
 public static class UsuarioMapper
 {
-    public static Usuario MapeoDTOAUserInterno(this CrearUsuarioInternoRequest request)
+    public static Usuario MapeoDTOAUserInterno(
+        this CrearUsuarioInternoRequest request,
+        Telefono telefono,
+        RolUsuario rol)
     {
-        var rolEnum = ParsearRol(request.Rol);
-
         return Usuario.CrearInterno(
             request.Nombre,
             request.Apellido,
             request.Email,
-            request.Telefono,
+            telefono,
             request.Clave,
-            rolEnum
+            rol
         );
-    }
-
-    private static RolUsuario ParsearRol(string rol)
-    {
-        if (!Enum.TryParse<RolUsuario>(rol, true, out var rolEnum))
-        {
-            throw new UsuarioExcepcion("El rol interno no es válido");
-        }
-
-        return rolEnum;
     }
 
     public static UsuarioResponse MapeoAResponseDTO(this Usuario usuario)
@@ -44,7 +35,7 @@ public static class UsuarioMapper
             Apellido = usuario.Apellido,
             Email = usuario.Email.ToString(),
             Rol = usuario.Rol.ToString(),
-            Telefono = usuario.Telefono
+            Telefono = usuario.Telefono.Valor
         };
     }
 }

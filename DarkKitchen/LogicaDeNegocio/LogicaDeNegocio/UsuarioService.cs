@@ -20,23 +20,20 @@ public class UsuarioService
 
     public RegistrarClienteResponseDTO RegistrarCliente(RegistrarClienteRequest request)
     {
-        if(!_validadorTelefono.EsValido(request.Telefono))
+        if(_repo.ExisteEmail(request.Email))
         {
-            throw new UsuarioExcepcion("El teléfono no es válido");
+            throw new UsuarioExcepcion("El email ya está registrado");
         }
+
+        var telefono = CrearYValidarTelefono(request.Telefono);
 
         var usuario = Usuario.CrearCliente(
             request.Nombre,
             request.Apellido,
             request.Email,
-            request.Telefono,
+            telefono,
             request.Clave
         );
-
-        if(_repo.ExisteEmail(usuario.Email.ToString()))
-        {
-            throw new UsuarioExcepcion("El email ya está registrado");
-        }
 
         var usuarioGuardado = _repo.Add(usuario);
 
@@ -48,33 +45,29 @@ public class UsuarioService
         };
     }
 
-    public UsuarioResponse CrearUsuarioInterno(int idUsuarioLogueado, CrearUsuarioInternoRequest request)
+    private RolUsuario ObtenerRolInternoValido(string rol)
     {
-        ValidarUsuarioEsAdministrativo(idUsuarioLogueado);
-
-        if(!_validadorTelefono.EsValido(request.Telefono))
-        {
-            throw new UsuarioExcepcion("El teléfono no es válido");
-        }
-
-        if(_repo.ExisteEmail(request.Email))
-        {
-            throw new UsuarioExcepcion("El email ya está registrado");
-        }
-
-        if(!Enum.TryParse<RolUsuario>(request.Rol, true, out var rol))
+        if (!Enum.TryParse<RolUsuario>(rol, true, out var rolEnum))
         {
             throw new UsuarioExcepcion("El rol interno no es válido");
         }
 
-        var usuario = Usuario.CrearInterno(
-            request.Nombre,
-            request.Apellido,
-            request.Email,
-            request.Telefono,
-            request.Clave,
-            rol
-        );
+        return rolEnum;
+    }
+
+    public UsuarioResponse CrearUsuarioInterno(int idUsuarioLogueado, CrearUsuarioInternoRequest request)
+    {
+        ValidarUsuarioEsAdministrativo(idUsuarioLogueado);
+
+        var rol = ObtenerRolInternoValido(request.Rol);
+        var telefono = CrearYValidarTelefono(request.Telefono);
+
+        if (_repo.ExisteEmail(request.Email))
+        {
+            throw new UsuarioExcepcion("El email ya está registrado");
+        }
+
+        var usuario = request.MapeoDTOAUserInterno(telefono, rol);
 
         var usuarioGuardado = _repo.Add(usuario);
 
@@ -114,18 +107,20 @@ public class UsuarioService
         var telefonoActualizado = CalcularTelefonoFinal(request, usuario);
         var emailActualizado = CalcularEmailFinal(request, usuario);
 
-        ValidarTelefonoSiCambia(usuario, telefonoActualizado);
+        var telefonoFinal = CrearTelefonoFinal(usuario, telefonoActualizado);
         ValidarEmailSiCambia(usuario, emailActualizado);
 
-        usuario.ModificarDatos(nombreActualizado, apellidoActualizado, telefonoActualizado, emailActualizado);
+        usuario.ModificarDatos(nombreActualizado, apellidoActualizado, telefonoFinal, emailActualizado);
     }
 
-    private void ValidarTelefonoSiCambia(Usuario usuario, string telefonoActualizado)
+    private Telefono CrearTelefonoFinal(Usuario usuario, string telefonoActualizado)
     {
-        if (telefonoActualizado != usuario.Telefono && !_validadorTelefono.EsValido(telefonoActualizado))
+        if (telefonoActualizado == usuario.Telefono.Valor)
         {
-            throw new UsuarioExcepcion("El teléfono no es válido");
+            return usuario.Telefono;
         }
+
+        return CrearYValidarTelefono(telefonoActualizado);
     }
 
     private void ValidarEmailSiCambia(Usuario usuario, string emailActualizado)
@@ -161,7 +156,7 @@ public class UsuarioService
     private static string CalcularTelefonoFinal(ModificarUsuarioRequest request, Usuario usuario)
     {
         return string.IsNullOrWhiteSpace(request.Telefono)
-            ? usuario.Telefono
+            ? usuario.Telefono.Valor
             : request.Telefono;
     }
 
@@ -245,5 +240,17 @@ public class UsuarioService
     {
         return string.IsNullOrWhiteSpace(apellido) ||
                string.Equals(usuario.Apellido, apellido.Trim(), StringComparison.OrdinalIgnoreCase);
+    }
+
+    private Telefono CrearYValidarTelefono(string telefono)
+    {
+        var telefonoCreado = Telefono.Crear(telefono);
+
+        if (!_validadorTelefono.EsValido(telefonoCreado.Valor))
+        {
+            throw new UsuarioExcepcion("El teléfono no es válido");
+        }
+
+        return telefonoCreado;
     }
 }

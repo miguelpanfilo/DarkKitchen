@@ -8,11 +8,11 @@ public class Usuario
     public string Nombre { get; private set; } = string.Empty;
     public string Apellido { get; private set; } = string.Empty;
     public Email Email { get; private set; }
-    public string Telefono { get; private set; } = string.Empty;
+    public Telefono Telefono { get; private set; }
     public Clave Clave { get; private set; }
     public RolUsuario Rol { get; private set; }
 
-    public static Usuario CrearCliente(string nombre, string apellido, string email, string telefono, string clave)
+    public static Usuario CrearCliente(string nombre, string apellido, string email, Telefono telefono, string clave)
     {
         var emailValido = Email.Crear(email);
         var claveHasheada = Clave.Crear(clave);
@@ -20,16 +20,15 @@ public class Usuario
         return new Usuario(nombre, apellido, emailValido, telefono, claveHasheada, RolUsuario.Cliente);
     }
 
-    private Usuario(string nombre, string apellido, Email email, string telefono, Clave clave, RolUsuario rol)
+    private Usuario(string nombre, string apellido, Email email, Telefono telefono, Clave clave, RolUsuario rol)
     {
         ValidarNombre(nombre);
         ValidarApellido(apellido);
-        ValidarTelefonoNoVacio(telefono);
 
         Nombre = nombre.Trim();
         Apellido = apellido.Trim();
         Email = email;
-        Telefono = telefono.Trim();
+        Telefono = telefono;
         Clave = clave;
         Rol = rol;
     }
@@ -60,19 +59,11 @@ public class Usuario
         }
     }
 
-    private void ValidarTelefonoNoVacio(string telefono)
-    {
-        if (string.IsNullOrWhiteSpace(telefono))
-        {
-            throw new UsuarioExcepcion("El teléfono no puede estar vacío");
-        }
-    }
-
     public static Usuario CrearInterno(
         string nombre,
         string apellido,
         string email,
-        string telefono,
+        Telefono telefono,
         string clave,
         RolUsuario rol)
     {
@@ -95,15 +86,14 @@ public class Usuario
         Nombre = nombre.Trim();
     }
 
-    public void ModificarDatos(string nombre, string apellido, string telefono, string email)
+    public void ModificarDatos(string nombre, string apellido, Telefono telefono, string email)
     {
         ValidarNombre(nombre);
         ValidarApellido(apellido);
-        ValidarTelefonoNoVacio(telefono);
 
         Nombre = nombre.Trim();
         Apellido = apellido.Trim();
-        Telefono = telefono.Trim();
+        Telefono = telefono;
         Email = Email.Crear(email);
     }
 

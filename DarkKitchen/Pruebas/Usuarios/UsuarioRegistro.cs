@@ -55,7 +55,7 @@ public class UsuarioServiceTests
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2Ok6Abc");
 
         repositorioUsuario.Add(usuario);
@@ -75,7 +75,7 @@ public class UsuarioServiceTests
             string.Empty,
             "Lopez",
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2026Ok");
     }
 
@@ -86,7 +86,7 @@ public class UsuarioServiceTests
             "M",
             "Lopez",
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2Ok6Abc"
         );
 
@@ -101,7 +101,7 @@ public class UsuarioServiceTests
             null!,
             "Lopez",
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2Ok6Abc"
         );
     }
@@ -114,7 +114,7 @@ public class UsuarioServiceTests
             "Miguel",
             string.Empty,
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2026Ok");
     }
 
@@ -129,7 +129,7 @@ public class UsuarioServiceTests
             "Miguel",
             apellidoLargo,
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2026Ok");
     }
 
@@ -144,7 +144,7 @@ public class UsuarioServiceTests
             "Miguel",
             apellidoCorto,
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2026Ok");
     }
 
@@ -157,7 +157,7 @@ public class UsuarioServiceTests
             "Miguel",
             apellido,
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2Ok6Abc"
         );
 
@@ -171,7 +171,7 @@ public class UsuarioServiceTests
             "Miguel",
             "Lop",
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2Ok6Abc"
         );
 
@@ -186,7 +186,7 @@ public class UsuarioServiceTests
             "Miguel",
             "Lopez",
             string.Empty,
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2026Ok"
         );
     }
@@ -199,7 +199,7 @@ public class UsuarioServiceTests
             "Miguel",
             "Lopez",
             "miguelgmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2026Ok"
         );
     }
@@ -212,7 +212,7 @@ public class UsuarioServiceTests
             "Miguel",
             "Lopez",
             "miguel@gmail",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2026Ok"
         );
     }
@@ -315,7 +315,7 @@ public class UsuarioServiceTests
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PPassword@2Ok6Abc"
         );
 
@@ -371,7 +371,7 @@ public class UsuarioServiceTests
                 "Miguel",
                 "Lopez",
                 email!,
-                "099123456",
+                Telefono.Crear("099123456"),
                 "Password@2Ok6Abc"
             )
         );
@@ -388,7 +388,7 @@ public class UsuarioServiceTests
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2Ok6Abc"
         );
 
@@ -396,7 +396,7 @@ public class UsuarioServiceTests
             "Juan",
             "Perez",
             "juan@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "Password@2Ok6Abc"
         );
 
@@ -419,7 +419,7 @@ public class UsuarioServiceTests
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2Ok6Abc"
         );
 
@@ -435,7 +435,7 @@ public class UsuarioServiceTests
             "Miguel",
             "Lopez",
             "  MIGUEL@gmail.com  ",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2Ok6Abc"
         );
 
@@ -488,7 +488,7 @@ public class UsuarioServiceTests
                 "Miguel",
                 "Lopez",
                 "miguel@gmail.com",
-                "099123456",
+                Telefono.Crear("099123456"),
                 clave
             )
         );
@@ -507,7 +507,7 @@ public class UsuarioServiceTests
                 "Miguel",
                 "Lopez",
                 "miguel@gmail.com",
-                "099123456",
+                Telefono.Crear("099123456"),
                 claveMenor15
             )
         );
@@ -526,7 +526,7 @@ public class UsuarioServiceTests
                 "Miguel",
                 "Lopez",
                 "miguel@gmail.com",
-                "099123456",
+                Telefono.Crear("099123456"),
                 claveMenor15
             )
         );
@@ -544,7 +544,7 @@ public class UsuarioServiceTests
                 "Miguel",
                 "Lopez",
                 "miguel@gmail.com",
-                "099123456",
+                Telefono.Crear("099123456"),
                 clave
             )
         );
@@ -562,7 +562,7 @@ public class UsuarioServiceTests
                 "Miguel",
                 "Lopez",
                 "miguel@gmail.com",
-                "099123456",
+                Telefono.Crear("099123456"),
                 clave
             )
         );
@@ -580,7 +580,7 @@ public class UsuarioServiceTests
                 "Miguel",
                 "Lopez",
                 "miguel@gmail.com",
-                "099123456",
+                Telefono.Crear("099123456"),
                 clave
             )
         );
@@ -598,7 +598,7 @@ public class UsuarioServiceTests
                 "Miguel",
                 "Lopez",
                 "miguel@gmail.com",
-                "099123456",
+                Telefono.Crear("099123456"),
                 clave
             )
         );
@@ -616,7 +616,7 @@ public class UsuarioServiceTests
                 "Miguel",
                 "Lopez",
                 "miguel@gmail.com",
-                "099123456",
+                Telefono.Crear("099123456"),
                 clave
             )
         );
@@ -631,7 +631,7 @@ public class UsuarioServiceTests
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password!Abc9Xy"
         );
 
@@ -645,7 +645,7 @@ public class UsuarioServiceTests
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password!Abc9XyzKlmNoPq"
         );
 
@@ -659,7 +659,7 @@ public class UsuarioServiceTests
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "aaClaveSegura#1a"
         );
 

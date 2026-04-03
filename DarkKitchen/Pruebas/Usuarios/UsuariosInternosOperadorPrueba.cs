@@ -22,7 +22,7 @@ public class UsuariosInternosOperadorPrueba
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -79,7 +79,7 @@ public class UsuariosInternosOperadorPrueba
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -120,7 +120,7 @@ public class UsuariosInternosOperadorPrueba
                 "Ju4n",
                 "Perez",
                 "admin@gmail.com",
-                "099123456",
+                Telefono.Crear("099123456"),
                 "PasswordSeguraee3!",
                 RolUsuario.Administrativo
             )
@@ -139,7 +139,7 @@ public class UsuariosInternosOperadorPrueba
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -184,7 +184,7 @@ public class UsuariosInternosOperadorPrueba
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -237,7 +237,7 @@ public class UsuariosInternosOperadorPrueba
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -277,7 +277,7 @@ public class UsuariosInternosOperadorPrueba
     }
 
     [TestMethod]
-    public void MapeoDTOAUserInterno_DatosValidos_MapeaCorrectamente()
+    public void MapeoDTOAUserInterno_DatosValidos_RetornaUsuarioInterno()
     {
         var request = new CrearUsuarioInternoRequest
         {
@@ -289,11 +289,15 @@ public class UsuariosInternosOperadorPrueba
             Rol = "Administrativo"
         };
 
-        var usuario = request.MapeoDTOAUserInterno();
+        var telefono = Telefono.Crear("099123456");
+        var rol = RolUsuario.Administrativo;
+
+        var usuario = request.MapeoDTOAUserInterno(telefono, rol);
 
         Assert.AreEqual("Juan", usuario.Nombre);
         Assert.AreEqual("Perez", usuario.Apellido);
         Assert.AreEqual("admin@gmail.com", usuario.Email.ToString());
+        Assert.AreEqual("099123456", usuario.Telefono.Valor);
         Assert.AreEqual(RolUsuario.Administrativo, usuario.Rol);
     }
 
@@ -304,7 +308,7 @@ public class UsuariosInternosOperadorPrueba
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -333,8 +337,31 @@ public class UsuariosInternosOperadorPrueba
     }
 
     [TestMethod]
-    public void MapeoDTOAUserInterno_RolInvalido_LanzaExcepcion()
+    public void CrearUsuarioInterno_RolInvalido_LanzaExcepcion()
     {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        var admin = Usuario.CrearInterno(
+            "Admin",
+            "Root",
+            "root@gmail.com",
+            Telefono.Crear("099999999"),
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        admin.Id = 1;
+
+        repoMock
+            .Setup(r => r.FindById(1))
+            .Returns(admin);
+
+        validadorTelefonoMock
+            .Setup(v => v.EsValido("099123456"))
+            .Returns(true);
+
+        var service = new UsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
         var request = new CrearUsuarioInternoRequest
         {
             Nombre = "Juan",
@@ -346,7 +373,7 @@ public class UsuariosInternosOperadorPrueba
         };
 
         var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
-            request.MapeoDTOAUserInterno()
+            service.CrearUsuarioInterno(1, request)
         );
 
         Assert.AreEqual("El rol interno no es válido", ex.Message);
@@ -360,7 +387,7 @@ public class UsuariosInternosOperadorPrueba
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Cliente
         );
@@ -374,7 +401,7 @@ public class UsuariosInternosOperadorPrueba
                 string.Empty,
                 "Perez",
                 "admin@gmail.com",
-                "099123456",
+                Telefono.Crear("099123456"),
                 "PasswordSeguraee3!",
                 RolUsuario.Administrativo
             )
@@ -391,7 +418,7 @@ public class UsuariosInternosOperadorPrueba
                 "Juan",
                 string.Empty,
                 "admin@gmail.com",
-                "099123456",
+                Telefono.Crear("099123456"),
                 "PasswordSeguraee3!",
                 RolUsuario.Administrativo
             )
@@ -408,7 +435,7 @@ public class UsuariosInternosOperadorPrueba
                 "Juan",
                 "Pe",
                 "admin@gmail.com",
-                "099123456",
+                Telefono.Crear("099123456"),
                 "PasswordSeguraee3!",
                 RolUsuario.Administrativo
             )
@@ -425,7 +452,7 @@ public class UsuariosInternosOperadorPrueba
                 "Juan",
                 "ApellidoDemasiadoDemasiadoLargo",
                 "admin@gmail.com",
-                "099123456",
+                Telefono.Crear("099123456"),
                 "PasswordSeguraee3!",
                 RolUsuario.Administrativo
             )
@@ -435,17 +462,10 @@ public class UsuariosInternosOperadorPrueba
     }
 
     [TestMethod]
-    public void CrearInterno_TelefonoVacio_LanzaExcepcion()
+    public void CrearTelefono_Vacio_LanzaExcepcion()
     {
         var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
-            Usuario.CrearInterno(
-                "Juan",
-                "Perez",
-                "admin@gmail.com",
-                string.Empty,
-                "PasswordSeguraee3!",
-                RolUsuario.Administrativo
-            )
+            Telefono.Crear(string.Empty)
         );
 
         Assert.AreEqual("El teléfono no puede estar vacío", ex.Message);
@@ -461,7 +481,7 @@ public class UsuariosInternosOperadorPrueba
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -514,7 +534,7 @@ public class UsuariosInternosOperadorPrueba
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -567,7 +587,7 @@ public class UsuariosInternosOperadorPrueba
             "Juan",
             "Perez",
             "cliente@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!"
         );
         usuarioLogueado.Id = 5;

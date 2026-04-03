@@ -21,7 +21,7 @@ public class ConsultaUsuarioPruebas
             "Juan",
             "Perez",
             "juan1@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -31,7 +31,7 @@ public class ConsultaUsuarioPruebas
             "Juan",
             "Gomez",
             "juan2@gmail.com",
-            "099111222",
+            Telefono.Crear("099111222"),
             "PasswordSeguraaa4!",
             RolUsuario.Preparador
         );
@@ -44,7 +44,7 @@ public class ConsultaUsuarioPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -77,7 +77,7 @@ public class ConsultaUsuarioPruebas
             "Pedro",
             "Perez",
             "pedro@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -97,7 +97,7 @@ public class ConsultaUsuarioPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -121,7 +121,7 @@ public class ConsultaUsuarioPruebas
             "Juan",
             "Perez",
             "juan@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -131,7 +131,7 @@ public class ConsultaUsuarioPruebas
             "Pedro",
             "Gomez",
             "pedro@gmail.com",
-            "099111222",
+            Telefono.Crear("099111222"),
             "PasswordSeguraaa4!",
             RolUsuario.Preparador
         );
@@ -151,7 +151,7 @@ public class ConsultaUsuarioPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -177,7 +177,7 @@ public class ConsultaUsuarioPruebas
             "Juan",
             "Perez",
             "juan@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -197,7 +197,7 @@ public class ConsultaUsuarioPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -232,7 +232,7 @@ public class ConsultaUsuarioPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -256,7 +256,7 @@ public class ConsultaUsuarioPruebas
             "Juan",
             "Perez",
             "juan@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!"
         );
         usuario.Id = 100;
@@ -275,7 +275,7 @@ public class ConsultaUsuarioPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -305,7 +305,7 @@ public class ConsultaUsuarioPruebas
             "Juan",
             "Perez",
             "juan1@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -315,7 +315,7 @@ public class ConsultaUsuarioPruebas
             "Pedro",
             "Perez",
             "pedro@gmail.com",
-            "099111222",
+            Telefono.Crear("099111222"),
             "PasswordSeguraaa4!",
             RolUsuario.Preparador
         );
@@ -335,7 +335,7 @@ public class ConsultaUsuarioPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -361,7 +361,7 @@ public class ConsultaUsuarioPruebas
             "Juan",
             "Perez",
             "juan1@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -371,7 +371,7 @@ public class ConsultaUsuarioPruebas
             "Pedro",
             "Perez",
             "pedro@gmail.com",
-            "099111222",
+            Telefono.Crear("099111222"),
             "PasswordSeguraaa4!",
             RolUsuario.Preparador
         );
@@ -391,7 +391,7 @@ public class ConsultaUsuarioPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -417,7 +417,7 @@ public class ConsultaUsuarioPruebas
             "Juan",
             "Gomez",
             "juan@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -437,7 +437,7 @@ public class ConsultaUsuarioPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -461,7 +461,7 @@ public class ConsultaUsuarioPruebas
             "Juan",
             "Perez",
             "juan@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -471,7 +471,7 @@ public class ConsultaUsuarioPruebas
             "Pedro",
             "Gomez",
             "pedro@gmail.com",
-            "099111222",
+            Telefono.Crear("099111222"),
             "PasswordSeguraaa4!",
             RolUsuario.Preparador
         );
@@ -491,7 +491,7 @@ public class ConsultaUsuarioPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -530,7 +530,7 @@ public class ConsultaUsuarioPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -554,7 +554,7 @@ public class ConsultaUsuarioPruebas
             "Juan",
             "Perez",
             "juan@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -568,7 +568,7 @@ public class ConsultaUsuarioPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -599,7 +599,7 @@ public class ConsultaUsuarioPruebas
             "Juan",
             "Perez",
             "juan@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -609,7 +609,7 @@ public class ConsultaUsuarioPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -646,7 +646,7 @@ public class ConsultaUsuarioPruebas
             "Juan",
             "Perez",
             "juan@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -656,7 +656,7 @@ public class ConsultaUsuarioPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -695,7 +695,7 @@ public class ConsultaUsuarioPruebas
             "Juan",
             "Perez",
             "cliente@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!"
         );
         usuarioLogueado.Id = 5;
@@ -728,7 +728,7 @@ public class ConsultaUsuarioPruebas
             "Juan",
             "Perez",
             "cliente@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!"
         );
         usuarioLogueado.Id = 5;

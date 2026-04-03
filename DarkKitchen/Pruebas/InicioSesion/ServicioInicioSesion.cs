@@ -22,7 +22,7 @@ public class ServicioInicioSesionTests
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2Ok6Abc"
         );
         usuario.Id = 1;
@@ -96,7 +96,7 @@ public class ServicioInicioSesionTests
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2Ok6Abc"
         );
         usuario.Id = 1;
@@ -135,7 +135,7 @@ public class ServicioInicioSesionTests
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2Ok6Abc"
         );
         usuario.Id = 1;
@@ -176,7 +176,7 @@ public class ServicioInicioSesionTests
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2Ok6Abc"
         );
         usuario.Id = 1;
@@ -217,7 +217,7 @@ public class ServicioInicioSesionTests
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2Ok6Abc"
         );
         usuario.Id = 25;
@@ -258,7 +258,7 @@ public class ServicioInicioSesionTests
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2Ok6Abc"
         );
         usuario.Id = 1;
@@ -299,7 +299,7 @@ public class ServicioInicioSesionTests
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2Ok6Abc"
         );
         usuario.Id = 1;
@@ -363,7 +363,7 @@ public class ServicioInicioSesionTests
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2Ok6Abc"
         );
         usuario.Id = 1;
@@ -414,7 +414,7 @@ public class ServicioInicioSesionTests
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2Ok6Abc"
         );
         usuario.Id = 1;
@@ -462,7 +462,7 @@ public class ServicioInicioSesionTests
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2Ok6Abc"
         );
         usuario.Id = 1;

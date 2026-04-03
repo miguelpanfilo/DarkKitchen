@@ -20,7 +20,7 @@ public class EliminacionUsuarioPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -29,7 +29,7 @@ public class EliminacionUsuarioPruebas
             "Juan",
             "Perez",
             "admin2@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -60,7 +60,7 @@ public class EliminacionUsuarioPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -129,7 +129,7 @@ public class EliminacionUsuarioPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -160,7 +160,7 @@ public class EliminacionUsuarioPruebas
             "Pedro",
             "Gomez",
             "pedro@gmail.com",
-            "099111111",
+            Telefono.Crear("099111111"),
             "PasswordSeguraee3!",
             RolUsuario.Preparador
         );
@@ -170,7 +170,7 @@ public class EliminacionUsuarioPruebas
             "Juan",
             "Perez",
             "cliente@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!"
         );
         usuarioLogueado.Id = 5;
@@ -202,7 +202,7 @@ public class EliminacionUsuarioPruebas
             "Pedro",
             "Gomez",
             "pedro@gmail.com",
-            "099111111",
+            Telefono.Crear("099111111"),
             "PasswordSeguraee3!",
             RolUsuario.Preparador
         );
@@ -212,7 +212,7 @@ public class EliminacionUsuarioPruebas
             "Juan",
             "Perez",
             "cliente@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!"
         );
         usuarioLogueado.Id = 5;

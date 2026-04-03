@@ -22,7 +22,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -36,7 +36,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin12@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -69,7 +69,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -100,7 +100,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -109,7 +109,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin2@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -145,7 +145,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -182,7 +182,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -196,7 +196,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan Martin",
             "Perez",
             "admin2@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguyyyy3!",
             RolUsuario.Administrativo
         );
@@ -228,7 +228,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -238,7 +238,7 @@ public class ModificarUsuarioInternoPruebas
             "Pedro",
             "Gomez",
             "cliente@gmail.com",
-            "099111222",
+            Telefono.Crear("099111222"),
             "PasswordSeguraee3!"
         );
         usuarioLogueado.Id = 99;
@@ -276,7 +276,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -286,7 +286,7 @@ public class ModificarUsuarioInternoPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -319,7 +319,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -333,7 +333,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -371,7 +371,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -405,7 +405,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -419,7 +419,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -454,7 +454,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -467,7 +467,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin12@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -501,7 +501,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -514,7 +514,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -550,7 +550,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -563,7 +563,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin12@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -600,7 +600,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -614,7 +614,7 @@ public class ModificarUsuarioInternoPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -640,7 +640,7 @@ public class ModificarUsuarioInternoPruebas
     }
 
     [TestMethod]
-    public void ModificarUsuarioInterno_TelefonoInvalido_NoModificaTelefono()
+    public void ModificarUsuarioInterno_TelefonoNoValidoSegunValidador_NoModificaTelefono()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
         var validadorTelefonoMock = new Mock<IValidadorTelefono>();
@@ -649,7 +649,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -667,7 +667,7 @@ public class ModificarUsuarioInternoPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -685,7 +685,7 @@ public class ModificarUsuarioInternoPruebas
             service.ModificarUsuarioInterno(5, 99, request)
         );
 
-        Assert.AreEqual("099123456", usuarioExistente.Telefono);
+        Assert.AreEqual("099123456", usuarioExistente.Telefono.Valor);
     }
 
     [TestMethod]
@@ -698,7 +698,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -712,7 +712,7 @@ public class ModificarUsuarioInternoPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -753,7 +753,7 @@ public class ModificarUsuarioInternoPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -784,7 +784,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -793,7 +793,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin12@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -827,7 +827,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -840,7 +840,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin12@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -876,7 +876,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -894,7 +894,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin12@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -925,7 +925,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -935,7 +935,7 @@ public class ModificarUsuarioInternoPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -974,7 +974,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -988,7 +988,7 @@ public class ModificarUsuarioInternoPruebas
             "Admin",
             "Perez",
             "admin2@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -1023,7 +1023,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -1036,7 +1036,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin12@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -1065,7 +1065,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -1074,7 +1074,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin12@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -1107,7 +1107,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -1117,7 +1117,7 @@ public class ModificarUsuarioInternoPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -1153,7 +1153,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -1171,7 +1171,7 @@ public class ModificarUsuarioInternoPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -1209,7 +1209,7 @@ public class ModificarUsuarioInternoPruebas
             "Admin",
             "Root",
             "root@gmail.com",
-            "099999999",
+            Telefono.Crear("099999999"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -1238,7 +1238,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -1251,7 +1251,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin12@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );
@@ -1280,7 +1280,7 @@ public class ModificarUsuarioInternoPruebas
             "Juan",
             "Perez",
             "admin@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "PasswordSeguraee3!",
             RolUsuario.Administrativo
         );

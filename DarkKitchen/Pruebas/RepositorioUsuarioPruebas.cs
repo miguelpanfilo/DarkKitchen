@@ -16,7 +16,7 @@ public class RepositorioUsuarioTests
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            "099123456",
+            Telefono.Crear("099123456"),
             "Password@2Ok6Abc"
         );
 
