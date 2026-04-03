@@ -1088,4 +1088,45 @@ public class ModificarUsuarioInternoPruebas
 
         Assert.AreEqual("El rol interno no es válido", ex.Message);
     }
+
+    [TestMethod]
+    public void ModificarUsuarioInterno_RolConDistintoCase_ModificaCorrectamente()
+    {
+        var repoMock = new Mock<IRepositorioUsuario>();
+        var validadorTelefonoMock = new Mock<IValidadorTelefono>();
+
+        var usuarioExistente = Usuario.CrearInterno(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            Telefono.Crear("099123456"),
+            "PasswordSeguraee3!",
+            RolUsuario.Preparador
+        );
+        usuarioExistente.Id = 5;
+
+        var usuarioLogueado = Usuario.CrearInterno(
+            "Admin",
+            "Root",
+            "root@gmail.com",
+            Telefono.Crear("099999999"),
+            "PasswordSeguraee3!",
+            RolUsuario.Administrativo
+        );
+        usuarioLogueado.Id = 99;
+
+        repoMock.Setup(r => r.FindById(5)).Returns(usuarioExistente);
+        repoMock.Setup(r => r.FindById(99)).Returns(usuarioLogueado);
+
+        var service = new ModificacionUsuarioService(repoMock.Object, validadorTelefonoMock.Object);
+
+        var request = new ModificarUsuarioRequest
+        {
+            Rol = "adMinisTrativo"
+        };
+
+        var resultado = service.ModificarUsuarioInterno(5, 99, request);
+
+        Assert.AreEqual("Administrativo", resultado.Rol);
+    }
 }
