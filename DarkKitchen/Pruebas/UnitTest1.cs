@@ -1,4 +1,4 @@
-namespace Tests;
+namespace Pruebas;
 
 [TestClass]
 public class UnitTest1
