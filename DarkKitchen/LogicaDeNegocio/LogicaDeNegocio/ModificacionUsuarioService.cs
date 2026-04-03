@@ -160,11 +160,16 @@ public class ModificacionUsuarioService : IModificacionUsuarioService
             return usuario.Rol;
         }
 
-        if (!Enum.TryParse<RolUsuario>(request.Rol, true, out var rol))
+        return ObtenerRolInternoValido(request.Rol);
+    }
+
+    private RolUsuario ObtenerRolInternoValido(string rol)
+    {
+        if (!Enum.TryParse<RolUsuario>(rol, true, out var rolEnum))
         {
             throw new UsuarioExcepcion("El rol interno no es válido");
         }
 
-        return rol;
+        return rolEnum;
     }
 }
