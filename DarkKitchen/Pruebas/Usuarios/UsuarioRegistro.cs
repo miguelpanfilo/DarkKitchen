@@ -327,13 +327,13 @@ public class UsuarioServiceTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
     public void RegistrarCliente_EmailDuplicado_LanzaExcepcion()
     {
         var repoMock = new Mock<IRepositorioUsuario>();
         var validadorTelefonoMock = new Mock<IValidadorTelefono>();
 
-        repoMock.Setup(r => r.ExisteEmail("miguel@gmail.com"))
+        repoMock
+            .Setup(r => r.ExisteEmail("miguel@gmail.com"))
             .Returns(true);
 
         validadorTelefonoMock
@@ -354,20 +354,29 @@ public class UsuarioServiceTests
             Clave = "Password@2Ok6Abc"
         };
 
-        usuarioServicio.RegistrarCliente(solicitudDeRegistro);
+        Assert.ThrowsException<UsuarioExcepcion>(() =>
+            usuarioServicio.RegistrarCliente(solicitudDeRegistro)
+        );
+
+        repoMock.Verify(r => r.Add(It.IsAny<Usuario>()), Times.Never);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
-    public void CrearUsuario_EmailNulo_LanzaExcepcion()
+    public void CrearUsuario_EmailNulo_LanzaExcepcion_ConMensajeCorrecto()
     {
-        Usuario.CrearCliente(
-            "Miguel",
-            "Lopez",
-            null!,
-            "099123456",
-            "Password@2Ok6Abc"
+        string? email = null;
+
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            Usuario.CrearCliente(
+                "Miguel",
+                "Lopez",
+                email!,
+                "099123456",
+                "Password@2Ok6Abc"
+            )
         );
+
+        Assert.AreEqual("El email no puede estar vacío", ex.Message);
     }
 
     [TestMethod]
@@ -470,106 +479,149 @@ public class UsuarioServiceTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
-    public void CrearUsuario_ClaveVacia_LanzaExcepcion()
+    public void CrearUsuario_ClaveVacia_LanzaExcepcion_ConMensajeCorrecto()
     {
-        Usuario.CrearCliente(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            "099123456",
-            string.Empty
+        var clave = string.Empty;
+
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            Usuario.CrearCliente(
+                "Miguel",
+                "Lopez",
+                "miguel@gmail.com",
+                "099123456",
+                clave
+            )
         );
+
+        Assert.AreEqual("La clave no tiene el formato válido", ex.Message);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
-    public void CrearUsuario_ClaveMenorA15_LanzaExcepcion()
+    public void CrearUsuario_ClaveMenorA15_LanzaExcepcion_ConMensajeCorrecto()
     {
-        var palabraDeLargo13 = 13;
-        var claveMenor15Caracteres = new string('a', palabraDeLargo13);
+        var largoMenorAlLimite = 14;
+        var claveMenor15 = new string('a', largoMenorAlLimite);
 
-        Usuario.CrearCliente(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            "099123456",
-            claveMenor15Caracteres);
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            Usuario.CrearCliente(
+                "Miguel",
+                "Lopez",
+                "miguel@gmail.com",
+                "099123456",
+                claveMenor15
+            )
+        );
+
+        Assert.AreEqual("La clave no tiene el formato válido", ex.Message);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
-    public void CrearUsuario_ClaveMayorA25_LanzaExcepcion()
+    public void CrearUsuario_ClaveMayorA25_LanzaExcepcion_ConMensajeCorrecto()
     {
-        var palabraDeLargo26 = 26;
-        var claveMayorA25Caracteres = new string('a', palabraDeLargo26);
+        var largoMayorAlLimite = 26;
+        var claveMenor15 = new string('a', largoMayorAlLimite);
 
-        Usuario.CrearCliente(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            "099123456",
-            claveMayorA25Caracteres);
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            Usuario.CrearCliente(
+                "Miguel",
+                "Lopez",
+                "miguel@gmail.com",
+                "099123456",
+                claveMenor15
+            )
+        );
+
+        Assert.AreEqual("La clave no tiene el formato válido", ex.Message);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
-    public void CrearUsuario_ClaveSinMayuscula_LanzaExcepcion()
+    public void CrearUsuario_ClaveSinMayuscula_LanzaExcepcion_ConMensajeCorrecto()
     {
-        Usuario.CrearCliente(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            "099123456",
-            "password!abc9xy");
+        var clave = "password!abc9xy";
+
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            Usuario.CrearCliente(
+                "Miguel",
+                "Lopez",
+                "miguel@gmail.com",
+                "099123456",
+                clave
+            )
+        );
+
+        Assert.AreEqual("La clave no tiene el formato válido", ex.Message);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
-    public void CrearUsuario_ClaveSinMinuscula_LanzaExcepcion()
+    public void CrearUsuario_ClaveSinMinuscula_LanzaExcepcion_ConMensajeCorrecto()
     {
-        Usuario.CrearCliente(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            "099123456",
-            "PASSWORD!ABC9XY");
+        var clave = "PASSWORD!ABC9XY";
+
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            Usuario.CrearCliente(
+                "Miguel",
+                "Lopez",
+                "miguel@gmail.com",
+                "099123456",
+                clave
+            )
+        );
+
+        Assert.AreEqual("La clave no tiene el formato válido", ex.Message);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
-    public void CrearUsuario_ClaveSinNumero_LanzaExcepcion()
+    public void CrearUsuario_ClaveSinNumero_LanzaExcepcion_ConMensajeCorrecto()
     {
-        Usuario.CrearCliente(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            "099123456",
-            "Password!AbcXyz");
+        var clave = "Password!AbcXyz";
+
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            Usuario.CrearCliente(
+                "Miguel",
+                "Lopez",
+                "miguel@gmail.com",
+                "099123456",
+                clave
+            )
+        );
+
+        Assert.AreEqual("La clave no tiene el formato válido", ex.Message);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
-    public void CrearUsuario_ClaveSinSimbolo_LanzaExcepcion()
+    public void CrearUsuario_ClaveSinSimbolo_LanzaExcepcion_ConMensajeCorrecto()
     {
-        Usuario.CrearCliente(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            "099123456",
-            "PasswordAbc123Xy");
+        var clave = "PasswordAbc123Xy";
+
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            Usuario.CrearCliente(
+                "Miguel",
+                "Lopez",
+                "miguel@gmail.com",
+                "099123456",
+                clave
+            )
+        );
+
+        Assert.AreEqual("La clave no tiene el formato válido", ex.Message);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
-    public void CrearUsuario_ClaveConSecuenciaDeNumeros_LanzaExcepcion()
+    public void CrearUsuario_ClaveConSecuenciaDeNumeros_LanzaExcepcion_ConMensajeCorrecto()
     {
-        Usuario.CrearCliente(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            "099123456",
-            "Password!Ab12Xy");
+        var clave = "Password!Ab12Xy";
+
+        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+            Usuario.CrearCliente(
+                "Miguel",
+                "Lopez",
+                "miguel@gmail.com",
+                "099123456",
+                clave
+            )
+        );
+
+        Assert.AreEqual("La clave no tiene el formato válido", ex.Message);
     }
 
     [TestMethod]
