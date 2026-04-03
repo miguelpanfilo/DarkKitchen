@@ -91,11 +91,6 @@ public class Usuario
         ValidarNombre(nombre);
         ValidarApellido(apellido);
 
-        if (rol != RolUsuario.Administrativo && rol != RolUsuario.Preparador)
-        {
-            throw new UsuarioExcepcion("El rol interno no es válido");
-        }
-
         Nombre = nombre.Trim();
         Apellido = apellido.Trim();
         Telefono = telefono;
