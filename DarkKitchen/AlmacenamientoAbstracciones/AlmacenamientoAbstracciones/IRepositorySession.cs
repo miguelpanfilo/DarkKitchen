@@ -2,7 +2,7 @@ using Dominio;
 
 namespace AlmacenamientoAbstracciones;
 
-public interface IRepositorioSesion
+public interface IRepositorySession
 {
     Session Add(Session session);
 }

@@ -3,33 +3,33 @@ using LogicaDeNegocioAbstracciones;
 
 namespace LogicaDeNegocio;
 
-public class UsuarioService
+public class UserService
 {
-    private readonly IAltaUsuarioService _altaUsuarioService;
+    private readonly ISignUpUserService _signUpUserService;
     private readonly IModifyUserService _modifyUserService;
     private readonly IDeleteUserService _deleteUserService;
-    private readonly IConsultaUsuarioService _consultaUsuarioService;
+    private readonly IFilterUserService _filterUserService;
 
-    public UsuarioService(
-        IAltaUsuarioService altaUsuarioService,
+    public UserService(
+        ISignUpUserService signUpUserService,
         IModifyUserService modifyUserService,
         IDeleteUserService deleteUserService,
-        IConsultaUsuarioService consultaUsuarioService)
+        IFilterUserService filterUserService)
     {
-        _altaUsuarioService = altaUsuarioService;
+        _signUpUserService = signUpUserService;
         _modifyUserService = modifyUserService;
         _deleteUserService = deleteUserService;
-        _consultaUsuarioService = consultaUsuarioService;
+        _filterUserService = filterUserService;
     }
 
     public SignUpClientResponseDTO RegistrarCliente(SignUpClientRequestDTO requestDto)
     {
-        return _altaUsuarioService.SignUpClient(requestDto);
+        return _signUpUserService.SignUpClient(requestDto);
     }
 
     public UsuarioResponseDTO CrearUsuarioInterno(int idUsuarioLogueado, SingUpInternUserRequestDTO requestDto)
     {
-        return _altaUsuarioService.MakeInterUser(idUsuarioLogueado, requestDto);
+        return _signUpUserService.MakeInterUser(idUsuarioLogueado, requestDto);
     }
 
     public UsuarioResponseDTO ModificarUsuarioInterno(
@@ -63,6 +63,6 @@ public class UsuarioService
 
     public List<UsuarioResponseDTO> BuscarUsuarios(int idUsuarioLogueado, FindUserRequestDTO requestDto)
     {
-        return _consultaUsuarioService.BuscarUsuarios(idUsuarioLogueado, requestDto);
+        return _filterUserService.BuscarUsuarios(idUsuarioLogueado, requestDto);
     }
 }

@@ -10,7 +10,7 @@ using Moq;
 namespace Pruebas.Usuarios;
 
 [TestClass]
-public class UsuarioServiceTests
+public class UserServiceTests
 {
     [TestMethod]
     public void SignUpClient_DataOk_ReturnUser()

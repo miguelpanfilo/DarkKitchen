@@ -15,7 +15,7 @@ public class ServicioInicioSesionTests
     public void LoginRightCredentials_ReturnSession()
     {
         var repoUsuarioMock = new Mock<IRepositoryUser>();
-        var repoSesionMock = new Mock<IRepositorioSesion>();
+        var repoSesionMock = new Mock<IRepositorySession>();
         var relojMock = new Mock<IReloj>();
 
         var usuario = User.MakeClient(
@@ -59,7 +59,7 @@ public class ServicioInicioSesionTests
     public void Login_NoExistingEmail_Exception()
     {
         var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSesionMock = new Mock<IRepositorioSesion>();
+        var repoSesionMock = new Mock<IRepositorySession>();
         var watchMock = new Mock<IReloj>();
 
         repoUserMock
@@ -89,7 +89,7 @@ public class ServicioInicioSesionTests
     public void Login_WrongPassword_Exception()
     {
         var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSesionMock = new Mock<IRepositorioSesion>();
+        var repoSesionMock = new Mock<IRepositorySession>();
         var watchMock = new Mock<IReloj>();
 
         var user = User.MakeClient(
@@ -128,7 +128,7 @@ public class ServicioInicioSesionTests
     public void Login_CredentialOk_SaveTheSession()
     {
         var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorioSesion>();
+        var repoSessionMock = new Mock<IRepositorySession>();
         var watchMock = new Mock<IReloj>();
 
         var user = User.MakeClient(
@@ -169,7 +169,7 @@ public class ServicioInicioSesionTests
     public void Login_ValidClient_ReturnsRole()
     {
         var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorioSesion>();
+        var repoSessionMock = new Mock<IRepositorySession>();
         var watchMock = new Mock<IReloj>();
 
         var user = User.MakeClient(
@@ -210,7 +210,7 @@ public class ServicioInicioSesionTests
     public void Login_ValidCliente_ReturnIdUser()
     {
         var repoUserMcok = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorioSesion>();
+        var repoSessionMock = new Mock<IRepositorySession>();
         var watchMock = new Mock<IReloj>();
 
         var user = User.MakeClient(
@@ -251,7 +251,7 @@ public class ServicioInicioSesionTests
     public void Login_ValidCredentials_GenerateSesssionNotNull()
     {
         var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorioSesion>();
+        var repoSessionMock = new Mock<IRepositorySession>();
         var watchMock = new Mock<IReloj>();
 
         var user = User.MakeClient(
@@ -292,7 +292,7 @@ public class ServicioInicioSesionTests
     public void Login_WrongPassword_NotSaveSession()
     {
         var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorioSesion>();
+        var repoSessionMock = new Mock<IRepositorySession>();
         var watchMock = new Mock<IReloj>();
 
         var user = User.MakeClient(
@@ -329,7 +329,7 @@ public class ServicioInicioSesionTests
     public void Login_NotExistingEmail_NotSaveSession()
     {
         var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorioSesion>();
+        var repoSessionMock = new Mock<IRepositorySession>();
         var watchMock = new Mock<IReloj>();
 
         repoUserMock
@@ -357,7 +357,7 @@ public class ServicioInicioSesionTests
     public void Login_ValidCredentials_ReturnExpireDateCorrect()
     {
         var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorioSesion>();
+        var repoSessionMock = new Mock<IRepositorySession>();
 
         var user = User.MakeClient(
             "Miguel",
@@ -407,7 +407,7 @@ public class ServicioInicioSesionTests
     public void Login_EmailWithAlternateCases_ReturnCorrectSession()
     {
         var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorioSesion>();
+        var repoSessionMock = new Mock<IRepositorySession>();
         var watchMock = new Mock<IReloj>();
 
         var user = User.MakeClient(
@@ -449,7 +449,7 @@ public class ServicioInicioSesionTests
     public void Login_ValidCredentials_SaveRightExpire()
     {
         var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorioSesion>();
+        var repoSessionMock = new Mock<IRepositorySession>();
         var watchMock = new Mock<IReloj>();
 
         var fechaFija = new DateTime(2026, 1, 1, 10, 0, 0);

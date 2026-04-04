@@ -8,11 +8,11 @@ using Mapeo;
 
 namespace LogicaDeNegocio;
 
-public class ConsultaUsuarioServicio : IConsultaUsuarioService
+public class FilterUserService : IFilterUserService
 {
     private readonly IRepositoryUser _repositoryUsers;
 
-    public ConsultaUsuarioServicio(IRepositoryUser repositoryUsers)
+    public FilterUserService(IRepositoryUser repositoryUsers)
     {
         _repositoryUsers = repositoryUsers;
     }

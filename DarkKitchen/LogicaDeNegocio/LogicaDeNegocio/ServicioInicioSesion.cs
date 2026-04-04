@@ -9,12 +9,12 @@ namespace LogicaDeNegocio;
 public class ServicioInicioSesion
 {
     private readonly IRepositoryUser _repoUsuario;
-    private readonly IRepositorioSesion _repoSesion;
+    private readonly IRepositorySession _repoSesion;
     private readonly IReloj _reloj;
 
     public ServicioInicioSesion(
         IRepositoryUser repoUsuario,
-        IRepositorioSesion repoSesion,
+        IRepositorySession repoSesion,
         IReloj reloj)
     {
         _repoUsuario = repoUsuario;

@@ -7,7 +7,7 @@ using Mapeo;
 
 namespace LogicaDeNegocio;
 
-public class SignUpService : IAltaUsuarioService
+public class SignUpService : ISignUpUserService
 {
     private readonly IRepositoryUser _repositoryUser;
     private readonly IPhoneValidator _validatorPhone;

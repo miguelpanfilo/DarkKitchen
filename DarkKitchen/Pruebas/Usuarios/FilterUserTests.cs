@@ -51,7 +51,7 @@ public class FilterUserTests
             .Setup(r => r.FindById(99))
             .Returns(usuarioLogueado);
 
-        var service = new ConsultaUsuarioServicio(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object);
         var request = new FindUserRequestDTO
         {
             Name = "Juan"
@@ -82,7 +82,7 @@ public class FilterUserTests
             .Setup(r => r.GetAll())
             .Returns(new List<User> { usuario });
 
-        var service = new ConsultaUsuarioServicio(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object);
 
         var request = new FindUserRequestDTO
         {
@@ -135,7 +135,7 @@ public class FilterUserTests
             .Setup(r => r.GetAll())
             .Returns(new List<User> { usuario1, usuario2 });
 
-        var service = new ConsultaUsuarioServicio(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object);
 
         var request = new FindUserRequestDTO
         {
@@ -180,7 +180,7 @@ public class FilterUserTests
             .Setup(r => r.GetAll())
             .Returns(new List<User> { usuario });
 
-        var service = new ConsultaUsuarioServicio(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object);
 
         var request = new FindUserRequestDTO
         {
@@ -214,7 +214,7 @@ public class FilterUserTests
             .Setup(r => r.GetAll())
             .Returns(new List<User>());
 
-        var service = new ConsultaUsuarioServicio(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object);
 
         var request = new FindUserRequestDTO
         {
@@ -256,7 +256,7 @@ public class FilterUserTests
             .Setup(r => r.GetAll())
             .Returns(new List<User> { usuario });
 
-        var service = new ConsultaUsuarioServicio(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object);
 
         var request = new FindUserRequestDTO
         {
@@ -315,7 +315,7 @@ public class FilterUserTests
             .Setup(r => r.GetAll())
             .Returns(new List<User> { usuario1, usuario2 });
 
-        var service = new ConsultaUsuarioServicio(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object);
 
         var request = new FindUserRequestDTO
         {
@@ -370,7 +370,7 @@ public class FilterUserTests
             .Setup(r => r.GetAll())
             .Returns(new List<User> { usuario1, usuario2 });
 
-        var service = new ConsultaUsuarioServicio(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object);
 
         var request = new FindUserRequestDTO
         {
@@ -415,7 +415,7 @@ public class FilterUserTests
             .Setup(r => r.GetAll())
             .Returns(new List<User> { usuario });
 
-        var service = new ConsultaUsuarioServicio(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object);
 
         var request = new FindUserRequestDTO
         {
@@ -467,7 +467,7 @@ public class FilterUserTests
             .Setup(r => r.GetAll())
             .Returns(new List<User> { usuario1, usuario2 });
 
-        var service = new ConsultaUsuarioServicio(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object);
 
         var request = new FindUserRequestDTO
         {
@@ -505,7 +505,7 @@ public class FilterUserTests
             .Setup(r => r.GetAll())
             .Returns(new List<User>());
 
-        var service = new ConsultaUsuarioServicio(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object);
 
         var request = new FindUserRequestDTO
         {
@@ -562,7 +562,7 @@ public class FilterUserTests
             .Setup(r => r.FindById(99))
             .Returns(usuarioLogueado);
 
-        var service = new ConsultaUsuarioServicio(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object);
 
         var request = new FindUserRequestDTO
         {
@@ -606,7 +606,7 @@ public class FilterUserTests
             .Setup(r => r.GetAll())
             .Returns(new List<User> { usuario });
 
-        var service = new ConsultaUsuarioServicio(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object);
 
         var request = new FindUserRequestDTO
         {
@@ -652,7 +652,7 @@ public class FilterUserTests
             .Setup(r => r.GetAll())
             .Returns(new List<User> { usuario });
 
-        var service = new ConsultaUsuarioServicio(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object);
 
         var request = new FindUserRequestDTO
         {
@@ -685,7 +685,7 @@ public class FilterUserTests
             .Setup(r => r.FindById(5))
             .Returns(usuarioLogueado);
 
-        var service = new ConsultaUsuarioServicio(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object);
 
         var request = new FindUserRequestDTO
         {
@@ -717,7 +717,7 @@ public class FilterUserTests
             .Setup(r => r.FindById(5))
             .Returns(usuarioLogueado);
 
-        var service = new ConsultaUsuarioServicio(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object);
 
         var request = new FindUserRequestDTO
         {

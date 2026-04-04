@@ -11,12 +11,12 @@ public class UserServiceIntegrationTests
     [TestMethod]
     public void RegistrarCliente_LlamaAlServicioDeAltaUnaVez()
     {
-        var altaMock = new Mock<IAltaUsuarioService>();
+        var altaMock = new Mock<ISignUpUserService>();
         var modificacionMock = new Mock<IModifyUserService>();
         var eliminacionMock = new Mock<IDeleteUserService>();
-        var consultaMock = new Mock<IConsultaUsuarioService>();
+        var consultaMock = new Mock<IFilterUserService>();
 
-        var service = new UsuarioService(
+        var service = new UserService(
             altaMock.Object,
             modificacionMock.Object,
             eliminacionMock.Object,
@@ -43,12 +43,12 @@ public class UserServiceIntegrationTests
     [TestMethod]
     public void CrearUsuarioInterno_LlamaAlServicioDeAltaUnaVez()
     {
-        var altaMock = new Mock<IAltaUsuarioService>();
+        var altaMock = new Mock<ISignUpUserService>();
         var modificacionMock = new Mock<IModifyUserService>();
         var eliminacionMock = new Mock<IDeleteUserService>();
-        var consultaMock = new Mock<IConsultaUsuarioService>();
+        var consultaMock = new Mock<IFilterUserService>();
 
-        var service = new UsuarioService(
+        var service = new UserService(
             altaMock.Object,
             modificacionMock.Object,
             eliminacionMock.Object,
@@ -76,12 +76,12 @@ public class UserServiceIntegrationTests
     [TestMethod]
     public void ModificarUsuarioInterno_LlamaAlServicioDeModificacionUnaVez()
     {
-        var altaMock = new Mock<IAltaUsuarioService>();
+        var altaMock = new Mock<ISignUpUserService>();
         var modificacionMock = new Mock<IModifyUserService>();
         var eliminacionMock = new Mock<IDeleteUserService>();
-        var consultaMock = new Mock<IConsultaUsuarioService>();
+        var consultaMock = new Mock<IFilterUserService>();
 
-        var service = new UsuarioService(
+        var service = new UserService(
             altaMock.Object,
             modificacionMock.Object,
             eliminacionMock.Object,
@@ -104,12 +104,12 @@ public class UserServiceIntegrationTests
     [TestMethod]
     public void ModificarClaveUsuario_LlamaAlServicioDeModificacionUnaVez()
     {
-        var altaMock = new Mock<IAltaUsuarioService>();
+        var altaMock = new Mock<ISignUpUserService>();
         var modificacionMock = new Mock<IModifyUserService>();
         var eliminacionMock = new Mock<IDeleteUserService>();
-        var consultaMock = new Mock<IConsultaUsuarioService>();
+        var consultaMock = new Mock<IFilterUserService>();
 
-        var service = new UsuarioService(
+        var service = new UserService(
             altaMock.Object,
             modificacionMock.Object,
             eliminacionMock.Object,
@@ -133,12 +133,12 @@ public class UserServiceIntegrationTests
     [TestMethod]
     public void EliminarUsuarioInterno_LlamaAlServicioDeEliminacionUnaVez()
     {
-        var altaMock = new Mock<IAltaUsuarioService>();
+        var altaMock = new Mock<ISignUpUserService>();
         var modificacionMock = new Mock<IModifyUserService>();
         var eliminacionMock = new Mock<IDeleteUserService>();
-        var consultaMock = new Mock<IConsultaUsuarioService>();
+        var consultaMock = new Mock<IFilterUserService>();
 
-        var service = new UsuarioService(
+        var service = new UserService(
             altaMock.Object,
             modificacionMock.Object,
             eliminacionMock.Object,
@@ -156,12 +156,12 @@ public class UserServiceIntegrationTests
     [TestMethod]
     public void BuscarUsuarios_LlamaAlServicioDeConsultaUnaVez()
     {
-        var altaMock = new Mock<IAltaUsuarioService>();
+        var altaMock = new Mock<ISignUpUserService>();
         var modificacionMock = new Mock<IModifyUserService>();
         var eliminacionMock = new Mock<IDeleteUserService>();
-        var consultaMock = new Mock<IConsultaUsuarioService>();
+        var consultaMock = new Mock<IFilterUserService>();
 
-        var service = new UsuarioService(
+        var service = new UserService(
             altaMock.Object,
             modificacionMock.Object,
             eliminacionMock.Object,

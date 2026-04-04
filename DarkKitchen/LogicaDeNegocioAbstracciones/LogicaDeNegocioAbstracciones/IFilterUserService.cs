@@ -2,7 +2,7 @@ using Contratos;
 
 namespace LogicaDeNegocioAbstracciones;
 
-public interface IConsultaUsuarioService
+public interface IFilterUserService
 {
     List<UsuarioResponseDTO> BuscarUsuarios(int idUserLogin, FindUserRequestDTO requestDto);
 }
