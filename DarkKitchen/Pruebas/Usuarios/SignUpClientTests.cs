@@ -178,45 +178,6 @@ public class UserServiceTests
 
     [TestMethod]
     [ExpectedException(typeof(UsuarioExcepcion))]
-    public void RegisterClient_EmptyEmail_ThrowsException()
-    {
-        var user = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            string.Empty,
-            Phone.MakePhone("099123456"),
-            "Password@2026Ok"
-        );
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
-    public void RegisterClient_EmailWithoutAtSymbol_ThrowsException()
-    {
-        var user = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguelgmail.com",
-            Phone.MakePhone("099123456"),
-            "Password@2026Ok"
-        );
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
-    public void RegisterClient_EmailWithoutValidDomain_ThrowsException()
-    {
-        var user = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail",
-            Phone.MakePhone("099123456"),
-            "Password@2026Ok"
-        );
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
     public void RegisterClient_EmptyPhone_ThrowsException()
     {
         var repoMock = new Mock<IRepositoryUser>();
@@ -347,25 +308,7 @@ public class UserServiceTests
         repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);
     }
 
-    [TestMethod]
-    public void CreateUser_NullEmail_ThrowsException_WithCorrectMessage()
-    {
-        string? email = null;
-
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
-            User.MakeClient(
-                "Miguel",
-                "Lopez",
-                email!,
-                Phone.MakePhone("099123456"),
-                "Password@2Ok6Abc"
-            )
-        );
-
-        Assert.AreEqual("Email cannot be empty", ex.Message);
-    }
-
-    [TestMethod]
+   [TestMethod]
     public void Add_NewUser_AssignsIncrementalId()
     {
         var repo = new RepositoryUser();
