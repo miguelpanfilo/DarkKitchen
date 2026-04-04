@@ -20,6 +20,9 @@ public class ProductTest
         Assert.IsNotNull(product);
         Assert.AreEqual("COD123", product.Code);
         Assert.AreEqual("Milanesa al pan", product.Name);
+        Assert.AreEqual("Milanesa al pan completa", product.Description);
+        Assert.AreEqual("Minutas clásicas", product.CommercialLine);
+        Assert.AreEqual("Sandwiches", product.Category);
     }
 
     [TestMethod]
