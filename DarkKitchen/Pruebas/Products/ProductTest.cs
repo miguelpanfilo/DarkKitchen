@@ -49,4 +49,46 @@ public class ProductTest
             )
         );
     }
+
+    [TestMethod]
+    public void GivenEmptyDescription_WhenCreatingProduct_ThenThrowsProductException()
+    {
+        Assert.ThrowsException<ProductException>(() =>
+            new Product(
+                "COD123",
+                "Milanesa al pan",
+                " ",
+                "Minutas clásicas",
+                "Sandwiches"
+            )
+        );
+    }
+
+    [TestMethod]
+    public void GivenEmptyCommercialLine_WhenCreatingProduct_ThenThrowsProductException()
+    {
+        Assert.ThrowsException<ProductException>(() =>
+            new Product(
+                "COD123",
+                "Milanesa al pan",
+                "Milanesa al pan completa",
+                " ",
+                "Sandwiches"
+            )
+        );
+    }
+
+    [TestMethod]
+    public void GivenEmptyCategory_WhenCreatingProduct_ThenThrowsProductException()
+    {
+        Assert.ThrowsException<ProductException>(() =>
+            new Product(
+                "COD123",
+                "Milanesa al pan",
+                "Milanesa al pan completa",
+                "Minutas clásicas",
+                " "
+            )
+        );
+    }
 }
