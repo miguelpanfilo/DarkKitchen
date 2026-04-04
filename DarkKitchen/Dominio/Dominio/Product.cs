@@ -11,15 +11,19 @@ public class Product
     public string Category { get; }
     public Product(string code, string name, string description, string commercialLine, string category)
     {
+        ValidateRequired(name, "El nombre de producto");
         Code = code;
-        if(string.IsNullOrWhiteSpace(name))
-        {
-            throw new ProductException("El nombre del product no puede estar vacio");
-        }
-
         Name = name;
         Description = description;
         CommercialLine = commercialLine;
         Category = category;
+    }
+
+    private static void ValidateRequired(string value, string fieldName)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new ProductException($"{fieldName} no puede estar vacio.");
+        }
     }
 }
