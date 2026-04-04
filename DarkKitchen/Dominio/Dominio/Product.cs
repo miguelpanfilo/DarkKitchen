@@ -11,6 +11,7 @@ public class Product
     public string Category { get; }
     public Product(string code, string name, string description, string commercialLine, string category)
     {
+        ValidateRequired(code, "El código del producto");
         ValidateRequired(name, "El nombre de producto");
         Code = code;
         Name = name;
