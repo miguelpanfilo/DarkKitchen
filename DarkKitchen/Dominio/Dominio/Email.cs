@@ -5,8 +5,6 @@ namespace Dominio;
 
 public sealed class Email
 {
-    private Email() { }
-
     public string Value { get; private set; } = null!;
 
     private Email(string value)
@@ -38,15 +36,29 @@ public sealed class Email
 
     private static bool HaveCorrectFormat(string mail)
     {
-        var atribute = new EmailAddressAttribute();
+        if (string.IsNullOrWhiteSpace(mail))
+        {
+            return false;
+        }
 
-        if (!atribute.IsValid(mail))
+        if (mail.Contains(' ') || mail.Contains(".."))
         {
             return false;
         }
 
         var indexOfSymbol = mail.IndexOf('@');
+
+        if (indexOfSymbol <= 0 || indexOfSymbol != mail.LastIndexOf('@'))
+        {
+            return false;
+        }
+
         var domain = mail[(indexOfSymbol + 1)..];
+
+        if (domain.Length == 0)
+        {
+            return false;
+        }
 
         if (!domain.Contains('.'))
         {
@@ -54,11 +66,6 @@ public sealed class Email
         }
 
         if (domain.StartsWith('.') || domain.EndsWith('.'))
-        {
-            return false;
-        }
-
-        if (mail.Contains(".."))
         {
             return false;
         }
