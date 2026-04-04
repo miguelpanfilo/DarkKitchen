@@ -9,7 +9,7 @@ using Moq;
 namespace Pruebas.InicioSesion;
 
 [TestClass]
-public class ServicioInicioSesionTests
+public class LoginServiceTests
 {
     [TestMethod]
     public void LoginRightCredentials_ReturnSession()
@@ -35,7 +35,7 @@ public class ServicioInicioSesionTests
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
 
-        var service = new ServicioInicioSesion(
+        var service = new LoginService(
             repoUsuarioMock.Object,
             repoSesionMock.Object,
             relojMock.Object
@@ -66,7 +66,7 @@ public class ServicioInicioSesionTests
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
             .Returns((User?)null);
 
-        var service = new ServicioInicioSesion(
+        var service = new LoginService(
             repoUserMock.Object,
             repoSesionMock.Object,
             watchMock.Object
@@ -105,7 +105,7 @@ public class ServicioInicioSesionTests
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
             .Returns(user);
 
-        var service = new ServicioInicioSesion(
+        var service = new LoginService(
             repoUserMock.Object,
             repoSesionMock.Object,
             watchMock.Object
@@ -148,7 +148,7 @@ public class ServicioInicioSesionTests
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
 
-        var service = new ServicioInicioSesion(
+        var service = new LoginService(
             repoUserMock.Object,
             repoSessionMock.Object,
             watchMock.Object
@@ -189,7 +189,7 @@ public class ServicioInicioSesionTests
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
 
-        var service = new ServicioInicioSesion(
+        var service = new LoginService(
             repoUserMock.Object,
             repoSessionMock.Object,
             watchMock.Object
@@ -230,7 +230,7 @@ public class ServicioInicioSesionTests
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
 
-        var service = new ServicioInicioSesion(
+        var service = new LoginService(
             repoUserMcok.Object,
             repoSessionMock.Object,
             watchMock.Object
@@ -271,7 +271,7 @@ public class ServicioInicioSesionTests
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
 
-        var service = new ServicioInicioSesion(
+        var service = new LoginService(
             repoUserMock.Object,
             repoSessionMock.Object,
             watchMock.Object
@@ -308,7 +308,7 @@ public class ServicioInicioSesionTests
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
             .Returns(user);
 
-        var service = new ServicioInicioSesion(
+        var service = new LoginService(
             repoUserMock.Object,
             repoSessionMock.Object,
             watchMock.Object
@@ -336,7 +336,7 @@ public class ServicioInicioSesionTests
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
             .Returns((User?)null);
 
-        var service = new ServicioInicioSesion(
+        var service = new LoginService(
             repoUserMock.Object,
             repoSessionMock.Object,
             watchMock.Object
@@ -384,7 +384,7 @@ public class ServicioInicioSesionTests
             .Setup(r => r.Ahora())
             .Returns(coordinatedDate);
 
-        var service = new ServicioInicioSesion(
+        var service = new LoginService(
             repoUserMock.Object,
             repoSessionMock.Object,
             watch.Object
@@ -427,7 +427,7 @@ public class ServicioInicioSesionTests
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
 
-        var service = new ServicioInicioSesion(
+        var service = new LoginService(
             repoUserMock.Object,
             repoSessionMock.Object,
             watchMock.Object
@@ -478,7 +478,7 @@ public class ServicioInicioSesionTests
             .Callback<Session>(s => sesionGuardada = s)
             .Returns((Session s) => s);
 
-        var service = new ServicioInicioSesion(
+        var service = new LoginService(
             repoUserMock.Object,
             repoSessionMock.Object,
             watchMock.Object

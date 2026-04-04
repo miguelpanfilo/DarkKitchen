@@ -6,13 +6,13 @@ using LogicaDeNegocioAbstracciones;
 
 namespace LogicaDeNegocio;
 
-public class ServicioInicioSesion
+public class LoginService
 {
     private readonly IRepositoryUser _repoUsuario;
     private readonly IRepositorySession _repoSesion;
     private readonly IReloj _reloj;
 
-    public ServicioInicioSesion(
+    public LoginService(
         IRepositoryUser repoUsuario,
         IRepositorySession repoSesion,
         IReloj reloj)
