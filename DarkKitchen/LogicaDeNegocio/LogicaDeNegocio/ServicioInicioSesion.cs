@@ -8,12 +8,12 @@ namespace LogicaDeNegocio;
 
 public class ServicioInicioSesion
 {
-    private readonly IRepositorioUsuario _repoUsuario;
+    private readonly IRepositoryUser _repoUsuario;
     private readonly IRepositorioSesion _repoSesion;
     private readonly IReloj _reloj;
 
     public ServicioInicioSesion(
-        IRepositorioUsuario repoUsuario,
+        IRepositoryUser repoUsuario,
         IRepositorioSesion repoSesion,
         IReloj reloj)
     {
@@ -22,30 +22,30 @@ public class ServicioInicioSesion
         _reloj = reloj;
     }
 
-    public LoginResponse Login(LoginRequest request)
+    public LoginResponseDTO Login(LoginRequestDTO requestDto)
     {
-        var usuarioMailIngresado = _repoUsuario.ObtenerPorEmail(request.Email);
+        var usuarioMailIngresado = _repoUsuario.FindByEmail(requestDto.Email);
 
         if (usuarioMailIngresado == null)
         {
-            throw new UsuarioExcepcion("Credenciales inválidas");
+            throw new UsuarioExcepcion("Invalid credentials");
         }
 
-        if (!usuarioMailIngresado.Clave.Verificar(request.Clave))
+        if (!usuarioMailIngresado.Password.VerifyHash(requestDto.Password))
         {
-            throw new UsuarioExcepcion("Credenciales inválidas");
+            throw new UsuarioExcepcion("Invalid credentials");
         }
 
         var expiracion = _reloj.Ahora().AddHours(2);
-        var sesion = new Sesion(usuarioMailIngresado.Id, expiracion);
+        var sesion = new Session(usuarioMailIngresado.Id, expiracion);
         var sesionGuardada = _repoSesion.Add(sesion);
 
-        return new LoginResponse
+        return new LoginResponseDTO
         {
             SessionId = sesionGuardada.SessionId,
-            UsuarioId = usuarioMailIngresado.Id,
-            Rol = usuarioMailIngresado.Rol.ToString(),
-            Expiracion = sesionGuardada.Expiracion
+            UserId = usuarioMailIngresado.Id,
+            Role = usuarioMailIngresado.Role.ToString(),
+            ExpireDate = sesionGuardada.ExpireDate
         };
     }
 }

@@ -6,63 +6,63 @@ namespace LogicaDeNegocio;
 public class UsuarioService
 {
     private readonly IAltaUsuarioService _altaUsuarioService;
-    private readonly IModificacionUsuarioService _modificacionUsuarioService;
-    private readonly IEliminacionUsuarioService _eliminacionUsuarioService;
+    private readonly IModifyUserService _modifyUserService;
+    private readonly IDeleteUserService _deleteUserService;
     private readonly IConsultaUsuarioService _consultaUsuarioService;
 
     public UsuarioService(
         IAltaUsuarioService altaUsuarioService,
-        IModificacionUsuarioService modificacionUsuarioService,
-        IEliminacionUsuarioService eliminacionUsuarioService,
+        IModifyUserService modifyUserService,
+        IDeleteUserService deleteUserService,
         IConsultaUsuarioService consultaUsuarioService)
     {
         _altaUsuarioService = altaUsuarioService;
-        _modificacionUsuarioService = modificacionUsuarioService;
-        _eliminacionUsuarioService = eliminacionUsuarioService;
+        _modifyUserService = modifyUserService;
+        _deleteUserService = deleteUserService;
         _consultaUsuarioService = consultaUsuarioService;
     }
 
-    public RegistrarClienteResponseDTO RegistrarCliente(RegistrarClienteRequest request)
+    public SignUpClientResponseDTO RegistrarCliente(SignUpClientRequestDTO requestDto)
     {
-        return _altaUsuarioService.RegistrarCliente(request);
+        return _altaUsuarioService.SignUpClient(requestDto);
     }
 
-    public UsuarioResponse CrearUsuarioInterno(int idUsuarioLogueado, CrearUsuarioInternoRequest request)
+    public UsuarioResponseDTO CrearUsuarioInterno(int idUsuarioLogueado, SingUpInternUserRequestDTO requestDto)
     {
-        return _altaUsuarioService.CrearUsuarioInterno(idUsuarioLogueado, request);
+        return _altaUsuarioService.MakeInterUser(idUsuarioLogueado, requestDto);
     }
 
-    public UsuarioResponse ModificarUsuarioInterno(
+    public UsuarioResponseDTO ModificarUsuarioInterno(
         int idUsuarioAModificar,
         int idUsuarioLogueado,
-        ModificarUsuarioRequest request)
+        ModificarUsuarioRequestDTO requestDto)
     {
-        return _modificacionUsuarioService.ModificarUsuarioInterno(
+        return _modifyUserService.UpdateInternalUser(
             idUsuarioAModificar,
             idUsuarioLogueado,
-            request
+            requestDto
         );
     }
 
     public void ModificarClaveUsuario(
         int idUsuarioAModificar,
         int idUsuarioLogueado,
-        ModificarClaveRequest request)
+        ModificarClaveRequestDTO requestDto)
     {
-        _modificacionUsuarioService.ModificarClaveUsuario(
+        _modifyUserService.UpdateUserPassword(
             idUsuarioAModificar,
             idUsuarioLogueado,
-            request
+            requestDto
         );
     }
 
     public void EliminarUsuarioInterno(int idUsuarioAEliminar, int idUsuarioLogueado)
     {
-        _eliminacionUsuarioService.EliminarUsuarioInterno(idUsuarioAEliminar, idUsuarioLogueado);
+        _deleteUserService.DeleteInterUser(idUsuarioAEliminar, idUsuarioLogueado);
     }
 
-    public List<UsuarioResponse> BuscarUsuarios(int idUsuarioLogueado, BuscarUsuariosRequest request)
+    public List<UsuarioResponseDTO> BuscarUsuarios(int idUsuarioLogueado, FindUserRequestDTO requestDto)
     {
-        return _consultaUsuarioService.BuscarUsuarios(idUsuarioLogueado, request);
+        return _consultaUsuarioService.BuscarUsuarios(idUsuarioLogueado, requestDto);
     }
 }

@@ -4,5 +4,5 @@ namespace AlmacenamientoAbstracciones;
 
 public interface IRepositorioSesion
 {
-    Sesion Add(Sesion sesion);
+    Session Add(Session session);
 }

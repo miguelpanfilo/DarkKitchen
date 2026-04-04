@@ -4,5 +4,5 @@ namespace LogicaDeNegocioAbstracciones;
 
 public interface IConsultaUsuarioService
 {
-    List<UsuarioResponse> BuscarUsuarios(int idUsuarioLogueado, BuscarUsuariosRequest request);
+    List<UsuarioResponseDTO> BuscarUsuarios(int idUserLogin, FindUserRequestDTO requestDto);
 }

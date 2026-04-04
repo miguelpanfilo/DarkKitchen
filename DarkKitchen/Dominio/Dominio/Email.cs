@@ -7,58 +7,58 @@ public sealed class Email
 {
     private Email() { }
 
-    public string Valor { get; private set; } = null!;
+    public string Value { get; private set; } = null!;
 
-    private Email(string valor)
+    private Email(string value)
     {
-        Valor = valor;
+        Value = value;
     }
 
-    public static Email Crear(string? email)
+    public static Email MakeEmail(string? email)
     {
         if (string.IsNullOrWhiteSpace(email))
         {
-            throw new UsuarioExcepcion("El email no puede estar vacío");
+            throw new UsuarioExcepcion("Email cannot be empty");
         }
 
-        var emailNormalizado = email.Trim().ToLowerInvariant();
+        var emailNormalized = email.Trim().ToLowerInvariant();
 
-        if (!EsFormatoValido(emailNormalizado))
+        if (!HaveCorrectFormat(emailNormalized))
         {
-            throw new UsuarioExcepcion("El email debe tener un formato válido");
+            throw new UsuarioExcepcion("Email format is not valid");
         }
 
-        return new Email(emailNormalizado);
+        return new Email(emailNormalized);
     }
 
     public override string ToString()
     {
-        return Valor;
+        return Value;
     }
 
-    private static bool EsFormatoValido(string correo)
+    private static bool HaveCorrectFormat(string mail)
     {
-        var atributo = new EmailAddressAttribute();
+        var atribute = new EmailAddressAttribute();
 
-        if (!atributo.IsValid(correo))
+        if (!atribute.IsValid(mail))
         {
             return false;
         }
 
-        var indiceArroba = correo.IndexOf('@');
-        var dominio = correo[(indiceArroba + 1)..];
+        var indexOfSymbol = mail.IndexOf('@');
+        var domain = mail[(indexOfSymbol + 1)..];
 
-        if (!dominio.Contains('.'))
+        if (!domain.Contains('.'))
         {
             return false;
         }
 
-        if (dominio.StartsWith('.') || dominio.EndsWith('.'))
+        if (domain.StartsWith('.') || domain.EndsWith('.'))
         {
             return false;
         }
 
-        if (correo.Contains(".."))
+        if (mail.Contains(".."))
         {
             return false;
         }
@@ -66,8 +66,8 @@ public sealed class Email
         return true;
     }
 
-    public bool Igual(Email otroEmail)
+    public bool IsTheSame(Email otroEmail)
     {
-        return Valor == otroEmail.Valor;
+        return Value == otroEmail.Value;
     }
 }

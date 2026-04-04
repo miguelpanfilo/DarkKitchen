@@ -1,0 +1,110 @@
+using AlmacenamientoAbstracciones;
+using Contratos;
+using Dominio;
+using Dominio.Excepciones;
+using LogicaDeNegocioAbstracciones;
+using Mapeo;
+
+namespace LogicaDeNegocio;
+
+public class SignUpService : IAltaUsuarioService
+{
+    private readonly IRepositoryUser _repositoryUser;
+    private readonly IPhoneValidator _validatorPhone;
+
+    public SignUpService(IRepositoryUser repositoryUser, IPhoneValidator validatorPhone)
+    {
+        _repositoryUser = repositoryUser;
+        _validatorPhone = validatorPhone;
+    }
+
+    public SignUpClientResponseDTO SignUpClient(SignUpClientRequestDTO requestDto)
+    {
+        if (_repositoryUser.EmailExist(requestDto.Email))
+        {
+            throw new UsuarioExcepcion("Email is already registered");
+        }
+
+        var phone = MakeAndValidatePhone(requestDto.Phone);
+
+        var usuario = User.MakeClient(
+            requestDto.Name,
+            requestDto.LastName,
+            requestDto.Email,
+            phone,
+            requestDto.Password
+        );
+
+        var newUser = _repositoryUser.Add(usuario);
+
+        return new SignUpClientResponseDTO
+        {
+            Name = newUser.Name,
+            LastName = newUser.LastName,
+            Email = newUser.Email.ToString()
+        };
+    }
+
+    public UsuarioResponseDTO MakeInterUser(int idUsuarioLogueado, SingUpInternUserRequestDTO requestDto)
+    {
+        ValidateUserAdmin(idUsuarioLogueado);
+
+        var rol = GetInternRoleValid(requestDto.Role);
+        var telefono = MakeAndValidatePhone(requestDto.Phone);
+
+        if (_repositoryUser.EmailExist(requestDto.Email))
+        {
+            throw new UsuarioExcepcion("Email is already registered");
+        }
+
+        var user = UserMapper.MappingDTOToInternUser(requestDto, telefono, rol);
+
+        var newUser = _repositoryUser.Add(user);
+
+        return newUser.MappingUserToResponseDTO();
+    }
+
+    private UserRoles GetInternRoleValid(string rol)
+    {
+        if (!Enum.TryParse<UserRoles>(rol, true, out var rolEnum))
+        {
+            throw new UsuarioExcepcion("Internal role is not valid");
+        }
+
+        return rolEnum;
+    }
+
+    private void ValidateUserAdmin(int idUsuarioLogueado)
+    {
+        var user = GetExistingUser(idUsuarioLogueado);
+
+        if (user.Role != UserRoles.Administrative)
+        {
+            throw new UsuarioExcepcion("Only an administrative user can perform this action");
+        }
+    }
+
+    private User GetExistingUser(int id)
+    {
+        var user = _repositoryUser.FindById(id);
+
+        if (user == null)
+        {
+            throw new UsuarioExcepcion("User does not exist");
+        }
+
+        return user;
+    }
+
+    private Phone MakeAndValidatePhone(string telefono)
+    {
+        var newPhone = Phone.MakePhone(telefono);
+
+        if (!_validatorPhone.ItsValid(newPhone.Value))
+        {
+            throw new UsuarioExcepcion("Phone is not valid");
+        }
+
+        return newPhone;
+    }
+}

@@ -10,57 +10,57 @@ namespace LogicaDeNegocio;
 
 public class ConsultaUsuarioServicio : IConsultaUsuarioService
 {
-    private readonly IRepositorioUsuario _repo;
+    private readonly IRepositoryUser _repositoryUsers;
 
-    public ConsultaUsuarioServicio(IRepositorioUsuario repo)
+    public ConsultaUsuarioServicio(IRepositoryUser repositoryUsers)
     {
-        _repo = repo;
+        _repositoryUsers = repositoryUsers;
     }
 
-    public List<UsuarioResponse> BuscarUsuarios(int idUsuarioLogueado, BuscarUsuariosRequest request)
+    public List<UsuarioResponseDTO> BuscarUsuarios(int idUserLogin, FindUserRequestDTO requestDto)
     {
-        var usuarioLogueado = ObtenerUsuarioExistente(idUsuarioLogueado);
+        var userLogin = GetExistingUser(idUserLogin);
 
-        if (usuarioLogueado.Rol != RolUsuario.Administrativo)
+        if (userLogin.Role != UserRoles.Administrative)
         {
-            throw new UsuarioExcepcion("Solo un usuario administrativo puede realizar esta acción");
+            throw new UsuarioExcepcion("Only an administrative user can perform this action");
         }
 
-        var usuarios = _repo.GetAll();
-        var resultado = new List<UsuarioResponse>();
+        var users = _repositoryUsers.GetAll();
+        var filterUsers = new List<UsuarioResponseDTO>();
 
-        foreach (var u in usuarios)
+        foreach (var u in users)
         {
-            if (CoincideNombre(u, request.Nombre) && CoincideApellido(u, request.Apellido))
+            if (MatchName(u, requestDto.Name) && MatchLastName(u, requestDto.LastName))
             {
-                resultado.Add(u.MapeoAResponseDTO());
+                filterUsers.Add(u.MappingUserToResponseDTO());
             }
         }
 
-        return resultado;
+        return filterUsers;
     }
 
-    private Usuario ObtenerUsuarioExistente(int id)
+    private User GetExistingUser(int id)
     {
-        var usuario = _repo.FindById(id);
+        var user = _repositoryUsers.FindById(id);
 
-        if (usuario == null)
+        if (user == null)
         {
-            throw new UsuarioExcepcion("El usuario no existe");
+            throw new UsuarioExcepcion("User does not exist");
         }
 
-        return usuario;
+        return user;
     }
 
-    private static bool CoincideNombre(Usuario usuario, string? nombre)
+    private static bool MatchName(User user, string? name)
     {
-        return string.IsNullOrWhiteSpace(nombre) ||
-               string.Equals(usuario.Nombre, nombre.Trim(), StringComparison.OrdinalIgnoreCase);
+        return string.IsNullOrWhiteSpace(name) ||
+               string.Equals(user.Name, name.Trim(), StringComparison.OrdinalIgnoreCase);
     }
 
-    private static bool CoincideApellido(Usuario usuario, string? apellido)
+    private static bool MatchLastName(User user, string? lastname)
     {
-        return string.IsNullOrWhiteSpace(apellido) ||
-               string.Equals(usuario.Apellido, apellido.Trim(), StringComparison.OrdinalIgnoreCase);
+        return string.IsNullOrWhiteSpace(lastname) ||
+               string.Equals(user.LastName, lastname.Trim(), StringComparison.OrdinalIgnoreCase);
     }
 }

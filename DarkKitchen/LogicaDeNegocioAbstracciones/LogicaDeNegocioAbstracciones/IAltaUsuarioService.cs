@@ -4,6 +4,6 @@ namespace LogicaDeNegocioAbstracciones;
 
 public interface IAltaUsuarioService
 {
-    RegistrarClienteResponseDTO RegistrarCliente(RegistrarClienteRequest request);
-    UsuarioResponse CrearUsuarioInterno(int idUsuarioLogueado, CrearUsuarioInternoRequest request);
+    SignUpClientResponseDTO SignUpClient(SignUpClientRequestDTO requestDto);
+    UsuarioResponseDTO MakeInterUser(int idUsuarioLogueado, SingUpInternUserRequestDTO requestDto);
 }
