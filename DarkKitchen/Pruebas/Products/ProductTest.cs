@@ -35,4 +35,18 @@ public class ProductTest
             )
         );
     }
+
+    [TestMethod]
+    public void GivenInvalidCode_WhenCreatingProduct_ThenThrowsProductException()
+    {
+        Assert.ThrowsException<ProductException>(() =>
+            new Product(
+                " ",
+                "Milanesa al pan",
+                "Milanesa al pan completa",
+                "Minutas clásicas",
+                "Sandwiches"
+            )
+        );
+    }
 }
