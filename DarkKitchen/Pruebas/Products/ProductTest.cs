@@ -1,4 +1,5 @@
 using Dominio;
+using Dominio.Excepciones;
 
 namespace Pruebas.Products;
 
@@ -19,5 +20,19 @@ public class ProductTest
         Assert.IsNotNull(product);
         Assert.AreEqual("COD123", product.Code);
         Assert.AreEqual("Milanesa al pan", product.Name);
+    }
+
+    [TestMethod]
+    public void GivenEmptyName_WhenCreatingProduct_ThenThrowsProductException()
+    {
+        Assert.ThrowsException<ProductException>(() =>
+            new Product(
+                "COD123",
+                " ",
+                "Milanesa al pan completa",
+                "Minutas clásicas",
+                "Sandwiches"
+            )
+        );
     }
 }
