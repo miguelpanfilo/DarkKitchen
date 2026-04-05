@@ -32,16 +32,6 @@ public class DeleteUserService : IDeleteUserService
         _repositoryUsers.Remove(user.Id);
     }
 
-    private void ValidationUserAdmin(int idUserLogged)
-    {
-        var user = GetExistingUser(idUserLogged);
-
-        if(user.Role != UserRoles.Administrative)
-        {
-            throw new UserException("Only an administrative user can perform this action");
-        }
-    }
-
     private void ValidationNoAutoDeleting(int idToDelete, int idUserLogged)
     {
         if(idToDelete == idUserLogged)
