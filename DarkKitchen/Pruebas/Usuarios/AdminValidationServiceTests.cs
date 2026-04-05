@@ -117,4 +117,14 @@ public class AdminValidationServiceTests
 
         Assert.AreEqual("User does not exist", ex.Message);
     }
+
+    [TestMethod]
+    public void EnsureIsNotSelfAction_DifferentUsers_DoesNotThrowException()
+    {
+        var repoMock = new Mock<IRepositoryUser>();
+
+        var service = new AdminValidationService(repoMock.Object);
+
+        service.EnsureIsNotSelfAction(10, 5, "A user cannot modify itself");
+    }
 }
