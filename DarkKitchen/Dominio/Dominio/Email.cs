@@ -1,4 +1,4 @@
-using Dominio.Excepciones;
+using Dominio.Exceptions;
 
 namespace Dominio;
 
@@ -72,8 +72,8 @@ public sealed class Email
         return true;
     }
 
-    public bool IsTheSame(Email otroEmail)
+    public bool IsTheSame(Email mail)
     {
-        return Value == otroEmail.Value;
+        return Value == mail.Value;
     }
 }

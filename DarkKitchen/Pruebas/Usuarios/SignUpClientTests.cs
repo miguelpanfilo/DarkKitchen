@@ -1,8 +1,7 @@
-using Almacenamiento;
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
-using Dominio.Excepciones;
+using Dominio.Exceptions;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
 using Moq;
@@ -140,27 +139,6 @@ public class UserServiceTests
 
         validatorPhoneMock.Verify(v => v.ItsValid(It.IsAny<string>()), Times.Never);
         repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);
-    }
-
-    [TestMethod]
-    public void SignUpClient_ValidUser_Saved()
-    {
-        var repoUSer = new RepositoryUser();
-
-        var user = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc");
-
-        repoUSer.Add(user);
-
-        var userFromRepo = repoUSer.GetAll();
-
-        Assert.AreEqual(1, userFromRepo.Count);
-        Assert.AreEqual("Miguel", userFromRepo[0].Name);
-        Assert.AreEqual("Lopez", userFromRepo[0].LastName);
     }
 
     [TestMethod]
@@ -311,71 +289,6 @@ public class UserServiceTests
 
         Assert.IsNotNull(clientResult);
         Assert.AreEqual("Miguel", clientResult.Name);
-    }
-
-    [TestMethod]
-    public void EmailExists_EmailAlreadyExists_ReturnsTrue()
-    {
-        var repo = new RepositoryUser();
-
-        var user = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
-            "PPassword@2Ok6Abc");
-
-        repo.Add(user);
-
-        var exist = repo.EmailExist("MIGUEL@gmail.com");
-
-        Assert.IsTrue(exist);
-    }
-
-    [TestMethod]
-    public void Add_NewUser_AssignsIncrementalId()
-    {
-        var repo = new RepositoryUser();
-
-        var user1 = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc");
-
-        var user2 = User.MakeClient(
-            "Juan",
-            "Perez",
-            "juan@gmail.com",
-            Phone.MakePhone("099999999"),
-            "Password@2Ok6Abc");
-
-        var userAddedFirst = repo.Add(user1);
-        var userAddedSecond = repo.Add(user2);
-
-        var firstAddInTheRow = 1;
-        var secondAddInTheRow = 2;
-
-        Assert.AreEqual(firstAddInTheRow, userAddedFirst.Id);
-        Assert.AreEqual(secondAddInTheRow, userAddedSecond.Id);
-    }
-
-    [TestMethod]
-    public void Add_User_AssignsIdGreaterThanZero()
-    {
-        var repo = new RepositoryUser();
-
-        var user = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc");
-
-        var userNuevo = repo.Add(user);
-
-        Assert.IsTrue(userNuevo.Id > 0);
     }
 
     [TestMethod]

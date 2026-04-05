@@ -155,4 +155,71 @@ public class RepositoryUserTests
 
         Assert.IsNull(result);
     }
+
+   [TestMethod]
+    public void Add_NewUser_AssignsIncrementalId()
+    {
+        var repo = new RepositoryUser();
+
+        var user1 = User.MakeClient(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            Phone.MakePhone("099123456"),
+            "Password@2Ok6Abc");
+
+        var user2 = User.MakeClient(
+            "Juan",
+            "Perez",
+            "juan@gmail.com",
+            Phone.MakePhone("099999999"),
+            "Password@2Ok6Abc");
+
+        var userAddedFirst = repo.Add(user1);
+        var userAddedSecond = repo.Add(user2);
+
+        var firstAddInTheRow = 1;
+        var secondAddInTheRow = 2;
+
+        Assert.AreEqual(firstAddInTheRow, userAddedFirst.Id);
+        Assert.AreEqual(secondAddInTheRow, userAddedSecond.Id);
+    }
+
+    [TestMethod]
+    public void Add_User_AssignsIdGreaterThanZero()
+    {
+        var repo = new RepositoryUser();
+
+        var user = User.MakeClient(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            Phone.MakePhone("099123456"),
+            "Password@2Ok6Abc");
+
+        var userNuevo = repo.Add(user);
+
+        Assert.IsTrue(userNuevo.Id > 0);
+    }
+
+    [TestMethod]
+    public void Add_User_SavedCorrectly()
+    {
+        var repo = new RepositoryUser();
+
+        var user = User.MakeClient(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            Phone.MakePhone("099123456"),
+            "Password@2Ok6Abc");
+
+        repo.Add(user);
+
+        var users = repo.GetAll();
+
+        Assert.AreEqual(1, users.Count);
+        Assert.AreEqual("Miguel", users[0].Name);
+        Assert.AreEqual("Lopez", users[0].LastName);
+    }
 }
