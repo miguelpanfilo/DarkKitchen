@@ -16,6 +16,13 @@ public class AdminValidationService : IAdminValidationService
 
     public User GetExistingUser(int userId)
     {
-        return _repositoryUser.FindById(userId)!;
+        var user = _repositoryUser.FindById(userId);
+
+        if(user == null)
+        {
+            throw new UserException("User does not exist");
+        }
+
+        return user;
     }
 }
