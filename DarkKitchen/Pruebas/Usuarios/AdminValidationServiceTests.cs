@@ -100,4 +100,21 @@ public class AdminValidationServiceTests
 
         Assert.AreEqual("Only an administrative user can perform this action", ex.Message);
     }
+
+    [TestMethod]
+    public void EnsureUserIsAdmin_UserDoesNotExist_ThrowsExceptionWithCorrectMessage()
+    {
+        var repoMock = new Mock<IRepositoryUser>();
+
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns((User?)null);
+
+        var service = new AdminValidationService(repoMock.Object);
+
+        var ex = Assert.ThrowsException<UserException>(() =>
+            service.EnsureUserIsAdmin(5));
+
+        Assert.AreEqual("User does not exist", ex.Message);
+    }
 }
