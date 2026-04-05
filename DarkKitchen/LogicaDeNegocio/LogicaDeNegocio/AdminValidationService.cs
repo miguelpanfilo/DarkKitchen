@@ -25,4 +25,14 @@ public class AdminValidationService : IAdminValidationService
 
         return user;
     }
+
+    public void EnsureUserIsAdmin(int userId)
+    {
+        var user = GetExistingUser(userId);
+
+        if(user.Role != UserRoles.Administrative)
+        {
+            throw new UserException("Only an administrative user can perform this action");
+        }
+    }
 }
