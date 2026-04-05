@@ -156,7 +156,7 @@ public class RepositoryUserTests
         Assert.IsNull(result);
     }
 
-   [TestMethod]
+    [TestMethod]
     public void Add_NewUser_AssignsIncrementalId()
     {
         var repo = new RepositoryUser();
