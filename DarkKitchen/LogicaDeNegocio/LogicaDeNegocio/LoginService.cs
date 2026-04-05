@@ -28,12 +28,12 @@ public class LoginService
 
         if (usuarioMailIngresado == null)
         {
-            throw new UsuarioExcepcion("Invalid credentials");
+            throw new UserException("Invalid credentials");
         }
 
         if (!usuarioMailIngresado.Password.VerifyHash(requestDto.Password))
         {
-            throw new UsuarioExcepcion("Invalid credentials");
+            throw new UserException("Invalid credentials");
         }
 
         var expiracion = _reloj.Ahora().AddHours(2);

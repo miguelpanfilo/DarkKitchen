@@ -60,7 +60,7 @@ public sealed class Password
     {
         if (!Validate(clave))
         {
-            throw new UsuarioExcepcion("Password format is not valid");
+            throw new UserException("Password format is not valid");
         }
 
         var hash = HashearMd5(clave!);

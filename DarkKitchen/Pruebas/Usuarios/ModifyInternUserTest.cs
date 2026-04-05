@@ -79,7 +79,7 @@ public class ModifyInternUserTest
         var service = new ModifyUserService(repoMock.Object, Mock.Of<IPhoneValidator>());
         var request = new ModificarUsuarioRequestDTO { Name = "Carlos" };
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.UpdateInternalUser(5, 5, request)
         );
 
@@ -311,7 +311,7 @@ public class ModifyInternUserTest
         var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object);
         var request = new ModificarUsuarioRequestDTO { Phone = "123" };
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.UpdateInternalUser(5, 99, request)
         );
 
@@ -359,7 +359,7 @@ public class ModifyInternUserTest
         var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object);
         var request = new ModificarUsuarioRequestDTO { Phone = "123" };
 
-        Assert.ThrowsException<UsuarioExcepcion>(() =>
+        Assert.ThrowsException<UserException>(() =>
             service.UpdateInternalUser(5, 99, request)
         );
 
@@ -403,7 +403,7 @@ public class ModifyInternUserTest
         var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object);
         var request = new ModificarUsuarioRequestDTO { LastName = "ApellidoDemasiadoDemasiadoLargo" };
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.UpdateInternalUser(5, 99, request)
         );
 
@@ -437,7 +437,7 @@ public class ModifyInternUserTest
         var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object);
         var request = new ModificarUsuarioRequestDTO { Phone = "098111222" };
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.UpdateInternalUser(5, 99, request)
         );
 
@@ -576,7 +576,7 @@ public class ModifyInternUserTest
         var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object);
         var request = new ModificarUsuarioRequestDTO { Email = "correo-invalido" };
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.UpdateInternalUser(5, 99, request)
         );
 
@@ -624,7 +624,7 @@ public class ModifyInternUserTest
         var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object);
         var request = new ModificarUsuarioRequestDTO { Email = "repetido@gmail.com" };
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.UpdateInternalUser(5, 99, request)
         );
 
@@ -672,7 +672,7 @@ public class ModifyInternUserTest
         var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object);
         var request = new ModificarUsuarioRequestDTO { Email = "repetido@gmail.com" };
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.UpdateInternalUser(5, 99, request)
         );
 
@@ -846,7 +846,7 @@ public class ModifyInternUserTest
         var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object);
         var request = new ModificarUsuarioRequestDTO { LastName = "Go" };
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.UpdateInternalUser(5, 99, request)
         );
 
@@ -880,7 +880,7 @@ public class ModifyInternUserTest
 
         var request = new ModificarUsuarioRequestDTO { Name = "Carlos" };
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.UpdateInternalUser(5, 99, request)
         );
 
@@ -941,7 +941,7 @@ public class ModifyInternUserTest
             UserRoles.Administrative
         );
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             user.ModifyName("Ju4n")
         );
 
@@ -1062,7 +1062,7 @@ public class ModifyInternUserTest
 
         var request = new ModificarUsuarioRequestDTO { Role = "Anything" };
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.UpdateInternalUser(5, 99, request)
         );
 

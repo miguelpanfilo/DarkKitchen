@@ -67,7 +67,7 @@ public void DeleteInternalUser_WhenDeletingItself_ThrowsExceptionWithCorrectMess
         .Returns(existingUser);
 
     var service = new DeleteUserService(repoMock.Object);
-    var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+    var ex = Assert.ThrowsException<UserException>(() =>
         service.DeleteInterUser(5, 5)
     );
 
@@ -84,7 +84,7 @@ public void DeleteInternalUser_UserDoesNotExist_ThrowsExceptionWithCorrectMessag
         .Returns((User?)null);
 
     var service = new DeleteUserService(repoMock.Object);
-    var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+    var ex = Assert.ThrowsException<UserException>(() =>
         service.DeleteInterUser(5, 99)
     );
 
@@ -101,7 +101,7 @@ public void DeleteInternalUser_UserDoesNotExist_DoesNotCallRemove()
         .Returns((User?)null);
 
     var service = new DeleteUserService(repoMock.Object);
-    var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+    var ex = Assert.ThrowsException<UserException>(() =>
         service.DeleteInterUser(5, 99)
     );
 
@@ -130,7 +130,7 @@ public void DeleteInternalUser_WhenDeletingItself_DoesNotCallRemove_AndThrowsExc
         .Returns(existingUser);
 
     var service = new DeleteUserService(repoMock.Object);
-    var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+    var ex = Assert.ThrowsException<UserException>(() =>
         service.DeleteInterUser(5, 5)
     );
 
@@ -172,7 +172,7 @@ public void DeleteInternalUser_LoggedInUserIsNotAdministrative_ThrowsExceptionWi
         .Returns(loggedInUser);
 
     var service = new DeleteUserService(repoMock.Object);
-    var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+    var ex = Assert.ThrowsException<UserException>(() =>
         service.DeleteInterUser(10, 5)
     );
 
@@ -212,7 +212,7 @@ public void DeleteInternalUser_LoggedInUserIsNotAdministrative_ThrowsExceptionWi
             .Returns(usuarioLogueado);
 
         var service = new DeleteUserService(repoMock.Object);
-        Assert.ThrowsException<UsuarioExcepcion>(() =>
+        Assert.ThrowsException<UserException>(() =>
             service.DeleteInterUser(10, 5)
         );
 

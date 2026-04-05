@@ -23,7 +23,7 @@ public class FilterUserService : IFilterUserService
 
         if (userLogin.Role != UserRoles.Administrative)
         {
-            throw new UsuarioExcepcion("Only an administrative user can perform this action");
+            throw new UserException("Only an administrative user can perform this action");
         }
 
         var users = _repositoryUsers.GetAll();
@@ -46,7 +46,7 @@ public class FilterUserService : IFilterUserService
 
         if (user == null)
         {
-            throw new UsuarioExcepcion("User does not exist");
+            throw new UserException("User does not exist");
         }
 
         return user;

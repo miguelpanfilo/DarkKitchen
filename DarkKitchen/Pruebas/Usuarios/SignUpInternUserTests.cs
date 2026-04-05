@@ -105,7 +105,7 @@ public class SignUpInternUserTests
             Role = "Administrative"
         };
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.MakeInterUser(1, request)
         );
 
@@ -115,7 +115,7 @@ public class SignUpInternUserTests
     [TestMethod]
     public void CreateInternalUser_NameWithNumbers_ThrowsException()
     {
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             User.MakeIntern(
                 "Ju4n",
                 "Perez",
@@ -165,7 +165,7 @@ public class SignUpInternUserTests
             Role = "Administrative"
         };
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.MakeInterUser(1, request)
         );
 
@@ -267,7 +267,7 @@ public class SignUpInternUserTests
             Role = "AdmiNistrAtIve"
         };
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.MakeInterUser(1, request)
         );
 
@@ -312,7 +312,7 @@ public class SignUpInternUserTests
             Role = "Anything"
         };
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.MakeInterUser(1, request)
         );
 
@@ -372,7 +372,7 @@ public class SignUpInternUserTests
     {
         User user = null!;
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             user.MappingUserToResponseDTO()
         );
 
@@ -380,7 +380,7 @@ public class SignUpInternUserTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
+    [ExpectedException(typeof(UserException))]
     public void CreateIntern_ClientRole_ThrowsException()
     {
         User.MakeIntern(
@@ -396,7 +396,7 @@ public class SignUpInternUserTests
     [TestMethod]
     public void CreateIntern_EmptyName_ThrowsException()
     {
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             User.MakeIntern(
                 string.Empty,
                 "Perez",
@@ -413,7 +413,7 @@ public class SignUpInternUserTests
     [TestMethod]
     public void CreateIntern_EmptyLastName_ThrowsException()
     {
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             User.MakeIntern(
                 "Juan",
                 string.Empty,
@@ -430,7 +430,7 @@ public class SignUpInternUserTests
     [TestMethod]
     public void CreateIntern_LastNameLessThanThreeCharacters_ThrowsException()
     {
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             User.MakeIntern(
                 "Juan",
                 "Pe",
@@ -447,7 +447,7 @@ public class SignUpInternUserTests
     [TestMethod]
     public void CreateIntern_LastNameGreaterThanTwentyFiveCharacters_ThrowsException()
     {
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             User.MakeIntern(
                 "Juan",
                 "ApellidoDemasiadoDemasiadoLargo",
@@ -464,7 +464,7 @@ public class SignUpInternUserTests
     [TestMethod]
     public void CreatePhone_Empty_ThrowsException()
     {
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             Phone.MakePhone(string.Empty)
         );
 
@@ -600,7 +600,7 @@ public class SignUpInternUserTests
 
         var request = new SingUpInternUserRequestDTO();
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.MakeInterUser(5, request)
         );
 
@@ -621,7 +621,7 @@ public class SignUpInternUserTests
 
         var request = new SingUpInternUserRequestDTO();
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.MakeInterUser(1, request)
         );
 

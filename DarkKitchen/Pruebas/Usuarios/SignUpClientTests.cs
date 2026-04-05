@@ -71,7 +71,7 @@ public class UserServiceTests
             Password = "Password@2Ok6Abc"
         };
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.SignUpClient(request)
         );
 
@@ -105,7 +105,7 @@ public class UserServiceTests
             Password = "Password@2026Ok"
         };
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.SignUpClient(request)
         );
 
@@ -135,7 +135,7 @@ public class UserServiceTests
             Password = "Password@2026Ok"
         };
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.SignUpClient(request)
         );
 
@@ -167,7 +167,7 @@ public class UserServiceTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
+    [ExpectedException(typeof(UserException))]
     public void SignUpCliente_NoName_Exception()
     {
         var user = User.MakeClient(
@@ -193,7 +193,7 @@ public class UserServiceTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
+    [ExpectedException(typeof(UserException))]
     public void SignUpCliente_NullName_ReturnException()
     {
         User.MakeClient(
@@ -206,7 +206,7 @@ public class UserServiceTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
+    [ExpectedException(typeof(UserException))]
     public void SignClient_WithOutLastname_Exception()
     {
         User.MakeClient(
@@ -218,7 +218,7 @@ public class UserServiceTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
+    [ExpectedException(typeof(UserException))]
     public void SignupCliente_WithMoreOf25Chars()
     {
         var lastnameLenghtIncorrect = 26;
@@ -233,7 +233,7 @@ public class UserServiceTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(UsuarioExcepcion))]
+    [ExpectedException(typeof(UserException))]
     public void SignupClient_WithLessOf3Chars()
     {
         var lastnameLenghtIncorrect = 2;
@@ -443,7 +443,7 @@ public class UserServiceTests
     {
         var password = string.Empty;
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             User.MakeClient(
                 "Miguel",
                 "Lopez",
@@ -462,7 +462,7 @@ public class UserServiceTests
         var lengthLessThanMin = 14;
         var passwordWithLengthLessThanMin = new string('a', lengthLessThanMin);
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             User.MakeClient(
                 "Miguel",
                 "Lopez",
@@ -481,7 +481,7 @@ public class UserServiceTests
         var lengthGreaterThanLimit = 26;
         var passwordGreaterThanLimit = new string('a', lengthGreaterThanLimit);
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             User.MakeClient(
                 "Miguel",
                 "Lopez",
@@ -499,7 +499,7 @@ public class UserServiceTests
     {
         var password = "password!abc9xy";
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             User.MakeClient(
                 "Miguel",
                 "Lopez",
@@ -517,7 +517,7 @@ public class UserServiceTests
     {
         var password = "PASSWORD!ABC9XY";
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             User.MakeClient(
                 "Miguel",
                 "Lopez",
@@ -535,7 +535,7 @@ public class UserServiceTests
     {
         var password = "Password!AbcXyz";
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             User.MakeClient(
                 "Miguel",
                 "Lopez",
@@ -553,7 +553,7 @@ public class UserServiceTests
     {
         var password = "PasswordAbc123Xy";
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             User.MakeClient(
                 "Miguel",
                 "Lopez",
@@ -571,7 +571,7 @@ public class UserServiceTests
     {
         var password = "Password!Ab12Xy";
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             User.MakeClient(
                 "Miguel",
                 "Lopez",

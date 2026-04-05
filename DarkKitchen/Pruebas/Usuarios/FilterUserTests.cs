@@ -692,7 +692,7 @@ public class FilterUserTests
             Name = "Juan"
         };
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.BuscarUsuarios(5, request)
         );
 
@@ -724,7 +724,7 @@ public class FilterUserTests
             Name = "Juan"
         };
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.BuscarUsuarios(5, request)
         );
 

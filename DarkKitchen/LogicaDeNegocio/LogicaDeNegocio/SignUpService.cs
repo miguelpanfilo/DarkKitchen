@@ -22,7 +22,7 @@ public class SignUpService : ISignUpUserService
     {
         if (_repositoryUser.EmailExist(requestDto.Email))
         {
-            throw new UsuarioExcepcion("Email is already registered");
+            throw new UserException("Email is already registered");
         }
 
         var phone = MakeAndValidatePhone(requestDto.Phone);
@@ -54,7 +54,7 @@ public class SignUpService : ISignUpUserService
 
         if (_repositoryUser.EmailExist(requestDto.Email))
         {
-            throw new UsuarioExcepcion("Email is already registered");
+            throw new UserException("Email is already registered");
         }
 
         var user = UserMapper.MappingDTOToInternUser(requestDto, telefono, rol);
@@ -68,7 +68,7 @@ public class SignUpService : ISignUpUserService
     {
         if (!Enum.TryParse<UserRoles>(rol, true, out var rolEnum))
         {
-            throw new UsuarioExcepcion("Internal role is not valid");
+            throw new UserException("Internal role is not valid");
         }
 
         return rolEnum;
@@ -80,7 +80,7 @@ public class SignUpService : ISignUpUserService
 
         if (user.Role != UserRoles.Administrative)
         {
-            throw new UsuarioExcepcion("Only an administrative user can perform this action");
+            throw new UserException("Only an administrative user can perform this action");
         }
     }
 
@@ -90,7 +90,7 @@ public class SignUpService : ISignUpUserService
 
         if (user == null)
         {
-            throw new UsuarioExcepcion("User does not exist");
+            throw new UserException("User does not exist");
         }
 
         return user;
@@ -102,7 +102,7 @@ public class SignUpService : ISignUpUserService
 
         if (!_validatorPhone.ItsValid(newPhone.Value))
         {
-            throw new UsuarioExcepcion("Phone is not valid");
+            throw new UserException("Phone is not valid");
         }
 
         return newPhone;

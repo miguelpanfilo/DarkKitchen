@@ -43,7 +43,7 @@ public class ModifyPasswordTests
             NewPassword = "ClaveNuevaSegura4!"
         };
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.UpdateUserPassword(5, 99, request)
         );
 
@@ -137,7 +137,7 @@ public class ModifyPasswordTests
             NewPassword = "ClaveNuevaSegura4!"
         };
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             service.UpdateUserPassword(5, 99, request)
         );
 
@@ -181,7 +181,7 @@ public void UpdateUserPassword_WrongCurrentPassword_ThrowsExceptionWithCorrectMe
         NewPassword = "ClaveNuevaSegura4!"
     };
 
-    var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+    var ex = Assert.ThrowsException<UserException>(() =>
         service.UpdateUserPassword(5, 99, request)
     );
 
@@ -230,7 +230,7 @@ public void UpdateUserPassword_InvalidNewPassword_ThrowsExceptionWithCorrectMess
         NewPassword = "123"
     };
 
-    var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+    var ex = Assert.ThrowsException<UserException>(() =>
         service.UpdateUserPassword(5, 99, request)
     );
 
@@ -269,7 +269,7 @@ public void UpdateUserPassword_UserDoesNotExist_ThrowsExceptionWithCorrectMessag
         NewPassword = "ClaveNuevaSegura4!"
     };
 
-    var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+    var ex = Assert.ThrowsException<UserException>(() =>
         service.UpdateUserPassword(5, 99, request)
     );
 
@@ -317,7 +317,7 @@ public void UpdateUserPassword_UserDoesNotExist_ThrowsExceptionWithCorrectMessag
             NewPassword = "ClaveNuevaSegura4!"
         };
 
-        Assert.ThrowsException<UsuarioExcepcion>(() =>
+        Assert.ThrowsException<UserException>(() =>
             service.UpdateUserPassword(5, 99, request)
         );
 

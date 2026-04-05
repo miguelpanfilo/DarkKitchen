@@ -27,7 +27,7 @@ public class EmailTests
     [TestMethod]
     public void MakeEmail_EmptyEmail_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             Email.MakeEmail(string.Empty)
         );
 
@@ -39,7 +39,7 @@ public class EmailTests
     {
         string? email = null;
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             Email.MakeEmail(email)
         );
 
@@ -49,7 +49,7 @@ public class EmailTests
     [TestMethod]
     public void MakeEmail_EmailWithoutAtSymbol_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             Email.MakeEmail("miguelgmail.com")
         );
 
@@ -59,7 +59,7 @@ public class EmailTests
     [TestMethod]
     public void MakeEmail_EmailWithTwoAtSymbols_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             Email.MakeEmail("miguel@@gmail.com")
         );
 
@@ -69,7 +69,7 @@ public class EmailTests
     [TestMethod]
     public void MakeEmail_EmailWithoutLocalPart_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             Email.MakeEmail("@gmail.com")
         );
 
@@ -79,7 +79,7 @@ public class EmailTests
     [TestMethod]
     public void MakeEmail_EmailWithoutDomain_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             Email.MakeEmail("miguel@")
         );
 
@@ -89,7 +89,7 @@ public class EmailTests
     [TestMethod]
     public void MakeEmail_EmailWithoutDotInDomain_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             Email.MakeEmail("miguel@gmail")
         );
 
@@ -99,7 +99,7 @@ public class EmailTests
     [TestMethod]
     public void MakeEmail_EmailWithDomainStartingWithDot_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             Email.MakeEmail("miguel@.gmail.com")
         );
 
@@ -109,7 +109,7 @@ public class EmailTests
     [TestMethod]
     public void MakeEmail_EmailWithDomainEndingWithDot_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             Email.MakeEmail("miguel@gmail.com.")
         );
 
@@ -119,7 +119,7 @@ public class EmailTests
     [TestMethod]
     public void MakeEmail_EmailWithDoubleDotInDomain_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             Email.MakeEmail("miguel@gmail..com")
         );
 
@@ -129,7 +129,7 @@ public class EmailTests
     [TestMethod]
     public void MakeEmail_EmailWithDoubleDotInLocalPart_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             Email.MakeEmail("mi..guel@gmail.com")
         );
 

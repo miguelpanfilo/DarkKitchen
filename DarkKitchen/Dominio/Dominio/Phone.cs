@@ -15,14 +15,14 @@ public class Phone
     {
         if (string.IsNullOrWhiteSpace(number))
         {
-            throw new UsuarioExcepcion("Phone cannot be empty");
+            throw new UserException("Phone cannot be empty");
         }
 
         var phoneNormalized = number.Trim();
 
         if (!phoneNormalized.All(char.IsDigit))
         {
-            throw new UsuarioExcepcion("Phone must contain only digits");
+            throw new UserException("Phone must contain only digits");
         }
 
         return new Phone(phoneNormalized);

@@ -28,7 +28,7 @@ public class PhoneTests
     {
         string? phone = null;
 
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             Phone.MakePhone(phone!)
         );
 
@@ -38,7 +38,7 @@ public class PhoneTests
     [TestMethod]
     public void MakePhone_EmptyPhone_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             Phone.MakePhone(string.Empty)
         );
 
@@ -48,7 +48,7 @@ public class PhoneTests
     [TestMethod]
     public void MakePhone_PhoneWithLetters_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             Phone.MakePhone("09912a456")
         );
 
@@ -58,7 +58,7 @@ public class PhoneTests
     [TestMethod]
     public void MakePhone_PhoneWithSymbols_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UsuarioExcepcion>(() =>
+        var ex = Assert.ThrowsException<UserException>(() =>
             Phone.MakePhone("09912-456")
         );
 

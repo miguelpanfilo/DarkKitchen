@@ -140,7 +140,7 @@ public void Create_NullPassword_ThrowsUserException()
 {
     string? password = null;
 
-    Assert.ThrowsException<UsuarioExcepcion>(() => Password.MakePassword(password));
+    Assert.ThrowsException<UserException>(() => Password.MakePassword(password));
 }
 
 [TestMethod]
@@ -148,7 +148,7 @@ public void Create_InvalidPassword_ThrowsUserException()
 {
     var password = "abc";
 
-    Assert.ThrowsException<UsuarioExcepcion>(() => Password.MakePassword(password));
+    Assert.ThrowsException<UserException>(() => Password.MakePassword(password));
 }
 
 [TestMethod]

@@ -31,7 +31,7 @@ public class DeleteUserService : IDeleteUserService
 
         if (user.Role != UserRoles.Administrative)
         {
-            throw new UsuarioExcepcion("Only an administrative user can perform this action");
+            throw new UserException("Only an administrative user can perform this action");
         }
     }
 
@@ -39,7 +39,7 @@ public class DeleteUserService : IDeleteUserService
     {
         if (idToDelete == idUserLogged)
         {
-            throw new UsuarioExcepcion("A user cannot delete themselves");
+            throw new UserException("A user cannot delete themselves");
         }
     }
 
@@ -49,7 +49,7 @@ public class DeleteUserService : IDeleteUserService
 
         if (user == null)
         {
-            throw new UsuarioExcepcion("User does not exist");
+            throw new UserException("User does not exist");
         }
 
         return user;

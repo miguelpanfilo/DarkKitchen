@@ -25,7 +25,7 @@ public static class UserMapper
     {
         if (user == null)
         {
-            throw new UsuarioExcepcion("User cannot be null");
+            throw new UserException("User cannot be null");
         }
 
         return new UsuarioResponseDTO

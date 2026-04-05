@@ -44,7 +44,7 @@ public class ModifyUserService : IModifyUserService
 
         if (!usuario.VerifyPassword(requestDto.OldPassword))
         {
-            throw new UsuarioExcepcion("Current password is incorrect");
+            throw new UserException("Current password is incorrect");
         }
 
         usuario.ModifyPassword(Password.MakePassword(requestDto.NewPassword));
@@ -79,7 +79,7 @@ public class ModifyUserService : IModifyUserService
         if(!string.Equals(emailActualizado, user.Email.ToString(), StringComparison.OrdinalIgnoreCase)
            && _repo.EmailExist(emailActualizado))
         {
-            throw new UsuarioExcepcion("Email is already registered");
+            throw new UserException("Email is already registered");
         }
     }
 
@@ -117,7 +117,7 @@ public class ModifyUserService : IModifyUserService
 
         if (usuario.Role != UserRoles.Administrative)
         {
-            throw new UsuarioExcepcion("Only an administrative user can perform this action");
+            throw new UserException("Only an administrative user can perform this action");
         }
     }
 
@@ -125,7 +125,7 @@ public class ModifyUserService : IModifyUserService
     {
         if (idUsuarioAModificar == idUsuarioLogueado)
         {
-            throw new UsuarioExcepcion("A user cannot modify itself");
+            throw new UserException("A user cannot modify itself");
         }
     }
 
@@ -135,7 +135,7 @@ public class ModifyUserService : IModifyUserService
 
         if(usuario == null)
         {
-            throw new UsuarioExcepcion("User does not exist");
+            throw new UserException("User does not exist");
         }
 
         return usuario;
@@ -147,7 +147,7 @@ public class ModifyUserService : IModifyUserService
 
         if (!_phoneValidator.ItsValid(telefonoCreado.Value))
         {
-            throw new UsuarioExcepcion("Phone is not valid");
+            throw new UserException("Phone is not valid");
         }
 
         return telefonoCreado;
@@ -167,7 +167,7 @@ public class ModifyUserService : IModifyUserService
     {
         if(!Enum.TryParse<UserRoles>(rol, true, out var rolEnum))
         {
-            throw new UsuarioExcepcion("Internal role is not valid");
+            throw new UserException("Internal role is not valid");
         }
 
         return rolEnum;
