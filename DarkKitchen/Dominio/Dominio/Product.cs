@@ -16,9 +16,9 @@ public class Product
         ValidateRequired(description, "La descripcion");
         ValidateRequired(commercialLine, "Línea comercial");
         ValidateRequired(category, "La categoria");
-        if(code.Length < 5)
+        if(code.Length < 5 || code.Length > 20)
         {
-            throw new ProductException("El código debe tener al menos 5 caracteres.");
+            throw new ProductException("El código debe tener entre 5 y 20 caracteres.");
         }
 
         Code = code;
