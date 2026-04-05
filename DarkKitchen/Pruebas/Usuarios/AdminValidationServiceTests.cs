@@ -75,4 +75,29 @@ public class AdminValidationServiceTests
 
         service.EnsureUserIsAdmin(5);
     }
+
+    [TestMethod]
+    public void EnsureUserIsAdmin_UserIsNotAdministrative_ThrowsExceptionWithCorrectMessage()
+    {
+        var repoMock = new Mock<IRepositoryUser>();
+
+        var user = User.MakeClient(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            Phone.MakePhone("099123456"),
+            "PasswordSeguraee3!");
+        user.Id = 5;
+
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns(user);
+
+        var service = new AdminValidationService(repoMock.Object);
+
+        var ex = Assert.ThrowsException<UserException>(() =>
+            service.EnsureUserIsAdmin(5));
+
+        Assert.AreEqual("Only an administrative user can perform this action", ex.Message);
+    }
 }
