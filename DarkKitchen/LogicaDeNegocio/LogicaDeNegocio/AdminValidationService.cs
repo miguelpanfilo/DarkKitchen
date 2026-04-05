@@ -7,6 +7,8 @@ namespace LogicaDeNegocio;
 
 public class AdminValidationService : IAdminValidationService
 {
+    private const string UserNotFoundMessage = "User does not exist";
+    private const string OnlyAdminMessage = "Only an administrative user can perform this action";
     private readonly IRepositoryUser _repositoryUser;
 
     public AdminValidationService(IRepositoryUser repositoryUser)
@@ -20,7 +22,7 @@ public class AdminValidationService : IAdminValidationService
 
         if(user == null)
         {
-            throw new UserException("User does not exist");
+            throw new UserException(UserNotFoundMessage);
         }
 
         return user;
@@ -32,7 +34,7 @@ public class AdminValidationService : IAdminValidationService
 
         if(user.Role != UserRoles.Administrative)
         {
-            throw new UserException("Only an administrative user can perform this action");
+            throw new UserException(OnlyAdminMessage);
         }
     }
 
