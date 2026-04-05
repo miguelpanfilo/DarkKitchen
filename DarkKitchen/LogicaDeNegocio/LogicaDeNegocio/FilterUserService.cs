@@ -1,24 +1,18 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
-using Dominio.Exceptions;
 using LogicaDeNegocioAbstracciones;
 using Mapeo;
 
 namespace LogicaDeNegocio;
 
-public class FilterUserService : IFilterUserService
+public class FilterUserService(
+    IRepositoryUser repositoryUsers,
+    IAdminValidationService adminValidationService)
+    : IFilterUserService
 {
-    private readonly IRepositoryUser _repositoryUsers;
-    private readonly IAdminValidationService _adminValidationService;
-
-    public FilterUserService(
-        IRepositoryUser repositoryUsers,
-        IAdminValidationService adminValidationService)
-    {
-        _repositoryUsers = repositoryUsers;
-        _adminValidationService = adminValidationService;
-    }
+    private readonly IRepositoryUser _repositoryUsers = repositoryUsers;
+    private readonly IAdminValidationService _adminValidationService = adminValidationService;
 
     public List<UsuarioResponseDTO> BuscarUsuarios(int idUserLogin, FindUserRequestDTO requestDto)
     {
@@ -27,10 +21,10 @@ public class FilterUserService : IFilterUserService
         var users = _repositoryUsers.GetAll();
         var filteredUsers = new List<UsuarioResponseDTO>();
 
-        foreach (var u in users)
+        foreach(var u in users)
         {
-            if (MatchName(u, requestDto.Name) &&
-                MatchLastName(u, requestDto.LastName))
+            if(MatchName(u, requestDto.Name) &&
+               MatchLastName(u, requestDto.LastName))
             {
                 filteredUsers.Add(u.MappingUserToResponseDTO());
             }

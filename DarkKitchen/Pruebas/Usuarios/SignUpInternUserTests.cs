@@ -395,7 +395,7 @@ public class SignUpInternUserTests
         Assert.AreEqual("Last name must be between 3 and 25 characters", ex.Message);
     }
 
-     [TestMethod]
+    [TestMethod]
     public void CreateIntern_LastNameGreaterThanTwentyFiveCharacters_ThrowsException()
     {
         var ex = Assert.ThrowsException<UserException>(() =>

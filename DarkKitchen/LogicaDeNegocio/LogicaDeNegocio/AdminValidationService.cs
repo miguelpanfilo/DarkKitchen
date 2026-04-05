@@ -5,16 +5,11 @@ using LogicaDeNegocioAbstracciones;
 
 namespace LogicaDeNegocio;
 
-public class AdminValidationService : IAdminValidationService
+public class AdminValidationService(IRepositoryUser repositoryUser) : IAdminValidationService
 {
     private const string UserNotFoundMessage = "User does not exist";
     private const string OnlyAdminMessage = "Only an administrative user can perform this action";
-    private readonly IRepositoryUser _repositoryUser;
-
-    public AdminValidationService(IRepositoryUser repositoryUser)
-    {
-        _repositoryUser = repositoryUser;
-    }
+    private readonly IRepositoryUser _repositoryUser = repositoryUser;
 
     public User GetExistingUser(int userId)
     {

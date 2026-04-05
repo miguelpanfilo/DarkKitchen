@@ -7,21 +7,15 @@ using Mapeo;
 
 namespace LogicaDeNegocio;
 
-public class ModifyUserService : IModifyUserService
+public class ModifyUserService(
+    IRepositoryUser repo,
+    IPhoneValidator phoneValidator,
+    IAdminValidationService adminValidationService)
+    : IModifyUserService
 {
-    private readonly IRepositoryUser _repo;
-    private readonly IPhoneValidator _phoneValidator;
-    private readonly IAdminValidationService _adminValidationService;
-
-    public ModifyUserService(
-        IRepositoryUser repo,
-        IPhoneValidator phoneValidator,
-        IAdminValidationService adminValidationService)
-    {
-        _repo = repo;
-        _phoneValidator = phoneValidator;
-        _adminValidationService = adminValidationService;
-    }
+    private readonly IRepositoryUser _repo = repo;
+    private readonly IPhoneValidator _phoneValidator = phoneValidator;
+    private readonly IAdminValidationService _adminValidationService = adminValidationService;
 
     public UsuarioResponseDTO UpdateInternalUser(
         int idUserToModify,
@@ -29,11 +23,11 @@ public class ModifyUserService : IModifyUserService
         ModificarUsuarioRequestDTO requestDto)
     {
         _adminValidationService.EnsureUserIsAdmin(isUserLogged);
+
         _adminValidationService.EnsureIsNotSelfAction(
             idUserToModify,
             isUserLogged,
-            "A user cannot modify itself"
-        );
+            "A user cannot modify itself");
 
         var user = _adminValidationService.GetExistingUser(idUserToModify);
 
@@ -48,15 +42,15 @@ public class ModifyUserService : IModifyUserService
         ModificarClaveRequestDTO requestDto)
     {
         _adminValidationService.EnsureUserIsAdmin(idUserLogged);
+
         _adminValidationService.EnsureIsNotSelfAction(
             idUserToModify,
             idUserLogged,
-            "A user cannot modify itself"
-        );
+            "A user cannot modify itself");
 
         var usuario = _adminValidationService.GetExistingUser(idUserToModify);
 
-        if (!usuario.VerifyPassword(requestDto.OldPassword))
+        if(!usuario.VerifyPassword(requestDto.OldPassword))
         {
             throw new UserException("Current password is incorrect");
         }
@@ -80,7 +74,7 @@ public class ModifyUserService : IModifyUserService
 
     private Phone BuildFinalPhone(User user, string updatedPhone)
     {
-        if (updatedPhone == user.Phone.Value)
+        if(updatedPhone == user.Phone.Value)
         {
             return user.Phone;
         }
@@ -90,8 +84,8 @@ public class ModifyUserService : IModifyUserService
 
     private void ValidateEmailIfChanged(User user, string updatedMail)
     {
-        if (!string.Equals(updatedMail, user.Email.ToString(), StringComparison.OrdinalIgnoreCase)
-            && _repo.EmailExist(updatedMail))
+        if(!string.Equals(updatedMail, user.Email.ToString(), StringComparison.OrdinalIgnoreCase) &&
+            _repo.EmailExist(updatedMail))
         {
             throw new UserException("Email is already registered");
         }
@@ -129,7 +123,7 @@ public class ModifyUserService : IModifyUserService
     {
         var newPhone = Phone.MakePhone(phone);
 
-        if (!_phoneValidator.ItsValid(newPhone.Value))
+        if(!_phoneValidator.ItsValid(newPhone.Value))
         {
             throw new UserException("Phone is not valid");
         }
@@ -139,7 +133,7 @@ public class ModifyUserService : IModifyUserService
 
     private UserRoles ResolveFinalRole(ModificarUsuarioRequestDTO requestDto, User user)
     {
-        if (string.IsNullOrWhiteSpace(requestDto.Role))
+        if(string.IsNullOrWhiteSpace(requestDto.Role))
         {
             return user.Role;
         }
@@ -149,7 +143,7 @@ public class ModifyUserService : IModifyUserService
 
     private UserRoles GetValidInternalRole(string rol)
     {
-        if (!Enum.TryParse<UserRoles>(rol, true, out var rolEnum))
+        if(!Enum.TryParse<UserRoles>(rol, true, out var rolEnum))
         {
             throw new UserException("Internal role is not valid");
         }
