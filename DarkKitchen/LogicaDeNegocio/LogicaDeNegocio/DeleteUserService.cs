@@ -11,7 +11,7 @@ public class DeleteUserService(IRepositoryUser repositoryUsers) : IDeleteUserSer
 
     public void DeleteInterUser(int idToDelete, int idUserLogged)
     {
-        ValidationUSerAdmin(idUserLogged);
+        ValidationUserAdmin(idUserLogged);
         ValidationNoAutoDeleting(idToDelete, idUserLogged);
 
         var user = GetExistingUser(idToDelete);
@@ -19,7 +19,7 @@ public class DeleteUserService(IRepositoryUser repositoryUsers) : IDeleteUserSer
         _repositoryUsers.Remove(user.Id);
     }
 
-    private void ValidationUSerAdmin(int idUserLogged)
+    private void ValidationUserAdmin(int idUserLogged)
     {
         var user = GetExistingUser(idUserLogged);
 
