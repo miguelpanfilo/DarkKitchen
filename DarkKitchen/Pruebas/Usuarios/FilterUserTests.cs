@@ -20,8 +20,7 @@ public class FilterUserTests
             "juan1@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuario1.Id = 1;
 
         var usuario2 = User.MakeIntern(
@@ -30,21 +29,19 @@ public class FilterUserTests
             "juan2@gmail.com",
             Phone.MakePhone("099111222"),
             "PasswordSeguraaa4!",
-            UserRoles.Preparer
-        );
+            UserRoles.Preparer);
         usuario2.Id = 2;
 
         repoMock
             .Setup(r => r.GetAll())
-            .Returns(new List<User> { usuario1, usuario2 });
+            .Returns([usuario1, usuario2]);
         var usuarioLogueado = User.MakeIntern(
             "Admin",
             "Root",
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuarioLogueado.Id = 99;
 
         repoMock
@@ -57,7 +54,7 @@ public class FilterUserTests
             Name = "Juan"
         };
 
-        var resultado = service.BuscarUsuarios(99,request);
+        var resultado = service.BuscarUsuarios(99, request);
         Assert.AreEqual(2, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Name);
         Assert.AreEqual("Juan", resultado[1].Name);
@@ -74,13 +71,12 @@ public class FilterUserTests
             "pedro@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuario.Id = 1;
 
         repoMock
             .Setup(r => r.GetAll())
-            .Returns(new List<User> { usuario });
+            .Returns([usuario]);
 
         var service = new FilterUserService(repoMock.Object);
 
@@ -94,15 +90,14 @@ public class FilterUserTests
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuarioLogueado.Id = 99;
 
         repoMock
             .Setup(r => r.FindById(99))
             .Returns(usuarioLogueado);
 
-        var resultado = service.BuscarUsuarios(99,request);
+        var resultado = service.BuscarUsuarios(99, request);
         Assert.AreEqual(0, resultado.Count);
     }
 
@@ -117,8 +112,7 @@ public class FilterUserTests
             "juan@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuario1.Id = 1;
 
         var usuario2 = User.MakeIntern(
@@ -127,13 +121,12 @@ public class FilterUserTests
             "pedro@gmail.com",
             Phone.MakePhone("099111222"),
             "PasswordSeguraaa4!",
-            UserRoles.Preparer
-        );
+            UserRoles.Preparer);
         usuario2.Id = 2;
 
         repoMock
             .Setup(r => r.GetAll())
-            .Returns(new List<User> { usuario1, usuario2 });
+            .Returns([usuario1, usuario2]);
 
         var service = new FilterUserService(repoMock.Object);
 
@@ -147,15 +140,14 @@ public class FilterUserTests
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuarioLogueado.Id = 99;
 
         repoMock
             .Setup(r => r.FindById(99))
             .Returns(usuarioLogueado);
 
-        var resultado = service.BuscarUsuarios(99,request);
+        var resultado = service.BuscarUsuarios(99, request);
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Name);
         Assert.AreEqual("Perez", resultado[0].LastName);
@@ -172,13 +164,12 @@ public class FilterUserTests
             "juan@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuario.Id = 1;
 
         repoMock
             .Setup(r => r.GetAll())
-            .Returns(new List<User> { usuario });
+            .Returns([usuario]);
 
         var service = new FilterUserService(repoMock.Object);
 
@@ -192,15 +183,14 @@ public class FilterUserTests
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuarioLogueado.Id = 99;
 
         repoMock
             .Setup(r => r.FindById(99))
             .Returns(usuarioLogueado);
 
-        var resultado = service.BuscarUsuarios(99,request);
+        var resultado = service.BuscarUsuarios(99, request);
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Name);
     }
@@ -212,7 +202,7 @@ public class FilterUserTests
 
         repoMock
             .Setup(r => r.GetAll())
-            .Returns(new List<User>());
+            .Returns([]);
 
         var service = new FilterUserService(repoMock.Object);
 
@@ -226,15 +216,14 @@ public class FilterUserTests
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuarioLogueado.Id = 99;
 
         repoMock
             .Setup(r => r.FindById(99))
             .Returns(usuarioLogueado);
 
-        var resultado = service.BuscarUsuarios(99,request);
+        var resultado = service.BuscarUsuarios(99, request);
         Assert.AreEqual(0, resultado.Count);
     }
 
@@ -248,13 +237,12 @@ public class FilterUserTests
             "Perez",
             "juan@gmail.com",
             Phone.MakePhone("099123456"),
-            "PasswordSeguraee3!"
-        );
+            "PasswordSeguraee3!");
         usuario.Id = 100;
 
         repoMock
             .Setup(r => r.GetAll())
-            .Returns(new List<User> { usuario });
+            .Returns([usuario]);
 
         var service = new FilterUserService(repoMock.Object);
 
@@ -268,15 +256,14 @@ public class FilterUserTests
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuarioLogueado.Id = 99;
 
         repoMock
             .Setup(r => r.FindById(99))
             .Returns(usuarioLogueado);
 
-        var resultado = service.BuscarUsuarios(99,request);
+        var resultado = service.BuscarUsuarios(99, request);
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual(100, resultado[0].Id);
         Assert.AreEqual("Juan", resultado[0].Name);
@@ -297,8 +284,7 @@ public class FilterUserTests
             "juan1@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuario1.Id = 1;
 
         var usuario2 = User.MakeIntern(
@@ -307,13 +293,12 @@ public class FilterUserTests
             "pedro@gmail.com",
             Phone.MakePhone("099111222"),
             "PasswordSeguraaa4!",
-            UserRoles.Preparer
-        );
+            UserRoles.Preparer);
         usuario2.Id = 2;
 
         repoMock
             .Setup(r => r.GetAll())
-            .Returns(new List<User> { usuario1, usuario2 });
+            .Returns([usuario1, usuario2]);
 
         var service = new FilterUserService(repoMock.Object);
 
@@ -327,15 +312,14 @@ public class FilterUserTests
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuarioLogueado.Id = 99;
 
         repoMock
             .Setup(r => r.FindById(99))
             .Returns(usuarioLogueado);
 
-        var resultado = service.BuscarUsuarios(99,request);
+        var resultado = service.BuscarUsuarios(99, request);
         Assert.AreEqual(2, resultado.Count);
         Assert.AreEqual("Perez", resultado[0].LastName);
         Assert.AreEqual("Perez", resultado[1].LastName);
@@ -352,8 +336,7 @@ public class FilterUserTests
             "juan1@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuario1.Id = 1;
 
         var usuario2 = User.MakeIntern(
@@ -362,13 +345,12 @@ public class FilterUserTests
             "pedro@gmail.com",
             Phone.MakePhone("099111222"),
             "PasswordSeguraaa4!",
-            UserRoles.Preparer
-        );
+            UserRoles.Preparer);
         usuario2.Id = 2;
 
         repoMock
             .Setup(r => r.GetAll())
-            .Returns(new List<User> { usuario1, usuario2 });
+            .Returns([usuario1, usuario2]);
 
         var service = new FilterUserService(repoMock.Object);
 
@@ -382,15 +364,14 @@ public class FilterUserTests
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuarioLogueado.Id = 99;
 
         repoMock
             .Setup(r => r.FindById(99))
             .Returns(usuarioLogueado);
 
-        var resultado = service.BuscarUsuarios(99,request);
+        var resultado = service.BuscarUsuarios(99, request);
         Assert.AreEqual(2, resultado.Count);
         Assert.AreEqual("Perez", resultado[0].LastName);
         Assert.AreEqual("Perez", resultado[1].LastName);
@@ -407,13 +388,12 @@ public class FilterUserTests
             "juan@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuario.Id = 1;
 
         repoMock
             .Setup(r => r.GetAll())
-            .Returns(new List<User> { usuario });
+            .Returns([usuario]);
 
         var service = new FilterUserService(repoMock.Object);
 
@@ -427,8 +407,7 @@ public class FilterUserTests
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuarioLogueado.Id = 99;
 
         repoMock
@@ -449,8 +428,7 @@ public class FilterUserTests
             "juan@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuario1.Id = 1;
 
         var usuario2 = User.MakeIntern(
@@ -459,13 +437,12 @@ public class FilterUserTests
             "pedro@gmail.com",
             Phone.MakePhone("099111222"),
             "PasswordSeguraaa4!",
-            UserRoles.Preparer
-        );
+            UserRoles.Preparer);
         usuario2.Id = 2;
 
         repoMock
             .Setup(r => r.GetAll())
-            .Returns(new List<User> { usuario1, usuario2 });
+            .Returns([usuario1, usuario2]);
 
         var service = new FilterUserService(repoMock.Object);
 
@@ -479,15 +456,14 @@ public class FilterUserTests
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuarioLogueado.Id = 99;
 
         repoMock
             .Setup(r => r.FindById(99))
             .Returns(usuarioLogueado);
 
-        var resultado = service.BuscarUsuarios(99,request);
+        var resultado = service.BuscarUsuarios(99, request);
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Name);
         Assert.AreEqual("Perez", resultado[0].LastName);
@@ -503,7 +479,7 @@ public class FilterUserTests
 
         repoMock
             .Setup(r => r.GetAll())
-            .Returns(new List<User>());
+            .Returns([]);
 
         var service = new FilterUserService(repoMock.Object);
 
@@ -517,15 +493,14 @@ public class FilterUserTests
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuarioLogueado.Id = 99;
 
         repoMock
             .Setup(r => r.FindById(99))
             .Returns(usuarioLogueado);
 
-        var resultado = service.BuscarUsuarios(99,request);
+        var resultado = service.BuscarUsuarios(99, request);
         Assert.AreEqual(0, resultado.Count);
     }
 
@@ -540,13 +515,12 @@ public class FilterUserTests
             "juan@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuario.Id = 1;
 
         repoMock
             .Setup(r => r.GetAll())
-            .Returns(new List<User> { usuario });
+            .Returns([usuario]);
 
         var usuarioLogueado = User.MakeIntern(
             "Admin",
@@ -554,8 +528,7 @@ public class FilterUserTests
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuarioLogueado.Id = 99;
 
         repoMock
@@ -584,8 +557,7 @@ public class FilterUserTests
             "juan@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuario.Id = 1;
 
         var usuarioLogueado = User.MakeIntern(
@@ -594,8 +566,7 @@ public class FilterUserTests
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuarioLogueado.Id = 99;
 
         repoMock
@@ -604,7 +575,7 @@ public class FilterUserTests
 
         repoMock
             .Setup(r => r.GetAll())
-            .Returns(new List<User> { usuario });
+            .Returns([usuario]);
 
         var service = new FilterUserService(repoMock.Object);
 
@@ -630,8 +601,7 @@ public class FilterUserTests
             "juan@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuario.Id = 1;
 
         var usuarioLogueado = User.MakeIntern(
@@ -640,8 +610,7 @@ public class FilterUserTests
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuarioLogueado.Id = 99;
 
         repoMock
@@ -650,7 +619,7 @@ public class FilterUserTests
 
         repoMock
             .Setup(r => r.GetAll())
-            .Returns(new List<User> { usuario });
+            .Returns([usuario]);
 
         var service = new FilterUserService(repoMock.Object);
 
@@ -660,7 +629,7 @@ public class FilterUserTests
             LastName = " pErEz "
         };
 
-        var resultado = service.BuscarUsuarios(99,request);
+        var resultado = service.BuscarUsuarios(99, request);
 
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Name);
@@ -677,8 +646,7 @@ public class FilterUserTests
             "Perez",
             "cliente@gmail.com",
             Phone.MakePhone("099123456"),
-            "PasswordSeguraee3!"
-        );
+            "PasswordSeguraee3!");
         usuarioLogueado.Id = 5;
 
         repoMock
@@ -693,8 +661,7 @@ public class FilterUserTests
         };
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.BuscarUsuarios(5, request)
-        );
+            service.BuscarUsuarios(5, request));
 
         Assert.AreEqual("Only an administrative user can perform this action", ex.Message);
     }
@@ -709,8 +676,7 @@ public class FilterUserTests
             "Perez",
             "cliente@gmail.com",
             Phone.MakePhone("099123456"),
-            "PasswordSeguraee3!"
-        );
+            "PasswordSeguraee3!");
         usuarioLogueado.Id = 5;
 
         repoMock
@@ -725,8 +691,7 @@ public class FilterUserTests
         };
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.BuscarUsuarios(5, request)
-        );
+            service.BuscarUsuarios(5, request));
 
         Assert.AreEqual("Only an administrative user can perform this action", ex.Message);
 

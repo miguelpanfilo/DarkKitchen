@@ -7,20 +7,14 @@ using Mapeo;
 
 namespace LogicaDeNegocio;
 
-public class SignUpService : ISignUpUserService
+public class SignUpService(IRepositoryUser repositoryUser, IPhoneValidator validatorPhone) : ISignUpUserService
 {
-    private readonly IRepositoryUser _repositoryUser;
-    private readonly IPhoneValidator _validatorPhone;
-
-    public SignUpService(IRepositoryUser repositoryUser, IPhoneValidator validatorPhone)
-    {
-        _repositoryUser = repositoryUser;
-        _validatorPhone = validatorPhone;
-    }
+    private readonly IRepositoryUser _repositoryUser = repositoryUser;
+    private readonly IPhoneValidator _validatorPhone = validatorPhone;
 
     public SignUpClientResponseDTO SignUpClient(SignUpClientRequestDTO requestDto)
     {
-        if (_repositoryUser.EmailExist(requestDto.Email))
+        if(_repositoryUser.EmailExist(requestDto.Email))
         {
             throw new UserException("Email is already registered");
         }
@@ -32,8 +26,7 @@ public class SignUpService : ISignUpUserService
             requestDto.LastName,
             requestDto.Email,
             phone,
-            requestDto.Password
-        );
+            requestDto.Password);
 
         var newUser = _repositoryUser.Add(usuario);
 
@@ -52,7 +45,7 @@ public class SignUpService : ISignUpUserService
         var rol = GetInternRoleValid(requestDto.Role);
         var telefono = MakeAndValidatePhone(requestDto.Phone);
 
-        if (_repositoryUser.EmailExist(requestDto.Email))
+        if(_repositoryUser.EmailExist(requestDto.Email))
         {
             throw new UserException("Email is already registered");
         }
@@ -66,7 +59,7 @@ public class SignUpService : ISignUpUserService
 
     private UserRoles GetInternRoleValid(string rol)
     {
-        if (!Enum.TryParse<UserRoles>(rol, true, out var rolEnum))
+        if(!Enum.TryParse<UserRoles>(rol, true, out var rolEnum))
         {
             throw new UserException("Internal role is not valid");
         }
@@ -78,7 +71,7 @@ public class SignUpService : ISignUpUserService
     {
         var user = GetExistingUser(idUsuarioLogueado);
 
-        if (user.Role != UserRoles.Administrative)
+        if(user.Role != UserRoles.Administrative)
         {
             throw new UserException("Only an administrative user can perform this action");
         }
@@ -88,7 +81,7 @@ public class SignUpService : ISignUpUserService
     {
         var user = _repositoryUser.FindById(id);
 
-        if (user == null)
+        if(user == null)
         {
             throw new UserException("User does not exist");
         }
@@ -100,7 +93,7 @@ public class SignUpService : ISignUpUserService
     {
         var newPhone = Phone.MakePhone(telefono);
 
-        if (!_validatorPhone.ItsValid(newPhone.Value))
+        if(!_validatorPhone.ItsValid(newPhone.Value))
         {
             throw new UserException("Phone is not valid");
         }

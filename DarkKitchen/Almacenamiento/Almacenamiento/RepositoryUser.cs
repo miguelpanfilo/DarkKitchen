@@ -5,7 +5,7 @@ namespace Almacenamiento;
 
 public class RepositoryUser : IRepositoryUser
 {
-    private readonly List<User> _users = new();
+    private readonly List<User> _users = [];
 
     private int _lastId = 0;
 
@@ -45,7 +45,7 @@ public class RepositoryUser : IRepositoryUser
     {
         var user = _users.FirstOrDefault(u => u.Id == id);
 
-        if (user != null)
+        if(user != null)
         {
             _users.Remove(user);
         }

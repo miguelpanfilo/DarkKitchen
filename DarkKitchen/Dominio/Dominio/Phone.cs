@@ -13,14 +13,14 @@ public class Phone
 
     public static Phone MakePhone(string number)
     {
-        if (string.IsNullOrWhiteSpace(number))
+        if(string.IsNullOrWhiteSpace(number))
         {
             throw new UserException("Phone cannot be empty");
         }
 
         var phoneNormalized = number.Trim();
 
-        if (!phoneNormalized.All(char.IsDigit))
+        if(!phoneNormalized.All(char.IsDigit))
         {
             throw new UserException("Phone must contain only digits");
         }

@@ -1,19 +1,13 @@
 using AlmacenamientoAbstracciones;
-using Contratos;
 using Dominio;
 using Dominio.Excepciones;
 using LogicaDeNegocioAbstracciones;
 
 namespace LogicaDeNegocio;
 
-public class DeleteUserService : IDeleteUserService
+public class DeleteUserService(IRepositoryUser repositoryUsers) : IDeleteUserService
 {
-    private readonly IRepositoryUser _repositoryUsers;
-
-    public DeleteUserService(IRepositoryUser repositoryUsers)
-    {
-        _repositoryUsers = repositoryUsers;
-    }
+    private readonly IRepositoryUser _repositoryUsers = repositoryUsers;
 
     public void DeleteInterUser(int idToDelete, int idUserLogged)
     {
@@ -29,7 +23,7 @@ public class DeleteUserService : IDeleteUserService
     {
         var user = GetExistingUser(idUserLogged);
 
-        if (user.Role != UserRoles.Administrative)
+        if(user.Role != UserRoles.Administrative)
         {
             throw new UserException("Only an administrative user can perform this action");
         }
@@ -37,7 +31,7 @@ public class DeleteUserService : IDeleteUserService
 
     private void ValidationNoAutoDeleting(int idToDelete, int idUserLogged)
     {
-        if (idToDelete == idUserLogged)
+        if(idToDelete == idUserLogged)
         {
             throw new UserException("A user cannot delete themselves");
         }
@@ -47,7 +41,7 @@ public class DeleteUserService : IDeleteUserService
     {
         var user = _repositoryUsers.FindById(id);
 
-        if (user == null)
+        if(user == null)
         {
             throw new UserException("User does not exist");
         }

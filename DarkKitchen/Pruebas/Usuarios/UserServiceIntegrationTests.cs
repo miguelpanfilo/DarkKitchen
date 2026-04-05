@@ -20,8 +20,7 @@ public class UserServiceIntegrationTests
             altaMock.Object,
             modificacionMock.Object,
             eliminacionMock.Object,
-            consultaMock.Object
-        );
+            consultaMock.Object);
 
         var request = new SignUpClientRequestDTO
         {
@@ -36,8 +35,7 @@ public class UserServiceIntegrationTests
 
         altaMock.Verify(
             x => x.SignUpClient(request),
-            Times.Once
-        );
+            Times.Once);
     }
 
     [TestMethod]
@@ -52,8 +50,7 @@ public class UserServiceIntegrationTests
             altaMock.Object,
             modificacionMock.Object,
             eliminacionMock.Object,
-            consultaMock.Object
-        );
+            consultaMock.Object);
 
         var request = new SingUpInternUserRequestDTO
         {
@@ -69,8 +66,7 @@ public class UserServiceIntegrationTests
 
         altaMock.Verify(
             x => x.MakeInterUser(1, request),
-            Times.Once
-        );
+            Times.Once);
     }
 
     [TestMethod]
@@ -85,8 +81,7 @@ public class UserServiceIntegrationTests
             altaMock.Object,
             modificacionMock.Object,
             eliminacionMock.Object,
-            consultaMock.Object
-        );
+            consultaMock.Object);
 
         var request = new ModificarUsuarioRequestDTO
         {
@@ -97,8 +92,7 @@ public class UserServiceIntegrationTests
 
         modificacionMock.Verify(
             x => x.UpdateInternalUser(5, 99, request),
-            Times.Once
-        );
+            Times.Once);
     }
 
     [TestMethod]
@@ -113,8 +107,7 @@ public class UserServiceIntegrationTests
             altaMock.Object,
             modificacionMock.Object,
             eliminacionMock.Object,
-            consultaMock.Object
-        );
+            consultaMock.Object);
 
         var request = new ModificarClaveRequestDTO
         {
@@ -126,8 +119,7 @@ public class UserServiceIntegrationTests
 
         modificacionMock.Verify(
             x => x.UpdateUserPassword(5, 99, request),
-            Times.Once
-        );
+            Times.Once);
     }
 
     [TestMethod]
@@ -142,15 +134,13 @@ public class UserServiceIntegrationTests
             altaMock.Object,
             modificacionMock.Object,
             eliminacionMock.Object,
-            consultaMock.Object
-        );
+            consultaMock.Object);
 
         service.EliminarUsuarioInterno(5, 99);
 
         eliminacionMock.Verify(
             x => x.DeleteInterUser(5, 99),
-            Times.Once
-        );
+            Times.Once);
     }
 
     [TestMethod]
@@ -165,8 +155,7 @@ public class UserServiceIntegrationTests
             altaMock.Object,
             modificacionMock.Object,
             eliminacionMock.Object,
-            consultaMock.Object
-        );
+            consultaMock.Object);
 
         var request = new FindUserRequestDTO
         {
@@ -178,7 +167,6 @@ public class UserServiceIntegrationTests
 
         consultaMock.Verify(
             x => x.BuscarUsuarios(99, request),
-            Times.Once
-        );
+            Times.Once);
     }
 }

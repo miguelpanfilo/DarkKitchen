@@ -12,7 +12,7 @@ namespace Pruebas.Usuarios;
 [TestClass]
 public class UserServiceTests
 {
-   [TestMethod]
+    [TestMethod]
     public void SignUpClient_ValidData_ReturnsResponseDto()
     {
         var repoMock = new Mock<IRepositoryUser>();
@@ -72,8 +72,7 @@ public class UserServiceTests
         };
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.SignUpClient(request)
-        );
+            service.SignUpClient(request));
 
         Assert.AreEqual("Email is already registered", ex.Message);
 
@@ -106,8 +105,7 @@ public class UserServiceTests
         };
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.SignUpClient(request)
-        );
+            service.SignUpClient(request));
 
         Assert.AreEqual("Phone is not valid", ex.Message);
 
@@ -136,8 +134,7 @@ public class UserServiceTests
         };
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.SignUpClient(request)
-        );
+            service.SignUpClient(request));
 
         Assert.AreEqual("Phone cannot be empty", ex.Message);
 
@@ -170,7 +167,7 @@ public class UserServiceTests
     [ExpectedException(typeof(UserException))]
     public void SignUpCliente_NoName_Exception()
     {
-        var user = User.MakeClient(
+        _ = User.MakeClient(
             string.Empty,
             "Lopez",
             "miguel@gmail.com",
@@ -186,8 +183,7 @@ public class UserServiceTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
 
         Assert.IsNotNull(usuario);
     }
@@ -201,8 +197,7 @@ public class UserServiceTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
     }
 
     [TestMethod]
@@ -223,8 +218,7 @@ public class UserServiceTests
     {
         var lastnameLenghtIncorrect = 26;
         var notValidLastname = new string('a', lastnameLenghtIncorrect);
-
-        var user = User.MakeClient(
+        _ = User.MakeClient(
             "Miguel",
             notValidLastname,
             "miguel@gmail.com",
@@ -238,8 +232,7 @@ public class UserServiceTests
     {
         var lastnameLenghtIncorrect = 2;
         var smallLastname = new string('a', lastnameLenghtIncorrect);
-
-        var user = User.MakeClient(
+        _ = User.MakeClient(
             "Miguel",
             smallLastname,
             "miguel@gmail.com",
@@ -257,8 +250,7 @@ public class UserServiceTests
             lastname,
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
 
         Assert.IsNotNull(user);
     }
@@ -271,8 +263,7 @@ public class UserServiceTests
             "Lop",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
 
         Assert.IsNotNull(user);
     }
@@ -332,8 +323,7 @@ public class UserServiceTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "PPassword@2Ok6Abc"
-        );
+            "PPassword@2Ok6Abc");
 
         repo.Add(user);
 
@@ -352,16 +342,14 @@ public class UserServiceTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
 
         var user2 = User.MakeClient(
             "Juan",
             "Perez",
             "juan@gmail.com",
             Phone.MakePhone("099999999"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
 
         var userAddedFirst = repo.Add(user1);
         var userAddedSecond = repo.Add(user2);
@@ -383,8 +371,7 @@ public class UserServiceTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
 
         var userNuevo = repo.Add(user);
 
@@ -399,8 +386,7 @@ public class UserServiceTests
             "Lopez",
             "  MIGUEL@gmail.com  ",
             Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
 
         Assert.AreEqual("miguel@gmail.com", user.Email.ToString());
     }
@@ -449,9 +435,7 @@ public class UserServiceTests
                 "Lopez",
                 "miguel@gmail.com",
                 Phone.MakePhone("099123456"),
-                password
-            )
-        );
+                password));
 
         Assert.AreEqual("Password format is not valid", ex.Message);
     }
@@ -468,9 +452,7 @@ public class UserServiceTests
                 "Lopez",
                 "miguel@gmail.com",
                 Phone.MakePhone("099123456"),
-                passwordWithLengthLessThanMin
-            )
-        );
+                passwordWithLengthLessThanMin));
 
         Assert.AreEqual("Password format is not valid", ex.Message);
     }
@@ -487,9 +469,7 @@ public class UserServiceTests
                 "Lopez",
                 "miguel@gmail.com",
                 Phone.MakePhone("099123456"),
-                passwordGreaterThanLimit
-            )
-        );
+                passwordGreaterThanLimit));
 
         Assert.AreEqual("Password format is not valid", ex.Message);
     }
@@ -505,9 +485,7 @@ public class UserServiceTests
                 "Lopez",
                 "miguel@gmail.com",
                 Phone.MakePhone("099123456"),
-                password
-            )
-        );
+                password));
 
         Assert.AreEqual("Password format is not valid", ex.Message);
     }
@@ -523,9 +501,7 @@ public class UserServiceTests
                 "Lopez",
                 "miguel@gmail.com",
                 Phone.MakePhone("099123456"),
-                password
-            )
-        );
+                password));
 
         Assert.AreEqual("Password format is not valid", ex.Message);
     }
@@ -541,9 +517,7 @@ public class UserServiceTests
                 "Lopez",
                 "miguel@gmail.com",
                 Phone.MakePhone("099123456"),
-                password
-            )
-        );
+                password));
 
         Assert.AreEqual("Password format is not valid", ex.Message);
     }
@@ -559,9 +533,7 @@ public class UserServiceTests
                 "Lopez",
                 "miguel@gmail.com",
                 Phone.MakePhone("099123456"),
-                password
-            )
-        );
+                password));
 
         Assert.AreEqual("Password format is not valid", ex.Message);
     }
@@ -577,9 +549,7 @@ public class UserServiceTests
                 "Lopez",
                 "miguel@gmail.com",
                 Phone.MakePhone("099123456"),
-                password
-            )
-        );
+                password));
 
         Assert.AreEqual("Password format is not valid", ex.Message);
     }
@@ -592,8 +562,7 @@ public class UserServiceTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password!Abc9Xy"
-        );
+            "Password!Abc9Xy");
 
         Assert.IsNotNull(user);
     }
@@ -606,8 +575,7 @@ public class UserServiceTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password!Abc9XyzKlmNoPq"
-        );
+            "Password!Abc9XyzKlmNoPq");
 
         Assert.IsNotNull(user);
     }
@@ -620,8 +588,7 @@ public class UserServiceTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "aaClaveSegura#1a"
-        );
+            "aaClaveSegura#1a");
 
         Assert.AreEqual(UserRoles.Client, user.Role);
     }

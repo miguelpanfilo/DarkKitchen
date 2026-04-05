@@ -24,8 +24,7 @@ public class SignUpInternUserTests
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 1;
 
         repoMock
@@ -81,8 +80,7 @@ public class SignUpInternUserTests
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 1;
 
         repoMock
@@ -106,8 +104,7 @@ public class SignUpInternUserTests
         };
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.MakeInterUser(1, request)
-        );
+            service.MakeInterUser(1, request));
 
         Assert.AreEqual("Phone is not valid", ex.Message);
     }
@@ -122,9 +119,7 @@ public class SignUpInternUserTests
                 "admin@gmail.com",
                 Phone.MakePhone("099123456"),
                 "PasswordSeguraee3!",
-                UserRoles.Administrative
-            )
-        );
+                UserRoles.Administrative));
 
         Assert.AreEqual("Name cannot contain numbers", ex.Message);
     }
@@ -141,8 +136,7 @@ public class SignUpInternUserTests
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 1;
 
         repoMock
@@ -166,8 +160,7 @@ public class SignUpInternUserTests
         };
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.MakeInterUser(1, request)
-        );
+            service.MakeInterUser(1, request));
 
         Assert.AreEqual("Phone is not valid", ex.Message);
 
@@ -186,8 +179,7 @@ public class SignUpInternUserTests
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 1;
 
         repoMock
@@ -239,8 +231,7 @@ public class SignUpInternUserTests
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 1;
 
         repoMock
@@ -268,8 +259,7 @@ public class SignUpInternUserTests
         };
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.MakeInterUser(1, request)
-        );
+            service.MakeInterUser(1, request));
 
         Assert.AreEqual("Email is already registered", ex.Message);
 
@@ -288,8 +278,7 @@ public class SignUpInternUserTests
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         admin.Id = 1;
 
         repoMock
@@ -313,8 +302,7 @@ public class SignUpInternUserTests
         };
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.MakeInterUser(1, request)
-        );
+            service.MakeInterUser(1, request));
 
         Assert.AreEqual("Internal role is not valid", ex.Message);
     }
@@ -353,8 +341,7 @@ public class SignUpInternUserTests
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
 
         user.Id = 10;
 
@@ -372,9 +359,7 @@ public class SignUpInternUserTests
     {
         User user = null!;
 
-        var ex = Assert.ThrowsException<UserException>(() =>
-            user.MappingUserToResponseDTO()
-        );
+        var ex = Assert.ThrowsException<UserException>(user.MappingUserToResponseDTO);
 
         Assert.AreEqual("User cannot be null", ex.Message);
     }
@@ -389,8 +374,7 @@ public class SignUpInternUserTests
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Client
-        );
+            UserRoles.Client);
     }
 
     [TestMethod]
@@ -403,9 +387,7 @@ public class SignUpInternUserTests
                 "admin@gmail.com",
                 Phone.MakePhone("099123456"),
                 "PasswordSeguraee3!",
-                UserRoles.Administrative
-            )
-        );
+                UserRoles.Administrative));
 
         Assert.AreEqual("Name cannot be empty", ex.Message);
     }
@@ -420,9 +402,7 @@ public class SignUpInternUserTests
                 "admin@gmail.com",
                 Phone.MakePhone("099123456"),
                 "PasswordSeguraee3!",
-                UserRoles.Administrative
-            )
-        );
+                UserRoles.Administrative));
 
         Assert.AreEqual("Last name cannot be empty", ex.Message);
     }
@@ -437,9 +417,7 @@ public class SignUpInternUserTests
                 "admin@gmail.com",
                 Phone.MakePhone("099123456"),
                 "PasswordSeguraee3!",
-                UserRoles.Administrative
-            )
-        );
+                UserRoles.Administrative));
 
         Assert.AreEqual("Last name must be between 3 and 25 characters", ex.Message);
     }
@@ -454,9 +432,7 @@ public class SignUpInternUserTests
                 "admin@gmail.com",
                 Phone.MakePhone("099123456"),
                 "PasswordSeguraee3!",
-                UserRoles.Administrative
-            )
-        );
+                UserRoles.Administrative));
 
         Assert.AreEqual("Last name must be between 3 and 25 characters", ex.Message);
     }
@@ -465,8 +441,7 @@ public class SignUpInternUserTests
     public void CreatePhone_Empty_ThrowsException()
     {
         var ex = Assert.ThrowsException<UserException>(() =>
-            Phone.MakePhone(string.Empty)
-        );
+            Phone.MakePhone(string.Empty));
 
         Assert.AreEqual("Phone cannot be empty", ex.Message);
     }
@@ -483,8 +458,7 @@ public class SignUpInternUserTests
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 1;
 
         repoMock
@@ -536,8 +510,7 @@ public class SignUpInternUserTests
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 1;
 
         repoMock
@@ -588,8 +561,7 @@ public class SignUpInternUserTests
             "Perez",
             "cliente@gmail.com",
             Phone.MakePhone("099123456"),
-            "PasswordSeguraee3!"
-        );
+            "PasswordSeguraee3!");
         loggedInUser.Id = 5;
 
         repoMock
@@ -601,8 +573,7 @@ public class SignUpInternUserTests
         var request = new SingUpInternUserRequestDTO();
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.MakeInterUser(5, request)
-        );
+            service.MakeInterUser(5, request));
 
         Assert.AreEqual("Only an administrative user can perform this action", ex.Message);
     }
@@ -622,8 +593,7 @@ public class SignUpInternUserTests
         var request = new SingUpInternUserRequestDTO();
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.MakeInterUser(1, request)
-        );
+            service.MakeInterUser(1, request));
 
         Assert.AreEqual("User does not exist", ex.Message);
     }

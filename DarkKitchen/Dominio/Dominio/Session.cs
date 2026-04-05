@@ -1,15 +1,8 @@
 namespace Dominio;
 
-public class Session
+public class Session(int userId, DateTime expireDate)
 {
-    public Guid SessionId { get; private set; }
-    public int UserId { get; private set; }
-    public DateTime ExpireDate { get; private set; }
-
-    public Session(int userId, DateTime expireDate)
-    {
-        SessionId = Guid.NewGuid();
-        UserId = userId;
-        ExpireDate = expireDate;
-    }
+    public Guid SessionId { get; private set; } = Guid.NewGuid();
+    public int UserId { get; private set; } = userId;
+    public DateTime ExpireDate { get; private set; } = expireDate;
 }

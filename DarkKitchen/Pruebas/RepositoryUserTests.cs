@@ -1,6 +1,5 @@
 using Almacenamiento;
 using Dominio;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Pruebas.Usuarios;
 
@@ -17,8 +16,7 @@ public class RepositoryUserTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
 
         repo.Add(user);
 
@@ -59,16 +57,14 @@ public class RepositoryUserTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
 
         var user2 = User.MakeClient(
             "Juan",
             "Perez",
             "juan@gmail.com",
             Phone.MakePhone("099999999"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
 
         repo.Add(user1);
         repo.Add(user2);
@@ -90,8 +86,7 @@ public class RepositoryUserTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
 
         repo.Add(user);
 
@@ -120,8 +115,7 @@ public class RepositoryUserTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
 
         var addedUser = repo.Add(user);
 
@@ -151,8 +145,7 @@ public class RepositoryUserTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
 
         var addedUser = repo.Add(user);
 

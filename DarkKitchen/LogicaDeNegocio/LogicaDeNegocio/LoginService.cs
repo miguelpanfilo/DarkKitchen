@@ -6,32 +6,25 @@ using LogicaDeNegocioAbstracciones;
 
 namespace LogicaDeNegocio;
 
-public class LoginService
+public class LoginService(
+    IRepositoryUser repoUsuario,
+    IRepositorySession repoSesion,
+    IReloj reloj)
 {
-    private readonly IRepositoryUser _repoUsuario;
-    private readonly IRepositorySession _repoSesion;
-    private readonly IReloj _reloj;
-
-    public LoginService(
-        IRepositoryUser repoUsuario,
-        IRepositorySession repoSesion,
-        IReloj reloj)
-    {
-        _repoUsuario = repoUsuario;
-        _repoSesion = repoSesion;
-        _reloj = reloj;
-    }
+    private readonly IRepositoryUser _repoUsuario = repoUsuario;
+    private readonly IRepositorySession _repoSesion = repoSesion;
+    private readonly IReloj _reloj = reloj;
 
     public LoginResponseDTO Login(LoginRequestDTO requestDto)
     {
         var usuarioMailIngresado = _repoUsuario.FindByEmail(requestDto.Email);
 
-        if (usuarioMailIngresado == null)
+        if(usuarioMailIngresado == null)
         {
             throw new UserException("Invalid credentials");
         }
 
-        if (!usuarioMailIngresado.Password.VerifyHash(requestDto.Password))
+        if(!usuarioMailIngresado.Password.VerifyHash(requestDto.Password))
         {
             throw new UserException("Invalid credentials");
         }

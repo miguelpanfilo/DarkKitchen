@@ -1,6 +1,4 @@
-using System.Security;
 using AlmacenamientoAbstracciones;
-using Contratos;
 using Dominio;
 using Dominio.Excepciones;
 using LogicaDeNegocio;
@@ -23,8 +21,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         existingUser.Id = 5;
 
         repoMock
@@ -37,8 +34,7 @@ public class ModifyInternUserTest
             "admin12@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock
@@ -68,8 +64,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         existingUser.Id = 5;
 
         repoMock
@@ -80,8 +75,7 @@ public class ModifyInternUserTest
         var request = new ModificarUsuarioRequestDTO { Name = "Carlos" };
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.UpdateInternalUser(5, 5, request)
-        );
+            service.UpdateInternalUser(5, 5, request));
 
         Assert.AreEqual("A user cannot modify itself", ex.Message);
     }
@@ -98,8 +92,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         existingUser.Id = 5;
 
         var loggedInUser = User.MakeIntern(
@@ -108,8 +101,7 @@ public class ModifyInternUserTest
             "admin2@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock
@@ -144,8 +136,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         existingUser.Id = 5;
 
         repoMock
@@ -158,8 +149,7 @@ public class ModifyInternUserTest
             "admin12@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock
@@ -187,8 +177,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         existingUser.Id = 5;
 
         repoMock
@@ -201,8 +190,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock
@@ -232,8 +220,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         existingUser.Id = 5;
 
         repoMock
@@ -246,8 +233,7 @@ public class ModifyInternUserTest
             "admin12@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock
@@ -282,8 +268,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         existingUser.Id = 5;
 
         repoMock
@@ -296,8 +281,7 @@ public class ModifyInternUserTest
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock
@@ -312,8 +296,7 @@ public class ModifyInternUserTest
         var request = new ModificarUsuarioRequestDTO { Phone = "123" };
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.UpdateInternalUser(5, 99, request)
-        );
+            service.UpdateInternalUser(5, 99, request));
 
         Assert.AreEqual("Phone is not valid", ex.Message);
     }
@@ -330,8 +313,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         existingUser.Id = 5;
 
         repoMock
@@ -348,8 +330,7 @@ public class ModifyInternUserTest
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock
@@ -360,8 +341,7 @@ public class ModifyInternUserTest
         var request = new ModificarUsuarioRequestDTO { Phone = "123" };
 
         Assert.ThrowsException<UserException>(() =>
-            service.UpdateInternalUser(5, 99, request)
-        );
+            service.UpdateInternalUser(5, 99, request));
 
         Assert.AreEqual("099123456", existingUser.Phone.Value);
     }
@@ -378,8 +358,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         existingUser.Id = 5;
 
         repoMock
@@ -392,8 +371,7 @@ public class ModifyInternUserTest
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock
@@ -404,8 +382,7 @@ public class ModifyInternUserTest
         var request = new ModificarUsuarioRequestDTO { LastName = "ApellidoDemasiadoDemasiadoLargo" };
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.UpdateInternalUser(5, 99, request)
-        );
+            service.UpdateInternalUser(5, 99, request));
 
         Assert.AreEqual("Last name must be between 3 and 25 characters", ex.Message);
     }
@@ -426,8 +403,7 @@ public class ModifyInternUserTest
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock
@@ -438,8 +414,7 @@ public class ModifyInternUserTest
         var request = new ModificarUsuarioRequestDTO { Phone = "098111222" };
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.UpdateInternalUser(5, 99, request)
-        );
+            service.UpdateInternalUser(5, 99, request));
 
         Assert.AreEqual("User does not exist", ex.Message);
     }
@@ -456,8 +431,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         existingUser.Id = 5;
 
         var loggedInUser = User.MakeIntern(
@@ -466,8 +440,7 @@ public class ModifyInternUserTest
             "admin12@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock
@@ -498,8 +471,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         existingUser.Id = 5;
 
         repoMock
@@ -512,8 +484,7 @@ public class ModifyInternUserTest
             "admin12@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock
@@ -547,8 +518,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         existingUser.Id = 5;
 
         repoMock
@@ -565,8 +535,7 @@ public class ModifyInternUserTest
             "admin12@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock
@@ -577,8 +546,7 @@ public class ModifyInternUserTest
         var request = new ModificarUsuarioRequestDTO { Email = "correo-invalido" };
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.UpdateInternalUser(5, 99, request)
-        );
+            service.UpdateInternalUser(5, 99, request));
 
         Assert.AreEqual("Email format is not valid", ex.Message);
     }
@@ -595,8 +563,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         existingUser.Id = 5;
 
         var loggedInUser = User.MakeIntern(
@@ -605,8 +572,7 @@ public class ModifyInternUserTest
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock
@@ -625,8 +591,7 @@ public class ModifyInternUserTest
         var request = new ModificarUsuarioRequestDTO { Email = "repetido@gmail.com" };
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.UpdateInternalUser(5, 99, request)
-        );
+            service.UpdateInternalUser(5, 99, request));
 
         Assert.AreEqual("Email is already registered", ex.Message);
     }
@@ -643,8 +608,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         existingUser.Id = 5;
 
         repoMock
@@ -657,8 +621,7 @@ public class ModifyInternUserTest
             "admin2@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock
@@ -673,8 +636,7 @@ public class ModifyInternUserTest
         var request = new ModificarUsuarioRequestDTO { Email = "repetido@gmail.com" };
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.UpdateInternalUser(5, 99, request)
-        );
+            service.UpdateInternalUser(5, 99, request));
 
         Assert.AreEqual("Email is already registered", ex.Message);
     }
@@ -691,8 +653,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         existingUser.Id = 5;
 
         repoMock
@@ -705,8 +666,7 @@ public class ModifyInternUserTest
             "admin12@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock
@@ -733,8 +693,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         existingUser.Id = 5;
 
         var loggedInUser = User.MakeIntern(
@@ -743,8 +702,7 @@ public class ModifyInternUserTest
             "admin12@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock
@@ -775,8 +733,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         existingUser.Id = 5;
 
         var loggedInUser = User.MakeIntern(
@@ -785,8 +742,7 @@ public class ModifyInternUserTest
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock
@@ -817,8 +773,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         existingUser.Id = 5;
 
         repoMock
@@ -835,8 +790,7 @@ public class ModifyInternUserTest
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock
@@ -847,8 +801,7 @@ public class ModifyInternUserTest
         var request = new ModificarUsuarioRequestDTO { LastName = "Go" };
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.UpdateInternalUser(5, 99, request)
-        );
+            service.UpdateInternalUser(5, 99, request));
 
         Assert.AreEqual("Last name must be between 3 and 25 characters", ex.Message);
     }
@@ -870,8 +823,7 @@ public class ModifyInternUserTest
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock
@@ -881,8 +833,7 @@ public class ModifyInternUserTest
         var request = new ModificarUsuarioRequestDTO { Name = "Carlos" };
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.UpdateInternalUser(5, 99, request)
-        );
+            service.UpdateInternalUser(5, 99, request));
 
         Assert.AreEqual("User does not exist", ex.Message);
     }
@@ -899,8 +850,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         existingUser.Id = 5;
 
         repoMock
@@ -913,8 +863,7 @@ public class ModifyInternUserTest
             "admin12@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock
@@ -938,12 +887,10 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            user.ModifyName("Ju4n")
-        );
+            user.ModifyName("Ju4n"));
 
         Assert.AreEqual("Name cannot contain numbers", ex.Message);
     }
@@ -960,8 +907,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Preparer
-        );
+            UserRoles.Preparer);
         existingUser.Id = 5;
 
         var loggedInUser = User.MakeIntern(
@@ -970,8 +916,7 @@ public class ModifyInternUserTest
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock
@@ -1003,8 +948,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Preparer
-        );
+            UserRoles.Preparer);
         existingUser.Id = 5;
 
         var loggedInUser = User.MakeIntern(
@@ -1013,8 +957,7 @@ public class ModifyInternUserTest
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock.Setup(r => r.FindById(5)).Returns(existingUser);
@@ -1041,8 +984,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Preparer
-        );
+            UserRoles.Preparer);
         existingUser.Id = 5;
 
         var loggedInUser = User.MakeIntern(
@@ -1051,8 +993,7 @@ public class ModifyInternUserTest
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock.Setup(r => r.FindById(5)).Returns(existingUser);
@@ -1063,8 +1004,7 @@ public class ModifyInternUserTest
         var request = new ModificarUsuarioRequestDTO { Role = "Anything" };
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.UpdateInternalUser(5, 99, request)
-        );
+            service.UpdateInternalUser(5, 99, request));
 
         Assert.AreEqual("Internal role is not valid", ex.Message);
     }
@@ -1081,8 +1021,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Preparer
-        );
+            UserRoles.Preparer);
         existingUser.Id = 5;
 
         var loggedInUser = User.MakeIntern(
@@ -1091,8 +1030,7 @@ public class ModifyInternUserTest
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock.Setup(r => r.FindById(5)).Returns(existingUser);
@@ -1119,8 +1057,7 @@ public class ModifyInternUserTest
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Preparer
-        );
+            UserRoles.Preparer);
         existingUser.Id = 5;
 
         var loggedInUser = User.MakeIntern(
@@ -1129,8 +1066,7 @@ public class ModifyInternUserTest
             "root@gmail.com",
             Phone.MakePhone("099999999"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         loggedInUser.Id = 99;
 
         repoMock.Setup(r => r.FindById(5)).Returns(existingUser);

@@ -35,12 +35,12 @@ public class User
 
     private static void ValidatorName(string nombre)
     {
-        if (string.IsNullOrWhiteSpace(nombre))
+        if(string.IsNullOrWhiteSpace(nombre))
         {
             throw new UserException("Name cannot be empty");
         }
 
-        if (nombre.Any(char.IsDigit))
+        if(nombre.Any(char.IsDigit))
         {
             throw new UserException("Name cannot contain numbers");
         }
@@ -48,12 +48,12 @@ public class User
 
     private static void ValidatorLastName(string apellido)
     {
-        if (string.IsNullOrWhiteSpace(apellido))
+        if(string.IsNullOrWhiteSpace(apellido))
         {
             throw new UserException("Last name cannot be empty");
         }
 
-        if (apellido.Trim().Length < 3 || apellido.Trim().Length > 25)
+        if(apellido.Trim().Length < 3 || apellido.Trim().Length > 25)
         {
             throw new UserException("Last name must be between 3 and 25 characters");
         }
@@ -69,7 +69,7 @@ public class User
     {
         var itsValidRole = role == UserRoles.Preparer || role == UserRoles.Administrative;
 
-        if (!itsValidRole)
+        if(!itsValidRole)
         {
             throw new UserException("Internal role is not valid");
         }

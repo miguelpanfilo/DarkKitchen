@@ -7,16 +7,10 @@ using Mapeo;
 
 namespace LogicaDeNegocio;
 
-public class ModifyUserService : IModifyUserService
+public class ModifyUserService(IRepositoryUser repo, IPhoneValidator phoneValidator) : IModifyUserService
 {
-    private readonly IRepositoryUser _repo;
-    private readonly IPhoneValidator _phoneValidator;
-
-    public ModifyUserService(IRepositoryUser repo, IPhoneValidator phoneValidator)
-    {
-        _repo = repo;
-        _phoneValidator = phoneValidator;
-    }
+    private readonly IRepositoryUser _repo = repo;
+    private readonly IPhoneValidator _phoneValidator = phoneValidator;
 
     public UsuarioResponseDTO UpdateInternalUser(
         int idUsuarioAModificar,
@@ -42,7 +36,7 @@ public class ModifyUserService : IModifyUserService
 
         var usuario = GetExistingUser(idUsuarioAModificar);
 
-        if (!usuario.VerifyPassword(requestDto.OldPassword))
+        if(!usuario.VerifyPassword(requestDto.OldPassword))
         {
             throw new UserException("Current password is incorrect");
         }
@@ -66,7 +60,7 @@ public class ModifyUserService : IModifyUserService
 
     private Phone BuildFinalPhone(User user, string telefonoActualizado)
     {
-        if (telefonoActualizado == user.Phone.Value)
+        if(telefonoActualizado == user.Phone.Value)
         {
             return user.Phone;
         }
@@ -115,7 +109,7 @@ public class ModifyUserService : IModifyUserService
     {
         var usuario = GetExistingUser(idUsuarioLogueado);
 
-        if (usuario.Role != UserRoles.Administrative)
+        if(usuario.Role != UserRoles.Administrative)
         {
             throw new UserException("Only an administrative user can perform this action");
         }
@@ -123,7 +117,7 @@ public class ModifyUserService : IModifyUserService
 
     private void ValidateNotSelfModification(int idUsuarioAModificar, int idUsuarioLogueado)
     {
-        if (idUsuarioAModificar == idUsuarioLogueado)
+        if(idUsuarioAModificar == idUsuarioLogueado)
         {
             throw new UserException("A user cannot modify itself");
         }
@@ -145,7 +139,7 @@ public class ModifyUserService : IModifyUserService
     {
         var telefonoCreado = Phone.MakePhone(telefono);
 
-        if (!_phoneValidator.ItsValid(telefonoCreado.Value))
+        if(!_phoneValidator.ItsValid(telefonoCreado.Value))
         {
             throw new UserException("Phone is not valid");
         }
@@ -155,7 +149,7 @@ public class ModifyUserService : IModifyUserService
 
     private UserRoles ResolveFinalRole(ModificarUsuarioRequestDTO requestDto, User user)
     {
-        if (string.IsNullOrWhiteSpace(requestDto.Role))
+        if(string.IsNullOrWhiteSpace(requestDto.Role))
         {
             return user.Role;
         }

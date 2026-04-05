@@ -23,8 +23,7 @@ public class LoginServiceTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
         usuario.Id = 1;
 
         repoUsuarioMock
@@ -38,8 +37,7 @@ public class LoginServiceTests
         var service = new LoginService(
             repoUsuarioMock.Object,
             repoSesionMock.Object,
-            relojMock.Object
-        );
+            relojMock.Object);
 
         var request = new LoginRequestDTO
         {
@@ -69,8 +67,7 @@ public class LoginServiceTests
         var service = new LoginService(
             repoUserMock.Object,
             repoSesionMock.Object,
-            watchMock.Object
-        );
+            watchMock.Object);
 
         var request = new LoginRequestDTO
         {
@@ -97,8 +94,7 @@ public class LoginServiceTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
         user.Id = 1;
 
         repoUserMock
@@ -108,8 +104,7 @@ public class LoginServiceTests
         var service = new LoginService(
             repoUserMock.Object,
             repoSesionMock.Object,
-            watchMock.Object
-        );
+            watchMock.Object);
 
         var request = new LoginRequestDTO
         {
@@ -136,8 +131,7 @@ public class LoginServiceTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
         user.Id = 1;
 
         repoUserMock
@@ -151,8 +145,7 @@ public class LoginServiceTests
         var service = new LoginService(
             repoUserMock.Object,
             repoSessionMock.Object,
-            watchMock.Object
-        );
+            watchMock.Object);
 
         var request = new LoginRequestDTO
         {
@@ -177,8 +170,7 @@ public class LoginServiceTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
         user.Id = 1;
 
         repoUserMock
@@ -192,8 +184,7 @@ public class LoginServiceTests
         var service = new LoginService(
             repoUserMock.Object,
             repoSessionMock.Object,
-            watchMock.Object
-        );
+            watchMock.Object);
 
         var request = new LoginRequestDTO
         {
@@ -218,8 +209,7 @@ public class LoginServiceTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
         user.Id = 25;
 
         repoUserMcok
@@ -233,8 +223,7 @@ public class LoginServiceTests
         var service = new LoginService(
             repoUserMcok.Object,
             repoSessionMock.Object,
-            watchMock.Object
-        );
+            watchMock.Object);
 
         var request = new LoginRequestDTO
         {
@@ -259,8 +248,7 @@ public class LoginServiceTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
         user.Id = 1;
 
         repoUserMock
@@ -274,8 +262,7 @@ public class LoginServiceTests
         var service = new LoginService(
             repoUserMock.Object,
             repoSessionMock.Object,
-            watchMock.Object
-        );
+            watchMock.Object);
 
         var request = new LoginRequestDTO
         {
@@ -300,8 +287,7 @@ public class LoginServiceTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
         user.Id = 1;
 
         repoUserMock
@@ -311,8 +297,7 @@ public class LoginServiceTests
         var service = new LoginService(
             repoUserMock.Object,
             repoSessionMock.Object,
-            watchMock.Object
-        );
+            watchMock.Object);
 
         var request = new LoginRequestDTO
         {
@@ -339,8 +324,7 @@ public class LoginServiceTests
         var service = new LoginService(
             repoUserMock.Object,
             repoSessionMock.Object,
-            watchMock.Object
-        );
+            watchMock.Object);
 
         var request = new LoginRequestDTO
         {
@@ -364,8 +348,7 @@ public class LoginServiceTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
         user.Id = 1;
 
         repoUserMock
@@ -387,8 +370,7 @@ public class LoginServiceTests
         var service = new LoginService(
             repoUserMock.Object,
             repoSessionMock.Object,
-            watch.Object
-        );
+            watch.Object);
 
         var request = new LoginRequestDTO
         {
@@ -415,8 +397,7 @@ public class LoginServiceTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
         user.Id = 1;
 
         repoUserMock
@@ -430,8 +411,7 @@ public class LoginServiceTests
         var service = new LoginService(
             repoUserMock.Object,
             repoSessionMock.Object,
-            watchMock.Object
-        );
+            watchMock.Object);
 
         var request = new LoginRequestDTO
         {
@@ -463,8 +443,7 @@ public class LoginServiceTests
             "Lopez",
             "miguel@gmail.com",
             Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc"
-        );
+            "Password@2Ok6Abc");
         user.Id = 1;
 
         Session? sesionGuardada = null;
@@ -481,8 +460,7 @@ public class LoginServiceTests
         var service = new LoginService(
             repoUserMock.Object,
             repoSessionMock.Object,
-            watchMock.Object
-        );
+            watchMock.Object);
 
         var request = new LoginRequestDTO
         {

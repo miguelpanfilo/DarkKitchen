@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using Dominio.Excepciones;
 
 namespace Dominio;
@@ -14,14 +13,14 @@ public sealed class Email
 
     public static Email MakeEmail(string? email)
     {
-        if (string.IsNullOrWhiteSpace(email))
+        if(string.IsNullOrWhiteSpace(email))
         {
             throw new UserException("Email cannot be empty");
         }
 
         var emailNormalized = email.Trim().ToLowerInvariant();
 
-        if (!HaveCorrectFormat(emailNormalized))
+        if(!HaveCorrectFormat(emailNormalized))
         {
             throw new UserException("Email format is not valid");
         }
@@ -36,36 +35,36 @@ public sealed class Email
 
     private static bool HaveCorrectFormat(string mail)
     {
-        if (string.IsNullOrWhiteSpace(mail))
+        if(string.IsNullOrWhiteSpace(mail))
         {
             return false;
         }
 
-        if (mail.Contains(' ') || mail.Contains(".."))
+        if(mail.Contains(' ') || mail.Contains(".."))
         {
             return false;
         }
 
         var indexOfSymbol = mail.IndexOf('@');
 
-        if (indexOfSymbol <= 0 || indexOfSymbol != mail.LastIndexOf('@'))
+        if(indexOfSymbol <= 0 || indexOfSymbol != mail.LastIndexOf('@'))
         {
             return false;
         }
 
         var domain = mail[(indexOfSymbol + 1)..];
 
-        if (domain.Length == 0)
+        if(domain.Length == 0)
         {
             return false;
         }
 
-        if (!domain.Contains('.'))
+        if(!domain.Contains('.'))
         {
             return false;
         }
 
-        if (domain.StartsWith('.') || domain.EndsWith('.'))
+        if(domain.StartsWith('.') || domain.EndsWith('.'))
         {
             return false;
         }

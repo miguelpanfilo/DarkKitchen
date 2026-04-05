@@ -3,24 +3,16 @@ using LogicaDeNegocioAbstracciones;
 
 namespace LogicaDeNegocio;
 
-public class UserService
+public class UserService(
+    ISignUpUserService signUpUserService,
+    IModifyUserService modifyUserService,
+    IDeleteUserService deleteUserService,
+    IFilterUserService filterUserService)
 {
-    private readonly ISignUpUserService _signUpUserService;
-    private readonly IModifyUserService _modifyUserService;
-    private readonly IDeleteUserService _deleteUserService;
-    private readonly IFilterUserService _filterUserService;
-
-    public UserService(
-        ISignUpUserService signUpUserService,
-        IModifyUserService modifyUserService,
-        IDeleteUserService deleteUserService,
-        IFilterUserService filterUserService)
-    {
-        _signUpUserService = signUpUserService;
-        _modifyUserService = modifyUserService;
-        _deleteUserService = deleteUserService;
-        _filterUserService = filterUserService;
-    }
+    private readonly ISignUpUserService _signUpUserService = signUpUserService;
+    private readonly IModifyUserService _modifyUserService = modifyUserService;
+    private readonly IDeleteUserService _deleteUserService = deleteUserService;
+    private readonly IFilterUserService _filterUserService = filterUserService;
 
     public SignUpClientResponseDTO RegistrarCliente(SignUpClientRequestDTO requestDto)
     {
@@ -40,8 +32,7 @@ public class UserService
         return _modifyUserService.UpdateInternalUser(
             idUsuarioAModificar,
             idUsuarioLogueado,
-            requestDto
-        );
+            requestDto);
     }
 
     public void ModificarClaveUsuario(
@@ -52,8 +43,7 @@ public class UserService
         _modifyUserService.UpdateUserPassword(
             idUsuarioAModificar,
             idUsuarioLogueado,
-            requestDto
-        );
+            requestDto);
     }
 
     public void EliminarUsuarioInterno(int idUsuarioAEliminar, int idUsuarioLogueado)

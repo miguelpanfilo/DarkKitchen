@@ -1,4 +1,3 @@
-using System.Security;
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
@@ -25,8 +24,7 @@ public class ModifyPasswordTests
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         userToModify.Id = 5;
 
         repoMock
@@ -44,8 +42,7 @@ public class ModifyPasswordTests
         };
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.UpdateUserPassword(5, 99, request)
-        );
+            service.UpdateUserPassword(5, 99, request));
 
         Assert.AreEqual("User does not exist", ex.Message);
     }
@@ -62,8 +59,7 @@ public class ModifyPasswordTests
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuario.Id = 5;
 
         repoMock
@@ -76,8 +72,7 @@ public class ModifyPasswordTests
             "admin2@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguyyyy3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuarioLogueado.Id = 99;
 
         repoMock
@@ -88,10 +83,11 @@ public class ModifyPasswordTests
 
         var request = new ModificarClaveRequestDTO
         {
-            OldPassword = "PasswordSeguraee3!", NewPassword = "ClaveNuevaSegura4!"
+            OldPassword = "PasswordSeguraee3!",
+            NewPassword = "ClaveNuevaSegura4!"
         };
 
-        service.UpdateUserPassword(5, 99,request);
+        service.UpdateUserPassword(5, 99, request);
 
         Assert.IsTrue(usuario.VerifyPassword("ClaveNuevaSegura4!"));
     }
@@ -108,8 +104,7 @@ public class ModifyPasswordTests
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         userToModify.Id = 5;
 
         var loggedInUser = User.MakeClient(
@@ -117,8 +112,7 @@ public class ModifyPasswordTests
             "Gomez",
             "cliente@gmail.com",
             Phone.MakePhone("099111222"),
-            "PasswordSeguraee3!"
-        );
+            "PasswordSeguraee3!");
         loggedInUser.Id = 99;
 
         repoMock
@@ -138,143 +132,134 @@ public class ModifyPasswordTests
         };
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.UpdateUserPassword(5, 99, request)
-        );
+            service.UpdateUserPassword(5, 99, request));
 
         Assert.AreEqual("Only an administrative user can perform this action", ex.Message);
     }
 
     [TestMethod]
-public void UpdateUserPassword_WrongCurrentPassword_ThrowsExceptionWithCorrectMessage()
-{
-    var repoMock = new Mock<IRepositoryUser>();
-    var phoneValidatorMock = new Mock<IPhoneValidator>();
-
-    var user = User.MakeIntern(
-        "Juan",
-        "Perez",
-        "admin@gmail.com",
-        Phone.MakePhone("099123456"),
-        "PasswordSeguraee3!",
-        UserRoles.Administrative
-    );
-    user.Id = 5;
-
-    var loggedInUser = User.MakeIntern(
-        "Admin",
-        "Root",
-        "root@gmail.com",
-        Phone.MakePhone("099999999"),
-        "PasswordSeguraee3!",
-        UserRoles.Administrative
-    );
-    loggedInUser.Id = 99;
-
-    repoMock.Setup(r => r.FindById(5)).Returns(user);
-    repoMock.Setup(r => r.FindById(99)).Returns(loggedInUser);
-
-    var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object);
-
-    var request = new ModificarClaveRequestDTO
+    public void UpdateUserPassword_WrongCurrentPassword_ThrowsExceptionWithCorrectMessage()
     {
-        OldPassword = "Incorrecta123!",
-        NewPassword = "ClaveNuevaSegura4!"
-    };
+        var repoMock = new Mock<IRepositoryUser>();
+        var phoneValidatorMock = new Mock<IPhoneValidator>();
 
-    var ex = Assert.ThrowsException<UserException>(() =>
-        service.UpdateUserPassword(5, 99, request)
-    );
+        var user = User.MakeIntern(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            Phone.MakePhone("099123456"),
+            "PasswordSeguraee3!",
+            UserRoles.Administrative);
+        user.Id = 5;
 
-    Assert.AreEqual("Current password is incorrect", ex.Message);
-}
+        var loggedInUser = User.MakeIntern(
+            "Admin",
+            "Root",
+            "root@gmail.com",
+            Phone.MakePhone("099999999"),
+            "PasswordSeguraee3!",
+            UserRoles.Administrative);
+        loggedInUser.Id = 99;
 
-[TestMethod]
-public void UpdateUserPassword_InvalidNewPassword_ThrowsExceptionWithCorrectMessage()
-{
-    var repoMock = new Mock<IRepositoryUser>();
-    var phoneValidatorMock = new Mock<IPhoneValidator>();
+        repoMock.Setup(r => r.FindById(5)).Returns(user);
+        repoMock.Setup(r => r.FindById(99)).Returns(loggedInUser);
 
-    var user = User.MakeIntern(
-        "Juan",
-        "Perez",
-        "admin@gmail.com",
-        Phone.MakePhone("099123456"),
-        "PasswordSeguraee3!",
-        UserRoles.Administrative
-    );
-    user.Id = 5;
+        var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object);
 
-    repoMock
-        .Setup(r => r.FindById(5))
-        .Returns(user);
+        var request = new ModificarClaveRequestDTO
+        {
+            OldPassword = "Incorrecta123!",
+            NewPassword = "ClaveNuevaSegura4!"
+        };
 
-    var loggedInUser = User.MakeIntern(
-        "Juan",
-        "Perez",
-        "admin@gmail.com",
-        Phone.MakePhone("099123456"),
-        "PasswordSeguraee3!",
-        UserRoles.Administrative
-    );
-    loggedInUser.Id = 99;
+        var ex = Assert.ThrowsException<UserException>(() =>
+            service.UpdateUserPassword(5, 99, request));
 
-    repoMock
-        .Setup(r => r.FindById(99))
-        .Returns(loggedInUser);
+        Assert.AreEqual("Current password is incorrect", ex.Message);
+    }
 
-    var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object);
-
-    var request = new ModificarClaveRequestDTO
+    [TestMethod]
+    public void UpdateUserPassword_InvalidNewPassword_ThrowsExceptionWithCorrectMessage()
     {
-        OldPassword = "PasswordSeguraee3!",
-        NewPassword = "123"
-    };
+        var repoMock = new Mock<IRepositoryUser>();
+        var phoneValidatorMock = new Mock<IPhoneValidator>();
 
-    var ex = Assert.ThrowsException<UserException>(() =>
-        service.UpdateUserPassword(5, 99, request)
-    );
+        var user = User.MakeIntern(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            Phone.MakePhone("099123456"),
+            "PasswordSeguraee3!",
+            UserRoles.Administrative);
+        user.Id = 5;
 
-    Assert.AreEqual("Password format is not valid", ex.Message);
-}
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns(user);
 
-[TestMethod]
-public void UpdateUserPassword_UserDoesNotExist_ThrowsExceptionWithCorrectMessage()
-{
-    var repoMock = new Mock<IRepositoryUser>();
-    var phoneValidatorMock = new Mock<IPhoneValidator>();
+        var loggedInUser = User.MakeIntern(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            Phone.MakePhone("099123456"),
+            "PasswordSeguraee3!",
+            UserRoles.Administrative);
+        loggedInUser.Id = 99;
 
-    repoMock
-        .Setup(r => r.FindById(5))
-        .Returns((User?)null);
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(loggedInUser);
 
-    var loggedInUser = User.MakeIntern(
-        "Juan",
-        "Perez",
-        "admin@gmail.com",
-        Phone.MakePhone("099123456"),
-        "PasswordSeguraee3!",
-        UserRoles.Administrative
-    );
-    loggedInUser.Id = 99;
+        var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object);
 
-    repoMock
-        .Setup(r => r.FindById(99))
-        .Returns(loggedInUser);
+        var request = new ModificarClaveRequestDTO
+        {
+            OldPassword = "PasswordSeguraee3!",
+            NewPassword = "123"
+        };
 
-    var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object);
+        var ex = Assert.ThrowsException<UserException>(() =>
+            service.UpdateUserPassword(5, 99, request));
 
-    var request = new ModificarClaveRequestDTO
+        Assert.AreEqual("Password format is not valid", ex.Message);
+    }
+
+    [TestMethod]
+    public void UpdateUserPassword_UserDoesNotExist_ThrowsExceptionWithCorrectMessage()
     {
-        OldPassword = "PasswordSeguraee3!",
-        NewPassword = "ClaveNuevaSegura4!"
-    };
+        var repoMock = new Mock<IRepositoryUser>();
+        var phoneValidatorMock = new Mock<IPhoneValidator>();
 
-    var ex = Assert.ThrowsException<UserException>(() =>
-        service.UpdateUserPassword(5, 99, request)
-    );
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns((User?)null);
 
-    Assert.AreEqual("User does not exist", ex.Message);
-}
+        var loggedInUser = User.MakeIntern(
+            "Juan",
+            "Perez",
+            "admin@gmail.com",
+            Phone.MakePhone("099123456"),
+            "PasswordSeguraee3!",
+            UserRoles.Administrative);
+        loggedInUser.Id = 99;
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns(loggedInUser);
+
+        var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object);
+
+        var request = new ModificarClaveRequestDTO
+        {
+            OldPassword = "PasswordSeguraee3!",
+            NewPassword = "ClaveNuevaSegura4!"
+        };
+
+        var ex = Assert.ThrowsException<UserException>(() =>
+            service.UpdateUserPassword(5, 99, request));
+
+        Assert.AreEqual("User does not exist", ex.Message);
+    }
 
     [TestMethod]
     public void ModificarClaveUsuario_ClaveActualIncorrecta_NoCambiaLaClave()
@@ -288,8 +273,7 @@ public void UpdateUserPassword_UserDoesNotExist_ThrowsExceptionWithCorrectMessag
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuario.Id = 5;
 
         repoMock
@@ -302,8 +286,7 @@ public void UpdateUserPassword_UserDoesNotExist_ThrowsExceptionWithCorrectMessag
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Administrative
-        );
+            UserRoles.Administrative);
         usuarioLogueado.Id = 99;
 
         repoMock
@@ -318,8 +301,7 @@ public void UpdateUserPassword_UserDoesNotExist_ThrowsExceptionWithCorrectMessag
         };
 
         Assert.ThrowsException<UserException>(() =>
-            service.UpdateUserPassword(5, 99, request)
-        );
+            service.UpdateUserPassword(5, 99, request));
 
         Assert.IsTrue(usuario.Password.VerifyHash("PasswordSeguraee3!"));
     }

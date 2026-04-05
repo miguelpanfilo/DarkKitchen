@@ -1,5 +1,3 @@
-using Contratos;
-
 namespace LogicaDeNegocioAbstracciones;
 
 public interface IDeleteUserService

@@ -17,13 +17,12 @@ public static class UserMapper
             requestDto.Email,
             phone,
             requestDto.Password,
-            rol
-        );
+            rol);
     }
 
     public static UsuarioResponseDTO MappingUserToResponseDTO(this User user)
     {
-        if (user == null)
+        if(user == null)
         {
             throw new UserException("User cannot be null");
         }

@@ -6,17 +6,17 @@ public class PhoneValidatorUruguay : IPhoneValidator
 {
     public bool ItsValid(string telefono)
     {
-        if (string.IsNullOrWhiteSpace(telefono))
+        if(string.IsNullOrWhiteSpace(telefono))
         {
             return false;
         }
 
-        if (telefono.Length != 9)
+        if(telefono.Length != 9)
         {
             return false;
         }
 
-        if (!telefono.All(char.IsDigit))
+        if(!telefono.All(char.IsDigit))
         {
             return false;
         }
@@ -27,7 +27,7 @@ public class PhoneValidatorUruguay : IPhoneValidator
             "095", "096", "097", "098", "099"
         };
 
-        if (!prefijosValidos.Any(p => telefono.StartsWith(p)))
+        if(!prefijosValidos.Any(telefono.StartsWith))
         {
             return false;
         }

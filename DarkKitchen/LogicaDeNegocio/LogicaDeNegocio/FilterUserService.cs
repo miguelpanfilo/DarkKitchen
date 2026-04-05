@@ -1,4 +1,3 @@
-
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
@@ -8,20 +7,15 @@ using Mapeo;
 
 namespace LogicaDeNegocio;
 
-public class FilterUserService : IFilterUserService
+public class FilterUserService(IRepositoryUser repositoryUsers) : IFilterUserService
 {
-    private readonly IRepositoryUser _repositoryUsers;
-
-    public FilterUserService(IRepositoryUser repositoryUsers)
-    {
-        _repositoryUsers = repositoryUsers;
-    }
+    private readonly IRepositoryUser _repositoryUsers = repositoryUsers;
 
     public List<UsuarioResponseDTO> BuscarUsuarios(int idUserLogin, FindUserRequestDTO requestDto)
     {
         var userLogin = GetExistingUser(idUserLogin);
 
-        if (userLogin.Role != UserRoles.Administrative)
+        if(userLogin.Role != UserRoles.Administrative)
         {
             throw new UserException("Only an administrative user can perform this action");
         }
@@ -29,9 +23,9 @@ public class FilterUserService : IFilterUserService
         var users = _repositoryUsers.GetAll();
         var filterUsers = new List<UsuarioResponseDTO>();
 
-        foreach (var u in users)
+        foreach(var u in users)
         {
-            if (MatchName(u, requestDto.Name) && MatchLastName(u, requestDto.LastName))
+            if(MatchName(u, requestDto.Name) && MatchLastName(u, requestDto.LastName))
             {
                 filterUsers.Add(u.MappingUserToResponseDTO());
             }
@@ -44,7 +38,7 @@ public class FilterUserService : IFilterUserService
     {
         var user = _repositoryUsers.FindById(id);
 
-        if (user == null)
+        if(user == null)
         {
             throw new UserException("User does not exist");
         }

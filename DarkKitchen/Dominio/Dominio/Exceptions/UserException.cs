@@ -1,9 +1,5 @@
 namespace Dominio.Excepciones;
 
-public class UserException : Exception
+public class UserException(string message) : Exception(message)
 {
-    public UserException(string message)
-        : base(message)
-    {
-    }
 }

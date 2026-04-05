@@ -18,37 +18,37 @@ public sealed class Password
 
     public static bool Validate(string? password)
     {
-        if (string.IsNullOrWhiteSpace(password))
+        if(string.IsNullOrWhiteSpace(password))
         {
             return false;
         }
 
-        if (password.Length < MinLenght || password.Length > MaxLenght)
+        if(password.Length < MinLenght || password.Length > MaxLenght)
         {
             return false;
         }
 
-        if (!password.Any(char.IsUpper))
+        if(!password.Any(char.IsUpper))
         {
             return false;
         }
 
-        if (!password.Any(char.IsLower))
+        if(!password.Any(char.IsLower))
         {
             return false;
         }
 
-        if (!password.Any(char.IsDigit))
+        if(!password.Any(char.IsDigit))
         {
             return false;
         }
 
-        if (!password.Any(c => !char.IsLetterOrDigit(c) && !char.IsWhiteSpace(c)))
+        if(!password.Any(c => !char.IsLetterOrDigit(c) && !char.IsWhiteSpace(c)))
         {
             return false;
         }
 
-        if (HaveSequenceOfNumbers(password))
+        if(HaveSequenceOfNumbers(password))
         {
             return false;
         }
@@ -58,7 +58,7 @@ public sealed class Password
 
     public static Password MakePassword(string? clave)
     {
-        if (!Validate(clave))
+        if(!Validate(clave))
         {
             throw new UserException("Password format is not valid");
         }
@@ -77,9 +77,9 @@ public sealed class Password
 
     private static bool HaveSequenceOfNumbers(string password)
     {
-        for (var i = 0; i < password.Length - 1; i++)
+        for(var i = 0; i < password.Length - 1; i++)
         {
-            if (char.IsDigit(password[i]) && char.IsDigit(password[i + 1]))
+            if(char.IsDigit(password[i]) && char.IsDigit(password[i + 1]))
             {
                 return true;
             }
