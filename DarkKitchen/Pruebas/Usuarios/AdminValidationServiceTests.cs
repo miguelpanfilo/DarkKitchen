@@ -119,12 +119,14 @@ public class AdminValidationServiceTests
     }
 
     [TestMethod]
-    public void EnsureIsNotSelfAction_DifferentUsers_DoesNotThrowException()
+    public void EnsureIsNotSelfAction_SameUser_ThrowsException()
     {
         var repoMock = new Mock<IRepositoryUser>();
-
         var service = new AdminValidationService(repoMock.Object);
 
-        service.EnsureIsNotSelfAction(10, 5, "A user cannot modify itself");
+        var ex = Assert.ThrowsException<UserException>(() =>
+            service.EnsureIsNotSelfAction(5, 5));
+
+        Assert.AreEqual("A user cannot modify itself", ex.Message);
     }
 }

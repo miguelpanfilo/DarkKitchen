@@ -35,4 +35,12 @@ public class AdminValidationService : IAdminValidationService
             throw new UserException("Only an administrative user can perform this action");
         }
     }
+
+    public void EnsureIsNotSelfAction(int targetUserId, int loggedUserId)
+    {
+        if(targetUserId == loggedUserId)
+        {
+            throw new UserException("A user cannot modify itself");
+        }
+    }
 }
