@@ -10,4 +10,8 @@
       <Folder Include="Usuarios\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\Dominio\Dominio\Dominio.csproj" />
+    </ItemGroup>
+
 </Project>
