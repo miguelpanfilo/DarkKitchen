@@ -35,4 +35,21 @@ public class AdminValidationServiceTests
         Assert.AreEqual(5, result.Id);
         Assert.AreEqual("Miguel", result.Name);
     }
+
+    [TestMethod]
+    public void GetExistingUser_UserDoesNotExist_ThrowsExceptionWithCorrectMessage()
+    {
+        var repoMock = new Mock<IRepositoryUser>();
+
+        repoMock
+            .Setup(r => r.FindById(99))
+            .Returns((User?)null);
+
+        var service = new AdminValidationService(repoMock.Object);
+
+        var ex = Assert.ThrowsException<UserException>(() =>
+            service.GetExistingUser(99));
+
+        Assert.AreEqual("User does not exist", ex.Message);
+    }
 }
