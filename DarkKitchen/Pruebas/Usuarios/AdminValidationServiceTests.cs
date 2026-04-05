@@ -125,7 +125,7 @@ public class AdminValidationServiceTests
         var service = new AdminValidationService(repoMock.Object);
 
         var ex = Assert.ThrowsException<UserException>(() =>
-            service.EnsureIsNotSelfAction(5, 5));
+            service.EnsureIsNotSelfAction(5, 5, "A user cannot modify itself"));
 
         Assert.AreEqual("A user cannot modify itself", ex.Message);
     }
@@ -136,7 +136,7 @@ public class AdminValidationServiceTests
         var repoMock = new Mock<IRepositoryUser>();
         var service = new AdminValidationService(repoMock.Object);
 
-        service.EnsureIsNotSelfAction(10, 5);
+        service.EnsureIsNotSelfAction(10, 5, "A user cannot modify itself");
 
         Assert.IsTrue(true);
     }

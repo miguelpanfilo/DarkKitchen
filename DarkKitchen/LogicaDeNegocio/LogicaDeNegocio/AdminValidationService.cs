@@ -36,11 +36,11 @@ public class AdminValidationService : IAdminValidationService
         }
     }
 
-    public void EnsureIsNotSelfAction(int targetUserId, int loggedUserId)
+    public void EnsureIsNotSelfAction(int targetUserId, int loggedUserId, string message)
     {
         if(targetUserId == loggedUserId)
         {
-            throw new UserException("A user cannot modify itself");
+            throw new UserException(message);
         }
     }
 }
