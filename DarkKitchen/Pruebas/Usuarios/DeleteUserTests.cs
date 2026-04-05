@@ -1,6 +1,6 @@
 using AlmacenamientoAbstracciones;
 using Dominio;
-using Dominio.Excepciones;
+using Dominio.Exceptions;
 using LogicaDeNegocio;
 using Moq;
 

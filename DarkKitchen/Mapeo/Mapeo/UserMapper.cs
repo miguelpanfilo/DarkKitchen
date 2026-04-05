@@ -1,6 +1,6 @@
 using Contratos;
 using Dominio;
-using Dominio.Excepciones;
+using Dominio.Exceptions;
 
 namespace Mapeo;
 

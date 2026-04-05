@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
-using Dominio.Excepciones;
+using Dominio.Exceptions;
 
 namespace Dominio;
 

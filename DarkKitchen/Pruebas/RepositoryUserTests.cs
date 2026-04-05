@@ -1,7 +1,7 @@
 using Almacenamiento;
 using Dominio;
 
-namespace Pruebas.Usuarios;
+namespace Pruebas;
 
 [TestClass]
 public class RepositoryUserTests
