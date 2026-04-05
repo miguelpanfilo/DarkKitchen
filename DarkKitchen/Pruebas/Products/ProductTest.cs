@@ -100,11 +100,25 @@ public class ProductTest
     {
         Assert.ThrowsException<ProductException>(() =>
             new Product(
-                "1234",
+                new string('1', 4),
                 "Milanesa al pan",
                 "Milanesa al pan completa",
                 "Minutas clásicas",
                 "Sandwiches")
+        );
+    }
+
+    [TestMethod]
+    public void GivenLongCode_WhenCreatingProduct_ThenThrowsProductException()
+    {
+        Assert.ThrowsException<ProductException>(() =>
+            new Product(
+                new string('1', 21),
+                "Nombre válido",
+                "Descripción suficientemente larga",
+                "Minutas clásicas",
+                "Sandwiches"
+            )
         );
     }
 }
