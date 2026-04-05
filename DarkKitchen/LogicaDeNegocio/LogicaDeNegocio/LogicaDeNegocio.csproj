@@ -7,7 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\AlmacenamientoAbstracciones\AlmacenamientoAbstracciones\AlmacenamientoAbstracciones.csproj" />
+      <ProjectReference Include="..\..\AlmacenamientoAbstracciones\AlmacenamientoAbstracciones\AlmacenamientoAbstracciones.csproj" />
+      <ProjectReference Include="..\..\Almacenamiento\Almacenamiento\Almacenamiento.csproj" />
+      <ProjectReference Include="..\..\Contratos\Contratos\Contratos.csproj" />
+      <ProjectReference Include="..\..\Dominio\Dominio\Dominio.csproj" />
+      <ProjectReference Include="..\..\LogicaDeNegocioAbstracciones\LogicaDeNegocioAbstracciones\LogicaDeNegocioAbstracciones.csproj" />
+      <ProjectReference Include="..\..\Mapeo\Mapeo\Mapeo.csproj" />
     </ItemGroup>
 
 </Project>
