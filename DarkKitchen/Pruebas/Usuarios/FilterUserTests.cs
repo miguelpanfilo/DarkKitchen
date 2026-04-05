@@ -3,6 +3,7 @@ using Contratos;
 using Dominio;
 using Dominio.Exceptions;
 using LogicaDeNegocio;
+using LogicaDeNegocioAbstracciones;
 using Moq;
 
 namespace Pruebas.Usuarios;
@@ -14,6 +15,8 @@ public class FilterUserTests
     public void BuscarUsuariosPorNombre_NombreExistente_RetornaUsuariosCoincidentes()
     {
         var repoMock = new Mock<IRepositoryUser>();
+        var adminValidationMock = new Mock<IAdminValidationService>();
+
         var usuario1 = User.MakeIntern(
             "Juan",
             "Perez",
@@ -35,26 +38,16 @@ public class FilterUserTests
         repoMock
             .Setup(r => r.GetAll())
             .Returns([usuario1, usuario2]);
-        var usuarioLogueado = User.MakeIntern(
-            "Admin",
-            "Root",
-            "root@gmail.com",
-            Phone.MakePhone("099999999"),
-            "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuarioLogueado.Id = 99;
 
-        repoMock
-            .Setup(r => r.FindById(99))
-            .Returns(usuarioLogueado);
+        var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
 
-        var service = new FilterUserService(repoMock.Object);
         var request = new FindUserRequestDTO
         {
             Name = "Juan"
         };
 
         var resultado = service.BuscarUsuarios(99, request);
+
         Assert.AreEqual(2, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Name);
         Assert.AreEqual("Juan", resultado[1].Name);
@@ -64,6 +57,7 @@ public class FilterUserTests
     public void BuscarUsuariosPorNombre_NombreInexistente_RetornaListaVacia()
     {
         var repoMock = new Mock<IRepositoryUser>();
+        var adminValidationMock = new Mock<IAdminValidationService>();
 
         var usuario = User.MakeIntern(
             "Pedro",
@@ -78,26 +72,15 @@ public class FilterUserTests
             .Setup(r => r.GetAll())
             .Returns([usuario]);
 
-        var service = new FilterUserService(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
 
         var request = new FindUserRequestDTO
         {
             Name = "Juan"
         };
-        var usuarioLogueado = User.MakeIntern(
-            "Admin",
-            "Root",
-            "root@gmail.com",
-            Phone.MakePhone("099999999"),
-            "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuarioLogueado.Id = 99;
-
-        repoMock
-            .Setup(r => r.FindById(99))
-            .Returns(usuarioLogueado);
 
         var resultado = service.BuscarUsuarios(99, request);
+
         Assert.AreEqual(0, resultado.Count);
     }
 
@@ -105,6 +88,7 @@ public class FilterUserTests
     public void BuscarUsuariosPorNombre_FiltraSoloLosUsuariosConEseNombre()
     {
         var repoMock = new Mock<IRepositoryUser>();
+        var adminValidationMock = new Mock<IAdminValidationService>();
 
         var usuario1 = User.MakeIntern(
             "Juan",
@@ -128,26 +112,15 @@ public class FilterUserTests
             .Setup(r => r.GetAll())
             .Returns([usuario1, usuario2]);
 
-        var service = new FilterUserService(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
 
         var request = new FindUserRequestDTO
         {
             Name = "Juan"
         };
-        var usuarioLogueado = User.MakeIntern(
-            "Admin",
-            "Root",
-            "root@gmail.com",
-            Phone.MakePhone("099999999"),
-            "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuarioLogueado.Id = 99;
-
-        repoMock
-            .Setup(r => r.FindById(99))
-            .Returns(usuarioLogueado);
 
         var resultado = service.BuscarUsuarios(99, request);
+
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Name);
         Assert.AreEqual("Perez", resultado[0].LastName);
@@ -157,6 +130,7 @@ public class FilterUserTests
     public void BuscarUsuariosPorNombre_NombreConDistintoCase_RetornaCoincidencias()
     {
         var repoMock = new Mock<IRepositoryUser>();
+        var adminValidationMock = new Mock<IAdminValidationService>();
 
         var usuario = User.MakeIntern(
             "Juan",
@@ -171,26 +145,15 @@ public class FilterUserTests
             .Setup(r => r.GetAll())
             .Returns([usuario]);
 
-        var service = new FilterUserService(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
 
         var request = new FindUserRequestDTO
         {
             Name = "juAn"
         };
-        var usuarioLogueado = User.MakeIntern(
-            "Admin",
-            "Root",
-            "root@gmail.com",
-            Phone.MakePhone("099999999"),
-            "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuarioLogueado.Id = 99;
-
-        repoMock
-            .Setup(r => r.FindById(99))
-            .Returns(usuarioLogueado);
 
         var resultado = service.BuscarUsuarios(99, request);
+
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Name);
     }
@@ -199,31 +162,21 @@ public class FilterUserTests
     public void BuscarUsuariosPorNombre_SinUsuarios_RetornaListaVacia()
     {
         var repoMock = new Mock<IRepositoryUser>();
+        var adminValidationMock = new Mock<IAdminValidationService>();
 
         repoMock
             .Setup(r => r.GetAll())
             .Returns([]);
 
-        var service = new FilterUserService(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
 
         var request = new FindUserRequestDTO
         {
             Name = "Juan"
         };
-        var usuarioLogueado = User.MakeIntern(
-            "Admin",
-            "Root",
-            "root@gmail.com",
-            Phone.MakePhone("099999999"),
-            "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuarioLogueado.Id = 99;
-
-        repoMock
-            .Setup(r => r.FindById(99))
-            .Returns(usuarioLogueado);
 
         var resultado = service.BuscarUsuarios(99, request);
+
         Assert.AreEqual(0, resultado.Count);
     }
 
@@ -231,6 +184,7 @@ public class FilterUserTests
     public void BuscarUsuariosPorNombre_MapeaCorrectamenteLosDatosDelUsuario()
     {
         var repoMock = new Mock<IRepositoryUser>();
+        var adminValidationMock = new Mock<IAdminValidationService>();
 
         var usuario = User.MakeClient(
             "Juan",
@@ -244,26 +198,15 @@ public class FilterUserTests
             .Setup(r => r.GetAll())
             .Returns([usuario]);
 
-        var service = new FilterUserService(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
 
         var request = new FindUserRequestDTO
         {
             Name = "Juan"
         };
-        var usuarioLogueado = User.MakeIntern(
-            "Admin",
-            "Root",
-            "root@gmail.com",
-            Phone.MakePhone("099999999"),
-            "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuarioLogueado.Id = 99;
-
-        repoMock
-            .Setup(r => r.FindById(99))
-            .Returns(usuarioLogueado);
 
         var resultado = service.BuscarUsuarios(99, request);
+
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual(100, resultado[0].Id);
         Assert.AreEqual("Juan", resultado[0].Name);
@@ -277,6 +220,7 @@ public class FilterUserTests
     public void BuscarUsuariosPorApellido_ApellidoExistente_RetornaUsuariosCoincidentes()
     {
         var repoMock = new Mock<IRepositoryUser>();
+        var adminValidationMock = new Mock<IAdminValidationService>();
 
         var usuario1 = User.MakeIntern(
             "Juan",
@@ -300,26 +244,15 @@ public class FilterUserTests
             .Setup(r => r.GetAll())
             .Returns([usuario1, usuario2]);
 
-        var service = new FilterUserService(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
 
         var request = new FindUserRequestDTO
         {
             LastName = "Perez"
         };
-        var usuarioLogueado = User.MakeIntern(
-            "Admin",
-            "Root",
-            "root@gmail.com",
-            Phone.MakePhone("099999999"),
-            "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuarioLogueado.Id = 99;
-
-        repoMock
-            .Setup(r => r.FindById(99))
-            .Returns(usuarioLogueado);
 
         var resultado = service.BuscarUsuarios(99, request);
+
         Assert.AreEqual(2, resultado.Count);
         Assert.AreEqual("Perez", resultado[0].LastName);
         Assert.AreEqual("Perez", resultado[1].LastName);
@@ -329,6 +262,7 @@ public class FilterUserTests
     public void BuscarUsuariosPorApellido_NoImportaMaysculasMinusculas_RetornaUsuariosCoincidentes()
     {
         var repoMock = new Mock<IRepositoryUser>();
+        var adminValidationMock = new Mock<IAdminValidationService>();
 
         var usuario1 = User.MakeIntern(
             "Juan",
@@ -352,26 +286,15 @@ public class FilterUserTests
             .Setup(r => r.GetAll())
             .Returns([usuario1, usuario2]);
 
-        var service = new FilterUserService(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
 
         var request = new FindUserRequestDTO
         {
             LastName = "PeReZ"
         };
-        var usuarioLogueado = User.MakeIntern(
-            "Admin",
-            "Root",
-            "root@gmail.com",
-            Phone.MakePhone("099999999"),
-            "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuarioLogueado.Id = 99;
-
-        repoMock
-            .Setup(r => r.FindById(99))
-            .Returns(usuarioLogueado);
 
         var resultado = service.BuscarUsuarios(99, request);
+
         Assert.AreEqual(2, resultado.Count);
         Assert.AreEqual("Perez", resultado[0].LastName);
         Assert.AreEqual("Perez", resultado[1].LastName);
@@ -381,6 +304,7 @@ public class FilterUserTests
     public void BuscarUsuariosPorApellido_ApellidoInexistente_RetornaListaVacia()
     {
         var repoMock = new Mock<IRepositoryUser>();
+        var adminValidationMock = new Mock<IAdminValidationService>();
 
         var usuario = User.MakeIntern(
             "Juan",
@@ -395,26 +319,15 @@ public class FilterUserTests
             .Setup(r => r.GetAll())
             .Returns([usuario]);
 
-        var service = new FilterUserService(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
 
         var request = new FindUserRequestDTO
         {
             LastName = "Perez"
         };
-        var usuarioLogueado = User.MakeIntern(
-            "Admin",
-            "Root",
-            "root@gmail.com",
-            Phone.MakePhone("099999999"),
-            "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuarioLogueado.Id = 99;
-
-        repoMock
-            .Setup(r => r.FindById(99))
-            .Returns(usuarioLogueado);
 
         var resultado = service.BuscarUsuarios(99, request);
+
         Assert.AreEqual(0, resultado.Count);
     }
 
@@ -422,6 +335,8 @@ public class FilterUserTests
     public void BuscarUsuariosPorApellido_FiltraSoloLosUsuariosConEseApellido()
     {
         var repoMock = new Mock<IRepositoryUser>();
+        var adminValidationMock = new Mock<IAdminValidationService>();
+
         var usuario1 = User.MakeIntern(
             "Juan",
             "Perez",
@@ -444,26 +359,15 @@ public class FilterUserTests
             .Setup(r => r.GetAll())
             .Returns([usuario1, usuario2]);
 
-        var service = new FilterUserService(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
 
         var request = new FindUserRequestDTO
         {
             LastName = "Perez"
         };
-        var usuarioLogueado = User.MakeIntern(
-            "Admin",
-            "Root",
-            "root@gmail.com",
-            Phone.MakePhone("099999999"),
-            "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuarioLogueado.Id = 99;
-
-        repoMock
-            .Setup(r => r.FindById(99))
-            .Returns(usuarioLogueado);
 
         var resultado = service.BuscarUsuarios(99, request);
+
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Name);
         Assert.AreEqual("Perez", resultado[0].LastName);
@@ -476,31 +380,21 @@ public class FilterUserTests
     public void BuscarUsuariosPorApellido_SinUsuarios_RetornaListaVacia()
     {
         var repoMock = new Mock<IRepositoryUser>();
+        var adminValidationMock = new Mock<IAdminValidationService>();
 
         repoMock
             .Setup(r => r.GetAll())
             .Returns([]);
 
-        var service = new FilterUserService(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
 
         var request = new FindUserRequestDTO
         {
             LastName = "Perez"
         };
-        var usuarioLogueado = User.MakeIntern(
-            "Admin",
-            "Root",
-            "root@gmail.com",
-            Phone.MakePhone("099999999"),
-            "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuarioLogueado.Id = 99;
-
-        repoMock
-            .Setup(r => r.FindById(99))
-            .Returns(usuarioLogueado);
 
         var resultado = service.BuscarUsuarios(99, request);
+
         Assert.AreEqual(0, resultado.Count);
     }
 
@@ -508,6 +402,7 @@ public class FilterUserTests
     public void BuscarUsuariosPorApellido_ConEspacios()
     {
         var repoMock = new Mock<IRepositoryUser>();
+        var adminValidationMock = new Mock<IAdminValidationService>();
 
         var usuario = User.MakeIntern(
             "Juan",
@@ -522,20 +417,7 @@ public class FilterUserTests
             .Setup(r => r.GetAll())
             .Returns([usuario]);
 
-        var usuarioLogueado = User.MakeIntern(
-            "Admin",
-            "Root",
-            "root@gmail.com",
-            Phone.MakePhone("099999999"),
-            "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuarioLogueado.Id = 99;
-
-        repoMock
-            .Setup(r => r.FindById(99))
-            .Returns(usuarioLogueado);
-
-        var service = new FilterUserService(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
 
         var request = new FindUserRequestDTO
         {
@@ -543,6 +425,7 @@ public class FilterUserTests
         };
 
         var resultado = service.BuscarUsuarios(99, request);
+
         Assert.AreEqual(1, resultado.Count);
     }
 
@@ -550,6 +433,7 @@ public class FilterUserTests
     public void BuscarUsuariosPorNombre_ConEspacios()
     {
         var repoMock = new Mock<IRepositoryUser>();
+        var adminValidationMock = new Mock<IAdminValidationService>();
 
         var usuario = User.MakeIntern(
             "Juan",
@@ -560,24 +444,11 @@ public class FilterUserTests
             UserRoles.Administrative);
         usuario.Id = 1;
 
-        var usuarioLogueado = User.MakeIntern(
-            "Admin",
-            "Root",
-            "root@gmail.com",
-            Phone.MakePhone("099999999"),
-            "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuarioLogueado.Id = 99;
-
-        repoMock
-            .Setup(r => r.FindById(99))
-            .Returns(usuarioLogueado);
-
         repoMock
             .Setup(r => r.GetAll())
             .Returns([usuario]);
 
-        var service = new FilterUserService(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
 
         var request = new FindUserRequestDTO
         {
@@ -594,6 +465,7 @@ public class FilterUserTests
     public void BuscarUsuarios_RequestConEspaciosYDistintoCase_RetornaCoincidencias()
     {
         var repoMock = new Mock<IRepositoryUser>();
+        var adminValidationMock = new Mock<IAdminValidationService>();
 
         var usuario = User.MakeIntern(
             "Juan",
@@ -604,24 +476,11 @@ public class FilterUserTests
             UserRoles.Administrative);
         usuario.Id = 1;
 
-        var usuarioLogueado = User.MakeIntern(
-            "Admin",
-            "Root",
-            "root@gmail.com",
-            Phone.MakePhone("099999999"),
-            "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuarioLogueado.Id = 99;
-
-        repoMock
-            .Setup(r => r.FindById(99))
-            .Returns(usuarioLogueado);
-
         repoMock
             .Setup(r => r.GetAll())
             .Returns([usuario]);
 
-        var service = new FilterUserService(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
 
         var request = new FindUserRequestDTO
         {
@@ -640,20 +499,13 @@ public class FilterUserTests
     public void BuscarUsuarios_UsuarioLogueadoNoEsAdministrativo_LanzaExcepcionConMensajeCorrecto()
     {
         var repoMock = new Mock<IRepositoryUser>();
+        var adminValidationMock = new Mock<IAdminValidationService>();
 
-        var usuarioLogueado = User.MakeClient(
-            "Juan",
-            "Perez",
-            "cliente@gmail.com",
-            Phone.MakePhone("099123456"),
-            "PasswordSeguraee3!");
-        usuarioLogueado.Id = 5;
+        adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(5))
+            .Throws(new UserException("Only an administrative user can perform this action"));
 
-        repoMock
-            .Setup(r => r.FindById(5))
-            .Returns(usuarioLogueado);
-
-        var service = new FilterUserService(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
 
         var request = new FindUserRequestDTO
         {
@@ -670,20 +522,13 @@ public class FilterUserTests
     public void BuscarUsuarios_UsuarioLogueadoNoEsAdministrativo_NoLlamaGetAllYLanzaExcepcionConMensajeCorrecto()
     {
         var repoMock = new Mock<IRepositoryUser>();
+        var adminValidationMock = new Mock<IAdminValidationService>();
 
-        var usuarioLogueado = User.MakeClient(
-            "Juan",
-            "Perez",
-            "cliente@gmail.com",
-            Phone.MakePhone("099123456"),
-            "PasswordSeguraee3!");
-        usuarioLogueado.Id = 5;
+        adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(5))
+            .Throws(new UserException("Only an administrative user can perform this action"));
 
-        repoMock
-            .Setup(r => r.FindById(5))
-            .Returns(usuarioLogueado);
-
-        var service = new FilterUserService(repoMock.Object);
+        var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
 
         var request = new FindUserRequestDTO
         {

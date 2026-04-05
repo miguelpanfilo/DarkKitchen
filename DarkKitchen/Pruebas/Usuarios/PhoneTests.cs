@@ -1,4 +1,3 @@
-using Dominio;
 using Dominio.Exceptions;
 
 namespace Pruebas.Usuarios;

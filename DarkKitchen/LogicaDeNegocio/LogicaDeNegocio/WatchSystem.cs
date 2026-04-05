@@ -2,7 +2,7 @@ using LogicaDeNegocioAbstracciones;
 
 namespace LogicaDeNegocio;
 
-public class RelojSistema : IReloj
+public class WatchSystem : IReloj
 {
     public DateTime Ahora()
     {
