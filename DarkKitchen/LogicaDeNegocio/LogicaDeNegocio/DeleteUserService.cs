@@ -5,16 +5,29 @@ using LogicaDeNegocioAbstracciones;
 
 namespace LogicaDeNegocio;
 
-public class DeleteUserService(IRepositoryUser repositoryUsers) : IDeleteUserService
+public class DeleteUserService : IDeleteUserService
 {
-    private readonly IRepositoryUser _repositoryUsers = repositoryUsers;
+    private readonly IRepositoryUser _repositoryUsers;
+    private readonly IAdminValidationService _adminValidationService;
 
-    public void DeleteInterUser(int idToDelete, int idUserLogged)
+    public DeleteUserService(
+        IRepositoryUser repositoryUsers,
+        IAdminValidationService adminValidationService)
     {
-        ValidationUserAdmin(idUserLogged);
-        ValidationNoAutoDeleting(idToDelete, idUserLogged);
+        _repositoryUsers = repositoryUsers;
+        _adminValidationService = adminValidationService;
+    }
 
-        var user = GetExistingUser(idToDelete);
+   public void DeleteInterUser(int idToDelete, int idUserLogged)
+    {
+        _adminValidationService.EnsureUserIsAdmin(idUserLogged);
+        _adminValidationService.EnsureIsNotSelfAction(
+            idToDelete,
+            idUserLogged,
+            "A user cannot delete themselves"
+        );
+
+        var user = _adminValidationService.GetExistingUser(idToDelete);
 
         _repositoryUsers.Remove(user.Id);
     }
