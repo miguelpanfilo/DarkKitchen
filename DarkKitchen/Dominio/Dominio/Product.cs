@@ -14,11 +14,13 @@ public class Product
     public Product(string code, string name, string description, string commercialLine, string category)
     {
         ValidateRequired(code, "El código");
+        ValidateLength(code, "El código", CODE_MIN_LENGTH, CODE_MAX_LENGTH);
         ValidateRequired(name, "El nombre");
+        ValidateLength(name,"El nombre", 10, 50);
         ValidateRequired(description, "La descripcion");
+        ValidateLength(description, "La descripcion", 20, 500);
         ValidateRequired(commercialLine, "Línea comercial");
         ValidateRequired(category, "La categoria");
-        ValidateLength(code, "El código", CODE_MIN_LENGTH, CODE_MAX_LENGTH);
 
         Code = code;
         Name = name;
