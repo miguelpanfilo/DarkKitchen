@@ -98,6 +98,8 @@ public class ProductTest
     [TestMethod]
     public void GivenShortCode_WhenCreatingProduct_ThenThrowsProductException()
     {
+        var code = new string('A', 4);
+
         Assert.ThrowsException<ProductException>(() =>
             new Product(
                 new string('1', 4),
@@ -111,11 +113,77 @@ public class ProductTest
     [TestMethod]
     public void GivenLongCode_WhenCreatingProduct_ThenThrowsProductException()
     {
+        var code = new string('A', 21);
+
         Assert.ThrowsException<ProductException>(() =>
             new Product(
-                new string('1', 21),
+                code,
                 "Nombre válido",
                 "Descripción suficientemente larga",
+                "Minutas clásicas",
+                "Sandwiches"
+            )
+        );
+    }
+
+    [TestMethod]
+    public void GivenShortName_WhenCreatingProduct_ThenThrowsException()
+    {
+        var name = new string('A', 9);
+
+        Assert.ThrowsException<ProductException>(() =>
+            new Product(
+                "COD123",
+                name,
+                "Descripción suficientemente larga",
+                "Minutas clásicas",
+                "Sandwiches"
+            )
+        );
+    }
+
+    [TestMethod]
+    public void GivenLongName_WhenCreatingProduct_ThenThrowsException()
+    {
+        var name = new string('A', 51);
+
+        Assert.ThrowsException<ProductException>(() =>
+            new Product(
+                "COD123",
+                name,
+                "Descripción suficientemente larga",
+                "Minutas clásicas",
+                "Sandwiches"
+            )
+        );
+    }
+
+    [TestMethod]
+    public void GivenShortDescription_WhenCreatingProduct_ThenThrowsProductException()
+    {
+        var description = new string('A', 19);
+
+        Assert.ThrowsException<ProductException>(() =>
+            new Product(
+                "COD123",
+                "Nombre válido",
+                description,
+                "Minutas clásicas",
+                "Sandwiches"
+            )
+        );
+    }
+
+    [TestMethod]
+    public void GivenLongDescription_WhenCreatingProduct_ThenThrowsProductException()
+    {
+        var description = new string('A', 501);
+
+        Assert.ThrowsException<ProductException>(() =>
+            new Product(
+                "COD123",
+                "Nombre válido",
+                description,
                 "Minutas clásicas",
                 "Sandwiches"
             )
