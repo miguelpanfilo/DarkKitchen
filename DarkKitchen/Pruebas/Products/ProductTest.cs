@@ -94,4 +94,17 @@ public class ProductTest
             )
         );
     }
+
+    [TestMethod]
+    public void GivenShortCode_WhenCreatingProduct_ThenThrowsProductException()
+    {
+        Assert.ThrowsException<ProductException>(() =>
+            new Product(
+                "1234",
+                "Milanesa al pan",
+                "Milanesa al pan completa",
+                "Minutas clásicas",
+                "Sandwiches")
+        );
+    }
 }
