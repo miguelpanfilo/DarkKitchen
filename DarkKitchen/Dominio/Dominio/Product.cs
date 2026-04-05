@@ -1,4 +1,4 @@
-using Dominio.Excepciones;
+using Dominio.Exceptions;
 
 namespace Dominio;
 
