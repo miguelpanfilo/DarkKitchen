@@ -208,4 +208,30 @@ public class DeleteUserTests
 
         repoMock.Verify(r => r.Remove(It.IsAny<int>()), Times.Never);
     }
+
+    [TestMethod]
+    public void DeleteInterUser_AlwaysValidatesThatLoggedUserIsAdmin()
+    {
+        var repoMock = new Mock<IRepositoryUser>();
+        var adminValidationMock = new Mock<IAdminValidationService>();
+
+        var userToDelete = User.MakeIntern(
+            "Juan",
+            "Perez",
+            "admin2@gmail.com",
+            Phone.MakePhone("099123456"),
+            "PasswordSeguraee3!",
+            UserRoles.Administrative);
+        userToDelete.Id = 52;
+
+        adminValidationMock
+            .Setup(v => v.GetExistingUser(52))
+            .Returns(userToDelete);
+
+        var service = new DeleteUserService(repoMock.Object, adminValidationMock.Object);
+
+        service.DeleteInterUser(52, 5);
+
+        adminValidationMock.Verify(v => v.EnsureUserIsAdmin(5), Times.Once);
+    }
 }
