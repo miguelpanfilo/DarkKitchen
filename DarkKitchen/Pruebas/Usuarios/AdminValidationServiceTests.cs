@@ -52,4 +52,27 @@ public class AdminValidationServiceTests
 
         Assert.AreEqual("User does not exist", ex.Message);
     }
+
+    [TestMethod]
+    public void EnsureUserIsAdmin_UserIsAdministrative_DoesNotThrowException()
+    {
+        var repoMock = new Mock<IRepositoryUser>();
+
+        var user = User.MakeIntern(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            Phone.MakePhone("099123456"),
+            "PasswordSeguraee3!",
+            UserRoles.Administrative);
+        user.Id = 5;
+
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns(user);
+
+        var service = new AdminValidationService(repoMock.Object);
+
+        service.EnsureUserIsAdmin(5);
+    }
 }
