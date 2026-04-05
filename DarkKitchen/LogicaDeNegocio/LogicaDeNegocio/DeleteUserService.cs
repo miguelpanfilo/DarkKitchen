@@ -31,24 +31,4 @@ public class DeleteUserService : IDeleteUserService
 
         _repositoryUsers.Remove(user.Id);
     }
-
-    private void ValidationNoAutoDeleting(int idToDelete, int idUserLogged)
-    {
-        if(idToDelete == idUserLogged)
-        {
-            throw new UserException("A user cannot delete themselves");
-        }
-    }
-
-    private User GetExistingUser(int id)
-    {
-        var user = _repositoryUsers.FindById(id);
-
-        if(user == null)
-        {
-            throw new UserException("User does not exist");
-        }
-
-        return user;
-    }
 }

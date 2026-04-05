@@ -35,11 +35,11 @@ public class ModifyUserService : IModifyUserService
             "A user cannot modify itself"
         );
 
-        var usuario = _adminValidationService.GetExistingUser(idUserToModify);
+        var user = _adminValidationService.GetExistingUser(idUserToModify);
 
-        UpdateUserData(usuario, requestDto);
+        UpdateUserData(user, requestDto);
 
-        return usuario.MappingUserToResponseDTO();
+        return user.MappingUserToResponseDTO();
     }
 
     public void UpdateUserPassword(
