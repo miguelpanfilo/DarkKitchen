@@ -1,8 +1,6 @@
 using Dominio.Exceptions;
 
-namespace Dominio;
-
-public class Phone
+public sealed class Phone
 {
     public string Value { get; }
 
