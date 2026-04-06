@@ -96,7 +96,7 @@ public class UsersControllerTests
 
         signUpServiceMock
             .Setup(s => s.SignUpClient(request))
-            .Throws(new SignUpException("Phone is not valid"));
+            .Throws(new SignUpValidationException("Phone is not valid"));
 
         var controller = new UsersController(signUpServiceMock.Object);
 

@@ -25,6 +25,10 @@ public class UsersController : ControllerBase
             var response = _signUpService.SignUpClient(request);
             return Created("/api/v1/users", response);
         }
+        catch (SignUpValidationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
         catch (SignUpException ex)
         {
             return Conflict(new { message = ex.Message });

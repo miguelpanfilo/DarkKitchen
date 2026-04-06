@@ -101,7 +101,7 @@ public class SignUpInternUserTests
             Role = "Administrative"
         };
 
-        var ex = Assert.ThrowsException<SignUpException>(() =>
+        var ex = Assert.ThrowsException<SignUpValidationException>(() =>
             service.MakeInterUser(1, request));
 
         Assert.AreEqual("Phone is not valid", ex.Message);
@@ -133,7 +133,7 @@ public class SignUpInternUserTests
             .Setup(v => v.EnsureUserIsAdmin(1));
 
         phoneValidatorMock
-            .Setup(v => v.ItsValid("123"))
+            .Setup(v => v.ItsValid("091123456"))
             .Returns(false);
 
         var service = new SignUpService(
@@ -146,12 +146,12 @@ public class SignUpInternUserTests
             Name = "Juan",
             LastName = "Perez",
             Email = "admin@gmail.com",
-            Phone = "123",
+            Phone = "091123456",
             Password = "PasswordSeguraee3!",
             Role = "Administrative"
         };
 
-        var ex = Assert.ThrowsException<SignUpException>(() =>
+        var ex = Assert.ThrowsException<SignUpValidationException>(() =>
             service.MakeInterUser(1, request));
 
         Assert.AreEqual("Phone is not valid", ex.Message);

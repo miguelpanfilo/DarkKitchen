@@ -79,7 +79,7 @@ public class SignUpService(
 
         if(!_validatorPhone.ItsValid(newPhone.Value))
         {
-            throw new SignUpException("Phone is not valid");
+            throw new SignUpValidationException("Phone is not valid");
         }
 
         return newPhone;

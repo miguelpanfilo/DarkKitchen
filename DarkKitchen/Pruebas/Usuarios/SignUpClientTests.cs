@@ -120,7 +120,7 @@ public class UserServiceTests
             Password = "Password@2026Ok"
         };
 
-        var ex = Assert.ThrowsException<SignUpException>(() =>
+        var ex = Assert.ThrowsException<SignUpValidationException>(() =>
             service.SignUpClient(request));
 
         Assert.AreEqual("Phone is not valid", ex.Message);
