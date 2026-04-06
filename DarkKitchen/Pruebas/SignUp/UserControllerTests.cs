@@ -79,4 +79,35 @@ public class UsersControllerTests
         Assert.IsNotNull(conflictResult);
         Assert.AreEqual(409, conflictResult.StatusCode);
     }
+
+    [TestMethod]
+    public void CreateUser_InvalidPhone_ReturnsBadRequest()
+    {
+        var signUpServiceMock = new Mock<ISignUpUserService>();
+
+        var request = new SignUpClientRequestDTO
+        {
+            Name = "Miguel",
+            LastName = "Lopez",
+            Email = "miguel@gmail.com",
+            Phone = "099123456",
+            Password = "Password@2Ok6Abc"
+        };
+
+        signUpServiceMock
+            .Setup(s => s.SignUpClient(request))
+            .Throws(new SignUpException("Phone is not valid"));
+
+        var controller = new UsersController(signUpServiceMock.Object);
+
+        var result = controller.CreateUser(request);
+
+        var badRequestResult = result as BadRequestObjectResult;
+
+        Assert.IsNotNull(badRequestResult);
+        Assert.AreEqual(400, badRequestResult.StatusCode);
+
+        var value = badRequestResult.Value;
+        Assert.IsNotNull(value);
+    }
 }
