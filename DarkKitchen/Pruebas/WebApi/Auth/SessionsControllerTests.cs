@@ -218,4 +218,53 @@ public class SessionsControllerTests
         Assert.AreEqual(fixedNow.AddHours(2), result.ExpireDate);
         Assert.AreNotEqual(Guid.Empty, result.SessionId);
     }
+
+    [TestMethod]
+    public void Login_ValidCredentials_SetsExpirationTwoHoursLater()
+    {
+        var repoUserMock = new Mock<IRepositoryUser>();
+        var repoSessionMock = new Mock<IRepositorySession>();
+        var watchMock = new Mock<IReloj>();
+
+        var fixedNow = new DateTime(2026, 1, 1, 10, 0, 0);
+
+        watchMock
+            .Setup(r => r.Ahora())
+            .Returns(fixedNow);
+
+        var user = User.MakeClient(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            Phone.MakePhone("099123456"),
+            "Password@2Ok6Abc");
+        user.Id = 1;
+
+        Session? savedSession = null;
+
+        repoUserMock
+            .Setup(r => r.FindByEmail("miguel@gmail.com"))
+            .Returns(user);
+
+        repoSessionMock
+            .Setup(r => r.Add(It.IsAny<Session>()))
+            .Callback<Session>(s => savedSession = s)
+            .Returns((Session s) => s);
+
+        var service = new LoginService(
+            repoUserMock.Object,
+            repoSessionMock.Object,
+            watchMock.Object);
+
+        var request = new LoginRequestDTO
+        {
+            Email = "miguel@gmail.com",
+            Password = "Password@2Ok6Abc"
+        };
+
+        service.Login(request);
+
+        Assert.IsNotNull(savedSession);
+        Assert.AreEqual(fixedNow.AddHours(2), savedSession.ExpireDate);
+    }
 }
