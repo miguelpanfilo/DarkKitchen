@@ -4,6 +4,7 @@ using Dominio;
 using Dominio.Exceptions;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using Moq;
 
 namespace Pruebas.Usuarios;
@@ -81,7 +82,7 @@ public class UserServiceTests
             Password = "Password@2Ok6Abc"
         };
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<SignUpException>(() =>
             service.SignUpClient(request));
 
         Assert.AreEqual("Email is already registered", ex.Message);
@@ -119,7 +120,7 @@ public class UserServiceTests
             Password = "Password@2026Ok"
         };
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<SignUpException>(() =>
             service.SignUpClient(request));
 
         Assert.AreEqual("Phone is not valid", ex.Message);

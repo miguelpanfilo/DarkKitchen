@@ -5,6 +5,7 @@ using Dominio;
 using Dominio.Exceptions;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 

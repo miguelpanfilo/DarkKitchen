@@ -19,7 +19,14 @@ public class UsersController : ControllerBase
     [HttpPost]
     public IActionResult CreateUser([FromBody] SignUpClientRequestDTO request)
     {
-        var response = _signUpService.SignUpClient(request);
-        return Created("/api/v1/users", response);
+        try
+        {
+            var response = _signUpService.SignUpClient(request);
+            return Created("/api/v1/users", response);
+        }
+        catch (UserException ex)
+        {
+            return Conflict(new { message = ex.Message });
+        }
     }
 }

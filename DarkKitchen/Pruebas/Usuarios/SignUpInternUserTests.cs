@@ -4,6 +4,7 @@ using Dominio;
 using Dominio.Exceptions;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using Mapeo;
 using Moq;
 
@@ -100,7 +101,7 @@ public class SignUpInternUserTests
             Role = "Administrative"
         };
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<SignUpException>(() =>
             service.MakeInterUser(1, request));
 
         Assert.AreEqual("Phone is not valid", ex.Message);
@@ -150,7 +151,7 @@ public class SignUpInternUserTests
             Role = "Administrative"
         };
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<SignUpException>(() =>
             service.MakeInterUser(1, request));
 
         Assert.AreEqual("Phone is not valid", ex.Message);
@@ -237,7 +238,7 @@ public class SignUpInternUserTests
             Role = "AdmiNistrAtIve"
         };
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<SignUpException>(() =>
             service.MakeInterUser(1, request));
 
         Assert.AreEqual("Email is already registered", ex.Message);
@@ -274,7 +275,7 @@ public class SignUpInternUserTests
             Role = "Anything"
         };
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<SignUpException>(() =>
             service.MakeInterUser(1, request));
 
         Assert.AreEqual("Internal role is not valid", ex.Message);

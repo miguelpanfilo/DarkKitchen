@@ -3,6 +3,7 @@ using Contratos;
 using Dominio;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using Moq;
 
 namespace Pruebas.InicioSesion;

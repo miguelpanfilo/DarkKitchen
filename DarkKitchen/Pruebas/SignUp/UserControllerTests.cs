@@ -2,10 +2,11 @@ using Contratos;
 using DarkKitchen.Controllers;
 using Dominio.Exceptions;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace Pruebas.WebApi.Users;
+namespace Pruebas.SignUp;
 
 [TestClass]
 public class UsersControllerTests
@@ -67,7 +68,7 @@ public class UsersControllerTests
 
         signUpServiceMock
             .Setup(s => s.SignUpClient(request))
-            .Throws(new UserException("Email is already registered"));
+            .Throws(new SignUpException("Email is already registered"));
 
         var controller = new UsersController(signUpServiceMock.Object);
 
