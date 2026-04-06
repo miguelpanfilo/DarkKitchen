@@ -61,7 +61,7 @@ public class SessionsControllerTests
 
         loginServiceMock
             .Setup(s => s.Login(request))
-            .Throws(new UserException("Invalid credentials"));
+            .Throws(new AuthenticationException("Invalid credentials"));
 
         var controller = new SessionsController(loginServiceMock.Object);
 

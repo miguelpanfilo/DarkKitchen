@@ -18,7 +18,14 @@ public class SessionsController : ControllerBase
     [HttpPost]
     public IActionResult CreateSession([FromBody] LoginRequestDTO request)
     {
-        var response = _loginService.Login(request);
-        return Ok(response);
+        try
+        {
+            var response = _loginService.Login(request);
+            return Ok(response);
+        }
+        catch (AuthenticationException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
     }
 }

@@ -1,7 +1,6 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
-using Dominio.Exceptions;
 using LogicaDeNegocioAbstracciones;
 
 namespace LogicaDeNegocio;
@@ -21,12 +20,12 @@ public class LoginService(
 
         if(userFromTheRequest == null)
         {
-            throw new UserException("Invalid credentials");
+            throw new AuthenticationException("Invalid credentials");
         }
 
         if(!userFromTheRequest.Password.VerifyHash(requestDto.Password))
         {
-            throw new UserException("Invalid credentials");
+            throw new AuthenticationException("Invalid credentials");
         }
 
         var expireDate = _iWatch.Ahora().AddHours(2);
