@@ -22,4 +22,20 @@ public class RepositorySessionTests
         Assert.AreEqual(expireDate, result.ExpireDate);
         Assert.AreEqual(session.SessionId, result.SessionId);
     }
+
+    [TestMethod]
+    public void FindBySessionId_ExistingSession_ReturnsSession()
+    {
+        var repository = new RepositorySession();
+
+        var session = new Session(1, new DateTime(2026, 1, 1, 12, 0, 0));
+
+        repository.Add(session);
+
+        var result = repository.FindBySessionId(session.SessionId);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(session.SessionId, result.SessionId);
+        Assert.AreEqual(1, result.UserId);
+    }
 }
