@@ -33,7 +33,9 @@ public class OrderFacade
         {
             var product = _productService.GetById(i.ProductId);
             if (!product.IsActive)
+            {
                 throw new OrderException($"Product {product.Name} is not available");
+            }
             return (i.ProductId, i.Quantity, product.Price, 0m);
         }).ToList();
     }

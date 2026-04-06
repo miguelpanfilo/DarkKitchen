@@ -14,7 +14,9 @@ public class OrderItem
 
     public decimal LineTotal => UnitPrice * Quantity * (1 - DiscountApplied);
 
-    private OrderItem() { }
+    private OrderItem()
+    {
+    }
 
     public static OrderItem MakeOrderItem(int productId, int quantity, decimal unitPrice, decimal discountApplied = 0)
     {

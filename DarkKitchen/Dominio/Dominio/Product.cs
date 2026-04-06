@@ -9,7 +9,9 @@ public class Product
     public decimal Price { get; private set; }
     public bool IsActive { get; private set; }
 
-    private Product() { }
+    private Product()
+    {
+    }
 
     public static Product MakeProduct(string name, decimal price, bool isActive = true)
     {

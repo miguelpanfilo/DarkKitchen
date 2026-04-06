@@ -18,7 +18,9 @@ public class Order
     public decimal ShippingCost { get; private set; }
     public decimal Total { get; private set; }
 
-    private Order() { }
+    private Order()
+    {
+    }
 
     public static Order MakeOrder(
         int clientId,
