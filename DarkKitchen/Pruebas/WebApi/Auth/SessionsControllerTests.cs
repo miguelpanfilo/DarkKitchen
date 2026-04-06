@@ -133,4 +133,40 @@ public class SessionsControllerTests
         Assert.AreEqual("Invalid credentials", ex.Message);
         repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Never);
     }
+
+    [TestMethod]
+    public void Login_WrongPassword_ThrowsAuthenticationException()
+    {
+        var repoUserMock = new Mock<IRepositoryUser>();
+        var repoSessionMock = new Mock<IRepositorySession>();
+        var watchMock = new Mock<IReloj>();
+
+        var user = User.MakeClient(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            Phone.MakePhone("099123456"),
+            "Password@2Ok6Abc");
+        user.Id = 1;
+
+        repoUserMock
+            .Setup(r => r.FindByEmail("miguel@gmail.com"))
+            .Returns(user);
+
+        var service = new LoginService(
+            repoUserMock.Object,
+            repoSessionMock.Object,
+            watchMock.Object);
+
+        var request = new LoginRequestDTO
+        {
+            Email = "miguel@gmail.com",
+            Password = "WrongPassword@123"
+        };
+
+        var ex = Assert.ThrowsException<AuthenticationException>(() => service.Login(request));
+
+        Assert.AreEqual("Invalid credentials", ex.Message);
+        repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Never);
+    }
 }
