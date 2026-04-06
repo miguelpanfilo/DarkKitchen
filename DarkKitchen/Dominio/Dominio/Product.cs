@@ -42,6 +42,11 @@ public class Product
         IsActive = true;
     }
 
+    public void Deactivate()
+    {
+        IsActive = false;
+    }
+
     private static void ValidateRequired(string value, string fieldName)
     {
         if (string.IsNullOrWhiteSpace(value))
