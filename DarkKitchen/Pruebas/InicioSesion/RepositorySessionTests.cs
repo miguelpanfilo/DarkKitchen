@@ -38,4 +38,14 @@ public class RepositorySessionTests
         Assert.AreEqual(session.SessionId, result.SessionId);
         Assert.AreEqual(1, result.UserId);
     }
+
+    [TestMethod]
+    public void FindBySessionId_NonExistingSession_ReturnsNull()
+    {
+        var repository = new RepositorySession();
+
+        var result = repository.FindBySessionId(Guid.NewGuid());
+
+        Assert.IsNull(result);
+    }
 }
