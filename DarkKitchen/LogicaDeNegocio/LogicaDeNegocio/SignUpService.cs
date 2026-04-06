@@ -75,7 +75,16 @@ public class SignUpService(
 
     private Phone MakeAndValidatePhone(string phone)
     {
-        var newPhone = Phone.MakePhone(phone);
+        Phone newPhone;
+
+        try
+        {
+            newPhone = Phone.MakePhone(phone);
+        }
+        catch (UserException ex)
+        {
+            throw new SignUpValidationException(ex.Message);
+        }
 
         if(!_validatorPhone.ItsValid(newPhone.Value))
         {
