@@ -10,7 +10,7 @@ public class Order
     public User? Client { get; private set; }
     public DeliveryType DeliveryType { get; private set; }
     public Address Address { get; private set; } = null!;
-    public List<OrderItem> Items { get; private set; } = new();
+    public List<OrderItem> Items { get; private set; } = [];
     public OrderStatus Status { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime StatusUpdatedAt { get; private set; }

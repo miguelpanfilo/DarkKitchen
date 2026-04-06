@@ -1,7 +1,6 @@
 using Dominio;
 using Dominio.Exceptions;
 using LogicaDeNegocio;
-using LogicaDeNegocioAbstracciones;
 
 namespace Pruebas.Pedidos;
 

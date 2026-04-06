@@ -6,16 +6,10 @@ using Mapeo;
 
 namespace LogicaDeNegocio;
 
-public class OrderFacade
+public class OrderFacade(IOrderService orderService, IProductService productService)
 {
-    private readonly IOrderService _orderService;
-    private readonly IProductService _productService;
-
-    public OrderFacade(IOrderService orderService, IProductService productService)
-    {
-        _orderService = orderService;
-        _productService = productService;
-    }
+    private readonly IOrderService _orderService = orderService;
+    private readonly IProductService _productService = productService;
 
     public OrderResponse CreateOrder(int clientId, CreateOrderRequest request)
     {
@@ -36,6 +30,7 @@ public class OrderFacade
             {
                 throw new OrderException($"Product {product.Name} is not available");
             }
+
             return (i.ProductId, i.Quantity, product.Price, 0m);
         }).ToList();
     }

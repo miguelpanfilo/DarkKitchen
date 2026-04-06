@@ -20,7 +20,7 @@ public class OrderFacadeTests
         return Order.MakeOrder(1, DeliveryType.Express, address, items, 200m);
     }
 
-    private static Product MakeActiveProduct(int id = 1, decimal price = 100m)
+    private static Product MakeActiveProduct(decimal price = 100m)
     {
         return Product.MakeProduct("Test Product", price);
     }
