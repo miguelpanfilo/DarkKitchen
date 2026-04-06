@@ -1,5 +1,4 @@
 using Contratos;
-using Dominio.Exceptions;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using Microsoft.AspNetCore.Mvc;
