@@ -34,7 +34,7 @@ public class SessionsControllerTests
 
         var controller = new SessionsController(loginServiceMock.Object);
 
-        var result = controller.Login(request);
+        var result = controller.CreateSession(request);
 
         var okResult = result as OkObjectResult;
 

@@ -16,7 +16,7 @@ public class SessionsController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Login(LoginRequestDTO request)
+    public IActionResult CreateSession([FromBody] LoginRequestDTO request)
     {
         var response = _loginService.Login(request);
         return Ok(response);
