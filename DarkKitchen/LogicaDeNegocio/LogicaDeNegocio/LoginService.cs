@@ -2,6 +2,7 @@ using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Exceptions;
 
 namespace LogicaDeNegocio;
 

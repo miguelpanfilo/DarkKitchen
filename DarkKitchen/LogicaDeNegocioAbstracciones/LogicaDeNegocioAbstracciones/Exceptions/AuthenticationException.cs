@@ -1,4 +1,4 @@
-namespace LogicaDeNegocioAbstracciones;
+namespace LogicaDeNegocioAbstracciones.Exceptions;
 
 public class AuthenticationException : Exception
 {

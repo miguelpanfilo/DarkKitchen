@@ -1,5 +1,7 @@
 using Dominio.Exceptions;
 
+namespace Dominio;
+
 public sealed class Phone
 {
     public string Value { get; }

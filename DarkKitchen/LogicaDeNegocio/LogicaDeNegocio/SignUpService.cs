@@ -3,6 +3,7 @@ using Contratos;
 using Dominio;
 using Dominio.Exceptions;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using Mapeo;
 
 namespace LogicaDeNegocio;
@@ -21,7 +22,7 @@ public class SignUpService(
     {
         if(_repositoryUser.EmailExist(requestDto.Email))
         {
-            throw new UserException("Email is already registered");
+            throw new SignUpException("Email is already registered");
         }
 
         var phone = MakeAndValidatePhone(requestDto.Phone);
@@ -52,7 +53,7 @@ public class SignUpService(
 
         if(_repositoryUser.EmailExist(requestDto.Email))
         {
-            throw new UserException("Email is already registered");
+            throw new SignUpException("Email is already registered");
         }
 
         var user = UserMapper.MappingDTOToInternUser(requestDto, phone, role);
@@ -62,11 +63,11 @@ public class SignUpService(
         return newUser.MappingUserToResponseDTO();
     }
 
-    private UserRoles GetInternRoleValid(string rol)
+    private UserRoles GetInternRoleValid(string role)
     {
-        if(!Enum.TryParse<UserRoles>(rol, true, out var rolEnum))
+        if(!Enum.TryParse<UserRoles>(role, true, out var rolEnum))
         {
-            throw new UserException("Internal role is not valid");
+            throw new SignUpException("Internal role is not valid");
         }
 
         return rolEnum;
@@ -78,7 +79,7 @@ public class SignUpService(
 
         if(!_validatorPhone.ItsValid(newPhone.Value))
         {
-            throw new UserException("Phone is not valid");
+            throw new SignUpException("Phone is not valid");
         }
 
         return newPhone;

@@ -1,6 +1,7 @@
 using Contratos;
 using Dominio.Exceptions;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DarkKitchen.Controllers;
@@ -24,7 +25,7 @@ public class UsersController : ControllerBase
             var response = _signUpService.SignUpClient(request);
             return Created("/api/v1/users", response);
         }
-        catch (UserException ex)
+        catch (SignUpException ex)
         {
             return Conflict(new { message = ex.Message });
         }
