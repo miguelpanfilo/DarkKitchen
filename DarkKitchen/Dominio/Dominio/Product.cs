@@ -9,6 +9,7 @@ public class Product
     public string Description { get; }
     public string CommercialLine { get; }
     public string Category { get; }
+    public bool IsActive { get; private set; }
 
     private const int CODE_MIN_LENGTH = 5;
     private const int CODE_MAX_LENGTH = 20;
@@ -38,6 +39,7 @@ public class Product
         Description = description;
         CommercialLine = commercialLine;
         Category = category;
+        IsActive = true;
     }
 
     private static void ValidateRequired(string value, string fieldName)
