@@ -42,6 +42,11 @@ public class Product
         IsActive = true;
     }
 
+    public void Activate()
+    {
+        IsActive = true;
+    }
+
     public void Deactivate()
     {
         IsActive = false;
