@@ -20,20 +20,22 @@ public class OrderFacade
     public OrderResponse CreateOrder(int clientId, CreateOrderRequest request)
     {
         var address = Address.MakeAddress(request.Address.Street, request.Address.DoorNumber, request.Address.Apartment);
+        var items = ResolveItems(request.Items);
+        var shippingCost = ShippingStrategyFactory.Create(request.DeliveryType).Calculate(0m);
+        var order = _orderService.CreateOrder(clientId, request.DeliveryType, address, items, shippingCost);
+        return order.ToOrderResponse();
+    }
 
-        var items = request.Items.Select(i =>
+    private List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)> ResolveItems(
+        List<CreateOrderItemRequest> requestItems)
+    {
+        return requestItems.Select(i =>
         {
             var product = _productService.GetById(i.ProductId);
             if (!product.IsActive)
                 throw new OrderException($"Product {product.Name} is not available");
             return (i.ProductId, i.Quantity, product.Price, 0m);
         }).ToList();
-
-        var shippingCost = ShippingStrategyFactory.Create(request.DeliveryType).Calculate(0m);
-
-        var order = _orderService.CreateOrder(clientId, request.DeliveryType, address, items, shippingCost);
-
-        return order.ToOrderResponse();
     }
 
     public List<OrderResponse> GetClientOrders(int clientId, DateTime? dateFrom, DateTime? dateTo, OrderStatus? status)
