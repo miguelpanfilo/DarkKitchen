@@ -12,4 +12,9 @@ public class RepositorySession : IRepositorySession
         _sessions.Add(session);
         return session;
     }
+
+    public Session? FindBySessionId(Guid sessionId)
+    {
+        return _sessions.FirstOrDefault(s => s.SessionId == sessionId);
+    }
 }
