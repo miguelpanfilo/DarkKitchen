@@ -1,5 +1,6 @@
 using Contratos;
 using DarkKitchen.Controllers;
+using Dominio.Exceptions;
 using LogicaDeNegocioAbstracciones;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -45,5 +46,30 @@ public class SessionsControllerTests
         Assert.IsNotNull(value);
         Assert.AreEqual(1, value.UserId);
         Assert.AreEqual("Administrative", value.Role);
+    }
+
+    [TestMethod]
+    public void CreateSession_InvalidCredentials_ReturnsUnauthorized()
+    {
+        var loginServiceMock = new Mock<ILoginService>();
+
+        var request = new LoginRequestDTO
+        {
+            Email = "admin@gmail.com",
+            Password = "wrongPassword"
+        };
+
+        loginServiceMock
+            .Setup(s => s.Login(request))
+            .Throws(new UserException("Invalid credentials"));
+
+        var controller = new SessionsController(loginServiceMock.Object);
+
+        var result = controller.CreateSession(request);
+
+        var unauthorizedResult = result as UnauthorizedObjectResult;
+
+        Assert.IsNotNull(unauthorizedResult);
+        Assert.AreEqual(401, unauthorizedResult.StatusCode);
     }
 }
