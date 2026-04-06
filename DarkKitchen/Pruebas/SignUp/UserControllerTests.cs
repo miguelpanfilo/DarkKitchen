@@ -50,4 +50,32 @@ public class UsersControllerTests
         Assert.AreEqual("Lopez", value.LastName);
         Assert.AreEqual("miguel@gmail.com", value.Email);
     }
+
+    [TestMethod]
+    public void CreateUser_EmailAlreadyExists_ReturnsConflict()
+    {
+        var signUpServiceMock = new Mock<ISignUpUserService>();
+
+        var request = new SignUpClientRequestDTO
+        {
+            Name = "Miguel",
+            LastName = "Lopez",
+            Email = "miguel@gmail.com",
+            Phone = "099123456",
+            Password = "Password@2Ok6Abc"
+        };
+
+        signUpServiceMock
+            .Setup(s => s.SignUpClient(request))
+            .Throws(new UserException("Email is already registered"));
+
+        var controller = new UsersController(signUpServiceMock.Object);
+
+        var result = controller.CreateUser(request);
+
+        var conflictResult = result as ConflictObjectResult;
+
+        Assert.IsNotNull(conflictResult);
+        Assert.AreEqual(409, conflictResult.StatusCode);
+    }
 }
