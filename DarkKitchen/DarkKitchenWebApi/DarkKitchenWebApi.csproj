@@ -13,7 +13,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controladores\" />
+      <ProjectReference Include="..\Contratos\Contratos\Contratos.csproj" />
+      <ProjectReference Include="..\LogicaDeNegocioAbstracciones\LogicaDeNegocioAbstracciones\LogicaDeNegocioAbstracciones.csproj" />
+      <ProjectReference Include="..\LogicaDeNegocio\LogicaDeNegocio\LogicaDeNegocio.csproj" />
     </ItemGroup>
 
 </Project>

@@ -9,36 +9,36 @@ namespace LogicaDeNegocio;
 public class LoginService(
     IRepositoryUser repoUsuario,
     IRepositorySession repoSesion,
-    IReloj reloj)
+    IReloj iWatch) : ILoginService
 {
     private readonly IRepositoryUser _repoUsuario = repoUsuario;
     private readonly IRepositorySession _repoSesion = repoSesion;
-    private readonly IReloj _reloj = reloj;
+    private readonly IReloj _iWatch = iWatch;
 
     public LoginResponseDTO Login(LoginRequestDTO requestDto)
     {
-        var usuarioMailIngresado = _repoUsuario.FindByEmail(requestDto.Email);
+        var userFromTheRequest = _repoUsuario.FindByEmail(requestDto.Email);
 
-        if(usuarioMailIngresado == null)
+        if(userFromTheRequest == null)
         {
             throw new UserException("Invalid credentials");
         }
 
-        if(!usuarioMailIngresado.Password.VerifyHash(requestDto.Password))
+        if(!userFromTheRequest.Password.VerifyHash(requestDto.Password))
         {
             throw new UserException("Invalid credentials");
         }
 
-        var expiracion = _reloj.Ahora().AddHours(2);
-        var sesion = new Session(usuarioMailIngresado.Id, expiracion);
-        var sesionGuardada = _repoSesion.Add(sesion);
+        var expireDate = _iWatch.Ahora().AddHours(2);
+        var session = new Session(userFromTheRequest.Id, expireDate);
+        var savedSession = _repoSesion.Add(session);
 
         return new LoginResponseDTO
         {
-            SessionId = sesionGuardada.SessionId,
-            UserId = usuarioMailIngresado.Id,
-            Role = usuarioMailIngresado.Role.ToString(),
-            ExpireDate = sesionGuardada.ExpireDate
+            SessionId = savedSession.SessionId,
+            UserId = userFromTheRequest.Id,
+            Role = userFromTheRequest.Role.ToString(),
+            ExpireDate = savedSession.ExpireDate
         };
     }
 }

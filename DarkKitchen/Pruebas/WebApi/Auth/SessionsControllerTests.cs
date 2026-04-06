@@ -1,5 +1,5 @@
 using Contratos;
-using DarkKitchen.Controladores;
+using DarkKitchen.Controllers;
 using LogicaDeNegocioAbstracciones;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -7,7 +7,7 @@ using Moq;
 namespace Pruebas.WebApi.Auth;
 
 [TestClass]
-public class AuthControllerTests
+public class SessionsControllerTests
 {
     [TestMethod]
     public void Login_ValidRequest_ReturnsOk()
@@ -32,7 +32,7 @@ public class AuthControllerTests
             .Setup(s => s.Login(request))
             .Returns(expectedResponse);
 
-        var controller = new AuthController(loginServiceMock.Object);
+        var controller = new SessionsController(loginServiceMock.Object);
 
         var result = controller.Login(request);
 
