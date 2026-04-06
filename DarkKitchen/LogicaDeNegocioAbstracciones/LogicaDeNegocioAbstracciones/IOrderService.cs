@@ -4,10 +4,14 @@ namespace LogicaDeNegocioAbstracciones;
 
 public interface IOrderService
 {
-    Order CreateOrder(int clientId, DeliveryType deliveryType, Address address,
-        List<(int ProductId, int Quantity)> items);
+    Order CreateOrder(
+        int clientId,
+        DeliveryType deliveryType,
+        Address address,
+        List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)> items,
+        decimal shippingCost);
 
-    Order GetById(int orderId, int requestingUserId);
+    Order GetById(int orderId);
 
     List<Order> GetClientOrders(int clientId, DateTime? dateFrom, DateTime? dateTo, OrderStatus? status);
 
