@@ -189,4 +189,17 @@ public class ProductTest
             )
         );
     }
+
+    [TestMethod]
+    public void Constructor_WhenDataIsValid_ProductIsActiveByDefault()
+    {
+        Product product = new Product(
+            "ABC12",
+            "Milanesa completa",
+            "Milanesa completa con guarnicion y bebida incluida",
+            "Minutas clasicas",
+            "Fritos");
+
+        Assert.IsTrue(product.IsActive);
+    }
 }
