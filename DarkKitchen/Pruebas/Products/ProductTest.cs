@@ -217,4 +217,20 @@ public class ProductTest
 
         Assert.IsFalse(product.IsActive);
     }
+
+    [TestMethod]
+    public void Activate_WhenCalled_ProductBecomesActive()
+    {
+        Product product = new Product(
+            "ABC12",
+            "Milanesa completa",
+            "Milanesa completa con guarnicion y bebida incluida",
+            "Minutas clasicas",
+            "Fritos");
+
+        product.Deactivate();
+        product.Activate();
+
+        Assert.IsTrue(product.IsActive);
+    }
 }
