@@ -11,7 +11,7 @@ public class ExpressShippingStrategyTests
     {
         var strategy = new ExpressShippingStrategy();
 
-        var result =strategy.Calculate(100m);
+        var result = strategy.Calculate(100m);
 
         Assert.AreEqual(200m, result);
     }
@@ -21,7 +21,7 @@ public class ExpressShippingStrategyTests
     {
         var strategy = new ExpressShippingStrategy();
 
-        var result =strategy.Calculate(0m);
+        var result = strategy.Calculate(0m);
 
         Assert.AreEqual(200m, result);
     }
@@ -31,7 +31,7 @@ public class ExpressShippingStrategyTests
     {
         var strategy = new ExpressShippingStrategy();
 
-        var result =strategy.Calculate(10000m);
+        var result = strategy.Calculate(10000m);
 
         Assert.AreEqual(200m, result);
     }
@@ -53,7 +53,7 @@ public class TwentyFourHoursShippingStrategyTests
     {
         var strategy = new TwentyFourHoursShippingStrategy();
 
-        var result =strategy.Calculate(100m);
+        var result = strategy.Calculate(100m);
 
         Assert.AreEqual(250m, result);
     }
@@ -63,7 +63,7 @@ public class TwentyFourHoursShippingStrategyTests
     {
         var strategy = new TwentyFourHoursShippingStrategy();
 
-        var result =strategy.Calculate(0m);
+        var result = strategy.Calculate(0m);
 
         Assert.AreEqual(250m, result);
     }
@@ -73,7 +73,7 @@ public class TwentyFourHoursShippingStrategyTests
     {
         var strategy = new TwentyFourHoursShippingStrategy();
 
-        var result =strategy.Calculate(10000m);
+        var result = strategy.Calculate(10000m);
 
         Assert.AreEqual(250m, result);
     }

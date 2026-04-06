@@ -26,7 +26,7 @@ public class OrderFacade(IOrderService orderService, IProductService productServ
         return requestItems.Select(i =>
         {
             var product = _productService.GetById(i.ProductId);
-            if (!product.IsActive)
+            if(!product.IsActive)
             {
                 throw new OrderException($"Product {product.Name} is not available");
             }

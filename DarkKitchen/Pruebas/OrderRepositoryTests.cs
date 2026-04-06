@@ -1,7 +1,7 @@
 using Almacenamiento;
 using Dominio;
 
-namespace Pruebas.Pedidos;
+namespace Pruebas;
 
 [TestClass]
 public class OrderRepositoryTests
