@@ -1,4 +1,5 @@
 using AlmacenamientoAbstracciones;
+using Contratos;
 using Dominio;
 using LogicaDeNegocio;
 using Moq;
@@ -11,7 +12,7 @@ public class ProductServiceTest
     [TestMethod]
     public void GivenValidProductDto_WhenCreating_ThenRepositoryIsCalledAndProductIsReturned()
     {
-        var dto = new ProductDto(
+        var dto = new ProductDTO(
             "COD123",
             "Milanesa al pan",
             "Milanesa al pan completa",

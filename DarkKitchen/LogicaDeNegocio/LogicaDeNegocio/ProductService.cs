@@ -1,4 +1,5 @@
 using AlmacenamientoAbstracciones;
+using Contratos;
 using Dominio;
 
 namespace LogicaDeNegocio;
@@ -11,8 +12,15 @@ public class ProductService
         _repository = repository;
     }
 
-    public Product Create(Product product)
+    public Product Create(ProductDTO productDto)
     {
+        var product = new Product(
+            productDto.Code,
+            productDto.Name,
+            productDto.Description,
+            productDto.CommercialLine,
+            productDto.Category
+        );
         return _repository.Create(product);
     }
 }
