@@ -9,9 +9,9 @@ namespace Pruebas.Products;
 public class ProductServiceTest
 {
     [TestMethod]
-    public void GivenValidProduct_WhenCreating_ThenProductIsReturned()
+    public void GivenValidProductDto_WhenCreating_ThenRepositoryIsCalledAndProductIsReturned()
     {
-        var product = new Product(
+        var dto = new ProductDto(
             "COD123",
             "Milanesa al pan",
             "Milanesa al pan completa",
@@ -19,16 +19,19 @@ public class ProductServiceTest
             "Sandwiches"
         );
 
-        var repoMock = new Mock<IProductRepository>();
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
         repoMock
-            .Setup(repository => repository.Create(product))
-            .Returns(product);
+            .Setup<Product>(repository => repository.Create(It.IsAny<Product>()))
+            .Returns((Product product) => product);
 
         var service = new ProductService(repoMock.Object);
 
-        var productCreated = service.Create(product);
+        var result = service.Create(dto);
 
-        Assert.IsNotNull(productCreated);
-        Assert.AreEqual("Milanesa al pan", productCreated.Name);
+        Assert.IsNotNull(result);
+        Assert.AreEqual(dto.Name, result.Name);
+
+        repoMock.Verify(repository => repository.Create(It.IsAny<Product>()), Times.Once);
     }
 }
