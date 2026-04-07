@@ -1,6 +1,7 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
+using Mapeo;
 
 namespace LogicaDeNegocio;
 
@@ -14,13 +15,7 @@ public class ProductService
 
     public Product Create(ProductDTO productDto)
     {
-        var product = new Product(
-            productDto.Code,
-            productDto.Name,
-            productDto.Description,
-            productDto.CommercialLine,
-            productDto.Category
-        );
+        var product = ProductMapper.ToEntity(productDto);
         return _repository.Create(product);
     }
 }
