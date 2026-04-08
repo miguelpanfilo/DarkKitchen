@@ -1,3 +1,5 @@
+using Dominio.Builders;
+
 namespace Pruebas.Products;
 
 [TestClass]
