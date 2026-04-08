@@ -1,0 +1,18 @@
+using Dominio;
+using Dominio.Exceptions;
+using LogicaDeNegocioAbstracciones;
+
+namespace LogicaDeNegocio;
+
+public static class ShippingStrategyFactory
+{
+    public static IShippingCostStrategy Create(DeliveryType deliveryType)
+    {
+        return deliveryType switch
+        {
+            DeliveryType.Express => new ExpressShippingStrategy(),
+            DeliveryType.TwentyFourHours => new TwentyFourHoursShippingStrategy(),
+            _ => throw new OrderException($"No shipping strategy found for delivery type: {(int)deliveryType}")
+        };
+    }
+}
