@@ -1,9 +1,6 @@
 namespace LogicaDeNegocioAbstracciones.Exceptions;
 
-public class UserAuthenticationException : Exception
+public class UserAuthenticationException(string message)
+    : Exception(message)
 {
-    public UserAuthenticationException(string message)
-        : base(message)
-    {
-    }
 }

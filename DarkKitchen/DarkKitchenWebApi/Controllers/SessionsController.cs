@@ -7,14 +7,9 @@ namespace DarkKitchen.Controllers;
 
 [ApiController]
 [Route("api/v1/sessions")]
-public class SessionsController : ControllerBase
+public class SessionsController(ILoginService loginService) : ControllerBase
 {
-    private readonly ILoginService _loginService;
-
-    public SessionsController(ILoginService loginService)
-    {
-        _loginService = loginService;
-    }
+    private readonly ILoginService _loginService = loginService;
 
     [HttpPost]
     public IActionResult CreateSession([FromBody] LoginRequestDTO request)

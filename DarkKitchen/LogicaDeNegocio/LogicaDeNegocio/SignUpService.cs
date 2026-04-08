@@ -38,9 +38,7 @@ public class SignUpService(
 
         return new SignUpClientResponseDTO
         {
-            Name = newUser.Name,
-            LastName = newUser.LastName,
-            Email = newUser.Email.ToString(),
+            Name = newUser.Name, LastName = newUser.LastName, Email = newUser.Email.ToString(),
         };
     }
 
@@ -81,7 +79,7 @@ public class SignUpService(
         {
             newPhone = Phone.MakePhone(phone);
         }
-        catch (UserException ex)
+        catch(UserException ex)
         {
             throw new SignUpValidationException(ex.Message);
         }

@@ -6,14 +6,9 @@ namespace DarkKitchen.Controllers;
 
 [ApiController]
 [Route("api/v1/users")]
-public class UsersController : ControllerBase
+public class UsersController(ISignUpUserService signUpService) : ControllerBase
 {
-    private readonly ISignUpUserService _signUpService;
-
-    public UsersController(ISignUpUserService signUpService)
-    {
-        _signUpService = signUpService;
-    }
+    private readonly ISignUpUserService _signUpService = signUpService;
 
     [HttpPost]
     public IActionResult CreateUser([FromBody] SignUpClientRequestDTO request)

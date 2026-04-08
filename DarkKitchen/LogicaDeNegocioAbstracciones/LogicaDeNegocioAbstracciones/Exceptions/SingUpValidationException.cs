@@ -1,9 +1,6 @@
 namespace LogicaDeNegocioAbstracciones.Exceptions;
 
-public class SignUpValidationException : Exception
+public class SignUpValidationException(string message)
+    : Exception(message)
 {
-    public SignUpValidationException(string message)
-        : base(message)
-    {
-    }
 }

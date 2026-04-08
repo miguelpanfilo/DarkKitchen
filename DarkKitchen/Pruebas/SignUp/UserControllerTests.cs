@@ -1,6 +1,5 @@
 using Contratos;
 using DarkKitchen.Controllers;
-using Dominio.Exceptions;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using Microsoft.AspNetCore.Mvc;

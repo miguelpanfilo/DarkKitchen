@@ -1,31 +1,26 @@
 namespace Dominio.Exceptions;
 
-public class UserException : Exception
+public class UserException(string message)
+    : Exception(message)
 {
-    public UserException(string message)
-        : base(message) { }
 }
 
-public class UserValidationException : UserException
+public class UserValidationException(string message)
+    : UserException(message)
 {
-    public UserValidationException(string message)
-        : base(message) { }
 }
 
-public class UserConflictException : UserException
+public class UserConflictException(string message)
+    : UserException(message)
 {
-    public UserConflictException(string message)
-        : base(message) { }
 }
 
-public class UserNotFoundException : UserException
+public class UserNotFoundException(string message)
+    : UserException(message)
 {
-    public UserNotFoundException(string message)
-        : base(message) { }
 }
 
-public class UserForbiddenException : UserException
+public class UserForbiddenException(string message)
+    : UserException(message)
 {
-    public UserForbiddenException(string message)
-        : base(message) { }
 }
