@@ -14,7 +14,8 @@ public class ProductTest
             "Milanesa al pan",
             "Milanesa al pan completa",
             "Minutas clásicas",
-            "Sandwiches"
+            "Sandwiches",
+            100
         );
 
         Assert.IsNotNull(product);
@@ -34,7 +35,8 @@ public class ProductTest
                 " ",
                 "Milanesa al pan completa",
                 "Minutas clásicas",
-                "Sandwiches"
+                "Sandwiches",
+                100
             )
         );
     }
@@ -48,7 +50,8 @@ public class ProductTest
                 "Milanesa al pan",
                 "Milanesa al pan completa",
                 "Minutas clásicas",
-                "Sandwiches"
+                "Sandwiches",
+                100
             )
         );
     }
@@ -62,7 +65,8 @@ public class ProductTest
                 "Milanesa al pan",
                 " ",
                 "Minutas clásicas",
-                "Sandwiches"
+                "Sandwiches",
+                100
             )
         );
     }
@@ -76,7 +80,8 @@ public class ProductTest
                 "Milanesa al pan",
                 "Milanesa al pan completa",
                 " ",
-                "Sandwiches"
+                "Sandwiches",
+                100
             )
         );
     }
@@ -90,7 +95,8 @@ public class ProductTest
                 "Milanesa al pan",
                 "Milanesa al pan completa",
                 "Minutas clásicas",
-                " "
+                " ",
+                100
             )
         );
     }
@@ -106,7 +112,8 @@ public class ProductTest
                 "Milanesa al pan",
                 "Milanesa al pan completa",
                 "Minutas clásicas",
-                "Sandwiches")
+                "Sandwiches",
+                100)
         );
     }
 
@@ -121,7 +128,8 @@ public class ProductTest
                 "Nombre válido",
                 "Descripción suficientemente larga",
                 "Minutas clásicas",
-                "Sandwiches"
+                "Sandwiches",
+                100
             )
         );
     }
@@ -137,7 +145,8 @@ public class ProductTest
                 name,
                 "Descripción suficientemente larga",
                 "Minutas clásicas",
-                "Sandwiches"
+                "Sandwiches",
+                100
             )
         );
     }
@@ -153,7 +162,8 @@ public class ProductTest
                 name,
                 "Descripción suficientemente larga",
                 "Minutas clásicas",
-                "Sandwiches"
+                "Sandwiches",
+                100
             )
         );
     }
@@ -169,7 +179,8 @@ public class ProductTest
                 "Nombre válido",
                 description,
                 "Minutas clásicas",
-                "Sandwiches"
+                "Sandwiches",
+                100
             )
         );
     }
@@ -185,7 +196,8 @@ public class ProductTest
                 "Nombre válido",
                 description,
                 "Minutas clásicas",
-                "Sandwiches"
+                "Sandwiches",
+                100
             )
         );
     }
@@ -198,7 +210,8 @@ public class ProductTest
             "Milanesa completa",
             "Milanesa completa con guarnicion y bebida incluida",
             "Minutas clasicas",
-            "Fritos");
+            "Fritos",
+            100);
 
         Assert.IsTrue(product.IsActive);
     }
@@ -211,7 +224,8 @@ public class ProductTest
             "Milanesa completa",
             "Milanesa completa con guarnicion y bebida incluida",
             "Minutas clasicas",
-            "Fritos");
+            "Fritos",
+            100);
 
         product.Deactivate();
 
@@ -226,7 +240,8 @@ public class ProductTest
             "Milanesa completa",
             "Milanesa completa con guarnicion y bebida incluida",
             "Minutas clasicas",
-            "Fritos");
+            "Fritos",
+            100);
 
         product.Deactivate();
         product.Activate();

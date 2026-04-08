@@ -1,6 +1,7 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
+using Dominio.Exceptions;
 using LogicaDeNegocio;
 using Moq;
 
@@ -17,7 +18,8 @@ public class ProductServiceTest
             "Milanesa al pan",
             "Milanesa al pan completa",
             "Minutas clásicas",
-            "Sandwiches"
+            "Sandwiches",
+            100
         );
 
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
@@ -32,7 +34,31 @@ public class ProductServiceTest
 
         Assert.IsNotNull(result);
         Assert.AreEqual(productDto.Name, result.Name);
+        repoMock.Verify(repository =>
+                repository.Create(It.Is<Product>(p => p.Price == productDto.Price)),
+            Times.Once
+        );
 
         repoMock.Verify(repository => repository.Create(It.IsAny<Product>()), Times.Once);
+    }
+
+    [TestMethod]
+    public void GivenProductDtoWithInvalidPrice_WhenCreating_ThenThrowsProductExceptionAndRepositoryIsNotCalled()
+    {
+        var dto = new ProductDTO(
+            "COD123",
+            "Milanesa al pan",
+            "Milanesa al pan completa",
+            "Minutas clásicas",
+            "Sandwiches",
+            0
+        );
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var service = new ProductService(repoMock.Object);
+
+        Assert.ThrowsException<ProductException>(() => service.Create(dto));
+
+        repoMock.Verify(repository => repository.Create(It.IsAny<Product>()), Times.Never);
     }
 }

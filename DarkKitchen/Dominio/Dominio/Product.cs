@@ -10,6 +10,7 @@ public class Product
     public string CommercialLine { get; }
     public string Category { get; }
     public bool IsActive { get; private set; }
+    public decimal Price { get; }
 
     private const int CODE_MIN_LENGTH = 5;
     private const int CODE_MAX_LENGTH = 20;
@@ -19,7 +20,9 @@ public class Product
 
     private const int DESCRIPTION_MIN_LENGTH = 20;
     private const int DESCRIPTION_MAX_LENGTH = 500;
-    public Product(string code, string name, string description, string commercialLine, string category)
+
+    private const decimal MIN_PRICE = 0;
+    public Product(string code, string name, string description, string commercialLine, string category, decimal price)
     {
         ValidateRequired(code, "El código");
         ValidateLength(code, "El código", CODE_MIN_LENGTH, CODE_MAX_LENGTH);
@@ -34,12 +37,15 @@ public class Product
 
         ValidateRequired(category, "La categoria");
 
+        ValidatePrice(price);
+
         Code = code;
         Name = name;
         Description = description;
         CommercialLine = commercialLine;
         Category = category;
         IsActive = true;
+        Price = price;
     }
 
     public void Activate()
@@ -65,6 +71,14 @@ public class Product
         if(value.Length < min || value.Length > max)
         {
             throw new ProductException($"{fieldName} debe tener entre {min} y {max} caracteres.");
+        }
+    }
+
+    private static void ValidatePrice(decimal price)
+    {
+        if (price <= MIN_PRICE)
+        {
+            throw new ProductException("El precio debe ser mayor a 0");
         }
     }
 }
