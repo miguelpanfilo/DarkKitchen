@@ -28,6 +28,11 @@ public class ExceptionFilter : Attribute, IExceptionFilter
             statusCode = StatusCodes.Status401Unauthorized;
             response.Message = context.Exception.Message;
         }
+        else if (context.Exception is UserForbiddenException)
+        {
+            statusCode = StatusCodes.Status403Forbidden;
+            response.Message = context.Exception.Message;
+        }
 
         context.Result = new ObjectResult(response)
         {
