@@ -3,7 +3,10 @@ using DarkKitchen.Filters;
 using Dominio.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Routing;
+using Moq;
 
 namespace Pruebas.Filters;
 
@@ -16,14 +19,15 @@ public class ExceptionFilterTests
         var filter = new ExceptionFilter();
 
         var httpContext = new DefaultHttpContext();
-        var actionContext = new ActionContext
-        {
-            HttpContext = httpContext
-        };
+        var routeData = new RouteData();
+        var actionDescriptor = new ActionDescriptor();
 
-        var exceptionContext = new ExceptionContext(
-            actionContext,
-            new List<IFilterMetadata>())
+        var actionContext = new ActionContext(httpContext, routeData, actionDescriptor);
+
+        var filterMetadataMock = new Mock<IFilterMetadata>();
+        var filters = new List<IFilterMetadata> { filterMetadataMock.Object };
+
+        var exceptionContext = new ExceptionContext(actionContext, filters)
         {
             Exception = new UserValidationException("Invalid data")
         };
@@ -36,6 +40,7 @@ public class ExceptionFilterTests
         Assert.AreEqual(StatusCodes.Status400BadRequest, result.StatusCode);
 
         var response = result.Value as ResponseDto;
+
         Assert.IsNotNull(response);
         Assert.IsFalse(response.ExecutionSuccessful);
         Assert.AreEqual("Invalid data", response.Message);
