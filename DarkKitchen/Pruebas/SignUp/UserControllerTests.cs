@@ -14,7 +14,7 @@ public class UsersControllerTests
     [TestMethod]
     public void CreateUser_ValidRequest_ReturnsCreated()
     {
-        var signUpServiceMock = new Mock<ISignUpUserService>();
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
 
         var request = new SignUpClientRequestDTO
         {
@@ -55,7 +55,7 @@ public class UsersControllerTests
     [TestMethod]
     public void CreateUser_EmailAlreadyExists_ReturnsConflict()
     {
-        var signUpServiceMock = new Mock<ISignUpUserService>();
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
 
         var request = new SignUpClientRequestDTO
         {
@@ -83,7 +83,7 @@ public class UsersControllerTests
     [TestMethod]
     public void CreateUser_InvalidPhone_ReturnsBadRequest()
     {
-        var signUpServiceMock = new Mock<ISignUpUserService>();
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
 
         var request = new SignUpClientRequestDTO
         {
@@ -114,7 +114,7 @@ public class UsersControllerTests
     [TestMethod]
     public void CreateUser_ValidRequest_CallsServiceOnce()
     {
-        var signUpServiceMock = new Mock<ISignUpUserService>();
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
 
         var request = new SignUpClientRequestDTO
         {

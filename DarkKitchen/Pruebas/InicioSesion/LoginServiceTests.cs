@@ -14,9 +14,9 @@ public class LoginServiceTests
     [TestMethod]
     public void LoginRightCredentials_ReturnSession()
     {
-        var repoUsuarioMock = new Mock<IRepositoryUser>();
-        var repoSesionMock = new Mock<IRepositorySession>();
-        var relojMock = new Mock<IReloj>();
+        var repoUsuarioMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSesionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var relojMock = new Mock<IReloj>(MockBehavior.Strict);
 
         var usuario = User.MakeClient(
             "Miguel",
@@ -33,6 +33,10 @@ public class LoginServiceTests
         repoSesionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
+
+        relojMock
+            .Setup(r => r.Ahora())
+            .Returns(DateTime.Now);
 
         var service = new LoginService(
             repoUsuarioMock.Object,
@@ -56,9 +60,9 @@ public class LoginServiceTests
     [TestMethod]
     public void Login_NoExistingEmail_Exception()
     {
-        var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSesionMock = new Mock<IRepositorySession>();
-        var watchMock = new Mock<IReloj>();
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSesionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
 
         repoUserMock
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
@@ -85,9 +89,9 @@ public class LoginServiceTests
     [TestMethod]
     public void Login_WrongPassword_Exception()
     {
-        var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSesionMock = new Mock<IRepositorySession>();
-        var watchMock = new Mock<IReloj>();
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSesionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
 
         var user = User.MakeClient(
             "Miguel",
@@ -122,9 +126,9 @@ public class LoginServiceTests
     [TestMethod]
     public void Login_CredentialOk_SaveTheSession()
     {
-        var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorySession>();
-        var watchMock = new Mock<IReloj>();
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
 
         var user = User.MakeClient(
             "Miguel",
@@ -141,6 +145,10 @@ public class LoginServiceTests
         repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
+
+        watchMock
+            .Setup(r => r.Ahora())
+            .Returns(DateTime.Now);
 
         var service = new LoginService(
             repoUserMock.Object,
@@ -161,9 +169,9 @@ public class LoginServiceTests
     [TestMethod]
     public void Login_ValidClient_ReturnsRole()
     {
-        var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorySession>();
-        var watchMock = new Mock<IReloj>();
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
 
         var user = User.MakeClient(
             "Miguel",
@@ -180,6 +188,10 @@ public class LoginServiceTests
         repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
+
+        watchMock
+            .Setup(r => r.Ahora())
+            .Returns(DateTime.Now);
 
         var service = new LoginService(
             repoUserMock.Object,
@@ -200,9 +212,9 @@ public class LoginServiceTests
     [TestMethod]
     public void Login_ValidCliente_ReturnIdUser()
     {
-        var repoUserMcok = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorySession>();
-        var watchMock = new Mock<IReloj>();
+        var repoUserMcok = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
 
         var user = User.MakeClient(
             "Miguel",
@@ -219,6 +231,10 @@ public class LoginServiceTests
         repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
+
+        watchMock
+            .Setup(r => r.Ahora())
+            .Returns(DateTime.Now);
 
         var service = new LoginService(
             repoUserMcok.Object,
@@ -239,9 +255,9 @@ public class LoginServiceTests
     [TestMethod]
     public void Login_ValidCredentials_GenerateSesssionNotNull()
     {
-        var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorySession>();
-        var watchMock = new Mock<IReloj>();
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
 
         var user = User.MakeClient(
             "Miguel",
@@ -258,6 +274,10 @@ public class LoginServiceTests
         repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
+
+        watchMock
+            .Setup(r => r.Ahora())
+            .Returns(DateTime.Now);
 
         var service = new LoginService(
             repoUserMock.Object,
@@ -278,9 +298,9 @@ public class LoginServiceTests
     [TestMethod]
     public void Login_WrongPassword_NotSaveSession()
     {
-        var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorySession>();
-        var watchMock = new Mock<IReloj>();
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
 
         var user = User.MakeClient(
             "Miguel",
@@ -313,9 +333,9 @@ public class LoginServiceTests
     [TestMethod]
     public void Login_NotExistingEmail_NotSaveSession()
     {
-        var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorySession>();
-        var watchMock = new Mock<IReloj>();
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
 
         repoUserMock
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
@@ -340,8 +360,8 @@ public class LoginServiceTests
     [TestMethod]
     public void Login_ValidCredentials_ReturnExpireDateCorrect()
     {
-        var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorySession>();
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
 
         var user = User.MakeClient(
             "Miguel",
@@ -359,7 +379,7 @@ public class LoginServiceTests
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
 
-        var watch = new Mock<IReloj>();
+        var watch = new Mock<IReloj>(MockBehavior.Strict);
 
         var coordinatedDate = new DateTime(2026, 1, 1, 10, 0, 0);
 
@@ -388,9 +408,9 @@ public class LoginServiceTests
     [TestMethod]
     public void Login_EmailWithAlternateCases_ReturnCorrectSession()
     {
-        var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorySession>();
-        var watchMock = new Mock<IReloj>();
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
 
         var user = User.MakeClient(
             "Miguel",
@@ -407,6 +427,10 @@ public class LoginServiceTests
         repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
+
+        watchMock
+            .Setup(r => r.Ahora())
+            .Returns(DateTime.Now);
 
         var service = new LoginService(
             repoUserMock.Object,
@@ -428,9 +452,9 @@ public class LoginServiceTests
     [TestMethod]
     public void Login_ValidCredentials_SaveRightExpire()
     {
-        var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorySession>();
-        var watchMock = new Mock<IReloj>();
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
 
         var fechaFija = new DateTime(2026, 1, 1, 10, 0, 0);
 

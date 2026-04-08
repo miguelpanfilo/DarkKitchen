@@ -12,7 +12,7 @@ public class AdminValidationServiceTests
     [TestMethod]
     public void GetExistingUser_UserExists_ReturnsUser()
     {
-        var repoMock = new Mock<IRepositoryUser>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
 
         var user = User.MakeIntern(
             "Miguel",
@@ -39,7 +39,7 @@ public class AdminValidationServiceTests
     [TestMethod]
     public void GetExistingUser_UserDoesNotExist_ThrowsExceptionWithCorrectMessage()
     {
-        var repoMock = new Mock<IRepositoryUser>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
 
         repoMock
             .Setup(r => r.FindById(99))
@@ -56,7 +56,7 @@ public class AdminValidationServiceTests
     [TestMethod]
     public void EnsureUserIsAdmin_UserIsAdministrative_DoesNotThrowException()
     {
-        var repoMock = new Mock<IRepositoryUser>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
 
         var user = User.MakeIntern(
             "Miguel",
@@ -79,7 +79,7 @@ public class AdminValidationServiceTests
     [TestMethod]
     public void EnsureUserIsAdmin_UserIsNotAdministrative_ThrowsExceptionWithCorrectMessage()
     {
-        var repoMock = new Mock<IRepositoryUser>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
 
         var user = User.MakeClient(
             "Miguel",
@@ -104,7 +104,7 @@ public class AdminValidationServiceTests
     [TestMethod]
     public void EnsureUserIsAdmin_UserDoesNotExist_ThrowsExceptionWithCorrectMessage()
     {
-        var repoMock = new Mock<IRepositoryUser>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
 
         repoMock
             .Setup(r => r.FindById(5))
@@ -121,7 +121,7 @@ public class AdminValidationServiceTests
     [TestMethod]
     public void EnsureIsNotSelfAction_SameUser_ThrowsException()
     {
-        var repoMock = new Mock<IRepositoryUser>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var service = new AdminValidationService(repoMock.Object);
 
         var ex = Assert.ThrowsException<UserException>(() =>
@@ -133,7 +133,7 @@ public class AdminValidationServiceTests
     [TestMethod]
     public void EnsureIsNotSelfAction_DifferentUsers_DoesNotThrowException()
     {
-        var repoMock = new Mock<IRepositoryUser>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var service = new AdminValidationService(repoMock.Object);
 
         service.EnsureIsNotSelfAction(10, 5, "A user cannot modify itself");

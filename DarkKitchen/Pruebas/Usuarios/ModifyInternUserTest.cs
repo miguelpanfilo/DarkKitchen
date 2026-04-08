@@ -14,8 +14,9 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_OnlyName_ReturnsUserWithUpdatedName()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var existingUser = User.MakeIntern(
             "Juan",
@@ -38,7 +39,7 @@ public class ModifyInternUserTest
 
         var service = new ModifyUserService(
             repoMock.Object,
-            Mock.Of<IPhoneValidator>(),
+            phoneValidatorMock.Object,
             adminValidationMock.Object);
 
         var request = new ModificarUsuarioRequestDTO { Name = "Carlos" };
@@ -55,8 +56,9 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_WhenUserModifiesItself_ThrowsExceptionWithCorrectMessage()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
@@ -67,7 +69,7 @@ public class ModifyInternUserTest
 
         var service = new ModifyUserService(
             repoMock.Object,
-            Mock.Of<IPhoneValidator>(),
+            phoneValidatorMock.Object,
             adminValidationMock.Object);
 
         var request = new ModificarUsuarioRequestDTO { Name = "Carlos" };
@@ -81,9 +83,9 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_NameAndLastName_ReturnsUpdatedUser()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var existingUser = User.MakeIntern(
             "Juan",
@@ -119,9 +121,9 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_OnlyLastName_ReturnsUserWithUpdatedLastName()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var existingUser = User.MakeIntern(
             "Juan",
@@ -154,9 +156,9 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_NoChangesProvided_KeepsExistingData()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var existingUser = User.MakeIntern(
             "Juan",
@@ -191,9 +193,9 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_OnlyPhone_ReturnsUserWithUpdatedPhone()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var existingUser = User.MakeIntern(
             "Juan",
@@ -232,9 +234,9 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_InvalidPhone_ThrowsExceptionWithCorrectMessage()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var existingUser = User.MakeIntern(
             "Juan",
@@ -271,9 +273,9 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_PhoneInvalidAccordingToValidator_DoesNotModifyPhone()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var existingUser = User.MakeIntern(
             "Juan",
@@ -310,9 +312,9 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_LastNameGreaterThanTwentyFiveCharacters_ThrowsExceptionWithCorrectMessage()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var existingUser = User.MakeIntern(
             "Juan",
@@ -345,9 +347,9 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_Phone_UserDoesNotExist_ThrowsExceptionWithCorrectMessage()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         adminValidationMock
             .Setup(v => v.GetExistingUser(5))
@@ -371,9 +373,9 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_PhoneDoesNotChange_DoesNotValidatePhone()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var existingUser = User.MakeIntern(
             "Juan",
@@ -405,9 +407,9 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_OnlyEmail_ReturnsUserWithUpdatedEmail()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var existingUser = User.MakeIntern(
             "Juan",
@@ -446,9 +448,9 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_WhenLoggedUserIsNotAdmin_DoesNotCallGetExistingUser()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99))
@@ -470,9 +472,9 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_InvalidEmailFormat_ThrowsException()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var user = User.MakeIntern(
             "Juan",
@@ -502,9 +504,9 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_EmailAlreadyExists_ThrowsException()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var user = User.MakeIntern(
             "Juan",
@@ -534,9 +536,9 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_EmailSame_DoesNotCallRepository()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var user = User.MakeIntern(
             "Juan",
@@ -563,9 +565,9 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_InvalidRole_ThrowsException()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var user = User.MakeIntern(
             "Juan",
@@ -593,9 +595,9 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_RoleDifferentCase_UpdatesCorrectly()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var user = User.MakeIntern(
             "Juan",
@@ -622,9 +624,9 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_CallsAdminValidationMethods()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var user = User.MakeIntern(
             "Juan",
@@ -636,6 +638,8 @@ public class ModifyInternUserTest
         user.Id = 5;
 
         adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
+        adminValidationMock.Setup(v => v.EnsureUserIsAdmin(99));
+        adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(5, 99, It.IsAny<string>()));
 
         var service = new ModifyUserService(
             repoMock.Object,
@@ -652,9 +656,9 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_WhenLoggedUserIsNotAdmin_ThrowsException()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99))
@@ -676,9 +680,9 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_WhenUserModifiesItself_DoesNotCallGetExistingUser()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));

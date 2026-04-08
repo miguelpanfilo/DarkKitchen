@@ -14,9 +14,9 @@ public class ModifyPasswordTests
     [TestMethod]
     public void UpdateUserPassword_LoggedInUserDoesNotExist_ThrowsExceptionWithCorrectMessage()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99))
@@ -42,9 +42,9 @@ public class ModifyPasswordTests
     [TestMethod]
     public void ModificarClaveUsuario_DatosValidos_CambiaLaClave()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var validadorTelefonoMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var validadorTelefonoMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var usuario = User.MakeIntern(
             "Juan",
@@ -84,9 +84,9 @@ public class ModifyPasswordTests
     [TestMethod]
     public void UpdateUserPassword_LoggedInUserIsNotAdministrative_ThrowsExceptionWithCorrectMessage()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99))
@@ -112,9 +112,9 @@ public class ModifyPasswordTests
     [TestMethod]
     public void UpdateUserPassword_WrongCurrentPassword_ThrowsExceptionWithCorrectMessage()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var user = User.MakeIntern(
             "Juan",
@@ -155,9 +155,9 @@ public class ModifyPasswordTests
     [TestMethod]
     public void UpdateUserPassword_InvalidNewPassword_ThrowsExceptionWithCorrectMessage()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var user = User.MakeIntern(
             "Juan",
@@ -198,9 +198,9 @@ public class ModifyPasswordTests
     [TestMethod]
     public void UpdateUserPassword_UserDoesNotExist_ThrowsExceptionWithCorrectMessage()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
@@ -232,9 +232,9 @@ public class ModifyPasswordTests
     [TestMethod]
     public void ModificarClaveUsuario_ClaveActualIncorrecta_NoCambiaLaClave()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var validadorTelefonoMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var validadorTelefonoMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var usuario = User.MakeIntern(
             "Juan",
@@ -275,9 +275,9 @@ public class ModifyPasswordTests
     [TestMethod]
     public void UpdateUserPassword_WhenUserModifiesItself_ThrowsExceptionWithCorrectMessage()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
@@ -306,9 +306,9 @@ public class ModifyPasswordTests
     [TestMethod]
     public void UpdateUserPassword_WhenLoggedUserIsNotAdmin_DoesNotCallGetExistingUser()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99))
@@ -334,9 +334,9 @@ public class ModifyPasswordTests
     [TestMethod]
     public void UpdateUserPassword_WhenUserModifiesItself_DoesNotCallGetExistingUser()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
@@ -365,9 +365,9 @@ public class ModifyPasswordTests
     [TestMethod]
     public void UpdateUserPassword_CallsAdminValidationMethods()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var phoneValidatorMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var usuario = User.MakeIntern(
             "Juan",
@@ -377,6 +377,12 @@ public class ModifyPasswordTests
             "PasswordSeguraee3!",
             UserRoles.Administrative);
         usuario.Id = 5;
+
+        adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(99));
+
+        adminValidationMock
+            .Setup(v => v.EnsureIsNotSelfAction(5, 99, It.IsAny<string>()));
 
         adminValidationMock
             .Setup(v => v.GetExistingUser(5))

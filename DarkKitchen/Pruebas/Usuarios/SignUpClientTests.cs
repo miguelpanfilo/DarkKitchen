@@ -15,9 +15,9 @@ public class UserServiceTests
     [TestMethod]
     public void SignUpClient_ValidData_ReturnsResponseDto()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var validatorPhoneMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var validatorPhoneMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         repoMock
             .Setup(r => r.EmailExist(It.IsAny<string>()))
@@ -60,9 +60,9 @@ public class UserServiceTests
     [TestMethod]
     public void SignUpClient_DuplicateEmail_ThrowsException_AndDoesNotValidatePhoneOrAdd()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var validatorPhoneMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var validatorPhoneMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         repoMock
             .Setup(r => r.EmailExist("miguel@gmail.com"))
@@ -94,9 +94,9 @@ public class UserServiceTests
     [TestMethod]
     public void SignUpClient_InvalidPhoneAccordingToValidator_ThrowsException_AndDoesNotAdd()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var validatorPhoneMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var validatorPhoneMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         repoMock
             .Setup(r => r.EmailExist(It.IsAny<string>()))
@@ -132,9 +132,9 @@ public class UserServiceTests
     [TestMethod]
     public void SignUpClient_EmptyPhone_ThrowsException_BeforeCallingValidator()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var validatorPhoneMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var validatorPhoneMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         repoMock
             .Setup(r => r.EmailExist(It.IsAny<string>()))
@@ -166,9 +166,9 @@ public class UserServiceTests
     [TestMethod]
     public void SignUpClient_InvalidEmailFormat_ThrowsException_AndDoesNotAdd()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var validatorPhoneMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var validatorPhoneMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         repoMock
             .Setup(r => r.EmailExist(It.IsAny<string>()))
@@ -203,9 +203,9 @@ public class UserServiceTests
     [TestMethod]
     public void SignUpClient_EmptyEmail_ThrowsException_AndDoesNotAdd()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var validatorPhoneMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var validatorPhoneMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         repoMock
             .Setup(r => r.EmailExist(It.IsAny<string>()))
@@ -240,9 +240,9 @@ public class UserServiceTests
     [TestMethod]
     public void SignUpClient_NameWithNumbers_ThrowsException_AndDoesNotAdd()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var validatorPhoneMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var validatorPhoneMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         repoMock
             .Setup(r => r.EmailExist(It.IsAny<string>()))
@@ -277,9 +277,9 @@ public class UserServiceTests
     [TestMethod]
     public void SignUpClient_DoesNotUseAdminValidationService()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var validatorPhoneMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var validatorPhoneMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         repoMock
             .Setup(r => r.EmailExist("miguel@gmail.com"))
@@ -439,9 +439,9 @@ public class UserServiceTests
     [TestMethod]
     public void RegisterClient_ValidUruguayanPhone_SuccessfulRegistration()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var validatorPhoneMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var validatorPhoneMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         repoMock
             .Setup(r => r.EmailExist(It.IsAny<string>()))
@@ -491,9 +491,9 @@ public class UserServiceTests
     [TestMethod]
     public void RegisterClient_EmailNotDuplicated_SuccessfulRegistration()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var validatorPhoneMock = new Mock<IPhoneValidator>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var validatorPhoneMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         repoMock
             .Setup(r => r.EmailExist(It.IsAny<string>()))

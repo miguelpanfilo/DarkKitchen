@@ -14,8 +14,8 @@ public class FilterUserTests
     [TestMethod]
     public void BuscarUsuariosPorNombre_NombreExistente_RetornaUsuariosCoincidentes()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var usuario1 = User.MakeIntern(
             "Juan",
@@ -34,6 +34,9 @@ public class FilterUserTests
             "PasswordSeguraaa4!",
             UserRoles.Preparer);
         usuario2.Id = 2;
+
+        adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(99));
 
         repoMock
             .Setup(r => r.GetAll())
@@ -56,8 +59,8 @@ public class FilterUserTests
     [TestMethod]
     public void BuscarUsuariosPorNombre_NombreInexistente_RetornaListaVacia()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var usuario = User.MakeIntern(
             "Pedro",
@@ -67,6 +70,9 @@ public class FilterUserTests
             "PasswordSeguraee3!",
             UserRoles.Administrative);
         usuario.Id = 1;
+
+        adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(99));
 
         repoMock
             .Setup(r => r.GetAll())
@@ -87,8 +93,8 @@ public class FilterUserTests
     [TestMethod]
     public void BuscarUsuariosPorNombre_FiltraSoloLosUsuariosConEseNombre()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var usuario1 = User.MakeIntern(
             "Juan",
@@ -107,6 +113,9 @@ public class FilterUserTests
             "PasswordSeguraaa4!",
             UserRoles.Preparer);
         usuario2.Id = 2;
+
+        adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(99));
 
         repoMock
             .Setup(r => r.GetAll())
@@ -129,8 +138,8 @@ public class FilterUserTests
     [TestMethod]
     public void BuscarUsuariosPorNombre_NombreConDistintoCase_RetornaCoincidencias()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var usuario = User.MakeIntern(
             "Juan",
@@ -140,6 +149,9 @@ public class FilterUserTests
             "PasswordSeguraee3!",
             UserRoles.Administrative);
         usuario.Id = 1;
+
+        adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(99));
 
         repoMock
             .Setup(r => r.GetAll())
@@ -161,8 +173,11 @@ public class FilterUserTests
     [TestMethod]
     public void BuscarUsuariosPorNombre_SinUsuarios_RetornaListaVacia()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
+
+        adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(99));
 
         repoMock
             .Setup(r => r.GetAll())
@@ -183,8 +198,8 @@ public class FilterUserTests
     [TestMethod]
     public void BuscarUsuariosPorNombre_MapeaCorrectamenteLosDatosDelUsuario()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var usuario = User.MakeClient(
             "Juan",
@@ -193,6 +208,9 @@ public class FilterUserTests
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!");
         usuario.Id = 100;
+
+        adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(99));
 
         repoMock
             .Setup(r => r.GetAll())
@@ -219,8 +237,8 @@ public class FilterUserTests
     [TestMethod]
     public void BuscarUsuariosPorApellido_ApellidoExistente_RetornaUsuariosCoincidentes()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var usuario1 = User.MakeIntern(
             "Juan",
@@ -239,6 +257,9 @@ public class FilterUserTests
             "PasswordSeguraaa4!",
             UserRoles.Preparer);
         usuario2.Id = 2;
+
+        adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(99));
 
         repoMock
             .Setup(r => r.GetAll())
@@ -261,8 +282,8 @@ public class FilterUserTests
     [TestMethod]
     public void BuscarUsuariosPorApellido_NoImportaMaysculasMinusculas_RetornaUsuariosCoincidentes()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var usuario1 = User.MakeIntern(
             "Juan",
@@ -281,6 +302,9 @@ public class FilterUserTests
             "PasswordSeguraaa4!",
             UserRoles.Preparer);
         usuario2.Id = 2;
+
+        adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(99));
 
         repoMock
             .Setup(r => r.GetAll())
@@ -303,8 +327,8 @@ public class FilterUserTests
     [TestMethod]
     public void BuscarUsuariosPorApellido_ApellidoInexistente_RetornaListaVacia()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var usuario = User.MakeIntern(
             "Juan",
@@ -314,6 +338,9 @@ public class FilterUserTests
             "PasswordSeguraee3!",
             UserRoles.Administrative);
         usuario.Id = 1;
+
+        adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(99));
 
         repoMock
             .Setup(r => r.GetAll())
@@ -334,8 +361,8 @@ public class FilterUserTests
     [TestMethod]
     public void BuscarUsuariosPorApellido_FiltraSoloLosUsuariosConEseApellido()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var usuario1 = User.MakeIntern(
             "Juan",
@@ -354,6 +381,9 @@ public class FilterUserTests
             "PasswordSeguraaa4!",
             UserRoles.Preparer);
         usuario2.Id = 2;
+
+        adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(99));
 
         repoMock
             .Setup(r => r.GetAll())
@@ -379,8 +409,11 @@ public class FilterUserTests
     [TestMethod]
     public void BuscarUsuariosPorApellido_SinUsuarios_RetornaListaVacia()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
+
+        adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(99));
 
         repoMock
             .Setup(r => r.GetAll())
@@ -401,8 +434,8 @@ public class FilterUserTests
     [TestMethod]
     public void BuscarUsuariosPorApellido_ConEspacios()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var usuario = User.MakeIntern(
             "Juan",
@@ -412,6 +445,9 @@ public class FilterUserTests
             "PasswordSeguraee3!",
             UserRoles.Administrative);
         usuario.Id = 1;
+
+        adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(99));
 
         repoMock
             .Setup(r => r.GetAll())
@@ -432,8 +468,8 @@ public class FilterUserTests
     [TestMethod]
     public void BuscarUsuariosPorNombre_ConEspacios()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var usuario = User.MakeIntern(
             "Juan",
@@ -443,6 +479,9 @@ public class FilterUserTests
             "PasswordSeguraee3!",
             UserRoles.Administrative);
         usuario.Id = 1;
+
+        adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(99));
 
         repoMock
             .Setup(r => r.GetAll())
@@ -464,8 +503,8 @@ public class FilterUserTests
     [TestMethod]
     public void BuscarUsuarios_RequestConEspaciosYDistintoCase_RetornaCoincidencias()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         var usuario = User.MakeIntern(
             "Juan",
@@ -475,6 +514,9 @@ public class FilterUserTests
             "PasswordSeguraee3!",
             UserRoles.Administrative);
         usuario.Id = 1;
+
+        adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(99));
 
         repoMock
             .Setup(r => r.GetAll())
@@ -498,8 +540,8 @@ public class FilterUserTests
     [TestMethod]
     public void BuscarUsuarios_UsuarioLogueadoNoEsAdministrativo_LanzaExcepcionConMensajeCorrecto()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(5))
@@ -521,8 +563,8 @@ public class FilterUserTests
     [TestMethod]
     public void BuscarUsuarios_UsuarioLogueadoNoEsAdministrativo_NoLlamaGetAllYLanzaExcepcionConMensajeCorrecto()
     {
-        var repoMock = new Mock<IRepositoryUser>();
-        var adminValidationMock = new Mock<IAdminValidationService>();
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(5))
