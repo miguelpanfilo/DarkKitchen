@@ -24,7 +24,7 @@ public class SessionsController : ControllerBase
             var response = _loginService.Login(request);
             return Ok(response);
         }
-        catch (AuthenticationException ex)
+        catch (UserAuthenticationException ex)
         {
             return Unauthorized(new { message = ex.Message });
         }

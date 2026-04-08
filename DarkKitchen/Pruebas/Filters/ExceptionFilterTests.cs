@@ -1,7 +1,7 @@
-using System.Security.Authentication;
 using Contratos;
 using DarkKitchen.Filters;
 using Dominio.Exceptions;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -48,7 +48,7 @@ public class ExceptionFilterTests
     }
 
     [TestMethod]
-    public void OnException_AuthenticationException_ReturnsUnauthorized()
+    public void OnException_UserAuthenticationException_ReturnsUnauthorized()
     {
         var filter = new ExceptionFilter();
 
@@ -63,7 +63,7 @@ public class ExceptionFilterTests
 
         var exceptionContext = new ExceptionContext(actionContext, filters)
         {
-            Exception = new AuthenticationException("Invalid credentials")
+            Exception = new UserAuthenticationException("Invalid credentials")
         };
 
         filter.OnException(exceptionContext);

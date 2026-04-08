@@ -21,12 +21,12 @@ public class LoginService(
 
         if(userFromTheRequest == null)
         {
-            throw new AuthenticationException("Invalid credentials");
+            throw new UserAuthenticationException("Invalid credentials");
         }
 
         if(!userFromTheRequest.Password.VerifyHash(requestDto.Password))
         {
-            throw new AuthenticationException("Invalid credentials");
+            throw new UserAuthenticationException("Invalid credentials");
         }
 
         var expireDate = _iWatch.Ahora().AddHours(2);

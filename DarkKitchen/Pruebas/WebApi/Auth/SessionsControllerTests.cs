@@ -65,7 +65,7 @@ public class SessionsControllerTests
 
         loginServiceMock
             .Setup(s => s.Login(request))
-            .Throws(new AuthenticationException("Invalid credentials"));
+            .Throws(new UserAuthenticationException("Invalid credentials"));
 
         var controller = new SessionsController(loginServiceMock.Object);
 
@@ -129,7 +129,7 @@ public class SessionsControllerTests
             Password = "Password@2Ok6Abc"
         };
 
-        var ex = Assert.ThrowsException<AuthenticationException>(() => service.Login(request));
+        var ex = Assert.ThrowsException<UserAuthenticationException>(() => service.Login(request));
 
         Assert.AreEqual("Invalid credentials", ex.Message);
         repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Never);
@@ -165,7 +165,7 @@ public class SessionsControllerTests
             Password = "WrongPassword@123"
         };
 
-        var ex = Assert.ThrowsException<AuthenticationException>(() => service.Login(request));
+        var ex = Assert.ThrowsException<UserAuthenticationException>(() => service.Login(request));
 
         Assert.AreEqual("Invalid credentials", ex.Message);
         repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Never);

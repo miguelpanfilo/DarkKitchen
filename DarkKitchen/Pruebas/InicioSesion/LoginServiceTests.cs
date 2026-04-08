@@ -79,7 +79,7 @@ public class LoginServiceTests
             Password = "Password@2Ok6Abc"
         };
 
-        var ex = Assert.ThrowsException<AuthenticationException>(() => service.Login(request));
+        var ex = Assert.ThrowsException<UserAuthenticationException>(() => service.Login(request));
 
         Assert.AreEqual("Invalid credentials", ex.Message);
 
@@ -116,7 +116,7 @@ public class LoginServiceTests
             Password = "OtraClave@1aaaaaaaaaa"
         };
 
-        var ex = Assert.ThrowsException<AuthenticationException>(() => service.Login(request));
+        var ex = Assert.ThrowsException<UserAuthenticationException>(() => service.Login(request));
 
         Assert.AreEqual("Invalid credentials", ex.Message);
 
@@ -325,7 +325,7 @@ public class LoginServiceTests
             Password = "Incorrecta@123456"
         };
 
-        Assert.ThrowsException<AuthenticationException>(() => service.Login(request));
+        Assert.ThrowsException<UserAuthenticationException>(() => service.Login(request));
 
         repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Never);
     }
@@ -352,7 +352,7 @@ public class LoginServiceTests
             Password = "Password@2Ok6Abc"
         };
 
-        Assert.ThrowsException<AuthenticationException>(() => service.Login(request));
+        Assert.ThrowsException<UserAuthenticationException>(() => service.Login(request));
 
         repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Never);
     }

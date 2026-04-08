@@ -1,5 +1,6 @@
 using Contratos;
 using Dominio.Exceptions;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -17,10 +18,15 @@ public class ExceptionFilter : Attribute, IExceptionFilter
             Message = "Internal server error"
         };
 
-        if (context.Exception is UserValidationException ex)
+        if (context.Exception is UserValidationException)
         {
             statusCode = StatusCodes.Status400BadRequest;
-            response.Message = ex.Message;
+            response.Message = context.Exception.Message;
+        }
+        else if (context.Exception is UserAuthenticationException)
+        {
+            statusCode = StatusCodes.Status401Unauthorized;
+            response.Message = context.Exception.Message;
         }
 
         context.Result = new ObjectResult(response)
