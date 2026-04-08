@@ -17,7 +17,7 @@ public class AdminValidationService(IRepositoryUser repositoryUser) : IAdminVali
 
         if(user == null)
         {
-            throw new UserException(UserNotFoundMessage);
+            throw new UserNotFoundException(UserNotFoundMessage);
         }
 
         return user;
@@ -29,7 +29,7 @@ public class AdminValidationService(IRepositoryUser repositoryUser) : IAdminVali
 
         if(user.Role != UserRoles.Administrative)
         {
-            throw new UserException(OnlyAdminMessage);
+            throw new UserForbiddenException(OnlyAdminMessage);
         }
     }
 
@@ -37,7 +37,7 @@ public class AdminValidationService(IRepositoryUser repositoryUser) : IAdminVali
     {
         if(targetUserId == loggedUserId)
         {
-            throw new UserException(message);
+            throw new UserConflictException(message);
         }
     }
 }

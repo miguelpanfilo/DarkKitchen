@@ -15,14 +15,14 @@ public sealed class Email
     {
         if(string.IsNullOrWhiteSpace(email))
         {
-            throw new UserException("Email cannot be empty");
+            throw new UserValidationException("Email cannot be empty");
         }
 
         var emailNormalized = email.Trim().ToLowerInvariant();
 
         if(!HaveCorrectFormat(emailNormalized))
         {
-            throw new UserException("Email format is not valid");
+            throw new UserValidationException("Email format is not valid");
         }
 
         return new Email(emailNormalized);

@@ -223,7 +223,7 @@ public class SignUpInternUserTests
             Role = "Anything"
         };
 
-        var ex = Assert.ThrowsException<SignUpException>(() =>
+        var ex = Assert.ThrowsException<SignUpValidationException>(() =>
             service.MakeInterUser(1, request));
 
         Assert.AreEqual("Internal role is not valid", ex.Message);

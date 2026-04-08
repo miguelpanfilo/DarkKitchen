@@ -264,7 +264,7 @@ public class ModifyInternUserTest
         var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object, adminValidationMock.Object);
         var request = new ModificarUsuarioRequestDTO { Phone = "123" };
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<UserValidationException>(() =>
             service.UpdateInternalUser(5, 99, request));
 
         Assert.AreEqual("Phone is not valid", ex.Message);
@@ -303,7 +303,7 @@ public class ModifyInternUserTest
         var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object, adminValidationMock.Object);
         var request = new ModificarUsuarioRequestDTO { Phone = "123" };
 
-        Assert.ThrowsException<UserException>(() =>
+        Assert.ThrowsException<UserValidationException>(() =>
             service.UpdateInternalUser(5, 99, request));
 
         Assert.AreEqual("099123456", existingUser.Phone.Value);
@@ -338,7 +338,7 @@ public class ModifyInternUserTest
         var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object, adminValidationMock.Object);
         var request = new ModificarUsuarioRequestDTO { LastName = "ApellidoDemasiadoDemasiadoLargo" };
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<UserValidationException>(() =>
             service.UpdateInternalUser(5, 99, request));
 
         Assert.AreEqual("Last name must be between 3 and 25 characters", ex.Message);
@@ -495,7 +495,7 @@ public class ModifyInternUserTest
 
         var request = new ModificarUsuarioRequestDTO { Email = "correo-invalido" };
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<UserValidationException>(() =>
             service.UpdateInternalUser(5, 99, request));
 
         Assert.AreEqual("Email format is not valid", ex.Message);
@@ -527,7 +527,7 @@ public class ModifyInternUserTest
 
         var request = new ModificarUsuarioRequestDTO { Email = "repetido@gmail.com" };
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<UserConflictException>(() =>
             service.UpdateInternalUser(5, 99, request));
 
         Assert.AreEqual("Email is already registered", ex.Message);
@@ -586,7 +586,7 @@ public class ModifyInternUserTest
 
         var request = new ModificarUsuarioRequestDTO { Role = "InvalidRole" };
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<UserValidationException>(() =>
             service.UpdateInternalUser(5, 99, request));
 
         Assert.AreEqual("Internal role is not valid", ex.Message);

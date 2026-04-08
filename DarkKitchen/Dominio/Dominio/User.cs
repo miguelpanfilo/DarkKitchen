@@ -37,12 +37,12 @@ public class User
     {
         if(string.IsNullOrWhiteSpace(nombre))
         {
-            throw new UserException("Name cannot be empty");
+            throw new UserValidationException("Name cannot be empty");
         }
 
         if(nombre.Any(char.IsDigit))
         {
-            throw new UserException("Name cannot contain numbers");
+            throw new UserValidationException("Name cannot contain numbers");
         }
     }
 
@@ -50,12 +50,12 @@ public class User
     {
         if(string.IsNullOrWhiteSpace(apellido))
         {
-            throw new UserException("Last name cannot be empty");
+            throw new UserValidationException("Last name cannot be empty");
         }
 
         if(apellido.Trim().Length < 3 || apellido.Trim().Length > 25)
         {
-            throw new UserException("Last name must be between 3 and 25 characters");
+            throw new UserValidationException("Last name must be between 3 and 25 characters");
         }
     }
 
@@ -71,7 +71,7 @@ public class User
 
         if(!itsValidRole)
         {
-            throw new UserException("Internal role is not valid");
+            throw new UserValidationException("Internal role is not valid");
         }
 
         var emailValid = Email.MakeEmail(email);

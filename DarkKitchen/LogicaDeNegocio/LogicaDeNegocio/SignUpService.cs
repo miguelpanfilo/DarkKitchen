@@ -67,7 +67,7 @@ public class SignUpService(
     {
         if(!Enum.TryParse<UserRoles>(role, true, out var rolEnum))
         {
-            throw new SignUpException("Internal role is not valid");
+            throw new SignUpValidationException("Internal role is not valid");
         }
 
         return rolEnum;

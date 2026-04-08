@@ -146,7 +146,7 @@ public class ModifyPasswordTests
             NewPassword = "ClaveNuevaSegura4!"
         };
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<UserValidationException>(() =>
             service.UpdateUserPassword(5, 99, request));
 
         Assert.AreEqual("Current password is incorrect", ex.Message);
@@ -189,7 +189,7 @@ public class ModifyPasswordTests
             NewPassword = "123"
         };
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<UserValidationException>(() =>
             service.UpdateUserPassword(5, 99, request));
 
         Assert.AreEqual("Password format is not valid", ex.Message);
@@ -266,7 +266,7 @@ public class ModifyPasswordTests
             NewPassword = "ClaveNuevaSegura4!"
         };
 
-        Assert.ThrowsException<UserException>(() =>
+        Assert.ThrowsException<UserValidationException>(() =>
             service.UpdateUserPassword(5, 99, request));
 
         Assert.IsTrue(usuario.Password.VerifyHash("PasswordSeguraee3!"));

@@ -3,6 +3,7 @@ using Dominio;
 using Dominio.Exceptions;
 using LogicaDeNegocio;
 using Moq;
+using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace Pruebas.Usuarios;
 
@@ -31,9 +32,9 @@ public class AdminValidationServiceTests
 
         var result = service.GetExistingUser(5);
 
-        Assert.IsNotNull(result);
-        Assert.AreEqual(5, result.Id);
-        Assert.AreEqual("Miguel", result.Name);
+        IsNotNull(result);
+        AreEqual(5, result.Id);
+        AreEqual("Miguel", result.Name);
     }
 
     [TestMethod]
@@ -47,10 +48,9 @@ public class AdminValidationServiceTests
 
         var service = new AdminValidationService(repoMock.Object);
 
-        var ex = Assert.ThrowsException<UserException>(() =>
-            service.GetExistingUser(99));
+        var ex = ThrowsException<UserNotFoundException>(() => service.GetExistingUser(99));
 
-        Assert.AreEqual("User does not exist", ex.Message);
+        AreEqual("User does not exist", ex.Message);
     }
 
     [TestMethod]
@@ -95,10 +95,10 @@ public class AdminValidationServiceTests
 
         var service = new AdminValidationService(repoMock.Object);
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = ThrowsException<UserForbiddenException>(() =>
             service.EnsureUserIsAdmin(5));
 
-        Assert.AreEqual("Only an administrative user can perform this action", ex.Message);
+        AreEqual("Only an administrative user can perform this action", ex.Message);
     }
 
     [TestMethod]
@@ -112,10 +112,10 @@ public class AdminValidationServiceTests
 
         var service = new AdminValidationService(repoMock.Object);
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = ThrowsException<UserNotFoundException>(() =>
             service.EnsureUserIsAdmin(5));
 
-        Assert.AreEqual("User does not exist", ex.Message);
+        AreEqual("User does not exist", ex.Message);
     }
 
     [TestMethod]
@@ -124,10 +124,10 @@ public class AdminValidationServiceTests
         var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var service = new AdminValidationService(repoMock.Object);
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = ThrowsException<UserConflictException>(() =>
             service.EnsureIsNotSelfAction(5, 5, "A user cannot modify itself"));
 
-        Assert.AreEqual("A user cannot modify itself", ex.Message);
+        AreEqual("A user cannot modify itself", ex.Message);
     }
 
     [TestMethod]
@@ -138,6 +138,6 @@ public class AdminValidationServiceTests
 
         service.EnsureIsNotSelfAction(10, 5, "A user cannot modify itself");
 
-        Assert.IsTrue(true);
+        IsTrue(true);
     }
 }

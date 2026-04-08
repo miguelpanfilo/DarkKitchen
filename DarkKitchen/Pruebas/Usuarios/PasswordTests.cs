@@ -140,7 +140,7 @@ public class PasswordTests
     {
         string? password = null;
 
-        Assert.ThrowsException<UserException>(() => Password.MakePassword(password));
+        Assert.ThrowsException<UserValidationException>(() => Password.MakePassword(password));
     }
 
     [TestMethod]
@@ -148,7 +148,7 @@ public class PasswordTests
     {
         var password = "abc";
 
-        Assert.ThrowsException<UserException>(() => Password.MakePassword(password));
+        Assert.ThrowsException<UserValidationException>(() => Password.MakePassword(password));
     }
 
     [TestMethod]

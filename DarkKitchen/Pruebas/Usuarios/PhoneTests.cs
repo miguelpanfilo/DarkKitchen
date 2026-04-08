@@ -28,7 +28,7 @@ public class PhoneTests
     {
         string? phone = null;
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<UserValidationException>(() =>
             Phone.MakePhone(phone!));
 
         Assert.AreEqual("Phone cannot be empty", ex.Message);
@@ -37,7 +37,7 @@ public class PhoneTests
     [TestMethod]
     public void MakePhone_EmptyPhone_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<UserValidationException>(() =>
             Phone.MakePhone(string.Empty));
 
         Assert.AreEqual("Phone cannot be empty", ex.Message);
@@ -46,7 +46,7 @@ public class PhoneTests
     [TestMethod]
     public void MakePhone_PhoneWithLetters_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<UserValidationException>(() =>
             Phone.MakePhone("09912a456"));
 
         Assert.AreEqual("Phone must contain only digits", ex.Message);
@@ -55,7 +55,7 @@ public class PhoneTests
     [TestMethod]
     public void MakePhone_PhoneWithSymbols_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<UserValidationException>(() =>
             Phone.MakePhone("09912-456"));
 
         Assert.AreEqual("Phone must contain only digits", ex.Message);

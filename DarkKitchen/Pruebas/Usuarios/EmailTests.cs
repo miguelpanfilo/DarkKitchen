@@ -27,7 +27,7 @@ public class EmailTests
     [TestMethod]
     public void MakeEmail_EmptyEmail_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<UserValidationException>(() =>
             Email.MakeEmail(string.Empty));
 
         Assert.AreEqual("Email cannot be empty", ex.Message);
@@ -38,7 +38,7 @@ public class EmailTests
     {
         string? email = null;
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<UserValidationException>(() =>
             Email.MakeEmail(email));
 
         Assert.AreEqual("Email cannot be empty", ex.Message);
@@ -47,7 +47,7 @@ public class EmailTests
     [TestMethod]
     public void MakeEmail_EmailWithoutAtSymbol_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<UserValidationException>(() =>
             Email.MakeEmail("miguelgmail.com"));
 
         Assert.AreEqual("Email format is not valid", ex.Message);
@@ -56,7 +56,7 @@ public class EmailTests
     [TestMethod]
     public void MakeEmail_EmailWithTwoAtSymbols_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<UserValidationException>(() =>
             Email.MakeEmail("miguel@@gmail.com"));
 
         Assert.AreEqual("Email format is not valid", ex.Message);
@@ -65,7 +65,7 @@ public class EmailTests
     [TestMethod]
     public void MakeEmail_EmailWithoutLocalPart_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<UserValidationException>(() =>
             Email.MakeEmail("@gmail.com"));
 
         Assert.AreEqual("Email format is not valid", ex.Message);
@@ -74,7 +74,7 @@ public class EmailTests
     [TestMethod]
     public void MakeEmail_EmailWithoutDomain_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<UserValidationException>(() =>
             Email.MakeEmail("miguel@"));
 
         Assert.AreEqual("Email format is not valid", ex.Message);
@@ -83,7 +83,7 @@ public class EmailTests
     [TestMethod]
     public void MakeEmail_EmailWithoutDotInDomain_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<UserValidationException>(() =>
             Email.MakeEmail("miguel@gmail"));
 
         Assert.AreEqual("Email format is not valid", ex.Message);
@@ -92,7 +92,7 @@ public class EmailTests
     [TestMethod]
     public void MakeEmail_EmailWithDomainStartingWithDot_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<UserValidationException>(() =>
             Email.MakeEmail("miguel@.gmail.com"));
 
         Assert.AreEqual("Email format is not valid", ex.Message);
@@ -101,7 +101,7 @@ public class EmailTests
     [TestMethod]
     public void MakeEmail_EmailWithDomainEndingWithDot_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<UserValidationException>(() =>
             Email.MakeEmail("miguel@gmail.com."));
 
         Assert.AreEqual("Email format is not valid", ex.Message);
@@ -110,7 +110,7 @@ public class EmailTests
     [TestMethod]
     public void MakeEmail_EmailWithDoubleDotInDomain_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<UserValidationException>(() =>
             Email.MakeEmail("miguel@gmail..com"));
 
         Assert.AreEqual("Email format is not valid", ex.Message);
@@ -119,7 +119,7 @@ public class EmailTests
     [TestMethod]
     public void MakeEmail_EmailWithDoubleDotInLocalPart_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<UserValidationException>(() =>
             Email.MakeEmail("mi..guel@gmail.com"));
 
         Assert.AreEqual("Email format is not valid", ex.Message);

@@ -52,7 +52,7 @@ public class ModifyUserService(
 
         if(!usuario.VerifyPassword(requestDto.OldPassword))
         {
-            throw new UserException("Current password is incorrect");
+            throw new UserValidationException("Current password is incorrect");
         }
 
         usuario.ModifyPassword(Password.MakePassword(requestDto.NewPassword));
@@ -87,7 +87,7 @@ public class ModifyUserService(
         if(!string.Equals(updatedMail, user.Email.ToString(), StringComparison.OrdinalIgnoreCase) &&
             _repo.EmailExist(updatedMail))
         {
-            throw new UserException("Email is already registered");
+            throw new UserConflictException("Email is already registered");
         }
     }
 
@@ -125,7 +125,7 @@ public class ModifyUserService(
 
         if(!_phoneValidator.ItsValid(newPhone.Value))
         {
-            throw new UserException("Phone is not valid");
+            throw new UserValidationException("Phone is not valid");
         }
 
         return newPhone;
@@ -145,7 +145,7 @@ public class ModifyUserService(
     {
         if(!Enum.TryParse<UserRoles>(rol, true, out var rolEnum))
         {
-            throw new UserException("Internal role is not valid");
+            throw new UserValidationException("Internal role is not valid");
         }
 
         return rolEnum;
