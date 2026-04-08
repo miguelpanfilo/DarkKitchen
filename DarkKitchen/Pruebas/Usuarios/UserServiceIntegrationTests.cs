@@ -184,7 +184,7 @@ public class UserServiceIntegrationTests
 
         filterUserServiceMock
             .Setup(x => x.BuscarUsuarios(99, request))
-            .Returns(new List<UsuarioResponseDTO>());
+            .Returns(new List<UsuarioResponseDTO> { });
 
         var service = new UserService(
             signUpServiceMock.Object,
