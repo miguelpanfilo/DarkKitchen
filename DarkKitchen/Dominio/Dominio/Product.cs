@@ -10,6 +10,7 @@ public class Product
     public string CommercialLine { get; }
     public string Category { get; }
     public bool IsActive { get; private set; }
+    public decimal Price { get; }
 
     private const int CODE_MIN_LENGTH = 5;
     private const int CODE_MAX_LENGTH = 20;
@@ -19,7 +20,7 @@ public class Product
 
     private const int DESCRIPTION_MIN_LENGTH = 20;
     private const int DESCRIPTION_MAX_LENGTH = 500;
-    public Product(string code, string name, string description, string commercialLine, string category)
+    public Product(string code, string name, string description, string commercialLine, string category, decimal price)
     {
         ValidateRequired(code, "El código");
         ValidateLength(code, "El código", CODE_MIN_LENGTH, CODE_MAX_LENGTH);
@@ -40,6 +41,7 @@ public class Product
         CommercialLine = commercialLine;
         Category = category;
         IsActive = true;
+        Price = price;
     }
 
     public void Activate()

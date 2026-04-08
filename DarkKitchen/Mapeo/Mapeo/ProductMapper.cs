@@ -12,7 +12,8 @@ public class ProductMapper
             productDto.Name,
             productDto.Description,
             productDto.CommercialLine,
-            productDto.Category
+            productDto.Category,
+            productDto.Price
         );
     }
 }

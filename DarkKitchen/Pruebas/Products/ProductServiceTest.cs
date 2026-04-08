@@ -1,6 +1,7 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
+using Dominio.Exceptions;
 using LogicaDeNegocio;
 using Moq;
 
@@ -33,8 +34,8 @@ public class ProductServiceTest
 
         Assert.IsNotNull(result);
         Assert.AreEqual(dto.Name, result.Name);
-        repoMock.Verify(repository => 
-                repository.Create(It.Is<Product>(p => p.Price == dto.Price)), 
+        repoMock.Verify(repository =>
+                repository.Create(It.Is<Product>(p => p.Price == dto.Price)),
             Times.Once
         );
 
