@@ -20,6 +20,8 @@ public class Product
 
     private const int DESCRIPTION_MIN_LENGTH = 20;
     private const int DESCRIPTION_MAX_LENGTH = 500;
+
+    private const decimal MIN_PRICE = 0;
     public Product(string code, string name, string description, string commercialLine, string category, decimal price)
     {
         ValidateRequired(code, "El código");
@@ -35,10 +37,7 @@ public class Product
 
         ValidateRequired(category, "La categoria");
 
-        if(price <= 0)
-        {
-            throw new ProductException("El precio debe ser mayor a 0");
-        }
+        ValidatePrice(price);
 
         Code = code;
         Name = name;
@@ -72,6 +71,14 @@ public class Product
         if(value.Length < min || value.Length > max)
         {
             throw new ProductException($"{fieldName} debe tener entre {min} y {max} caracteres.");
+        }
+    }
+
+    private static void ValidatePrice(decimal price)
+    {
+        if (price <= MIN_PRICE)
+        {
+            throw new ProductException("El precio debe ser mayor a 0");
         }
     }
 }
