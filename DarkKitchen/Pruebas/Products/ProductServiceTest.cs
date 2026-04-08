@@ -12,7 +12,7 @@ public class ProductServiceTest
     [TestMethod]
     public void GivenValidProductDto_WhenCreating_ThenRepositoryIsCalledAndProductIsReturned()
     {
-        var dto = new ProductDTO(
+        var productDto = new ProductDTO(
             "COD123",
             "Milanesa al pan",
             "Milanesa al pan completa",
@@ -28,10 +28,10 @@ public class ProductServiceTest
 
         var service = new ProductService(repoMock.Object);
 
-        var result = service.Create(dto);
+        var result = service.Create(productDto);
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(dto.Name, result.Name);
+        Assert.AreEqual(productDto.Name, result.Name);
 
         repoMock.Verify(repository => repository.Create(It.IsAny<Product>()), Times.Once);
     }
