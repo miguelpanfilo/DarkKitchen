@@ -14,11 +14,8 @@ namespace Pruebas.Filters;
 [TestClass]
 public class ExceptionFilterTests
 {
-    [TestMethod]
-    public void OnException_UserValidationException_ReturnsBadRequest()
+    private static ExceptionContext CreateExceptionContext(Exception exception)
     {
-        var filter = new ExceptionFilter();
-
         var httpContext = new DefaultHttpContext();
         var routeData = new RouteData();
         var actionDescriptor = new ActionDescriptor();
@@ -28,10 +25,18 @@ public class ExceptionFilterTests
         var filterMetadataMock = new Mock<IFilterMetadata>(MockBehavior.Strict);
         var filters = new List<IFilterMetadata> { filterMetadataMock.Object };
 
-        var exceptionContext = new ExceptionContext(actionContext, filters)
+        return new ExceptionContext(actionContext, filters)
         {
-            Exception = new UserValidationException("Invalid data")
+            Exception = exception
         };
+    }
+
+    [TestMethod]
+    public void OnException_UserValidationException_ReturnsBadRequest()
+    {
+        var filter = new ExceptionFilter();
+        var exceptionContext = CreateExceptionContext(
+            new UserValidationException("Invalid data"));
 
         filter.OnException(exceptionContext);
 
@@ -51,20 +56,8 @@ public class ExceptionFilterTests
     public void OnException_UserAuthenticationException_ReturnsUnauthorized()
     {
         var filter = new ExceptionFilter();
-
-        var httpContext = new DefaultHttpContext();
-        var routeData = new RouteData();
-        var actionDescriptor = new ActionDescriptor();
-
-        var actionContext = new ActionContext(httpContext, routeData, actionDescriptor);
-
-        var filterMetadataMock = new Mock<IFilterMetadata>(MockBehavior.Strict);
-        var filters = new List<IFilterMetadata> { filterMetadataMock.Object };
-
-        var exceptionContext = new ExceptionContext(actionContext, filters)
-        {
-            Exception = new UserAuthenticationException("Invalid credentials")
-        };
+        var exceptionContext = CreateExceptionContext(
+            new UserAuthenticationException("Invalid credentials"));
 
         filter.OnException(exceptionContext);
 
@@ -84,20 +77,8 @@ public class ExceptionFilterTests
     public void OnException_UserForbiddenException_ReturnsForbidden()
     {
         var filter = new ExceptionFilter();
-
-        var httpContext = new DefaultHttpContext();
-        var routeData = new RouteData();
-        var actionDescriptor = new ActionDescriptor();
-
-        var actionContext = new ActionContext(httpContext, routeData, actionDescriptor);
-
-        var filterMetadataMock = new Mock<IFilterMetadata>(MockBehavior.Strict);
-        var filters = new List<IFilterMetadata> { filterMetadataMock.Object };
-
-        var exceptionContext = new ExceptionContext(actionContext, filters)
-        {
-            Exception = new UserForbiddenException("Only an administrative user can perform this action")
-        };
+        var exceptionContext = CreateExceptionContext(
+            new UserForbiddenException("Only an administrative user can perform this action"));
 
         filter.OnException(exceptionContext);
 
@@ -117,20 +98,8 @@ public class ExceptionFilterTests
     public void OnException_UserNotFoundException_ReturnsNotFound()
     {
         var filter = new ExceptionFilter();
-
-        var httpContext = new DefaultHttpContext();
-        var routeData = new RouteData();
-        var actionDescriptor = new ActionDescriptor();
-
-        var actionContext = new ActionContext(httpContext, routeData, actionDescriptor);
-
-        var filterMetadataMock = new Mock<IFilterMetadata>(MockBehavior.Strict);
-        var filters = new List<IFilterMetadata> { filterMetadataMock.Object };
-
-        var exceptionContext = new ExceptionContext(actionContext, filters)
-        {
-            Exception = new UserNotFoundException("User does not exist")
-        };
+        var exceptionContext = CreateExceptionContext(
+            new UserNotFoundException("User does not exist"));
 
         filter.OnException(exceptionContext);
 
@@ -150,20 +119,8 @@ public class ExceptionFilterTests
     public void OnException_UserConflictException_ReturnsConflict()
     {
         var filter = new ExceptionFilter();
-
-        var httpContext = new DefaultHttpContext();
-        var routeData = new RouteData();
-        var actionDescriptor = new ActionDescriptor();
-
-        var actionContext = new ActionContext(httpContext, routeData, actionDescriptor);
-
-        var filterMetadataMock = new Mock<IFilterMetadata>(MockBehavior.Strict);
-        var filters = new List<IFilterMetadata> { filterMetadataMock.Object };
-
-        var exceptionContext = new ExceptionContext(actionContext, filters)
-        {
-            Exception = new UserConflictException("Email is already registered")
-        };
+        var exceptionContext = CreateExceptionContext(
+            new UserConflictException("Email is already registered"));
 
         filter.OnException(exceptionContext);
 
@@ -183,20 +140,8 @@ public class ExceptionFilterTests
     public void OnException_GenericException_ReturnsInternalServerError()
     {
         var filter = new ExceptionFilter();
-
-        var httpContext = new DefaultHttpContext();
-        var routeData = new RouteData();
-        var actionDescriptor = new ActionDescriptor();
-
-        var actionContext = new ActionContext(httpContext, routeData, actionDescriptor);
-
-        var filterMetadataMock = new Mock<IFilterMetadata>(MockBehavior.Strict);
-        var filters = new List<IFilterMetadata> { filterMetadataMock.Object };
-
-        var exceptionContext = new ExceptionContext(actionContext, filters)
-        {
-            Exception = new Exception("Unexpected error")
-        };
+        var exceptionContext = CreateExceptionContext(
+            new Exception("Unexpected error"));
 
         filter.OnException(exceptionContext);
 
