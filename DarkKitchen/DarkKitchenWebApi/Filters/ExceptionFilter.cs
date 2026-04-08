@@ -38,6 +38,11 @@ public class ExceptionFilter : Attribute, IExceptionFilter
             statusCode = StatusCodes.Status404NotFound;
             response.Message = context.Exception.Message;
         }
+        else if (context.Exception is UserConflictException)
+        {
+            statusCode = StatusCodes.Status409Conflict;
+            response.Message = context.Exception.Message;
+        }
 
         context.Result = new ObjectResult(response)
         {
