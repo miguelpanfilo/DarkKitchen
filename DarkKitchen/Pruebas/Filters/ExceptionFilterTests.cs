@@ -25,7 +25,7 @@ public class ExceptionFilterTests
 
         var actionContext = new ActionContext(httpContext, routeData, actionDescriptor);
 
-        var filterMetadataMock = new Mock<IFilterMetadata>();
+        var filterMetadataMock = new Mock<IFilterMetadata>(MockBehavior.Strict);
         var filters = new List<IFilterMetadata> { filterMetadataMock.Object };
 
         var exceptionContext = new ExceptionContext(actionContext, filters)
@@ -58,7 +58,7 @@ public class ExceptionFilterTests
 
         var actionContext = new ActionContext(httpContext, routeData, actionDescriptor);
 
-        var filterMetadataMock = new Mock<IFilterMetadata>();
+        var filterMetadataMock = new Mock<IFilterMetadata>(MockBehavior.Strict);
         var filters = new List<IFilterMetadata> { filterMetadataMock.Object };
 
         var exceptionContext = new ExceptionContext(actionContext, filters)
@@ -91,7 +91,7 @@ public class ExceptionFilterTests
 
         var actionContext = new ActionContext(httpContext, routeData, actionDescriptor);
 
-        var filterMetadataMock = new Mock<IFilterMetadata>();
+        var filterMetadataMock = new Mock<IFilterMetadata>(MockBehavior.Strict);
         var filters = new List<IFilterMetadata> { filterMetadataMock.Object };
 
         var exceptionContext = new ExceptionContext(actionContext, filters)
