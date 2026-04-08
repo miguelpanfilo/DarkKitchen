@@ -129,7 +129,8 @@ public class UserServiceIntegrationTests
 
         var request = new ModificarClaveRequestDTO
         {
-            OldPassword = "PasswordSeguraee3!", NewPassword = "ClaveNuevaSegura4!"
+            OldPassword = "PasswordSeguraee3!",
+            NewPassword = "ClaveNuevaSegura4!"
         };
 
         modifyUserServiceMock
@@ -184,7 +185,7 @@ public class UserServiceIntegrationTests
 
         filterUserServiceMock
             .Setup(x => x.BuscarUsuarios(99, request))
-            .Returns(new List<UsuarioResponseDTO> { });
+            .Returns([]);
 
         var service = new UserService(
             signUpServiceMock.Object,
