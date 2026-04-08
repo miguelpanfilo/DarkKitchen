@@ -79,4 +79,37 @@ public class ExceptionFilterTests
         Assert.IsFalse(response.ExecutionSuccessful);
         Assert.AreEqual("Invalid credentials", response.Message);
     }
+
+    [TestMethod]
+    public void OnException_UserForbiddenException_ReturnsForbidden()
+    {
+        var filter = new ExceptionFilter();
+
+        var httpContext = new DefaultHttpContext();
+        var routeData = new RouteData();
+        var actionDescriptor = new ActionDescriptor();
+
+        var actionContext = new ActionContext(httpContext, routeData, actionDescriptor);
+
+        var filterMetadataMock = new Mock<IFilterMetadata>();
+        var filters = new List<IFilterMetadata> { filterMetadataMock.Object };
+
+        var exceptionContext = new ExceptionContext(actionContext, filters)
+        {
+            Exception = new UserForbiddenException("Only an administrative user can perform this action")
+        };
+
+        filter.OnException(exceptionContext);
+
+        var result = exceptionContext.Result as ObjectResult;
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(StatusCodes.Status403Forbidden, result.StatusCode);
+
+        var response = result.Value as ResponseDto;
+
+        Assert.IsNotNull(response);
+        Assert.IsFalse(response.ExecutionSuccessful);
+        Assert.AreEqual("Only an administrative user can perform this action", response.Message);
+    }
 }
