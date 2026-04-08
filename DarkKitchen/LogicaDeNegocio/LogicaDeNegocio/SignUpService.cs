@@ -38,7 +38,9 @@ public class SignUpService(
 
         return new SignUpClientResponseDTO
         {
-            Name = newUser.Name, LastName = newUser.LastName, Email = newUser.Email.ToString(),
+            Name = newUser.Name,
+            LastName = newUser.LastName,
+            Email = newUser.Email.ToString()
         };
     }
 
