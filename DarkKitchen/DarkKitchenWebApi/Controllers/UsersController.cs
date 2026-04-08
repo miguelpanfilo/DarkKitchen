@@ -1,6 +1,5 @@
 using Contratos;
 using LogicaDeNegocioAbstracciones;
-using LogicaDeNegocioAbstracciones.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DarkKitchen.Controllers;
@@ -19,18 +18,7 @@ public class UsersController : ControllerBase
     [HttpPost]
     public IActionResult CreateUser([FromBody] SignUpClientRequestDTO request)
     {
-        try
-        {
-            var response = _signUpService.SignUpClient(request);
-            return Created("/api/v1/users", response);
-        }
-        catch (SignUpValidationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
-        catch (SignUpException ex)
-        {
-            return Conflict(new { message = ex.Message });
-        }
+        var response = _signUpService.SignUpClient(request);
+        return Created("/api/v1/users", response);
     }
 }

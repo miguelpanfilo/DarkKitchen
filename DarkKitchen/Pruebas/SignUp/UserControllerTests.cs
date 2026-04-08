@@ -53,7 +53,7 @@ public class UsersControllerTests
     }
 
     [TestMethod]
-    public void CreateUser_EmailAlreadyExists_ReturnsConflict()
+    public void CreateUser_EmailAlreadyExists_ThrowsSignUpException()
     {
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
 
@@ -72,16 +72,16 @@ public class UsersControllerTests
 
         var controller = new UsersController(signUpServiceMock.Object);
 
-        var result = controller.CreateUser(request);
+        var ex = Assert.ThrowsException<SignUpException>(() =>
+            controller.CreateUser(request));
 
-        var conflictResult = result as ConflictObjectResult;
+        Assert.AreEqual("Email is already registered", ex.Message);
 
-        Assert.IsNotNull(conflictResult);
-        Assert.AreEqual(409, conflictResult.StatusCode);
+        signUpServiceMock.Verify(s => s.SignUpClient(request), Times.Once);
     }
 
     [TestMethod]
-    public void CreateUser_InvalidPhone_ReturnsBadRequest()
+    public void CreateUser_InvalidPhone_ThrowsSignUpValidationException()
     {
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
 
@@ -100,15 +100,12 @@ public class UsersControllerTests
 
         var controller = new UsersController(signUpServiceMock.Object);
 
-        var result = controller.CreateUser(request);
+        var ex = Assert.ThrowsException<SignUpValidationException>(() =>
+            controller.CreateUser(request));
 
-        var badRequestResult = result as BadRequestObjectResult;
+        Assert.AreEqual("Phone is not valid", ex.Message);
 
-        Assert.IsNotNull(badRequestResult);
-        Assert.AreEqual(400, badRequestResult.StatusCode);
-
-        var value = badRequestResult.Value;
-        Assert.IsNotNull(value);
+        signUpServiceMock.Verify(s => s.SignUpClient(request), Times.Once);
     }
 
     [TestMethod]
