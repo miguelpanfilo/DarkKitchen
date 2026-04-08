@@ -41,4 +41,24 @@ public class ProductServiceTest
 
         repoMock.Verify(repository => repository.Create(It.IsAny<Product>()), Times.Once);
     }
+
+    [TestMethod]
+    public void GivenProductDtoWithInvalidPrice_WhenCreating_ThenThrowsProductExceptionAndRepositoryIsNotCalled()
+    {
+        var dto = new ProductDTO(
+            "COD123",
+            "Milanesa al pan",
+            "Milanesa al pan completa",
+            "Minutas clásicas",
+            "Sandwiches",
+            0
+        );
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var service = new ProductService(repoMock.Object);
+
+        Assert.ThrowsException<ProductException>(() => service.Create(dto));
+
+        repoMock.Verify(repository => repository.Create(It.IsAny<Product>()), Times.Never);
+    }
 }
