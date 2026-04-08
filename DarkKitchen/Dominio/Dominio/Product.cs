@@ -35,6 +35,11 @@ public class Product
 
         ValidateRequired(category, "La categoria");
 
+        if(price <= 0)
+        {
+            throw new ProductException("El precio debe ser mayor a 0");
+        }
+
         Code = code;
         Name = name;
         Description = description;
