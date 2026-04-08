@@ -33,6 +33,11 @@ public class ExceptionFilter : Attribute, IExceptionFilter
             statusCode = StatusCodes.Status403Forbidden;
             response.Message = context.Exception.Message;
         }
+        else if (context.Exception is UserNotFoundException)
+        {
+            statusCode = StatusCodes.Status404NotFound;
+            response.Message = context.Exception.Message;
+        }
 
         context.Result = new ObjectResult(response)
         {
