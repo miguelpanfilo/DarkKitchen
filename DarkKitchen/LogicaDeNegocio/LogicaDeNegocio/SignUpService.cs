@@ -7,10 +7,15 @@ using Mapeo;
 
 namespace LogicaDeNegocio;
 
-public class SignUpService(IRepositoryUser repositoryUser, IPhoneValidator validatorPhone) : ISignUpUserService
+public class SignUpService(
+    IRepositoryUser repositoryUser,
+    IPhoneValidator validatorPhone,
+    IAdminValidationService adminValidationService)
+    : ISignUpUserService
 {
     private readonly IRepositoryUser _repositoryUser = repositoryUser;
     private readonly IPhoneValidator _validatorPhone = validatorPhone;
+    private readonly IAdminValidationService _adminValidationService = adminValidationService;
 
     public SignUpClientResponseDTO SignUpClient(SignUpClientRequestDTO requestDto)
     {
@@ -21,36 +26,36 @@ public class SignUpService(IRepositoryUser repositoryUser, IPhoneValidator valid
 
         var phone = MakeAndValidatePhone(requestDto.Phone);
 
-        var usuario = User.MakeClient(
+        var user = User.MakeClient(
             requestDto.Name,
             requestDto.LastName,
             requestDto.Email,
             phone,
             requestDto.Password);
 
-        var newUser = _repositoryUser.Add(usuario);
+        var newUser = _repositoryUser.Add(user);
 
         return new SignUpClientResponseDTO
         {
             Name = newUser.Name,
             LastName = newUser.LastName,
-            Email = newUser.Email.ToString()
+            Email = newUser.Email.ToString(),
         };
     }
 
-    public UsuarioResponseDTO MakeInterUser(int idUsuarioLogueado, SingUpInternUserRequestDTO requestDto)
+    public UsuarioResponseDTO MakeInterUser(int idUserLogged, SingUpInternUserRequestDTO requestDto)
     {
-        ValidateUserAdmin(idUsuarioLogueado);
+        _adminValidationService.EnsureUserIsAdmin(idUserLogged);
 
-        var rol = GetInternRoleValid(requestDto.Role);
-        var telefono = MakeAndValidatePhone(requestDto.Phone);
+        var role = GetInternRoleValid(requestDto.Role);
+        var phone = MakeAndValidatePhone(requestDto.Phone);
 
         if(_repositoryUser.EmailExist(requestDto.Email))
         {
             throw new UserException("Email is already registered");
         }
 
-        var user = UserMapper.MappingDTOToInternUser(requestDto, telefono, rol);
+        var user = UserMapper.MappingDTOToInternUser(requestDto, phone, role);
 
         var newUser = _repositoryUser.Add(user);
 
@@ -67,31 +72,9 @@ public class SignUpService(IRepositoryUser repositoryUser, IPhoneValidator valid
         return rolEnum;
     }
 
-    private void ValidateUserAdmin(int idUsuarioLogueado)
+    private Phone MakeAndValidatePhone(string phone)
     {
-        var user = GetExistingUser(idUsuarioLogueado);
-
-        if(user.Role != UserRoles.Administrative)
-        {
-            throw new UserException("Only an administrative user can perform this action");
-        }
-    }
-
-    private User GetExistingUser(int id)
-    {
-        var user = _repositoryUser.FindById(id);
-
-        if(user == null)
-        {
-            throw new UserException("User does not exist");
-        }
-
-        return user;
-    }
-
-    private Phone MakeAndValidatePhone(string telefono)
-    {
-        var newPhone = Phone.MakePhone(telefono);
+        var newPhone = Phone.MakePhone(phone);
 
         if(!_validatorPhone.ItsValid(newPhone.Value))
         {
