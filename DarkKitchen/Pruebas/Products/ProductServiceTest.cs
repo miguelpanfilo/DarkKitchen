@@ -17,7 +17,8 @@ public class ProductServiceTest
             "Milanesa al pan",
             "Milanesa al pan completa",
             "Minutas clásicas",
-            "Sandwiches"
+            "Sandwiches",
+            100
         );
 
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
@@ -32,6 +33,10 @@ public class ProductServiceTest
 
         Assert.IsNotNull(result);
         Assert.AreEqual(dto.Name, result.Name);
+        repoMock.Verify(repository => 
+                repository.Create(It.Is<Product>(p => p.Price == dto.Price)), 
+            Times.Once
+        );
 
         repoMock.Verify(repository => repository.Create(It.IsAny<Product>()), Times.Once);
     }
