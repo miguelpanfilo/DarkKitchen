@@ -5,6 +5,7 @@ using Dominio.Exceptions;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
+using Mapeo;
 using Moq;
 
 namespace Pruebas.Usuarios;
@@ -694,5 +695,16 @@ public class UserServiceTests
             "aaClaveSegura#1a");
 
         Assert.AreEqual(UserRoles.Client, user.Role);
+    }
+
+    [TestMethod]
+    public void MappingUserToResponseDTO_NullUser_ThrowsUserException()
+    {
+        User? user = null;
+
+        var ex = Assert.ThrowsException<UserException>(() =>
+            user!.MappingUserToResponseDTO());
+
+        Assert.AreEqual("User cannot be null", ex.Message);
     }
 }

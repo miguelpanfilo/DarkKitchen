@@ -80,12 +80,6 @@ public class User
         return new User(name, lastname, emailValid, phone, passwordValid, role);
     }
 
-    public void ModifyName(string nombre)
-    {
-        ValidatorName(nombre);
-        Name = nombre.Trim();
-    }
-
     public void ModifyData(string name, string lastname, Phone phone, string email, UserRoles role)
     {
         ValidatorName(name);
