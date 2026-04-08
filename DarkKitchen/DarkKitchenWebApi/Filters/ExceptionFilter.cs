@@ -18,7 +18,8 @@ public class ExceptionFilter : Attribute, IExceptionFilter
             Message = "Internal server error"
         };
 
-        if (context.Exception is UserValidationException)
+        if (context.Exception is UserValidationException
+            || context.Exception is SignUpValidationException)
         {
             statusCode = StatusCodes.Status400BadRequest;
             response.Message = context.Exception.Message;
@@ -39,6 +40,11 @@ public class ExceptionFilter : Attribute, IExceptionFilter
             response.Message = context.Exception.Message;
         }
         else if (context.Exception is UserConflictException)
+        {
+            statusCode = StatusCodes.Status409Conflict;
+            response.Message = context.Exception.Message;
+        }
+       else if (context.Exception is SignUpException)
         {
             statusCode = StatusCodes.Status409Conflict;
             response.Message = context.Exception.Message;

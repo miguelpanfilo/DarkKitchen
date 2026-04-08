@@ -156,4 +156,46 @@ public class ExceptionFilterTests
         Assert.IsFalse(response.ExecutionSuccessful);
         Assert.AreEqual("Internal server error", response.Message);
     }
+
+    [TestMethod]
+    public void OnException_SignUpValidationException_ReturnsBadRequest()
+    {
+        var filter = new ExceptionFilter();
+        var exceptionContext = CreateExceptionContext(
+            new SignUpValidationException("Phone is not valid"));
+
+        filter.OnException(exceptionContext);
+
+        var result = exceptionContext.Result as ObjectResult;
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(StatusCodes.Status400BadRequest, result.StatusCode);
+
+        var response = result.Value as ResponseDto;
+
+        Assert.IsNotNull(response);
+        Assert.IsFalse(response.ExecutionSuccessful);
+        Assert.AreEqual("Phone is not valid", response.Message);
+    }
+
+    [TestMethod]
+    public void OnException_SignUpException_ReturnsConflict()
+    {
+        var filter = new ExceptionFilter();
+        var exceptionContext = CreateExceptionContext(
+            new SignUpException("Email is already registered"));
+
+        filter.OnException(exceptionContext);
+
+        var result = exceptionContext.Result as ObjectResult;
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(StatusCodes.Status409Conflict, result.StatusCode);
+
+        var response = result.Value as ResponseDto;
+
+        Assert.IsNotNull(response);
+        Assert.IsFalse(response.ExecutionSuccessful);
+        Assert.AreEqual("Email is already registered", response.Message);
+    }
 }
