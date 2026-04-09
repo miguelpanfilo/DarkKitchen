@@ -1,3 +1,5 @@
 namespace LogicaDeNegocioAbstracciones.Exceptions;
 
-public class NotFoundException(string message) : LogicException(message);
+public class NotFoundException(string message) : LogicException(message)
+{
+}
