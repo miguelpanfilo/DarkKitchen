@@ -24,6 +24,7 @@ public class ProductTest
         Assert.AreEqual("Milanesa al pan completa", product.Description);
         Assert.AreEqual("Minutas clásicas", product.CommercialLine);
         Assert.AreEqual("Sandwiches", product.Category);
+        Assert.AreEqual(100m, product.Price);
     }
 
     [TestMethod]
@@ -247,5 +248,24 @@ public class ProductTest
         product.Activate();
 
         Assert.IsTrue(product.IsActive);
+    }
+
+    [DataTestMethod]
+    [DataRow(0)]
+    [DataRow(-1)]
+    public void GivenInvalidPrice_WhenCreatingProduct_ThenThrowsProductExceptionWithMessage(int price)
+    {
+        var ex = Assert.ThrowsException<ProductException>(() =>
+            new Product(
+                "COD123",
+                "Milanesa al pan",
+                "Milanesa al pan completa",
+                "Minutas clásicas",
+                "Sandwiches",
+                price
+            )
+        );
+
+        Assert.AreEqual("El precio debe ser mayor a 0", ex.Message);
     }
 }
