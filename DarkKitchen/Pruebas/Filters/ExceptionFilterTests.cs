@@ -1,6 +1,5 @@
 using Contratos;
 using DarkKitchen.Filters;
-using Dominio.Exceptions;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -32,11 +31,11 @@ public class ExceptionFilterTests
     }
 
     [TestMethod]
-    public void OnException_UserValidationException_ReturnsBadRequest()
+    public void OnException_ValidationException_ReturnsBadRequest()
     {
         var filter = new ExceptionFilter();
         var exceptionContext = CreateExceptionContext(
-            new UserValidationException("Invalid data"));
+            new ValidationException("Invalid data"));
 
         filter.OnException(exceptionContext);
 
@@ -74,11 +73,11 @@ public class ExceptionFilterTests
     }
 
     [TestMethod]
-    public void OnException_UserForbiddenException_ReturnsForbidden()
+    public void OnException_ForbiddenException_ReturnsForbidden()
     {
         var filter = new ExceptionFilter();
         var exceptionContext = CreateExceptionContext(
-            new UserForbiddenException("Only an administrative user can perform this action"));
+            new ForbiddenException("Only an administrative user can perform this action"));
 
         filter.OnException(exceptionContext);
 
@@ -95,11 +94,11 @@ public class ExceptionFilterTests
     }
 
     [TestMethod]
-    public void OnException_UserNotFoundException_ReturnsNotFound()
+    public void OnException_NotFoundException_ReturnsNotFound()
     {
         var filter = new ExceptionFilter();
         var exceptionContext = CreateExceptionContext(
-            new UserNotFoundException("User does not exist"));
+            new NotFoundException("User does not exist"));
 
         filter.OnException(exceptionContext);
 
@@ -116,11 +115,11 @@ public class ExceptionFilterTests
     }
 
     [TestMethod]
-    public void OnException_UserConflictException_ReturnsConflict()
+    public void OnException_ConflictException_ReturnsConflict()
     {
         var filter = new ExceptionFilter();
         var exceptionContext = CreateExceptionContext(
-            new UserConflictException("Email is already registered"));
+            new ConflictException("Email is already registered"));
 
         filter.OnException(exceptionContext);
 
@@ -155,47 +154,5 @@ public class ExceptionFilterTests
         Assert.IsNotNull(response);
         Assert.IsFalse(response.ExecutionSuccessful);
         Assert.AreEqual("Internal server error", response.Message);
-    }
-
-    [TestMethod]
-    public void OnException_SignUpValidationException_ReturnsBadRequest()
-    {
-        var filter = new ExceptionFilter();
-        var exceptionContext = CreateExceptionContext(
-            new SignUpValidationException("Phone is not valid"));
-
-        filter.OnException(exceptionContext);
-
-        var result = exceptionContext.Result as ObjectResult;
-
-        Assert.IsNotNull(result);
-        Assert.AreEqual(StatusCodes.Status400BadRequest, result.StatusCode);
-
-        var response = result.Value as ResponseDto;
-
-        Assert.IsNotNull(response);
-        Assert.IsFalse(response.ExecutionSuccessful);
-        Assert.AreEqual("Phone is not valid", response.Message);
-    }
-
-    [TestMethod]
-    public void OnException_SignUpException_ReturnsConflict()
-    {
-        var filter = new ExceptionFilter();
-        var exceptionContext = CreateExceptionContext(
-            new SignUpException("Email is already registered"));
-
-        filter.OnException(exceptionContext);
-
-        var result = exceptionContext.Result as ObjectResult;
-
-        Assert.IsNotNull(result);
-        Assert.AreEqual(StatusCodes.Status409Conflict, result.StatusCode);
-
-        var response = result.Value as ResponseDto;
-
-        Assert.IsNotNull(response);
-        Assert.IsFalse(response.ExecutionSuccessful);
-        Assert.AreEqual("Email is already registered", response.Message);
     }
 }

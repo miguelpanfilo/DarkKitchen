@@ -1,6 +1,5 @@
 using System.Security.Cryptography;
 using System.Text;
-using Dominio.Exceptions;
 
 namespace Dominio;
 
@@ -56,15 +55,15 @@ public sealed class Password
         return true;
     }
 
-    public static Password MakePassword(string? clave)
+    public static Result<Password> TryMakePassword(string? password)
     {
-        if(!Validate(clave))
+        if(!Validate(password))
         {
-            throw new UserValidationException("Password format is not valid");
+            return Result<Password>.Fail("Password format is not valid");
         }
 
-        var hash = HashearMd5(clave!);
-        return new Password(hash);
+        var hash = HashearMd5(password!);
+        return Result<Password>.Ok(new Password(hash));
     }
 
     private static string HashearMd5(string texto)

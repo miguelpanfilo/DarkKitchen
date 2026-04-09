@@ -1,7 +1,7 @@
 using AlmacenamientoAbstracciones;
 using Dominio;
-using Dominio.Exceptions;
 using LogicaDeNegocio;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using Moq;
 using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
@@ -10,19 +10,59 @@ namespace Pruebas.Usuarios;
 [TestClass]
 public class AdminValidationServiceTests
 {
+    private static Phone CreateValidPhone()
+    {
+        var phoneResult = Phone.TryMakePhone("099123456");
+        IsTrue(phoneResult.Success);
+        IsNotNull(phoneResult.Value);
+        return phoneResult.Value!;
+    }
+
+    private static User CreateAdministrativeUser(int id = 5)
+    {
+        var phone = CreateValidPhone();
+
+        var userResult = User.MakeIntern(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            phone,
+            "PasswordSeguraee3!",
+            UserRoles.Administrative);
+
+        IsTrue(userResult.Success);
+        IsNotNull(userResult.Value);
+
+        var user = userResult.Value!;
+        user.Id = id;
+        return user;
+    }
+
+    private static User CreateClientUser(int id = 5)
+    {
+        var phone = CreateValidPhone();
+
+        var userResult = User.MakeClient(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            phone,
+            "PasswordSeguraee3!");
+
+        IsTrue(userResult.Success);
+        IsNotNull(userResult.Value);
+
+        var user = userResult.Value!;
+        user.Id = id;
+        return user;
+    }
+
     [TestMethod]
     public void GetExistingUser_UserExists_ReturnsUser()
     {
         var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
 
-        var user = User.MakeIntern(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
-            "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        user.Id = 5;
+        var user = CreateAdministrativeUser(5);
 
         repoMock
             .Setup(r => r.FindById(5))
@@ -48,7 +88,7 @@ public class AdminValidationServiceTests
 
         var service = new AdminValidationService(repoMock.Object);
 
-        var ex = ThrowsException<UserNotFoundException>(() => service.GetExistingUser(99));
+        var ex = ThrowsException<NotFoundException>(() => service.GetExistingUser(99));
 
         AreEqual("User does not exist", ex.Message);
     }
@@ -58,14 +98,7 @@ public class AdminValidationServiceTests
     {
         var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
 
-        var user = User.MakeIntern(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
-            "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        user.Id = 5;
+        var user = CreateAdministrativeUser(5);
 
         repoMock
             .Setup(r => r.FindById(5))
@@ -81,13 +114,7 @@ public class AdminValidationServiceTests
     {
         var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
 
-        var user = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
-            "PasswordSeguraee3!");
-        user.Id = 5;
+        var user = CreateClientUser(5);
 
         repoMock
             .Setup(r => r.FindById(5))
@@ -95,7 +122,7 @@ public class AdminValidationServiceTests
 
         var service = new AdminValidationService(repoMock.Object);
 
-        var ex = ThrowsException<UserForbiddenException>(() =>
+        var ex = ThrowsException<ForbiddenException>(() =>
             service.EnsureUserIsAdmin(5));
 
         AreEqual("Only an administrative user can perform this action", ex.Message);
@@ -112,7 +139,7 @@ public class AdminValidationServiceTests
 
         var service = new AdminValidationService(repoMock.Object);
 
-        var ex = ThrowsException<UserNotFoundException>(() =>
+        var ex = ThrowsException<NotFoundException>(() =>
             service.EnsureUserIsAdmin(5));
 
         AreEqual("User does not exist", ex.Message);
@@ -124,7 +151,7 @@ public class AdminValidationServiceTests
         var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var service = new AdminValidationService(repoMock.Object);
 
-        var ex = ThrowsException<UserConflictException>(() =>
+        var ex = ThrowsException<ConflictException>(() =>
             service.EnsureIsNotSelfAction(5, 5, "A user cannot modify itself"));
 
         AreEqual("A user cannot modify itself", ex.Message);

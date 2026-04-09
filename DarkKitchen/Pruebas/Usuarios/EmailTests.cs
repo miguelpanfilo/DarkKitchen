@@ -1,5 +1,4 @@
 using Dominio;
-using Dominio.Exceptions;
 
 namespace Pruebas.Usuarios;
 
@@ -9,28 +8,30 @@ public class EmailTests
     [TestMethod]
     public void MakeEmail_ValidEmail_ReturnsEmail()
     {
-        var email = Email.MakeEmail("miguel@gmail.com");
+        var result = Email.TryMakeEmail("miguel@gmail.com");
 
-        Assert.IsNotNull(email);
-        Assert.AreEqual("miguel@gmail.com", email.Value);
+        Assert.IsTrue(result.Success);
+        Assert.IsNotNull(result.Value);
+        Assert.AreEqual("miguel@gmail.com", result.Value!.Value);
     }
 
     [TestMethod]
     public void MakeEmail_EmailWithSpacesAndUppercase_ReturnsNormalizedEmail()
     {
-        var email = Email.MakeEmail("  MIGUEL@GMAIL.COM  ");
+        var result = Email.TryMakeEmail("  MIGUEL@GMAIL.COM  ");
 
-        Assert.IsNotNull(email);
-        Assert.AreEqual("miguel@gmail.com", email.Value);
+        Assert.IsTrue(result.Success);
+        Assert.IsNotNull(result.Value);
+        Assert.AreEqual("miguel@gmail.com", result.Value!.Value);
     }
 
     [TestMethod]
     public void MakeEmail_EmptyEmail_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserValidationException>(() =>
-            Email.MakeEmail(string.Empty));
+        var result = Email.TryMakeEmail(string.Empty);
 
-        Assert.AreEqual("Email cannot be empty", ex.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Email cannot be empty", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -38,100 +39,103 @@ public class EmailTests
     {
         string? email = null;
 
-        var ex = Assert.ThrowsException<UserValidationException>(() =>
-            Email.MakeEmail(email));
+        var result = Email.TryMakeEmail(email);
 
-        Assert.AreEqual("Email cannot be empty", ex.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Email cannot be empty", result.ErrorMessage);
     }
 
     [TestMethod]
     public void MakeEmail_EmailWithoutAtSymbol_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserValidationException>(() =>
-            Email.MakeEmail("miguelgmail.com"));
+        var result = Email.TryMakeEmail("miguelgmail.com");
 
-        Assert.AreEqual("Email format is not valid", ex.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Email format is not valid", result.ErrorMessage);
     }
 
     [TestMethod]
     public void MakeEmail_EmailWithTwoAtSymbols_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserValidationException>(() =>
-            Email.MakeEmail("miguel@@gmail.com"));
+        var result = Email.TryMakeEmail("miguel@@gmail.com");
 
-        Assert.AreEqual("Email format is not valid", ex.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Email format is not valid", result.ErrorMessage);
     }
 
     [TestMethod]
     public void MakeEmail_EmailWithoutLocalPart_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserValidationException>(() =>
-            Email.MakeEmail("@gmail.com"));
+        var result = Email.TryMakeEmail("@gmail.com");
 
-        Assert.AreEqual("Email format is not valid", ex.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Email format is not valid", result.ErrorMessage);
     }
 
     [TestMethod]
     public void MakeEmail_EmailWithoutDomain_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserValidationException>(() =>
-            Email.MakeEmail("miguel@"));
+        var result = Email.TryMakeEmail("miguel@");
 
-        Assert.AreEqual("Email format is not valid", ex.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Email format is not valid", result.ErrorMessage);
     }
 
     [TestMethod]
     public void MakeEmail_EmailWithoutDotInDomain_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserValidationException>(() =>
-            Email.MakeEmail("miguel@gmail"));
+        var result = Email.TryMakeEmail("miguel@gmail");
 
-        Assert.AreEqual("Email format is not valid", ex.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Email format is not valid", result.ErrorMessage);
     }
 
     [TestMethod]
     public void MakeEmail_EmailWithDomainStartingWithDot_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserValidationException>(() =>
-            Email.MakeEmail("miguel@.gmail.com"));
+        var result = Email.TryMakeEmail("miguel@.gmail.com");
 
-        Assert.AreEqual("Email format is not valid", ex.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Email format is not valid", result.ErrorMessage);
     }
 
     [TestMethod]
     public void MakeEmail_EmailWithDomainEndingWithDot_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserValidationException>(() =>
-            Email.MakeEmail("miguel@gmail.com."));
+        var result = Email.TryMakeEmail("miguel@gmail.com.");
 
-        Assert.AreEqual("Email format is not valid", ex.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Email format is not valid", result.ErrorMessage);
     }
 
     [TestMethod]
     public void MakeEmail_EmailWithDoubleDotInDomain_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserValidationException>(() =>
-            Email.MakeEmail("miguel@gmail..com"));
+        var result = Email.TryMakeEmail("miguel@gmail..com");
 
-        Assert.AreEqual("Email format is not valid", ex.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Email format is not valid", result.ErrorMessage);
     }
 
     [TestMethod]
     public void MakeEmail_EmailWithDoubleDotInLocalPart_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserValidationException>(() =>
-            Email.MakeEmail("mi..guel@gmail.com"));
+        var result = Email.TryMakeEmail("mi..guel@gmail.com");
 
-        Assert.AreEqual("Email format is not valid", ex.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Email format is not valid", result.ErrorMessage);
     }
 
     [TestMethod]
     public void IsTheSame_SameEmailValue_ReturnsTrue()
     {
-        var email1 = Email.MakeEmail("miguel@gmail.com");
-        var email2 = Email.MakeEmail("MIGUEL@GMAIL.COM");
+        var email1Result = Email.TryMakeEmail("miguel@gmail.com");
+        var email2Result = Email.TryMakeEmail("MIGUEL@GMAIL.COM");
 
-        var result = email1.IsTheSame(email2);
+        Assert.IsTrue(email1Result.Success);
+        Assert.IsTrue(email2Result.Success);
+
+        var result = email1Result.Value!.IsTheSame(email2Result.Value!);
 
         Assert.IsTrue(result);
     }
@@ -139,10 +143,13 @@ public class EmailTests
     [TestMethod]
     public void IsTheSame_DifferentEmailValue_ReturnsFalse()
     {
-        var email1 = Email.MakeEmail("miguel@gmail.com");
-        var email2 = Email.MakeEmail("otro@gmail.com");
+        var email1Result = Email.TryMakeEmail("miguel@gmail.com");
+        var email2Result = Email.TryMakeEmail("otro@gmail.com");
 
-        var result = email1.IsTheSame(email2);
+        Assert.IsTrue(email1Result.Success);
+        Assert.IsTrue(email2Result.Success);
+
+        var result = email1Result.Value!.IsTheSame(email2Result.Value!);
 
         Assert.IsFalse(result);
     }
@@ -150,10 +157,13 @@ public class EmailTests
     [TestMethod]
     public void ToString_ReturnsValue()
     {
-        var email = Email.MakeEmail("miguel@gmail.com");
+        var result = Email.TryMakeEmail("miguel@gmail.com");
 
-        var result = email.ToString();
+        Assert.IsTrue(result.Success);
+        Assert.IsNotNull(result.Value);
 
-        Assert.AreEqual("miguel@gmail.com", result);
+        var text = result.Value!.ToString();
+
+        Assert.AreEqual("miguel@gmail.com", text);
     }
 }

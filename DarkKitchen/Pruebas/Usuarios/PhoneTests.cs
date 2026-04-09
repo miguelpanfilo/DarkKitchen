@@ -1,5 +1,4 @@
 using Dominio;
-using Dominio.Exceptions;
 
 namespace Pruebas.Usuarios;
 
@@ -9,65 +8,71 @@ public class PhoneTests
     [TestMethod]
     public void MakePhone_ValidPhone_ReturnsPhone()
     {
-        var phone = Phone.MakePhone("099123456");
+        var result = Phone.TryMakePhone("099123456");
 
-        Assert.IsNotNull(phone);
-        Assert.AreEqual("099123456", phone.Value);
+        Assert.IsTrue(result.Success);
+        Assert.IsNotNull(result.Value);
+        Assert.AreEqual("099123456", result.Value!.Value);
     }
 
     [TestMethod]
     public void MakePhone_ValidPhoneWithSpaces_NormalizesCorrectly()
     {
-        var phone = Phone.MakePhone(" 099123456 ");
+        var result = Phone.TryMakePhone(" 099123456 ");
 
-        Assert.AreEqual("099123456", phone.Value);
+        Assert.IsTrue(result.Success);
+        Assert.IsNotNull(result.Value);
+        Assert.AreEqual("099123456", result.Value!.Value);
     }
 
     [TestMethod]
     public void MakePhone_NullPhone_ThrowsExceptionWithCorrectMessage()
     {
-        string? phone = null;
+        var phone = String.Empty;
 
-        var ex = Assert.ThrowsException<UserValidationException>(() =>
-            Phone.MakePhone(phone!));
+        var result = Phone.TryMakePhone(phone);
 
-        Assert.AreEqual("Phone cannot be empty", ex.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Phone cannot be empty", result.ErrorMessage);
     }
 
     [TestMethod]
     public void MakePhone_EmptyPhone_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserValidationException>(() =>
-            Phone.MakePhone(string.Empty));
+        var result = Phone.TryMakePhone(string.Empty);
 
-        Assert.AreEqual("Phone cannot be empty", ex.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Phone cannot be empty", result.ErrorMessage);
     }
 
     [TestMethod]
     public void MakePhone_PhoneWithLetters_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserValidationException>(() =>
-            Phone.MakePhone("09912a456"));
+        var result = Phone.TryMakePhone("09912a456");
 
-        Assert.AreEqual("Phone must contain only digits", ex.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Phone must contain only digits", result.ErrorMessage);
     }
 
     [TestMethod]
     public void MakePhone_PhoneWithSymbols_ThrowsExceptionWithCorrectMessage()
     {
-        var ex = Assert.ThrowsException<UserValidationException>(() =>
-            Phone.MakePhone("09912-456"));
+        var result = Phone.TryMakePhone("09912-456");
 
-        Assert.AreEqual("Phone must contain only digits", ex.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Phone must contain only digits", result.ErrorMessage);
     }
 
     [TestMethod]
     public void ToString_ReturnsValue()
     {
-        var phone = Phone.MakePhone("099123456");
+        var result = Phone.TryMakePhone("099123456");
 
-        var result = phone.ToString();
+        Assert.IsTrue(result.Success);
+        Assert.IsNotNull(result.Value);
 
-        Assert.AreEqual("099123456", result);
+        var text = result.Value!.ToString();
+
+        Assert.AreEqual("099123456", text);
     }
 }

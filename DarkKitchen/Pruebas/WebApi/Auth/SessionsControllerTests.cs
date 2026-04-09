@@ -13,6 +13,28 @@ namespace Pruebas.WebApi.Auth;
 [TestClass]
 public class SessionsControllerTests
 {
+    private static Phone CreateValidPhone(string number)
+    {
+        var phoneResult = Phone.TryMakePhone(number);
+        Assert.IsTrue(phoneResult.Success);
+        return phoneResult.Value!;
+    }
+
+    private static User CreateValidUser(string email, string password)
+    {
+        var phone = CreateValidPhone("099123456");
+
+        var userResult = User.MakeClient(
+            "Miguel",
+            "Lopez",
+            email,
+            phone,
+            password);
+
+        Assert.IsTrue(userResult.Success);
+        return userResult.Value!;
+    }
+
     [TestMethod]
     public void Login_ValidRequest_ReturnsOk()
     {
@@ -130,7 +152,8 @@ public class SessionsControllerTests
             Password = "Password@2Ok6Abc"
         };
 
-        var ex = Assert.ThrowsException<UserAuthenticationException>(() => service.Login(request));
+        var ex = Assert.ThrowsException<UserAuthenticationException>(() =>
+            service.Login(request));
 
         Assert.AreEqual("Invalid credentials", ex.Message);
 
@@ -145,12 +168,7 @@ public class SessionsControllerTests
         var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
         var watchMock = new Mock<IReloj>(MockBehavior.Strict);
 
-        var user = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc");
+        var user = CreateValidUser("miguel@gmail.com", "Password@2Ok6Abc");
         user.Id = 1;
 
         repoUserMock
@@ -168,7 +186,8 @@ public class SessionsControllerTests
             Password = "WrongPassword@123"
         };
 
-        var ex = Assert.ThrowsException<UserAuthenticationException>(() => service.Login(request));
+        var ex = Assert.ThrowsException<UserAuthenticationException>(() =>
+            service.Login(request));
 
         Assert.AreEqual("Invalid credentials", ex.Message);
 
@@ -189,12 +208,7 @@ public class SessionsControllerTests
             .Setup(r => r.Ahora())
             .Returns(fixedNow);
 
-        var user = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc");
+        var user = CreateValidUser("miguel@gmail.com", "Password@2Ok6Abc");
         user.Id = 25;
 
         repoUserMock
@@ -223,59 +237,6 @@ public class SessionsControllerTests
         Assert.AreEqual("Client", result.Role);
         Assert.AreEqual(fixedNow.AddHours(2), result.ExpireDate);
         Assert.AreNotEqual(Guid.Empty, result.SessionId);
-
-        repoUserMock.Verify(r => r.FindByEmail("miguel@gmail.com"), Times.Once);
-        watchMock.Verify(r => r.Ahora(), Times.Once);
-        repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Once);
-    }
-
-    [TestMethod]
-    public void Login_ValidCredentials_SetsExpirationTwoHoursLater()
-    {
-        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
-        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
-
-        var fixedNow = new DateTime(2026, 1, 1, 10, 0, 0);
-
-        watchMock
-            .Setup(r => r.Ahora())
-            .Returns(fixedNow);
-
-        var user = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc");
-        user.Id = 1;
-
-        Session? savedSession = null;
-
-        repoUserMock
-            .Setup(r => r.FindByEmail("miguel@gmail.com"))
-            .Returns(user);
-
-        repoSessionMock
-            .Setup(r => r.Add(It.IsAny<Session>()))
-            .Callback<Session>(s => savedSession = s)
-            .Returns((Session s) => s);
-
-        var service = new LoginService(
-            repoUserMock.Object,
-            repoSessionMock.Object,
-            watchMock.Object);
-
-        var request = new LoginRequestDTO
-        {
-            Email = "miguel@gmail.com",
-            Password = "Password@2Ok6Abc"
-        };
-
-        service.Login(request);
-
-        Assert.IsNotNull(savedSession);
-        Assert.AreEqual(fixedNow.AddHours(2), savedSession.ExpireDate);
 
         repoUserMock.Verify(r => r.FindByEmail("miguel@gmail.com"), Times.Once);
         watchMock.Verify(r => r.Ahora(), Times.Once);

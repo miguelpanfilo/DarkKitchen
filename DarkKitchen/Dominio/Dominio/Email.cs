@@ -1,5 +1,3 @@
-using Dominio.Exceptions;
-
 namespace Dominio;
 
 public sealed class Email
@@ -11,21 +9,21 @@ public sealed class Email
         Value = value;
     }
 
-    public static Email MakeEmail(string? email)
+    public static Result<Email> TryMakeEmail(string? email)
     {
         if(string.IsNullOrWhiteSpace(email))
         {
-            throw new UserValidationException("Email cannot be empty");
+            return Result<Email>.Fail("Email cannot be empty");
         }
 
         var emailNormalized = email.Trim().ToLowerInvariant();
 
         if(!HaveCorrectFormat(emailNormalized))
         {
-            throw new UserValidationException("Email format is not valid");
+            return Result<Email>.Fail("Email format is not valid");
         }
 
-        return new Email(emailNormalized);
+        return Result<Email>.Ok(new Email(emailNormalized));
     }
 
     public override string ToString()

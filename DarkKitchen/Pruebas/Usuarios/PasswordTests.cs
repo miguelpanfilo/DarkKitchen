@@ -1,5 +1,4 @@
 using Dominio;
-using Dominio.Exceptions;
 
 namespace Pruebas.Usuarios;
 
@@ -140,7 +139,10 @@ public class PasswordTests
     {
         string? password = null;
 
-        Assert.ThrowsException<UserValidationException>(() => Password.MakePassword(password));
+        var result = Password.TryMakePassword(password);
+
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Password format is not valid", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -148,7 +150,10 @@ public class PasswordTests
     {
         var password = "abc";
 
-        Assert.ThrowsException<UserValidationException>(() => Password.MakePassword(password));
+        var result = Password.TryMakePassword(password);
+
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Password format is not valid", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -156,10 +161,11 @@ public class PasswordTests
     {
         var password = "Password@2Ok6Abc";
 
-        var result = Password.MakePassword(password);
+        var result = Password.TryMakePassword(password);
 
-        Assert.IsNotNull(result);
-        Assert.IsFalse(string.IsNullOrWhiteSpace(result.GetHash()));
+        Assert.IsTrue(result.Success);
+        Assert.IsNotNull(result.Value);
+        Assert.IsFalse(string.IsNullOrWhiteSpace(result.Value!.GetHash()));
     }
 
     [TestMethod]
@@ -167,10 +173,12 @@ public class PasswordTests
     {
         var password = "Password@2Ok6Abc";
 
-        var password1 = Password.MakePassword(password);
-        var password2 = Password.MakePassword(password);
+        var password1 = Password.TryMakePassword(password);
+        var password2 = Password.TryMakePassword(password);
 
-        Assert.AreEqual(password1.GetHash(), password2.GetHash());
+        Assert.IsTrue(password1.Success);
+        Assert.IsTrue(password2.Success);
+        Assert.AreEqual(password1.Value!.GetHash(), password2.Value!.GetHash());
     }
 
     [TestMethod]
@@ -179,19 +187,23 @@ public class PasswordTests
         var password1 = "Password@2Ok6Abc";
         var password2 = "Password@3Ok7Abc";
 
-        var result1 = Password.MakePassword(password1);
-        var result2 = Password.MakePassword(password2);
+        var result1 = Password.TryMakePassword(password1);
+        var result2 = Password.TryMakePassword(password2);
 
-        Assert.AreNotEqual(result1.GetHash(), result2.GetHash());
+        Assert.IsTrue(result1.Success);
+        Assert.IsTrue(result2.Success);
+        Assert.AreNotEqual(result1.Value!.GetHash(), result2.Value!.GetHash());
     }
 
     [TestMethod]
     public void Verify_CorrectPassword_ReturnsTrue()
     {
         var passwordText = "Password@2Ok6Abc";
-        var password = Password.MakePassword(passwordText);
+        var passwordResult = Password.TryMakePassword(passwordText);
 
-        var isCorrect = password.VerifyHash(passwordText);
+        Assert.IsTrue(passwordResult.Success);
+
+        var isCorrect = passwordResult.Value!.VerifyHash(passwordText);
 
         Assert.IsTrue(isCorrect);
     }
@@ -200,9 +212,11 @@ public class PasswordTests
     public void Verify_IncorrectPassword_ReturnsFalse()
     {
         var passwordText = "Password@2Ok6Abc";
-        var password = Password.MakePassword(passwordText);
+        var passwordResult = Password.TryMakePassword(passwordText);
 
-        var isCorrect = password.VerifyHash("Password@3Ok7Abc");
+        Assert.IsTrue(passwordResult.Success);
+
+        var isCorrect = passwordResult.Value!.VerifyHash("Password@3Ok7Abc");
 
         Assert.IsFalse(isCorrect);
     }

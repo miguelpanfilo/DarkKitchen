@@ -1,7 +1,6 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
-using Dominio.Exceptions;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
@@ -19,13 +18,17 @@ public class SignUpInternUserTests
         var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
         var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
-        var loggedInUser = User.MakeIntern(
+        var phoneResult = Phone.TryMakePhone("099999999");
+        Assert.IsTrue(phoneResult.Success);
+        var loggedInUserResult = User.MakeIntern(
             "Admin",
             "Root",
             "root@gmail.com",
-            Phone.MakePhone("099999999"),
+            phoneResult.Value!,
             "PasswordSeguraee3!",
             UserRoles.Administrative);
+        Assert.IsTrue(loggedInUserResult.Success);
+        var loggedInUser = loggedInUserResult.Value!;
         loggedInUser.Id = 1;
 
         adminValidationMock.Setup(v => v.EnsureUserIsAdmin(1));
@@ -91,7 +94,7 @@ public class SignUpInternUserTests
             Role = "Administrative"
         };
 
-        var ex = Assert.ThrowsException<SignUpValidationException>(() =>
+        var ex = Assert.ThrowsException<ValidationException>(() =>
             service.MakeInterUser(1, request));
 
         Assert.AreEqual("Phone is not valid", ex.Message);
@@ -122,7 +125,7 @@ public class SignUpInternUserTests
             Role = "Administrative"
         };
 
-        var ex = Assert.ThrowsException<SignUpValidationException>(() =>
+        var ex = Assert.ThrowsException<ValidationException>(() =>
             service.MakeInterUser(1, request));
 
         Assert.AreEqual("Phone is not valid", ex.Message);
@@ -194,7 +197,7 @@ public class SignUpInternUserTests
             Role = "AdmiNistrAtIve"
         };
 
-        var ex = Assert.ThrowsException<SignUpException>(() =>
+        var ex = Assert.ThrowsException<ConflictException>(() =>
             service.MakeInterUser(1, request));
 
         Assert.AreEqual("Email is already registered", ex.Message);
@@ -222,7 +225,7 @@ public class SignUpInternUserTests
             Role = "Anything"
         };
 
-        var ex = Assert.ThrowsException<SignUpValidationException>(() =>
+        var ex = Assert.ThrowsException<ValidationException>(() =>
             service.MakeInterUser(1, request));
 
         Assert.AreEqual("Internal role is not valid", ex.Message);
@@ -237,14 +240,14 @@ public class SignUpInternUserTests
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(5))
-            .Throws(new UserException("Only an administrative user can perform this action"));
+            .Throws(new ForbiddenException("Only an administrative user can perform this action"));
 
         var service = new SignUpService(
             repoMock.Object,
             phoneValidatorMock.Object,
             adminValidationMock.Object);
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<ForbiddenException>(() =>
             service.MakeInterUser(5, new SingUpInternUserRequestDTO()));
 
         Assert.AreEqual("Only an administrative user can perform this action", ex.Message);
@@ -305,14 +308,14 @@ public class SignUpInternUserTests
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(1))
-            .Throws(new UserException("Only an administrative user can perform this action"));
+            .Throws(new ForbiddenException("Only an administrative user can perform this action"));
 
         var service = new SignUpService(
             repoMock.Object,
             phoneValidatorMock.Object,
             adminValidationMock.Object);
 
-        Assert.ThrowsException<UserException>(() =>
+        Assert.ThrowsException<ForbiddenException>(() =>
             service.MakeInterUser(1, new SingUpInternUserRequestDTO()));
 
         repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);

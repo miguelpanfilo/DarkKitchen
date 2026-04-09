@@ -1,8 +1,8 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
-using Dominio.Exceptions;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using Mapeo;
 
 namespace LogicaDeNegocio;
@@ -52,10 +52,17 @@ public class ModifyUserService(
 
         if(!usuario.VerifyPassword(requestDto.OldPassword))
         {
-            throw new UserValidationException("Current password is incorrect");
+            throw new ValidationException("Current password is incorrect");
         }
 
-        usuario.ModifyPassword(Password.MakePassword(requestDto.NewPassword));
+        var passwordResult = Password.TryMakePassword(requestDto.NewPassword);
+
+        if(!passwordResult.Success)
+        {
+            throw new ValidationException(passwordResult.ErrorMessage!);
+        }
+
+        usuario.ModifyPassword(passwordResult.Value!);
     }
 
     private void UpdateUserData(User user, ModificarUsuarioRequestDTO requestDto)
@@ -69,7 +76,17 @@ public class ModifyUserService(
         var roleFinal = ResolveFinalRole(requestDto, user);
         ValidateEmailIfChanged(user, emailUpdate);
 
-        user.ModifyData(nameUpdate, lastNameUpdate, phoneFinal, emailUpdate, roleFinal);
+        var modifyResult = user.ModifyData(
+            nameUpdate,
+            lastNameUpdate,
+            phoneFinal,
+            emailUpdate,
+            roleFinal);
+
+        if(!modifyResult.Success)
+        {
+            throw new ValidationException(modifyResult.ErrorMessage!);
+        }
     }
 
     private Phone BuildFinalPhone(User user, string updatedPhone)
@@ -87,7 +104,7 @@ public class ModifyUserService(
         if(!string.Equals(updatedMail, user.Email.ToString(), StringComparison.OrdinalIgnoreCase) &&
             _repo.EmailExist(updatedMail))
         {
-            throw new UserConflictException("Email is already registered");
+            throw new ConflictException("Email is already registered");
         }
     }
 
@@ -121,11 +138,18 @@ public class ModifyUserService(
 
     private Phone CreateAndValidatePhone(string phone)
     {
-        var newPhone = Phone.MakePhone(phone);
+        var phoneResult = Phone.TryMakePhone(phone);
+
+        if(!phoneResult.Success)
+        {
+            throw new ValidationException(phoneResult.ErrorMessage!);
+        }
+
+        var newPhone = phoneResult.Value!;
 
         if(!_phoneValidator.ItsValid(newPhone.Value))
         {
-            throw new UserValidationException("Phone is not valid");
+            throw new ValidationException("Phone is not valid");
         }
 
         return newPhone;
@@ -145,7 +169,7 @@ public class ModifyUserService(
     {
         if(!Enum.TryParse<UserRoles>(rol, true, out var rolEnum))
         {
-            throw new UserValidationException("Internal role is not valid");
+            throw new ValidationException("Internal role is not valid");
         }
 
         return rolEnum;

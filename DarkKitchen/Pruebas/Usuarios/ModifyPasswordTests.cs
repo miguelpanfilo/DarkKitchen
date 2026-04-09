@@ -1,9 +1,9 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
-using Dominio.Exceptions;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using Moq;
 
 namespace Pruebas.Usuarios;
@@ -11,6 +11,40 @@ namespace Pruebas.Usuarios;
 [TestClass]
 public class ModifyPasswordTests
 {
+    private static Phone CreateValidPhone(string number)
+    {
+        var phoneResult = Phone.TryMakePhone(number);
+        Assert.IsTrue(phoneResult.Success);
+        Assert.IsNotNull(phoneResult.Value);
+        return phoneResult.Value!;
+    }
+
+    private static User CreateAdministrativeUser(
+        string name,
+        string lastName,
+        string email,
+        string phone,
+        string password,
+        int id)
+    {
+        var validPhone = CreateValidPhone(phone);
+
+        var userResult = User.MakeIntern(
+            name,
+            lastName,
+            email,
+            validPhone,
+            password,
+            UserRoles.Administrative);
+
+        Assert.IsTrue(userResult.Success);
+        Assert.IsNotNull(userResult.Value);
+
+        var user = userResult.Value!;
+        user.Id = id;
+        return user;
+    }
+
     [TestMethod]
     public void UpdateUserPassword_LoggedInUserDoesNotExist_ThrowsExceptionWithCorrectMessage()
     {
@@ -20,7 +54,7 @@ public class ModifyPasswordTests
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99))
-            .Throws(new UserException("User does not exist"));
+            .Throws(new NotFoundException("User does not exist"));
 
         var service = new ModifyUserService(
             repoMock.Object,
@@ -33,7 +67,7 @@ public class ModifyPasswordTests
             NewPassword = "ClaveNuevaSegura4!"
         };
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<NotFoundException>(() =>
             service.UpdateUserPassword(5, 99, request));
 
         Assert.AreEqual("User does not exist", ex.Message);
@@ -46,14 +80,13 @@ public class ModifyPasswordTests
         var validadorTelefonoMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
         var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
-        var usuario = User.MakeIntern(
+        var usuario = CreateAdministrativeUser(
             "Juan",
             "Perez",
             "admin@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuario.Id = 5;
+            5);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
@@ -90,7 +123,7 @@ public class ModifyPasswordTests
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99))
-            .Throws(new UserException("Only an administrative user can perform this action"));
+            .Throws(new ForbiddenException("Only an administrative user can perform this action"));
 
         var service = new ModifyUserService(
             repoMock.Object,
@@ -103,7 +136,7 @@ public class ModifyPasswordTests
             NewPassword = "ClaveNuevaSegura4!"
         };
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<ForbiddenException>(() =>
             service.UpdateUserPassword(5, 99, request));
 
         Assert.AreEqual("Only an administrative user can perform this action", ex.Message);
@@ -116,14 +149,13 @@ public class ModifyPasswordTests
         var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
         var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
-        var user = User.MakeIntern(
+        var user = CreateAdministrativeUser(
             "Juan",
             "Perez",
             "admin@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        user.Id = 5;
+            5);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
@@ -146,7 +178,7 @@ public class ModifyPasswordTests
             NewPassword = "ClaveNuevaSegura4!"
         };
 
-        var ex = Assert.ThrowsException<UserValidationException>(() =>
+        var ex = Assert.ThrowsException<ValidationException>(() =>
             service.UpdateUserPassword(5, 99, request));
 
         Assert.AreEqual("Current password is incorrect", ex.Message);
@@ -159,14 +191,13 @@ public class ModifyPasswordTests
         var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
         var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
-        var user = User.MakeIntern(
+        var user = CreateAdministrativeUser(
             "Juan",
             "Perez",
             "admin@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        user.Id = 5;
+            5);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
@@ -189,7 +220,7 @@ public class ModifyPasswordTests
             NewPassword = "123"
         };
 
-        var ex = Assert.ThrowsException<UserValidationException>(() =>
+        var ex = Assert.ThrowsException<ValidationException>(() =>
             service.UpdateUserPassword(5, 99, request));
 
         Assert.AreEqual("Password format is not valid", ex.Message);
@@ -210,7 +241,7 @@ public class ModifyPasswordTests
 
         adminValidationMock
             .Setup(v => v.GetExistingUser(5))
-            .Throws(new UserException("User does not exist"));
+            .Throws(new NotFoundException("User does not exist"));
 
         var service = new ModifyUserService(
             repoMock.Object,
@@ -223,7 +254,7 @@ public class ModifyPasswordTests
             NewPassword = "ClaveNuevaSegura4!"
         };
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<NotFoundException>(() =>
             service.UpdateUserPassword(5, 99, request));
 
         Assert.AreEqual("User does not exist", ex.Message);
@@ -236,14 +267,13 @@ public class ModifyPasswordTests
         var validadorTelefonoMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
         var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
-        var usuario = User.MakeIntern(
+        var usuario = CreateAdministrativeUser(
             "Juan",
             "Perez",
             "admin@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuario.Id = 5;
+            5);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
@@ -266,7 +296,7 @@ public class ModifyPasswordTests
             NewPassword = "ClaveNuevaSegura4!"
         };
 
-        Assert.ThrowsException<UserValidationException>(() =>
+        Assert.ThrowsException<ValidationException>(() =>
             service.UpdateUserPassword(5, 99, request));
 
         Assert.IsTrue(usuario.Password.VerifyHash("PasswordSeguraee3!"));
@@ -284,7 +314,7 @@ public class ModifyPasswordTests
 
         adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(5, 5, It.IsAny<string>()))
-            .Throws(new UserException("A user cannot modify itself"));
+            .Throws(new ConflictException("A user cannot modify itself"));
 
         var service = new ModifyUserService(
             repoMock.Object,
@@ -297,7 +327,7 @@ public class ModifyPasswordTests
             NewPassword = "ClaveNuevaSegura4!"
         };
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<ConflictException>(() =>
             service.UpdateUserPassword(5, 5, request));
 
         Assert.AreEqual("A user cannot modify itself", ex.Message);
@@ -312,7 +342,7 @@ public class ModifyPasswordTests
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99))
-            .Throws(new UserException("Only an administrative user can perform this action"));
+            .Throws(new ForbiddenException("Only an administrative user can perform this action"));
 
         var service = new ModifyUserService(
             repoMock.Object,
@@ -325,7 +355,7 @@ public class ModifyPasswordTests
             NewPassword = "ClaveNuevaSegura4!"
         };
 
-        Assert.ThrowsException<UserException>(() =>
+        Assert.ThrowsException<ForbiddenException>(() =>
             service.UpdateUserPassword(5, 99, request));
 
         adminValidationMock.Verify(v => v.GetExistingUser(It.IsAny<int>()), Times.Never);
@@ -343,7 +373,7 @@ public class ModifyPasswordTests
 
         adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(5, 5, It.IsAny<string>()))
-            .Throws(new UserException("A user cannot modify itself"));
+            .Throws(new ConflictException("A user cannot modify itself"));
 
         var service = new ModifyUserService(
             repoMock.Object,
@@ -356,7 +386,7 @@ public class ModifyPasswordTests
             NewPassword = "ClaveNuevaSegura4!"
         };
 
-        Assert.ThrowsException<UserException>(() =>
+        Assert.ThrowsException<ConflictException>(() =>
             service.UpdateUserPassword(5, 5, request));
 
         adminValidationMock.Verify(v => v.GetExistingUser(It.IsAny<int>()), Times.Never);
@@ -369,14 +399,13 @@ public class ModifyPasswordTests
         var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
         var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
-        var usuario = User.MakeIntern(
+        var usuario = CreateAdministrativeUser(
             "Juan",
             "Perez",
             "admin@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuario.Id = 5;
+            5);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99));

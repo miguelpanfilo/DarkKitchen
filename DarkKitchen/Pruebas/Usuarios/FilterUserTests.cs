@@ -1,9 +1,9 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
-using Dominio.Exceptions;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using Moq;
 
 namespace Pruebas.Usuarios;
@@ -11,29 +11,89 @@ namespace Pruebas.Usuarios;
 [TestClass]
 public class FilterUserTests
 {
+    private static Phone CreateValidPhone(string phone)
+    {
+        var phoneResult = Phone.TryMakePhone(phone);
+        Assert.IsTrue(phoneResult.Success);
+        Assert.IsNotNull(phoneResult.Value);
+        return phoneResult.Value!;
+    }
+
+    private static User CreateInternalUser(
+        string name,
+        string lastName,
+        string email,
+        string phone,
+        string password,
+        UserRoles role,
+        int id)
+    {
+        var validPhone = CreateValidPhone(phone);
+
+        var userResult = User.MakeIntern(
+            name,
+            lastName,
+            email,
+            validPhone,
+            password,
+            role);
+
+        Assert.IsTrue(userResult.Success);
+        Assert.IsNotNull(userResult.Value);
+
+        var user = userResult.Value!;
+        user.Id = id;
+        return user;
+    }
+
+    private static User CreateClientUser(
+        string name,
+        string lastName,
+        string email,
+        string phone,
+        string password,
+        int id)
+    {
+        var validPhone = CreateValidPhone(phone);
+
+        var userResult = User.MakeClient(
+            name,
+            lastName,
+            email,
+            validPhone,
+            password);
+
+        Assert.IsTrue(userResult.Success);
+        Assert.IsNotNull(userResult.Value);
+
+        var user = userResult.Value!;
+        user.Id = id;
+        return user;
+    }
+
     [TestMethod]
     public void BuscarUsuariosPorNombre_NombreExistente_RetornaUsuariosCoincidentes()
     {
         var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
-        var usuario1 = User.MakeIntern(
+        var usuario1 = CreateInternalUser(
             "Juan",
             "Perez",
             "juan1@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuario1.Id = 1;
+            UserRoles.Administrative,
+            1);
 
-        var usuario2 = User.MakeIntern(
+        var usuario2 = CreateInternalUser(
             "Juan",
             "Gomez",
             "juan2@gmail.com",
-            Phone.MakePhone("099111222"),
+            "099111222",
             "PasswordSeguraaa4!",
-            UserRoles.Preparer);
-        usuario2.Id = 2;
+            UserRoles.Preparer,
+            2);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99));
@@ -62,14 +122,14 @@ public class FilterUserTests
         var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
-        var usuario = User.MakeIntern(
+        var usuario = CreateInternalUser(
             "Pedro",
             "Perez",
             "pedro@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuario.Id = 1;
+            UserRoles.Administrative,
+            1);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99));
@@ -96,23 +156,23 @@ public class FilterUserTests
         var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
-        var usuario1 = User.MakeIntern(
+        var usuario1 = CreateInternalUser(
             "Juan",
             "Perez",
             "juan@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuario1.Id = 1;
+            UserRoles.Administrative,
+            1);
 
-        var usuario2 = User.MakeIntern(
+        var usuario2 = CreateInternalUser(
             "Pedro",
             "Gomez",
             "pedro@gmail.com",
-            Phone.MakePhone("099111222"),
+            "099111222",
             "PasswordSeguraaa4!",
-            UserRoles.Preparer);
-        usuario2.Id = 2;
+            UserRoles.Preparer,
+            2);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99));
@@ -141,14 +201,14 @@ public class FilterUserTests
         var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
-        var usuario = User.MakeIntern(
+        var usuario = CreateInternalUser(
             "Juan",
             "Perez",
             "juan@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuario.Id = 1;
+            UserRoles.Administrative,
+            1);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99));
@@ -201,13 +261,13 @@ public class FilterUserTests
         var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
-        var usuario = User.MakeClient(
+        var usuario = CreateClientUser(
             "Juan",
             "Perez",
             "juan@gmail.com",
-            Phone.MakePhone("099123456"),
-            "PasswordSeguraee3!");
-        usuario.Id = 100;
+            "099123456",
+            "PasswordSeguraee3!",
+            100);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99));
@@ -240,23 +300,23 @@ public class FilterUserTests
         var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
-        var usuario1 = User.MakeIntern(
+        var usuario1 = CreateInternalUser(
             "Juan",
             "Perez",
             "juan1@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuario1.Id = 1;
+            UserRoles.Administrative,
+            1);
 
-        var usuario2 = User.MakeIntern(
+        var usuario2 = CreateInternalUser(
             "Pedro",
             "Perez",
             "pedro@gmail.com",
-            Phone.MakePhone("099111222"),
+            "099111222",
             "PasswordSeguraaa4!",
-            UserRoles.Preparer);
-        usuario2.Id = 2;
+            UserRoles.Preparer,
+            2);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99));
@@ -285,23 +345,23 @@ public class FilterUserTests
         var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
-        var usuario1 = User.MakeIntern(
+        var usuario1 = CreateInternalUser(
             "Juan",
             "Perez",
             "juan1@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuario1.Id = 1;
+            UserRoles.Administrative,
+            1);
 
-        var usuario2 = User.MakeIntern(
+        var usuario2 = CreateInternalUser(
             "Pedro",
             "Perez",
             "pedro@gmail.com",
-            Phone.MakePhone("099111222"),
+            "099111222",
             "PasswordSeguraaa4!",
-            UserRoles.Preparer);
-        usuario2.Id = 2;
+            UserRoles.Preparer,
+            2);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99));
@@ -330,14 +390,14 @@ public class FilterUserTests
         var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
-        var usuario = User.MakeIntern(
+        var usuario = CreateInternalUser(
             "Juan",
             "Gomez",
             "juan@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuario.Id = 1;
+            UserRoles.Administrative,
+            1);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99));
@@ -364,23 +424,23 @@ public class FilterUserTests
         var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
-        var usuario1 = User.MakeIntern(
+        var usuario1 = CreateInternalUser(
             "Juan",
             "Perez",
             "juan@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuario1.Id = 1;
+            UserRoles.Administrative,
+            1);
 
-        var usuario2 = User.MakeIntern(
+        var usuario2 = CreateInternalUser(
             "Pedro",
             "Gomez",
             "pedro@gmail.com",
-            Phone.MakePhone("099111222"),
+            "099111222",
             "PasswordSeguraaa4!",
-            UserRoles.Preparer);
-        usuario2.Id = 2;
+            UserRoles.Preparer,
+            2);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99));
@@ -437,14 +497,14 @@ public class FilterUserTests
         var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
-        var usuario = User.MakeIntern(
+        var usuario = CreateInternalUser(
             "Juan",
             "Perez",
             "juan@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuario.Id = 1;
+            UserRoles.Administrative,
+            1);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99));
@@ -471,14 +531,14 @@ public class FilterUserTests
         var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
-        var usuario = User.MakeIntern(
+        var usuario = CreateInternalUser(
             "Juan",
             "Perez",
             "juan@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuario.Id = 1;
+            UserRoles.Administrative,
+            1);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99));
@@ -506,14 +566,14 @@ public class FilterUserTests
         var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
-        var usuario = User.MakeIntern(
+        var usuario = CreateInternalUser(
             "Juan",
             "Perez",
             "juan@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        usuario.Id = 1;
+            UserRoles.Administrative,
+            1);
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99));
@@ -545,7 +605,7 @@ public class FilterUserTests
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(5))
-            .Throws(new UserException("Only an administrative user can perform this action"));
+            .Throws(new ForbiddenException("Only an administrative user can perform this action"));
 
         var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
 
@@ -554,7 +614,7 @@ public class FilterUserTests
             Name = "Juan"
         };
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<ForbiddenException>(() =>
             service.BuscarUsuarios(5, request));
 
         Assert.AreEqual("Only an administrative user can perform this action", ex.Message);
@@ -568,7 +628,7 @@ public class FilterUserTests
 
         adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(5))
-            .Throws(new UserException("Only an administrative user can perform this action"));
+            .Throws(new ForbiddenException("Only an administrative user can perform this action"));
 
         var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
 
@@ -577,7 +637,7 @@ public class FilterUserTests
             Name = "Juan"
         };
 
-        var ex = Assert.ThrowsException<UserException>(() =>
+        var ex = Assert.ThrowsException<ForbiddenException>(() =>
             service.BuscarUsuarios(5, request));
 
         Assert.AreEqual("Only an administrative user can perform this action", ex.Message);
