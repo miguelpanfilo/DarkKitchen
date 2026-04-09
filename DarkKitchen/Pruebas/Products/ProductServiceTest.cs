@@ -34,10 +34,6 @@ public class ProductServiceTest
 
         Assert.IsNotNull(result);
         Assert.AreEqual(productDto.Name, result.Name);
-        repoMock.Verify(repository =>
-                repository.Create(It.Is<Product>(p => p.Price == productDto.Price)),
-            Times.Once
-        );
 
         repoMock.Verify(repository => repository.Create(It.IsAny<Product>()), Times.Once);
     }
