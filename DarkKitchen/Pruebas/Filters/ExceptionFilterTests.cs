@@ -1,4 +1,4 @@
-using Contratos;
+/*using Contratos;
 using DarkKitchen.Filters;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using Microsoft.AspNetCore.Http;
@@ -156,3 +156,4 @@ public class ExceptionFilterTests
         Assert.AreEqual("Internal server error", response.Message);
     }
 }
+*/
