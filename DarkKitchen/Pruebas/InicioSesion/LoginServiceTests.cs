@@ -49,7 +49,7 @@ public class LoginServiceTests
 
         Assert.IsNotNull(response);
         Assert.AreEqual(1, response.UserId);
-        Assert.AreEqual("Client", response.Role);
+        Assert.AreEqual("Cliente", response.Role);
         Assert.AreNotEqual(Guid.Empty, response.SessionId);
     }
 
@@ -194,7 +194,7 @@ public class LoginServiceTests
 
         var response = service.Login(request);
 
-        Assert.AreEqual("Client", response.Role);
+        Assert.AreEqual("Cliente", response.Role);
     }
 
     [TestMethod]

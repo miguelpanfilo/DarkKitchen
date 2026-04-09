@@ -212,7 +212,7 @@ public class FilterUserTests
         Assert.AreEqual("Juan", resultado[0].Name);
         Assert.AreEqual("Perez", resultado[0].LastName);
         Assert.AreEqual("juan@gmail.com", resultado[0].Email);
-        Assert.AreEqual("Client", resultado[0].Role);
+        Assert.AreEqual("Cliente", resultado[0].Role);
         Assert.AreEqual("099123456", resultado[0].Phone);
     }
 
