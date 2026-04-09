@@ -4,8 +4,6 @@
 
 .env*
 
-# Mac
-.DS_store
 
 # mstest test results
 TestResults
