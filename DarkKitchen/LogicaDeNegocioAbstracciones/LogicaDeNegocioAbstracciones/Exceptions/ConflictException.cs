@@ -1,7 +1,3 @@
 namespace LogicaDeNegocioAbstracciones.Exceptions;
 
-public class ConflictException : LogicException
-{
-    public ConflictException(string message)
-        : base(message) { }
-}
+public class ConflictException(string message) : LogicException(message);

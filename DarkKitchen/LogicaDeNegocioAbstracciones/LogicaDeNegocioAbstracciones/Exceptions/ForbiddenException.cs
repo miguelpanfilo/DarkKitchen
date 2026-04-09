@@ -1,7 +1,3 @@
 namespace LogicaDeNegocioAbstracciones.Exceptions;
 
-public class ForbiddenException : LogicException
-{
-    public ForbiddenException(string message)
-        : base(message) { }
-}
+public class ForbiddenException(string message) : LogicException(message);

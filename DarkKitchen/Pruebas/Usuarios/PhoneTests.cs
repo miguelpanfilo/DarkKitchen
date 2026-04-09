@@ -28,7 +28,7 @@ public class PhoneTests
     [TestMethod]
     public void MakePhone_NullPhone_ThrowsExceptionWithCorrectMessage()
     {
-        var phone = String.Empty;
+        var phone = string.Empty;
 
         var result = Phone.TryMakePhone(phone);
 
