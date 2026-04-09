@@ -1,8 +1,8 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
-using Dominio.Exceptions;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using Mapeo;
 
 namespace LogicaDeNegocio;
@@ -21,25 +21,30 @@ public class SignUpService(
     {
         if(_repositoryUser.EmailExist(requestDto.Email))
         {
-            throw new UserException("Email is already registered");
+            throw new ConflictException("Email is already registered");
         }
 
         var phone = MakeAndValidatePhone(requestDto.Phone);
 
-        var user = User.MakeClient(
+        var userResult = User.MakeClient(
             requestDto.Name,
             requestDto.LastName,
             requestDto.Email,
             phone,
             requestDto.Password);
 
-        var newUser = _repositoryUser.Add(user);
+        if(!userResult.Success)
+        {
+            throw new ValidationException(userResult.ErrorMessage!);
+        }
+
+        var newUser = _repositoryUser.Add(userResult.Value!);
 
         return new SignUpClientResponseDTO
         {
             Name = newUser.Name,
             LastName = newUser.LastName,
-            Email = newUser.Email.ToString(),
+            Email = newUser.Email.ToString()
         };
     }
 
@@ -52,21 +57,26 @@ public class SignUpService(
 
         if(_repositoryUser.EmailExist(requestDto.Email))
         {
-            throw new UserException("Email is already registered");
+            throw new ConflictException("Email is already registered");
         }
 
-        var user = UserMapper.MappingDTOToInternUser(requestDto, phone, role);
+        var userResult = requestDto.MappingDTOToInternUser(phone, role);
 
-        var newUser = _repositoryUser.Add(user);
+        if(!userResult.Success)
+        {
+            throw new ValidationException(userResult.ErrorMessage!);
+        }
+
+        var newUser = _repositoryUser.Add(userResult.Value!);
 
         return newUser.MappingUserToResponseDTO();
     }
 
-    private UserRoles GetInternRoleValid(string rol)
+    private UserRoles GetInternRoleValid(string role)
     {
-        if(!Enum.TryParse<UserRoles>(rol, true, out var rolEnum))
+        if(!Enum.TryParse<UserRoles>(role, true, out var rolEnum))
         {
-            throw new UserException("Internal role is not valid");
+            throw new ValidationException("Internal role is not valid");
         }
 
         return rolEnum;
@@ -74,11 +84,18 @@ public class SignUpService(
 
     private Phone MakeAndValidatePhone(string phone)
     {
-        var newPhone = Phone.MakePhone(phone);
+        var phoneResult = Phone.TryMakePhone(phone);
+
+        if(!phoneResult.Success)
+        {
+            throw new ValidationException(phoneResult.ErrorMessage!);
+        }
+
+        var newPhone = phoneResult.Value!;
 
         if(!_validatorPhone.ItsValid(newPhone.Value))
         {
-            throw new UserException("Phone is not valid");
+            throw new ValidationException("Phone is not valid");
         }
 
         return newPhone;

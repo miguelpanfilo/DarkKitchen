@@ -1,4 +1,4 @@
-using Dominio.Exceptions;
+namespace Dominio;
 
 public sealed class Phone
 {
@@ -9,21 +9,21 @@ public sealed class Phone
         Value = value;
     }
 
-    public static Phone MakePhone(string number)
+    public static Result<Phone> TryMakePhone(string number)
     {
         if(string.IsNullOrWhiteSpace(number))
         {
-            throw new UserException("Phone cannot be empty");
+            return Result<Phone>.Fail("Phone cannot be empty");
         }
 
         var phoneNormalized = number.Trim();
 
         if(!phoneNormalized.All(char.IsDigit))
         {
-            throw new UserException("Phone must contain only digits");
+            return Result<Phone>.Fail("Phone must contain only digits");
         }
 
-        return new Phone(phoneNormalized);
+        return Result<Phone>.Ok(new Phone(phoneNormalized));
     }
 
     public override string ToString()

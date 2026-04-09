@@ -24,14 +24,28 @@ public class RepositoryUser : IRepositoryUser
 
     public bool EmailExist(string email)
     {
-        var searchingEmail = Email.MakeEmail(email);
+        var emailResult = Email.TryMakeEmail(email);
+
+        if(!emailResult.Success)
+        {
+            return false;
+        }
+
+        var searchingEmail = emailResult.Value!;
 
         return _users.Any(u => u.Email.IsTheSame(searchingEmail));
     }
 
     public User? FindByEmail(string email)
     {
-        var searchingEmail = Email.MakeEmail(email);
+        var emailResult = Email.TryMakeEmail(email);
+
+        if(!emailResult.Success)
+        {
+            return null;
+        }
+
+        var searchingEmail = emailResult.Value!;
 
         return _users.FirstOrDefault(u => u.Email.IsTheSame(searchingEmail));
     }

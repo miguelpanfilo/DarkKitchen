@@ -9,18 +9,12 @@ namespace Pruebas.Usuarios;
 public class UserServiceIntegrationTests
 {
     [TestMethod]
-    public void RegistrarCliente_LlamaAlServicioDeAltaUnaVez()
+    public void RegisterClient_CallsSignUpServiceOnce()
     {
-        var altaMock = new Mock<ISignUpUserService>();
-        var modificacionMock = new Mock<IModifyUserService>();
-        var eliminacionMock = new Mock<IDeleteUserService>();
-        var consultaMock = new Mock<IFilterUserService>();
-
-        var service = new UserService(
-            altaMock.Object,
-            modificacionMock.Object,
-            eliminacionMock.Object,
-            consultaMock.Object);
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+        var filterUserServiceMock = new Mock<IFilterUserService>(MockBehavior.Strict);
 
         var request = new SignUpClientRequestDTO
         {
@@ -31,26 +25,30 @@ public class UserServiceIntegrationTests
             Password = "Password@2Ok6Abc"
         };
 
+        signUpServiceMock
+            .Setup(x => x.SignUpClient(request))
+            .Returns(new SignUpClientResponseDTO { Name = "Miguel", LastName = "Lopez", Email = "miguel@gmail.com" });
+
+        var service = new UserService(
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object,
+            filterUserServiceMock.Object);
+
         service.RegistrarCliente(request);
 
-        altaMock.Verify(
+        signUpServiceMock.Verify(
             x => x.SignUpClient(request),
             Times.Once);
     }
 
     [TestMethod]
-    public void CrearUsuarioInterno_LlamaAlServicioDeAltaUnaVez()
+    public void CreateInternalUser_CallsSignUpServiceOnce()
     {
-        var altaMock = new Mock<ISignUpUserService>();
-        var modificacionMock = new Mock<IModifyUserService>();
-        var eliminacionMock = new Mock<IDeleteUserService>();
-        var consultaMock = new Mock<IFilterUserService>();
-
-        var service = new UserService(
-            altaMock.Object,
-            modificacionMock.Object,
-            eliminacionMock.Object,
-            consultaMock.Object);
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+        var filterUserServiceMock = new Mock<IFilterUserService>(MockBehavior.Strict);
 
         var request = new SingUpInternUserRequestDTO
         {
@@ -62,52 +60,72 @@ public class UserServiceIntegrationTests
             Role = "Administrativo"
         };
 
+        signUpServiceMock
+            .Setup(x => x.MakeInterUser(1, request))
+            .Returns(new UsuarioResponseDTO()
+            {
+                Id = 10,
+                Name = "Juan",
+                LastName = "Perez",
+                Email = "admin@gmail.com",
+                Role = "Administrative"
+            });
+
+        var service = new UserService(
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object,
+            filterUserServiceMock.Object);
+
         service.CrearUsuarioInterno(1, request);
 
-        altaMock.Verify(
+        signUpServiceMock.Verify(
             x => x.MakeInterUser(1, request),
             Times.Once);
     }
 
     [TestMethod]
-    public void ModificarUsuarioInterno_LlamaAlServicioDeModificacionUnaVez()
+    public void UpdateInternalUser_CallsModifyServiceOnce()
     {
-        var altaMock = new Mock<ISignUpUserService>();
-        var modificacionMock = new Mock<IModifyUserService>();
-        var eliminacionMock = new Mock<IDeleteUserService>();
-        var consultaMock = new Mock<IFilterUserService>();
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+        var filterUserServiceMock = new Mock<IFilterUserService>(MockBehavior.Strict);
+
+        var request = new ModificarUsuarioRequestDTO { Name = "Carlos" };
+
+        modifyUserServiceMock
+            .Setup(x => x.UpdateInternalUser(5, 99, request))
+            .Returns(new UsuarioResponseDTO()
+            {
+                Id = 5,
+                Name = "Carlos",
+                LastName = "Perez",
+                Email = "admin@gmail.com",
+                Phone = "099123456",
+                Role = "Administrative"
+            });
 
         var service = new UserService(
-            altaMock.Object,
-            modificacionMock.Object,
-            eliminacionMock.Object,
-            consultaMock.Object);
-
-        var request = new ModificarUsuarioRequestDTO
-        {
-            Name = "Carlos"
-        };
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object,
+            filterUserServiceMock.Object);
 
         service.ModificarUsuarioInterno(5, 99, request);
 
-        modificacionMock.Verify(
+        modifyUserServiceMock.Verify(
             x => x.UpdateInternalUser(5, 99, request),
             Times.Once);
     }
 
     [TestMethod]
-    public void ModificarClaveUsuario_LlamaAlServicioDeModificacionUnaVez()
+    public void UpdateUserPassword_CallsModifyServiceOnce()
     {
-        var altaMock = new Mock<ISignUpUserService>();
-        var modificacionMock = new Mock<IModifyUserService>();
-        var eliminacionMock = new Mock<IDeleteUserService>();
-        var consultaMock = new Mock<IFilterUserService>();
-
-        var service = new UserService(
-            altaMock.Object,
-            modificacionMock.Object,
-            eliminacionMock.Object,
-            consultaMock.Object);
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+        var filterUserServiceMock = new Mock<IFilterUserService>(MockBehavior.Strict);
 
         var request = new ModificarClaveRequestDTO
         {
@@ -115,57 +133,69 @@ public class UserServiceIntegrationTests
             NewPassword = "ClaveNuevaSegura4!"
         };
 
+        modifyUserServiceMock
+            .Setup(x => x.UpdateUserPassword(5, 99, request));
+
+        var service = new UserService(
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object,
+            filterUserServiceMock.Object);
+
         service.ModificarClaveUsuario(5, 99, request);
 
-        modificacionMock.Verify(
+        modifyUserServiceMock.Verify(
             x => x.UpdateUserPassword(5, 99, request),
             Times.Once);
     }
 
     [TestMethod]
-    public void EliminarUsuarioInterno_LlamaAlServicioDeEliminacionUnaVez()
+    public void DeleteInternalUser_CallsDeleteServiceOnce()
     {
-        var altaMock = new Mock<ISignUpUserService>();
-        var modificacionMock = new Mock<IModifyUserService>();
-        var eliminacionMock = new Mock<IDeleteUserService>();
-        var consultaMock = new Mock<IFilterUserService>();
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+        var filterUserServiceMock = new Mock<IFilterUserService>(MockBehavior.Strict);
+
+        deleteUserServiceMock
+            .Setup(x => x.DeleteInterUser(5, 99));
 
         var service = new UserService(
-            altaMock.Object,
-            modificacionMock.Object,
-            eliminacionMock.Object,
-            consultaMock.Object);
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object,
+            filterUserServiceMock.Object);
 
         service.EliminarUsuarioInterno(5, 99);
 
-        eliminacionMock.Verify(
+        deleteUserServiceMock.Verify(
             x => x.DeleteInterUser(5, 99),
             Times.Once);
     }
 
     [TestMethod]
-    public void BuscarUsuarios_LlamaAlServicioDeConsultaUnaVez()
+    public void SearchUsers_CallsFilterServiceOnce()
     {
-        var altaMock = new Mock<ISignUpUserService>();
-        var modificacionMock = new Mock<IModifyUserService>();
-        var eliminacionMock = new Mock<IDeleteUserService>();
-        var consultaMock = new Mock<IFilterUserService>();
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+        var filterUserServiceMock = new Mock<IFilterUserService>(MockBehavior.Strict);
+
+        var request = new FindUserRequestDTO { Name = "Juan", LastName = "Perez" };
+
+        filterUserServiceMock
+            .Setup(x => x.BuscarUsuarios(99, request))
+            .Returns([]);
 
         var service = new UserService(
-            altaMock.Object,
-            modificacionMock.Object,
-            eliminacionMock.Object,
-            consultaMock.Object);
-
-        var request = new FindUserRequestDTO
-        {
-            Name = "Juan",
-            LastName = "Perez"
-        };
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object,
+            filterUserServiceMock.Object);
 
         service.BuscarUsuarios(99, request);
 
-        consultaMock.Verify(
+        filterUserServiceMock.Verify(
             x => x.BuscarUsuarios(99, request),
             Times.Once);
     }

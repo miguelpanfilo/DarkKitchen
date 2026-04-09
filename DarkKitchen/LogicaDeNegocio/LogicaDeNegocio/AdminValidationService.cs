@@ -1,7 +1,7 @@
 using AlmacenamientoAbstracciones;
 using Dominio;
-using Dominio.Exceptions;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Exceptions;
 
 namespace LogicaDeNegocio;
 
@@ -17,7 +17,7 @@ public class AdminValidationService(IRepositoryUser repositoryUser) : IAdminVali
 
         if(user == null)
         {
-            throw new UserException(UserNotFoundMessage);
+            throw new NotFoundException(UserNotFoundMessage);
         }
 
         return user;
@@ -29,7 +29,7 @@ public class AdminValidationService(IRepositoryUser repositoryUser) : IAdminVali
 
         if(user.Role != UserRoles.Administrative)
         {
-            throw new UserException(OnlyAdminMessage);
+            throw new ForbiddenException(OnlyAdminMessage);
         }
     }
 
@@ -37,7 +37,7 @@ public class AdminValidationService(IRepositoryUser repositoryUser) : IAdminVali
     {
         if(targetUserId == loggedUserId)
         {
-            throw new UserException(message);
+            throw new ConflictException(message);
         }
     }
 }
