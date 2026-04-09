@@ -16,4 +16,8 @@
       <Folder Include="Controladores\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\LogicaDeNegocioAbstracciones\LogicaDeNegocioAbstracciones\LogicaDeNegocioAbstracciones.csproj" />
+    </ItemGroup>
+
 </Project>
