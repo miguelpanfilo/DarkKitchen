@@ -17,7 +17,7 @@ public class User
         var emailValido = Email.MakeEmail(email);
         var claveHasheada = Password.MakePassword(clave);
 
-        return new User(nombre, apellido, emailValido, phone, claveHasheada, UserRoles.Client);
+        return new User(nombre, apellido, emailValido, phone, claveHasheada, UserRoles.Cliente);
     }
 
     private User(string name, string lastname, Email email, Phone phone, Password password, UserRoles role)

@@ -8,7 +8,7 @@ public enum UserRoles
     /// <summary>
     /// Client user.
     /// </summary>
-    Client = 1,
+    Cliente = 1,
 
     /// <summary>
     /// Preparer user.

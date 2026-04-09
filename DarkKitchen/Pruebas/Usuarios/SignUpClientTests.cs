@@ -692,6 +692,6 @@ public class UserServiceTests
             Phone.MakePhone("099123456"),
             "aaClaveSegura#1a");
 
-        Assert.AreEqual(UserRoles.Client, user.Role);
+        Assert.AreEqual(UserRoles.Cliente, user.Role);
     }
 }

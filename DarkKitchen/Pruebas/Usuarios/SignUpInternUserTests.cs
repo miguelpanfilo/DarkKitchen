@@ -347,7 +347,7 @@ public class SignUpInternUserTests
             "admin@gmail.com",
             Phone.MakePhone("099123456"),
             "PasswordSeguraee3!",
-            UserRoles.Client);
+            UserRoles.Cliente);
     }
 
     [TestMethod]
