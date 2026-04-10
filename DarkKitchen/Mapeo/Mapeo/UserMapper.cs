@@ -1,15 +1,14 @@
 using Contratos;
 using Dominio;
-using Dominio.Exceptions;
 
 namespace Mapeo;
 
 public static class UserMapper
 {
-    public static User MappingDTOToInternUser(
+    public static Result<User> MappingDTOToInternUser(
         this SingUpInternUserRequestDTO requestDto,
         Phone phone,
-        UserRoles rol)
+        UserRoles role)
     {
         return User.MakeIntern(
             requestDto.Name,
@@ -17,14 +16,14 @@ public static class UserMapper
             requestDto.Email,
             phone,
             requestDto.Password,
-            rol);
+            role);
     }
 
     public static UsuarioResponseDTO MappingUserToResponseDTO(this User user)
     {
         if(user == null)
         {
-            throw new UserException("User cannot be null");
+            throw new ArgumentNullException(nameof(user), "User cannot be null");
         }
 
         return new UsuarioResponseDTO

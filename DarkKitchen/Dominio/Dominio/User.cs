@@ -1,5 +1,3 @@
-using Dominio.Exceptions;
-
 namespace Dominio;
 
 public class User
@@ -12,56 +10,45 @@ public class User
     public Password Password { get; private set; }
     public UserRoles Role { get; private set; }
 
-    public static User MakeClient(string nombre, string apellido, string email, Phone phone, string clave)
+    public static Result<User> MakeClient(string name, string lastName, string email, Phone phone, string password)
     {
-        var emailValido = Email.MakeEmail(email);
-        var claveHasheada = Password.MakePassword(clave);
-
-        return new User(nombre, apellido, emailValido, phone, claveHasheada, UserRoles.Client);
-    }
-
-    private User(string name, string lastname, Email email, Phone phone, Password password, UserRoles role)
-    {
-        ValidatorName(name);
-        ValidatorLastName(lastname);
-
-        Name = name.Trim();
-        LastName = lastname.Trim();
-        Email = email;
-        Phone = phone;
-        Password = password;
-        Role = role;
-    }
-
-    private static void ValidatorName(string nombre)
-    {
-        if(string.IsNullOrWhiteSpace(nombre))
+        var nameResult = ValidateName(name);
+        if(!nameResult.Success)
         {
-            throw new UserException("Name cannot be empty");
+            return Result<User>.Fail(nameResult.ErrorMessage!);
         }
 
-        if(nombre.Any(char.IsDigit))
+        var lastNameResult = ValidateLastName(lastName);
+        if(!lastNameResult.Success)
         {
-            throw new UserException("Name cannot contain numbers");
+            return Result<User>.Fail(lastNameResult.ErrorMessage!);
         }
+
+        var emailResult = Email.TryMakeEmail(email);
+        if(!emailResult.Success)
+        {
+            return Result<User>.Fail(emailResult.ErrorMessage!);
+        }
+
+        var passwordResult = Password.TryMakePassword(password);
+        if(!passwordResult.Success)
+        {
+            return Result<User>.Fail(passwordResult.ErrorMessage!);
+        }
+
+        return Result<User>.Ok(
+            new User(
+                name,
+                lastName,
+                emailResult.Value!,
+                phone,
+                passwordResult.Value!,
+                UserRoles.Client));
     }
 
-    private static void ValidatorLastName(string apellido)
-    {
-        if(string.IsNullOrWhiteSpace(apellido))
-        {
-            throw new UserException("Last name cannot be empty");
-        }
-
-        if(apellido.Trim().Length < 3 || apellido.Trim().Length > 25)
-        {
-            throw new UserException("Last name must be between 3 and 25 characters");
-        }
-    }
-
-    public static User MakeIntern(
+    public static Result<User> MakeIntern(
         string name,
-        string lastname,
+        string lastName,
         string email,
         Phone phone,
         string password,
@@ -71,40 +58,119 @@ public class User
 
         if(!itsValidRole)
         {
-            throw new UserException("Internal role is not valid");
+            return Result<User>.Fail("Internal role is not valid");
         }
 
-        var emailValid = Email.MakeEmail(email);
-        var passwordValid = Password.MakePassword(password);
+        var nameResult = ValidateName(name);
+        if(!nameResult.Success)
+        {
+            return Result<User>.Fail(nameResult.ErrorMessage!);
+        }
 
-        return new User(name, lastname, emailValid, phone, passwordValid, role);
+        var lastNameResult = ValidateLastName(lastName);
+        if(!lastNameResult.Success)
+        {
+            return Result<User>.Fail(lastNameResult.ErrorMessage!);
+        }
+
+        var emailResult = Email.TryMakeEmail(email);
+        if(!emailResult.Success)
+        {
+            return Result<User>.Fail(emailResult.ErrorMessage!);
+        }
+
+        var passwordResult = Password.TryMakePassword(password);
+        if(!passwordResult.Success)
+        {
+            return Result<User>.Fail(passwordResult.ErrorMessage!);
+        }
+
+        return Result<User>.Ok(
+            new User(
+                name,
+                lastName,
+                emailResult.Value!,
+                phone,
+                passwordResult.Value!,
+                role));
     }
 
-    public void ModifyName(string nombre)
+    private User(string name, string lastName, Email email, Phone phone, Password password, UserRoles role)
     {
-        ValidatorName(nombre);
-        Name = nombre.Trim();
-    }
-
-    public void ModifyData(string name, string lastname, Phone phone, string email, UserRoles role)
-    {
-        ValidatorName(name);
-        ValidatorLastName(lastname);
-
         Name = name.Trim();
-        LastName = lastname.Trim();
+        LastName = lastName.Trim();
+        Email = email;
         Phone = phone;
-        Email = Email.MakeEmail(email);
+        Password = password;
         Role = role;
     }
 
-    public bool VerifyPassword(string clave)
+    private static Result<bool> ValidateName(string name)
     {
-        return Password.VerifyHash(clave);
+        if(string.IsNullOrWhiteSpace(name))
+        {
+            return Result<bool>.Fail("Name cannot be empty");
+        }
+
+        if(name.Any(char.IsDigit))
+        {
+            return Result<bool>.Fail("Name cannot contain numbers");
+        }
+
+        return Result<bool>.Ok(true);
     }
 
-    public void ModifyPassword(Password nuevaPassword)
+    private static Result<bool> ValidateLastName(string lastName)
     {
-        Password = nuevaPassword;
+        if(string.IsNullOrWhiteSpace(lastName))
+        {
+            return Result<bool>.Fail("Last name cannot be empty");
+        }
+
+        if(lastName.Trim().Length < 3 || lastName.Trim().Length > 25)
+        {
+            return Result<bool>.Fail("Last name must be between 3 and 25 characters");
+        }
+
+        return Result<bool>.Ok(true);
+    }
+
+    public Result<bool> ModifyData(string name, string lastName, Phone phone, string email, UserRoles role)
+    {
+        var nameResult = ValidateName(name);
+        if(!nameResult.Success)
+        {
+            return Result<bool>.Fail(nameResult.ErrorMessage!);
+        }
+
+        var lastNameResult = ValidateLastName(lastName);
+        if(!lastNameResult.Success)
+        {
+            return Result<bool>.Fail(lastNameResult.ErrorMessage!);
+        }
+
+        var emailResult = Email.TryMakeEmail(email);
+        if(!emailResult.Success)
+        {
+            return Result<bool>.Fail(emailResult.ErrorMessage!);
+        }
+
+        Name = name.Trim();
+        LastName = lastName.Trim();
+        Phone = phone;
+        Email = emailResult.Value!;
+        Role = role;
+
+        return Result<bool>.Ok(true);
+    }
+
+    public bool VerifyPassword(string password)
+    {
+        return Password.VerifyHash(password);
+    }
+
+    public void ModifyPassword(Password newPassword)
+    {
+        Password = newPassword;
     }
 }

@@ -1,9 +1,9 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
-using Dominio.Exceptions;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using Moq;
 
 namespace Pruebas.InicioSesion;
@@ -11,20 +11,41 @@ namespace Pruebas.InicioSesion;
 [TestClass]
 public class LoginServiceTests
 {
-    [TestMethod]
-    public void LoginRightCredentials_ReturnSession()
+    private static Phone CreateValidPhone()
     {
-        var repoUsuarioMock = new Mock<IRepositoryUser>();
-        var repoSesionMock = new Mock<IRepositorySession>();
-        var relojMock = new Mock<IReloj>();
+        var phoneResult = Phone.TryMakePhone("099123456");
+        Assert.IsTrue(phoneResult.Success);
+        Assert.IsNotNull(phoneResult.Value);
+        return phoneResult.Value!;
+    }
 
-        var usuario = User.MakeClient(
+    private static User CreateValidClientUser(int id = 1)
+    {
+        var phone = CreateValidPhone();
+
+        var userResult = User.MakeClient(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
+            phone,
             "Password@2Ok6Abc");
-        usuario.Id = 1;
+
+        Assert.IsTrue(userResult.Success);
+        Assert.IsNotNull(userResult.Value);
+
+        var user = userResult.Value!;
+        user.Id = id;
+        return user;
+    }
+
+    [TestMethod]
+    public void LoginRightCredentials_ReturnSession()
+    {
+        var repoUsuarioMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSesionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var relojMock = new Mock<IReloj>(MockBehavior.Strict);
+
+        var usuario = CreateValidClientUser(1);
 
         repoUsuarioMock
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
@@ -33,6 +54,10 @@ public class LoginServiceTests
         repoSesionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
+
+        relojMock
+            .Setup(r => r.Ahora())
+            .Returns(DateTime.Now);
 
         var service = new LoginService(
             repoUsuarioMock.Object,
@@ -56,9 +81,9 @@ public class LoginServiceTests
     [TestMethod]
     public void Login_NoExistingEmail_Exception()
     {
-        var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSesionMock = new Mock<IRepositorySession>();
-        var watchMock = new Mock<IReloj>();
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSesionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
 
         repoUserMock
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
@@ -75,7 +100,7 @@ public class LoginServiceTests
             Password = "Password@2Ok6Abc"
         };
 
-        var ex = Assert.ThrowsException<UserException>(() => service.Login(request));
+        var ex = Assert.ThrowsException<UserAuthenticationException>(() => service.Login(request));
 
         Assert.AreEqual("Invalid credentials", ex.Message);
 
@@ -85,17 +110,11 @@ public class LoginServiceTests
     [TestMethod]
     public void Login_WrongPassword_Exception()
     {
-        var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSesionMock = new Mock<IRepositorySession>();
-        var watchMock = new Mock<IReloj>();
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSesionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
 
-        var user = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc");
-        user.Id = 1;
+        var user = CreateValidClientUser(1);
 
         repoUserMock
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
@@ -112,7 +131,7 @@ public class LoginServiceTests
             Password = "OtraClave@1aaaaaaaaaa"
         };
 
-        var ex = Assert.ThrowsException<UserException>(() => service.Login(request));
+        var ex = Assert.ThrowsException<UserAuthenticationException>(() => service.Login(request));
 
         Assert.AreEqual("Invalid credentials", ex.Message);
 
@@ -122,17 +141,11 @@ public class LoginServiceTests
     [TestMethod]
     public void Login_CredentialOk_SaveTheSession()
     {
-        var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorySession>();
-        var watchMock = new Mock<IReloj>();
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
 
-        var user = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc");
-        user.Id = 1;
+        var user = CreateValidClientUser(1);
 
         repoUserMock
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
@@ -141,6 +154,10 @@ public class LoginServiceTests
         repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
+
+        watchMock
+            .Setup(r => r.Ahora())
+            .Returns(DateTime.Now);
 
         var service = new LoginService(
             repoUserMock.Object,
@@ -161,17 +178,11 @@ public class LoginServiceTests
     [TestMethod]
     public void Login_ValidClient_ReturnsRole()
     {
-        var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorySession>();
-        var watchMock = new Mock<IReloj>();
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
 
-        var user = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc");
-        user.Id = 1;
+        var user = CreateValidClientUser(1);
 
         repoUserMock
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
@@ -180,6 +191,10 @@ public class LoginServiceTests
         repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
+
+        watchMock
+            .Setup(r => r.Ahora())
+            .Returns(DateTime.Now);
 
         var service = new LoginService(
             repoUserMock.Object,
@@ -200,17 +215,11 @@ public class LoginServiceTests
     [TestMethod]
     public void Login_ValidCliente_ReturnIdUser()
     {
-        var repoUserMcok = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorySession>();
-        var watchMock = new Mock<IReloj>();
+        var repoUserMcok = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
 
-        var user = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc");
-        user.Id = 25;
+        var user = CreateValidClientUser(25);
 
         repoUserMcok
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
@@ -219,6 +228,10 @@ public class LoginServiceTests
         repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
+
+        watchMock
+            .Setup(r => r.Ahora())
+            .Returns(DateTime.Now);
 
         var service = new LoginService(
             repoUserMcok.Object,
@@ -239,17 +252,11 @@ public class LoginServiceTests
     [TestMethod]
     public void Login_ValidCredentials_GenerateSesssionNotNull()
     {
-        var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorySession>();
-        var watchMock = new Mock<IReloj>();
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
 
-        var user = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc");
-        user.Id = 1;
+        var user = CreateValidClientUser(1);
 
         repoUserMock
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
@@ -258,6 +265,10 @@ public class LoginServiceTests
         repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
+
+        watchMock
+            .Setup(r => r.Ahora())
+            .Returns(DateTime.Now);
 
         var service = new LoginService(
             repoUserMock.Object,
@@ -278,17 +289,11 @@ public class LoginServiceTests
     [TestMethod]
     public void Login_WrongPassword_NotSaveSession()
     {
-        var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorySession>();
-        var watchMock = new Mock<IReloj>();
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
 
-        var user = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc");
-        user.Id = 1;
+        var user = CreateValidClientUser(1);
 
         repoUserMock
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
@@ -305,7 +310,7 @@ public class LoginServiceTests
             Password = "Incorrecta@123456"
         };
 
-        Assert.ThrowsException<UserException>(() => service.Login(request));
+        Assert.ThrowsException<UserAuthenticationException>(() => service.Login(request));
 
         repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Never);
     }
@@ -313,9 +318,9 @@ public class LoginServiceTests
     [TestMethod]
     public void Login_NotExistingEmail_NotSaveSession()
     {
-        var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorySession>();
-        var watchMock = new Mock<IReloj>();
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
 
         repoUserMock
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
@@ -332,7 +337,7 @@ public class LoginServiceTests
             Password = "Password@2Ok6Abc"
         };
 
-        Assert.ThrowsException<UserException>(() => service.Login(request));
+        Assert.ThrowsException<UserAuthenticationException>(() => service.Login(request));
 
         repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Never);
     }
@@ -340,16 +345,10 @@ public class LoginServiceTests
     [TestMethod]
     public void Login_ValidCredentials_ReturnExpireDateCorrect()
     {
-        var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorySession>();
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
 
-        var user = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc");
-        user.Id = 1;
+        var user = CreateValidClientUser(1);
 
         repoUserMock
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
@@ -359,7 +358,7 @@ public class LoginServiceTests
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
 
-        var watch = new Mock<IReloj>();
+        var watch = new Mock<IReloj>(MockBehavior.Strict);
 
         var coordinatedDate = new DateTime(2026, 1, 1, 10, 0, 0);
 
@@ -388,17 +387,11 @@ public class LoginServiceTests
     [TestMethod]
     public void Login_EmailWithAlternateCases_ReturnCorrectSession()
     {
-        var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorySession>();
-        var watchMock = new Mock<IReloj>();
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
 
-        var user = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc");
-        user.Id = 1;
+        var user = CreateValidClientUser(1);
 
         repoUserMock
             .Setup(r => r.FindByEmail("MIGUEL@GMAIL.COM"))
@@ -407,6 +400,10 @@ public class LoginServiceTests
         repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
+
+        watchMock
+            .Setup(r => r.Ahora())
+            .Returns(DateTime.Now);
 
         var service = new LoginService(
             repoUserMock.Object,
@@ -428,9 +425,9 @@ public class LoginServiceTests
     [TestMethod]
     public void Login_ValidCredentials_SaveRightExpire()
     {
-        var repoUserMock = new Mock<IRepositoryUser>();
-        var repoSessionMock = new Mock<IRepositorySession>();
-        var watchMock = new Mock<IReloj>();
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
 
         var fechaFija = new DateTime(2026, 1, 1, 10, 0, 0);
 
@@ -438,13 +435,7 @@ public class LoginServiceTests
             .Setup(r => r.Ahora())
             .Returns(fechaFija);
 
-        var user = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
-            "Password@2Ok6Abc");
-        user.Id = 1;
+        var user = CreateValidClientUser(1);
 
         Session? sesionGuardada = null;
 
