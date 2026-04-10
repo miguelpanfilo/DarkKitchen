@@ -47,6 +47,13 @@ public class ProductBuilder
 
     public Product Build()
     {
-        return new Product(_code, _name, _description, _commercialLine, _category, _price);
+        return Product.MakeProduct(
+            _code,
+            _name,
+            _description,
+            _commercialLine,
+            _category,
+            _price
+        );
     }
 }

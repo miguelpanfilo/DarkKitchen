@@ -1,79 +1,110 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
-using Dominio.Exceptions;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using Mapeo;
 
 namespace LogicaDeNegocio;
 
-public class ModifyUserService(IRepositoryUser repo, IPhoneValidator phoneValidator) : IModifyUserService
+public class ModifyUserService(
+    IRepositoryUser repo,
+    IPhoneValidator phoneValidator,
+    IAdminValidationService adminValidationService)
+    : IModifyUserService
 {
     private readonly IRepositoryUser _repo = repo;
     private readonly IPhoneValidator _phoneValidator = phoneValidator;
+    private readonly IAdminValidationService _adminValidationService = adminValidationService;
 
     public UsuarioResponseDTO UpdateInternalUser(
-        int idUsuarioAModificar,
-        int idUsuarioLogueado,
+        int idUserToModify,
+        int isUserLogged,
         ModificarUsuarioRequestDTO requestDto)
     {
-        ValidateUserIsAdmin(idUsuarioLogueado);
-        ValidateNotSelfModification(idUsuarioAModificar, idUsuarioLogueado);
+        _adminValidationService.EnsureUserIsAdmin(isUserLogged);
 
-        var usuario = GetExistingUser(idUsuarioAModificar);
+        _adminValidationService.EnsureIsNotSelfAction(
+            idUserToModify,
+            isUserLogged,
+            "A user cannot modify itself");
 
-        UpdateUserData(usuario, requestDto);
+        var user = _adminValidationService.GetExistingUser(idUserToModify);
 
-        return usuario.MappingUserToResponseDTO();
+        UpdateUserData(user, requestDto);
+
+        return user.MappingUserToResponseDTO();
     }
 
     public void UpdateUserPassword(
-        int idUsuarioAModificar,
-        int idUsuarioLogueado,
+        int idUserToModify,
+        int idUserLogged,
         ModificarClaveRequestDTO requestDto)
     {
-        ValidateUserIsAdmin(idUsuarioLogueado);
+        _adminValidationService.EnsureUserIsAdmin(idUserLogged);
 
-        var usuario = GetExistingUser(idUsuarioAModificar);
+        _adminValidationService.EnsureIsNotSelfAction(
+            idUserToModify,
+            idUserLogged,
+            "A user cannot modify itself");
+
+        var usuario = _adminValidationService.GetExistingUser(idUserToModify);
 
         if(!usuario.VerifyPassword(requestDto.OldPassword))
         {
-            throw new UserException("Current password is incorrect");
+            throw new ValidationException("Current password is incorrect");
         }
 
-        usuario.ModifyPassword(Password.MakePassword(requestDto.NewPassword));
+        var passwordResult = Password.TryMakePassword(requestDto.NewPassword);
+
+        if(!passwordResult.Success)
+        {
+            throw new ValidationException(passwordResult.ErrorMessage!);
+        }
+
+        usuario.ModifyPassword(passwordResult.Value!);
     }
 
     private void UpdateUserData(User user, ModificarUsuarioRequestDTO requestDto)
     {
-        var nombreActualizado = ResolveFinalName(requestDto, user);
-        var apellidoActualizado = ResolveFinalLastName(requestDto, user);
-        var telefonoActualizado = ResolveFinalPhone(requestDto, user);
-        var emailActualizado = ResolveFinalEmail(requestDto, user);
+        var nameUpdate = ResolveFinalName(requestDto, user);
+        var lastNameUpdate = ResolveFinalLastName(requestDto, user);
+        var phoneUpdate = ResolveFinalPhone(requestDto, user);
+        var emailUpdate = ResolveFinalEmail(requestDto, user);
 
-        var telefonoFinal = BuildFinalPhone(user, telefonoActualizado);
-        var rolFinal = ResolveFinalRole(requestDto, user);
-        ValidateEmailIfChanged(user, emailActualizado);
+        var phoneFinal = BuildFinalPhone(user, phoneUpdate);
+        var roleFinal = ResolveFinalRole(requestDto, user);
+        ValidateEmailIfChanged(user, emailUpdate);
 
-        user.ModifyData(nombreActualizado, apellidoActualizado, telefonoFinal, emailActualizado, rolFinal);
+        var modifyResult = user.ModifyData(
+            nameUpdate,
+            lastNameUpdate,
+            phoneFinal,
+            emailUpdate,
+            roleFinal);
+
+        if(!modifyResult.Success)
+        {
+            throw new ValidationException(modifyResult.ErrorMessage!);
+        }
     }
 
-    private Phone BuildFinalPhone(User user, string telefonoActualizado)
+    private Phone BuildFinalPhone(User user, string updatedPhone)
     {
-        if(telefonoActualizado == user.Phone.Value)
+        if(updatedPhone == user.Phone.Value)
         {
             return user.Phone;
         }
 
-        return CreateAndValidatePhone(telefonoActualizado);
+        return CreateAndValidatePhone(updatedPhone);
     }
 
-    private void ValidateEmailIfChanged(User user, string emailActualizado)
+    private void ValidateEmailIfChanged(User user, string updatedMail)
     {
-        if(!string.Equals(emailActualizado, user.Email.ToString(), StringComparison.OrdinalIgnoreCase)
-           && _repo.EmailExist(emailActualizado))
+        if(!string.Equals(updatedMail, user.Email.ToString(), StringComparison.OrdinalIgnoreCase) &&
+            _repo.EmailExist(updatedMail))
         {
-            throw new UserException("Email is already registered");
+            throw new ConflictException("Email is already registered");
         }
     }
 
@@ -105,46 +136,23 @@ public class ModifyUserService(IRepositoryUser repo, IPhoneValidator phoneValida
             : requestDto.Phone;
     }
 
-    private void ValidateUserIsAdmin(int idUsuarioLogueado)
+    private Phone CreateAndValidatePhone(string phone)
     {
-        var usuario = GetExistingUser(idUsuarioLogueado);
+        var phoneResult = Phone.TryMakePhone(phone);
 
-        if(usuario.Role != UserRoles.Administrative)
+        if(!phoneResult.Success)
         {
-            throw new UserException("Only an administrative user can perform this action");
-        }
-    }
-
-    private void ValidateNotSelfModification(int idUsuarioAModificar, int idUsuarioLogueado)
-    {
-        if(idUsuarioAModificar == idUsuarioLogueado)
-        {
-            throw new UserException("A user cannot modify itself");
-        }
-    }
-
-    private User GetExistingUser(int id)
-    {
-        var usuario = _repo.FindById(id);
-
-        if(usuario == null)
-        {
-            throw new UserException("User does not exist");
+            throw new ValidationException(phoneResult.ErrorMessage!);
         }
 
-        return usuario;
-    }
+        var newPhone = phoneResult.Value!;
 
-    private Phone CreateAndValidatePhone(string telefono)
-    {
-        var telefonoCreado = Phone.MakePhone(telefono);
-
-        if(!_phoneValidator.ItsValid(telefonoCreado.Value))
+        if(!_phoneValidator.ItsValid(newPhone.Value))
         {
-            throw new UserException("Phone is not valid");
+            throw new ValidationException("Phone is not valid");
         }
 
-        return telefonoCreado;
+        return newPhone;
     }
 
     private UserRoles ResolveFinalRole(ModificarUsuarioRequestDTO requestDto, User user)
@@ -161,7 +169,7 @@ public class ModifyUserService(IRepositoryUser repo, IPhoneValidator phoneValida
     {
         if(!Enum.TryParse<UserRoles>(rol, true, out var rolEnum))
         {
-            throw new UserException("Internal role is not valid");
+            throw new ValidationException("Internal role is not valid");
         }
 
         return rolEnum;

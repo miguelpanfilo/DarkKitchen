@@ -1,49 +1,36 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
-using Dominio.Exceptions;
 using LogicaDeNegocioAbstracciones;
 using Mapeo;
 
 namespace LogicaDeNegocio;
 
-public class FilterUserService(IRepositoryUser repositoryUsers) : IFilterUserService
+public class FilterUserService(
+    IRepositoryUser repositoryUsers,
+    IAdminValidationService adminValidationService)
+    : IFilterUserService
 {
     private readonly IRepositoryUser _repositoryUsers = repositoryUsers;
+    private readonly IAdminValidationService _adminValidationService = adminValidationService;
 
     public List<UsuarioResponseDTO> BuscarUsuarios(int idUserLogin, FindUserRequestDTO requestDto)
     {
-        var userLogin = GetExistingUser(idUserLogin);
-
-        if(userLogin.Role != UserRoles.Administrative)
-        {
-            throw new UserException("Only an administrative user can perform this action");
-        }
+        _adminValidationService.EnsureUserIsAdmin(idUserLogin);
 
         var users = _repositoryUsers.GetAll();
-        var filterUsers = new List<UsuarioResponseDTO>();
+        var filteredUsers = new List<UsuarioResponseDTO>();
 
         foreach(var u in users)
         {
-            if(MatchName(u, requestDto.Name) && MatchLastName(u, requestDto.LastName))
+            if(MatchName(u, requestDto.Name) &&
+               MatchLastName(u, requestDto.LastName))
             {
-                filterUsers.Add(u.MappingUserToResponseDTO());
+                filteredUsers.Add(u.MappingUserToResponseDTO());
             }
         }
 
-        return filterUsers;
-    }
-
-    private User GetExistingUser(int id)
-    {
-        var user = _repositoryUsers.FindById(id);
-
-        if(user == null)
-        {
-            throw new UserException("User does not exist");
-        }
-
-        return user;
+        return filteredUsers;
     }
 
     private static bool MatchName(User user, string? name)

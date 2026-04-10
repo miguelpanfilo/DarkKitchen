@@ -5,12 +5,12 @@ namespace LogicaDeNegocioAbstracciones;
 public interface IModifyUserService
 {
     UsuarioResponseDTO UpdateInternalUser(
-        int idUsuarioAModificar,
-        int idUsuarioLogueado,
+        int idUserToModify,
+        int isUserLogged,
         ModificarUsuarioRequestDTO requestDto);
 
     void UpdateUserPassword(
-        int idUsuarioAModificar,
-        int idUsuarioLogueado,
+        int idUserToModify,
+        int idUserLogged,
         ModificarClaveRequestDTO requestDto);
 }

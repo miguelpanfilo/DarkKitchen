@@ -6,16 +6,45 @@ namespace Pruebas;
 [TestClass]
 public class RepositoryUserTests
 {
+    private static Phone CreateValidPhone(string number)
+    {
+        var phoneResult = Phone.TryMakePhone(number);
+        Assert.IsTrue(phoneResult.Success);
+        Assert.IsNotNull(phoneResult.Value);
+        return phoneResult.Value!;
+    }
+
+    private static User CreateValidUser(
+        string name,
+        string lastName,
+        string email,
+        string phone,
+        string password)
+    {
+        var validPhone = CreateValidPhone(phone);
+
+        var userResult = User.MakeClient(
+            name,
+            lastName,
+            email,
+            validPhone,
+            password);
+
+        Assert.IsTrue(userResult.Success);
+        Assert.IsNotNull(userResult.Value);
+        return userResult.Value!;
+    }
+
     [TestMethod]
     public void FindByEmail_EmailExists_ReturnsUser()
     {
         var repo = new RepositoryUser();
 
-        var user = User.MakeClient(
+        var user = CreateValidUser(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "Password@2Ok6Abc");
 
         repo.Add(user);
@@ -37,6 +66,16 @@ public class RepositoryUserTests
     }
 
     [TestMethod]
+    public void FindByEmail_InvalidEmail_ReturnsNull()
+    {
+        var repo = new RepositoryUser();
+
+        var result = repo.FindByEmail("correo-invalido");
+
+        Assert.IsNull(result);
+    }
+
+    [TestMethod]
     public void GetAll_WithoutUsers_ReturnsEmptyList()
     {
         var repo = new RepositoryUser();
@@ -52,18 +91,18 @@ public class RepositoryUserTests
     {
         var repo = new RepositoryUser();
 
-        var user1 = User.MakeClient(
+        var user1 = CreateValidUser(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "Password@2Ok6Abc");
 
-        var user2 = User.MakeClient(
+        var user2 = CreateValidUser(
             "Juan",
             "Perez",
             "juan@gmail.com",
-            Phone.MakePhone("099999999"),
+            "099999999",
             "Password@2Ok6Abc");
 
         repo.Add(user1);
@@ -81,11 +120,11 @@ public class RepositoryUserTests
     {
         var repo = new RepositoryUser();
 
-        var user = User.MakeClient(
+        var user = CreateValidUser(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "Password@2Ok6Abc");
 
         repo.Add(user);
@@ -106,15 +145,25 @@ public class RepositoryUserTests
     }
 
     [TestMethod]
+    public void EmailExist_InvalidEmail_ReturnsFalse()
+    {
+        var repo = new RepositoryUser();
+
+        var result = repo.EmailExist("correo-invalido");
+
+        Assert.IsFalse(result);
+    }
+
+    [TestMethod]
     public void FindById_ExistingId_ReturnsUser()
     {
         var repo = new RepositoryUser();
 
-        var user = User.MakeClient(
+        var user = CreateValidUser(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "Password@2Ok6Abc");
 
         var addedUser = repo.Add(user);
@@ -140,11 +189,11 @@ public class RepositoryUserTests
     {
         var repo = new RepositoryUser();
 
-        var user = User.MakeClient(
+        var user = CreateValidUser(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "Password@2Ok6Abc");
 
         var addedUser = repo.Add(user);
@@ -161,18 +210,18 @@ public class RepositoryUserTests
     {
         var repo = new RepositoryUser();
 
-        var user1 = User.MakeClient(
+        var user1 = CreateValidUser(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "Password@2Ok6Abc");
 
-        var user2 = User.MakeClient(
+        var user2 = CreateValidUser(
             "Juan",
             "Perez",
             "juan@gmail.com",
-            Phone.MakePhone("099999999"),
+            "099999999",
             "Password@2Ok6Abc");
 
         var userAddedFirst = repo.Add(user1);
@@ -190,11 +239,11 @@ public class RepositoryUserTests
     {
         var repo = new RepositoryUser();
 
-        var user = User.MakeClient(
+        var user = CreateValidUser(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "Password@2Ok6Abc");
 
         var userNuevo = repo.Add(user);
@@ -207,11 +256,11 @@ public class RepositoryUserTests
     {
         var repo = new RepositoryUser();
 
-        var user = User.MakeClient(
+        var user = CreateValidUser(
             "Miguel",
             "Lopez",
             "miguel@gmail.com",
-            Phone.MakePhone("099123456"),
+            "099123456",
             "Password@2Ok6Abc");
 
         repo.Add(user);

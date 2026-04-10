@@ -4,13 +4,15 @@ namespace Dominio;
 
 public class Product
 {
-    public string Code { get; }
-    public string Name { get; }
-    public string Description { get; }
-    public string CommercialLine { get; }
-    public string Category { get; }
+    public int Id { get; private set; }
+    public string Code { get; private set; } = string.Empty;
+    public string Name { get; private set; } = string.Empty;
+    public string Description { get; private set; } = string.Empty;
+    public string CommercialLine { get; private set; } = string.Empty;
+    public string Category { get; private set; } = string.Empty;
+
     public bool IsActive { get; private set; }
-    public decimal Price { get; }
+    public decimal Price { get; private set; }
 
     private const int CODE_MIN_LENGTH = 5;
     private const int CODE_MAX_LENGTH = 20;
@@ -22,30 +24,51 @@ public class Product
     private const int DESCRIPTION_MAX_LENGTH = 500;
 
     private const decimal MIN_PRICE = 0;
-    public Product(string code, string name, string description, string commercialLine, string category, decimal price)
+
+    private Product()
+    {
+    }
+
+    private Product(
+        string code,
+        string name,
+        string description,
+        string commercialLine,
+        string category,
+        decimal price)
     {
         ValidateRequired(code, "El código");
         ValidateLength(code, "El código", CODE_MIN_LENGTH, CODE_MAX_LENGTH);
 
         ValidateRequired(name, "El nombre");
-        ValidateLength(name,"El nombre", NAME_MIN_LENGTH, NAME_MAX_LENGTH);
+        ValidateLength(name, "El nombre", NAME_MIN_LENGTH, NAME_MAX_LENGTH);
 
-        ValidateRequired(description, "La descripcion");
-        ValidateLength(description, "La descripcion", DESCRIPTION_MIN_LENGTH, DESCRIPTION_MAX_LENGTH);
+        ValidateRequired(description, "La descripción");
+        ValidateLength(description, "La descripción", DESCRIPTION_MIN_LENGTH, DESCRIPTION_MAX_LENGTH);
 
         ValidateRequired(commercialLine, "Línea comercial");
-
-        ValidateRequired(category, "La categoria");
+        ValidateRequired(category, "La categoría");
 
         ValidatePrice(price);
 
-        Code = code;
-        Name = name;
-        Description = description;
-        CommercialLine = commercialLine;
-        Category = category;
-        IsActive = true;
+        Code = code.Trim();
+        Name = name.Trim();
+        Description = description.Trim();
+        CommercialLine = commercialLine.Trim();
+        Category = category.Trim();
         Price = price;
+        IsActive = true;
+    }
+
+    public static Product MakeProduct(
+        string code,
+        string name,
+        string description,
+        string commercialLine,
+        string category,
+        decimal price)
+    {
+        return new Product(code, name, description, commercialLine, category, price);
     }
 
     public void Activate()
@@ -60,7 +83,7 @@ public class Product
 
     private static void ValidateRequired(string value, string fieldName)
     {
-        if (string.IsNullOrWhiteSpace(value))
+        if(string.IsNullOrWhiteSpace(value))
         {
             throw new ProductException($"{fieldName} no puede estar vacío.");
         }
@@ -68,7 +91,9 @@ public class Product
 
     private static void ValidateLength(string value, string fieldName, int min, int max)
     {
-        if(value.Length < min || value.Length > max)
+        var trimmed = value.Trim();
+
+        if(trimmed.Length < min || trimmed.Length > max)
         {
             throw new ProductException($"{fieldName} debe tener entre {min} y {max} caracteres.");
         }
@@ -76,9 +101,9 @@ public class Product
 
     private static void ValidatePrice(decimal price)
     {
-        if (price <= MIN_PRICE)
+        if(price <= MIN_PRICE)
         {
-            throw new ProductException("El precio debe ser mayor a 0");
+            throw new ProductException("El precio debe ser mayor a 0.");
         }
     }
 }

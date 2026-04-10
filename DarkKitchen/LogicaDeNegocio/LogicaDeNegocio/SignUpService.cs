@@ -1,34 +1,44 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
-using Dominio.Exceptions;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using Mapeo;
 
 namespace LogicaDeNegocio;
 
-public class SignUpService(IRepositoryUser repositoryUser, IPhoneValidator validatorPhone) : ISignUpUserService
+public class SignUpService(
+    IRepositoryUser repositoryUser,
+    IPhoneValidator validatorPhone,
+    IAdminValidationService adminValidationService)
+    : ISignUpUserService
 {
     private readonly IRepositoryUser _repositoryUser = repositoryUser;
     private readonly IPhoneValidator _validatorPhone = validatorPhone;
+    private readonly IAdminValidationService _adminValidationService = adminValidationService;
 
     public SignUpClientResponseDTO SignUpClient(SignUpClientRequestDTO requestDto)
     {
         if(_repositoryUser.EmailExist(requestDto.Email))
         {
-            throw new UserException("Email is already registered");
+            throw new ConflictException("Email is already registered");
         }
 
         var phone = MakeAndValidatePhone(requestDto.Phone);
 
-        var usuario = User.MakeClient(
+        var userResult = User.MakeClient(
             requestDto.Name,
             requestDto.LastName,
             requestDto.Email,
             phone,
             requestDto.Password);
 
-        var newUser = _repositoryUser.Add(usuario);
+        if(!userResult.Success)
+        {
+            throw new ValidationException(userResult.ErrorMessage!);
+        }
+
+        var newUser = _repositoryUser.Add(userResult.Value!);
 
         return new SignUpClientResponseDTO
         {
@@ -38,64 +48,54 @@ public class SignUpService(IRepositoryUser repositoryUser, IPhoneValidator valid
         };
     }
 
-    public UsuarioResponseDTO MakeInterUser(int idUsuarioLogueado, SingUpInternUserRequestDTO requestDto)
+    public UsuarioResponseDTO MakeInterUser(int idUserLogged, SingUpInternUserRequestDTO requestDto)
     {
-        ValidateUserAdmin(idUsuarioLogueado);
+        _adminValidationService.EnsureUserIsAdmin(idUserLogged);
 
-        var rol = GetInternRoleValid(requestDto.Role);
-        var telefono = MakeAndValidatePhone(requestDto.Phone);
+        var role = GetInternRoleValid(requestDto.Role);
+        var phone = MakeAndValidatePhone(requestDto.Phone);
 
         if(_repositoryUser.EmailExist(requestDto.Email))
         {
-            throw new UserException("Email is already registered");
+            throw new ConflictException("Email is already registered");
         }
 
-        var user = UserMapper.MappingDTOToInternUser(requestDto, telefono, rol);
+        var userResult = requestDto.MappingDTOToInternUser(phone, role);
 
-        var newUser = _repositoryUser.Add(user);
+        if(!userResult.Success)
+        {
+            throw new ValidationException(userResult.ErrorMessage!);
+        }
+
+        var newUser = _repositoryUser.Add(userResult.Value!);
 
         return newUser.MappingUserToResponseDTO();
     }
 
-    private UserRoles GetInternRoleValid(string rol)
+    private UserRoles GetInternRoleValid(string role)
     {
-        if(!Enum.TryParse<UserRoles>(rol, true, out var rolEnum))
+        if(!Enum.TryParse<UserRoles>(role, true, out var rolEnum))
         {
-            throw new UserException("Internal role is not valid");
+            throw new ValidationException("Internal role is not valid");
         }
 
         return rolEnum;
     }
 
-    private void ValidateUserAdmin(int idUsuarioLogueado)
+    private Phone MakeAndValidatePhone(string phone)
     {
-        var user = GetExistingUser(idUsuarioLogueado);
+        var phoneResult = Phone.TryMakePhone(phone);
 
-        if(user.Role != UserRoles.Administrative)
+        if(!phoneResult.Success)
         {
-            throw new UserException("Only an administrative user can perform this action");
-        }
-    }
-
-    private User GetExistingUser(int id)
-    {
-        var user = _repositoryUser.FindById(id);
-
-        if(user == null)
-        {
-            throw new UserException("User does not exist");
+            throw new ValidationException(phoneResult.ErrorMessage!);
         }
 
-        return user;
-    }
-
-    private Phone MakeAndValidatePhone(string telefono)
-    {
-        var newPhone = Phone.MakePhone(telefono);
+        var newPhone = phoneResult.Value!;
 
         if(!_validatorPhone.ItsValid(newPhone.Value))
         {
-            throw new UserException("Phone is not valid");
+            throw new ValidationException("Phone is not valid");
         }
 
         return newPhone;
