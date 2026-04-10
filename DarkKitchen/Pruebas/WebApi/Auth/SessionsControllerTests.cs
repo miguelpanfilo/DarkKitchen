@@ -1,4 +1,4 @@
-/*using AlmacenamientoAbstracciones;
+using AlmacenamientoAbstracciones;
 using Contratos;
 using DarkKitchen.Controllers;
 using Dominio;
@@ -243,4 +243,3 @@ public class SessionsControllerTests
         repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Once);
     }
 }
-*/

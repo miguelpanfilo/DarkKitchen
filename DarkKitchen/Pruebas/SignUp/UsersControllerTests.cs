@@ -1,4 +1,4 @@
-/*using Contratos;
+using Contratos;
 using DarkKitchen.Controllers;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
@@ -139,4 +139,3 @@ public class UsersControllerTests
         signUpServiceMock.Verify(s => s.SignUpClient(request), Times.Once);
     }
 }
-*/
