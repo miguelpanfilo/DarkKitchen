@@ -18,12 +18,9 @@ public class ProductService
 
     public Product Create(ProductDTO productDto)
     {
-        if (productDto.Photos == null || productDto.Photos.Count < 1 || productDto.Photos.Count > 3)
-        {
-            throw new ProductException("El producto debe tener entre 1 y 3 fotos");
-        }
+        ValidatePhotos(productDto.Photos);
 
-       var savePhotos = SavePhotos(productDto.Photos);
+        var savePhotos = SavePhotos(productDto.Photos);
 
         var product = ProductMapper.ToEntity(productDto, savePhotos);
         return _repository.Create(product);
@@ -40,5 +37,13 @@ public class ProductService
         }
 
         return savedPhotos;
+    }
+
+    private void ValidatePhotos(List<PhotoDTO> photos)
+    {
+        if (photos == null || photos.Count < 1 || photos.Count > 3)
+        {
+            throw new ProductException("El producto debe tener entre 1 y 3 fotos");
+        }
     }
 }
