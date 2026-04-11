@@ -19,16 +19,18 @@ public class ProductServiceTest
             "Milanesa al pan completa",
             "Minutas clásicas",
             "Sandwiches",
-            100
+            100,
+            new List<PhotoDTO>()
         );
 
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
         repoMock
-            .Setup<Product>(repository => repository.Create(It.IsAny<Product>()))
+            .Setup(repository => repository.Create(It.IsAny<Product>()))
             .Returns((Product product) => product);
 
-        var service = new ProductService(repoMock.Object);
+        var service = new ProductService(repoMock.Object, storageMock.Object);
 
         var result = service.Create(productDto);
 
@@ -47,14 +49,56 @@ public class ProductServiceTest
             "Milanesa al pan completa",
             "Minutas clásicas",
             "Sandwiches",
-            0
+            0,
+            new List<PhotoDTO>()
         );
 
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
-        var service = new ProductService(repoMock.Object);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        var service = new ProductService(repoMock.Object, storageMock.Object);
 
         Assert.ThrowsException<ProductException>(() => service.Create(dto));
 
         repoMock.Verify(repository => repository.Create(It.IsAny<Product>()), Times.Never);
+    }
+
+    [TestMethod]
+    public void GivenValidProductDtoWithPhotos_WhenCreating_ThenPhotosAreSavedAndRepositoryIsCalled()
+    {
+        var photos = new List<PhotoDTO>
+        {
+            new PhotoDTO("foto1", ".jpg", 1000, "base64-falso")
+        };
+
+        var productDto = new ProductDTO(
+            "COD123",
+            "Milanesa al pan",
+            "Milanesa al pan completa",
+            "Minutas clásicas",
+            "Sandwiches",
+            100,
+            photos
+        );
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        storageMock
+            .Setup(storage => storage.Save(It.IsAny<PhotoDTO>()))
+            .Returns("uploads/foto1.jpg");
+
+        repoMock
+            .Setup(repository => repository.Create(It.IsAny<Product>()))
+            .Returns((Product product) => product);
+
+        var service = new ProductService(repoMock.Object, storageMock.Object);
+
+        var result = service.Create(productDto);
+
+        Assert.IsNotNull(result);
+
+        storageMock.Verify(storage => storage.Save(It.IsAny<PhotoDTO>()), Times.Once);
+        repoMock.Verify(repository => repository.Create(It.IsAny<Product>()), Times.Once);
     }
 }
