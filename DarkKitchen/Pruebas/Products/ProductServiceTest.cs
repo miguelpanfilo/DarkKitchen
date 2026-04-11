@@ -141,13 +141,22 @@ public class ProductServiceTest
         Assert.AreEqual("uploads/foto1.jpg", result.Photos.First().Path);
     }
 
-    [TestMethod]
-    public void GivenValidProductDtoWithPhotos_WhenCreating_ThenPhotosAreSavedWithPath()
+    [DataTestMethod]
+    [DataRow(1)]
+    [DataRow(2)]
+    [DataRow(3)]
+    public void GivenValidProductDtoWithPhotos_WhenCreating_ThenPhotosAreSavedWithPath(int cantidadFotos)
     {
-        var photoDtos = new List<PhotoDTO>
+        var photoDtos = new List<PhotoDTO>();
+
+        for (var i = 1; i <= cantidadFotos; i++)
         {
-            new PhotoDTO("photo1", ".jpg", 100, "base64fake")
-        };
+            photoDtos.Add(new PhotoDTO(
+                $"photo{i}",
+                ".jpg",
+                100,
+                "base64fake"));
+        }
 
         var productDto = new ProductDTO(
             "COD123",
@@ -164,7 +173,7 @@ public class ProductServiceTest
 
         storageMock
             .Setup(s => s.Save(It.IsAny<PhotoDTO>()))
-            .Returns("uploads/photo1.jpg");
+            .Returns((PhotoDTO photo) => $"uploads/{photo.FileName}{photo.Extension}");
 
         repoMock
             .Setup(r => r.Create(It.IsAny<Product>()))
@@ -175,10 +184,14 @@ public class ProductServiceTest
         var result = service.Create(productDto);
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(1, result.Photos.Count);
-        Assert.AreEqual("uploads/photo1.jpg", result.Photos[0].Path);
+        Assert.AreEqual(cantidadFotos, result.Photos.Count);
 
-        storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Once);
+        for (var i = 0; i < cantidadFotos; i++)
+        {
+            Assert.AreEqual($"uploads/photo{i + 1}.jpg", result.Photos[i].Path);
+        }
+
+        storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Exactly(cantidadFotos));
         repoMock.Verify(r => r.Create(It.IsAny<Product>()), Times.Once);
     }
 }
