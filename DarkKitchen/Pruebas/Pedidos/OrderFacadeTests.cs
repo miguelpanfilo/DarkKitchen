@@ -28,8 +28,8 @@ public class OrderFacadeTests
             "Descripción de prueba válida",
             "Línea",
             "Categoría",
-            price
-        );
+            price,
+            new List<string>());
     }
 
     [TestMethod]
@@ -78,7 +78,8 @@ public class OrderFacadeTests
             "Descripción de prueba válida",
             "Línea",
             "Categoría",
-            100m);
+            100m,
+            new List<string>());
         product.Deactivate();
 
         productServiceMock

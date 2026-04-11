@@ -17,17 +17,22 @@ public class ProductService
 
     public Product Create(ProductDTO productDto)
     {
-        SavePhotos(productDto);
+       var savePhotos = SavePhotos(productDto);
 
-        var product = ProductMapper.ToEntity(productDto);
+        var product = ProductMapper.ToEntity(productDto, savePhotos);
         return _repository.Create(product);
     }
 
-    private void SavePhotos(ProductDTO productDto)
+    private List<string> SavePhotos(ProductDTO productDto)
     {
+        var savedPhotos = new List<string>();
+
         foreach (var photo in productDto.Photos)
         {
-            _productPhotoStorage.Save(photo);
+            var path = _productPhotoStorage.Save(photo);
+            savedPhotos.Add(path);
         }
+
+        return savedPhotos;
     }
 }

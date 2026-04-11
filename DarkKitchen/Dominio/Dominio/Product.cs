@@ -10,6 +10,7 @@ public class Product
     public string Description { get; private set; } = string.Empty;
     public string CommercialLine { get; private set; } = string.Empty;
     public string Category { get; private set; } = string.Empty;
+    public List<string> Photos { get; private set; } = new();
 
     public bool IsActive { get; private set; }
     public decimal Price { get; private set; }
@@ -25,6 +26,18 @@ public class Product
 
     private const decimal MIN_PRICE = 0;
 
+    public static Product MakeProduct(
+        string code,
+        string name,
+        string description,
+        string commercialLine,
+        string category,
+        decimal price,
+        List<string> photos)
+    {
+        return new Product(code, name, description, commercialLine, category, price, photos);
+    }
+
     private Product()
     {
     }
@@ -35,7 +48,8 @@ public class Product
         string description,
         string commercialLine,
         string category,
-        decimal price)
+        decimal price,
+        List<string> photos)
     {
         ValidateRequired(code, "El código");
         ValidateLength(code, "El código", CODE_MIN_LENGTH, CODE_MAX_LENGTH);
@@ -58,17 +72,7 @@ public class Product
         Category = category.Trim();
         Price = price;
         IsActive = true;
-    }
-
-    public static Product MakeProduct(
-        string code,
-        string name,
-        string description,
-        string commercialLine,
-        string category,
-        decimal price)
-    {
-        return new Product(code, name, description, commercialLine, category, price);
+        Photos = photos;
     }
 
     public void Activate()

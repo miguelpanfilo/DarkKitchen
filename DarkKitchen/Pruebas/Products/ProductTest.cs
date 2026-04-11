@@ -15,7 +15,8 @@ public class ProductTest
             "Milanesa al pan completa",
             "Minutas clásicas",
             "Sandwiches",
-            100);
+            100,
+            new List<string>());
 
         Assert.IsNotNull(product);
         Assert.AreEqual("COD123", product.Code);
@@ -37,7 +38,8 @@ public class ProductTest
                 "Milanesa al pan completa",
                 "Minutas clásicas",
                 "Sandwiches",
-                100));
+                100,
+                new List<string>()));
 
         Assert.AreEqual("El nombre no puede estar vacío.", ex.Message);
     }
@@ -52,7 +54,8 @@ public class ProductTest
                 "Milanesa al pan completa",
                 "Minutas clásicas",
                 "Sandwiches",
-                100));
+                100,
+                new List<string>()));
 
         Assert.AreEqual("El código no puede estar vacío.", ex.Message);
     }
@@ -67,7 +70,8 @@ public class ProductTest
                 " ",
                 "Minutas clásicas",
                 "Sandwiches",
-                100));
+                100,
+                new List<string>()));
 
         Assert.AreEqual("La descripción no puede estar vacío.", ex.Message);
     }
@@ -82,7 +86,8 @@ public class ProductTest
                 "Milanesa al pan completa",
                 " ",
                 "Sandwiches",
-                100));
+                100,
+                new List<string>()));
 
         Assert.AreEqual("Línea comercial no puede estar vacío.", ex.Message);
     }
@@ -97,7 +102,8 @@ public class ProductTest
                 "Milanesa al pan completa",
                 "Minutas clásicas",
                 " ",
-                100));
+                100,
+                new List<string>()));
 
         Assert.AreEqual("La categoría no puede estar vacío.", ex.Message);
     }
@@ -114,7 +120,8 @@ public class ProductTest
                 "Milanesa al pan completa",
                 "Minutas clásicas",
                 "Sandwiches",
-                100));
+                100,
+                new List<string>()));
 
         Assert.AreEqual("El código debe tener entre 5 y 20 caracteres.", ex.Message);
     }
@@ -131,7 +138,8 @@ public class ProductTest
                 "Descripción suficientemente larga",
                 "Minutas clásicas",
                 "Sandwiches",
-                100));
+                100,
+                new List<string>()));
 
         Assert.AreEqual("El código debe tener entre 5 y 20 caracteres.", ex.Message);
     }
@@ -148,7 +156,8 @@ public class ProductTest
                 "Descripción suficientemente larga",
                 "Minutas clásicas",
                 "Sandwiches",
-                100));
+                100,
+                new List<string>()));
 
         Assert.AreEqual("El nombre debe tener entre 10 y 50 caracteres.", ex.Message);
     }
@@ -165,7 +174,8 @@ public class ProductTest
                 "Descripción suficientemente larga",
                 "Minutas clásicas",
                 "Sandwiches",
-                100));
+                100,
+                new List<string>()));
 
         Assert.AreEqual("El nombre debe tener entre 10 y 50 caracteres.", ex.Message);
     }
@@ -182,7 +192,8 @@ public class ProductTest
                 description,
                 "Minutas clásicas",
                 "Sandwiches",
-                100));
+                100,
+                new List<string>()));
 
         Assert.AreEqual("La descripción debe tener entre 20 y 500 caracteres.", ex.Message);
     }
@@ -199,7 +210,8 @@ public class ProductTest
                 description,
                 "Minutas clásicas",
                 "Sandwiches",
-                100));
+                100,
+                new List<string>()));
 
         Assert.AreEqual("La descripción debe tener entre 20 y 500 caracteres.", ex.Message);
     }
@@ -213,7 +225,8 @@ public class ProductTest
             "Milanesa completa con guarnicion y bebida incluida",
             "Minutas clasicas",
             "Fritos",
-            100);
+            100,
+            new List<string>());
 
         Assert.IsTrue(product.IsActive);
     }
@@ -227,7 +240,8 @@ public class ProductTest
             "Milanesa completa con guarnicion y bebida incluida",
             "Minutas clasicas",
             "Fritos",
-            100);
+            100,
+            new List<string>());
 
         product.Deactivate();
 
@@ -243,7 +257,8 @@ public class ProductTest
             "Milanesa completa con guarnicion y bebida incluida",
             "Minutas clasicas",
             "Fritos",
-            100);
+            100,
+            new List<string>());
 
         product.Deactivate();
         product.Activate();
@@ -263,7 +278,8 @@ public class ProductTest
                 "Milanesa al pan completa",
                 "Minutas clásicas",
                 "Sandwiches",
-                price));
+                price,
+                new List<string>()));
 
         Assert.AreEqual("El precio debe ser mayor a 0.", ex.Message);
     }

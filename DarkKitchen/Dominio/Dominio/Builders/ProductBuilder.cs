@@ -8,6 +8,7 @@ public class ProductBuilder
     private string _commercialLine = string.Empty;
     private string _category = string.Empty;
     private decimal _price;
+    private List<string> _photos = new ();
 
     public ProductBuilder WithCode(string code)
     {
@@ -45,6 +46,12 @@ public class ProductBuilder
         return this;
     }
 
+    public ProductBuilder WithPhotos(List<string> photos)
+    {
+        _photos = photos;
+        return this;
+    }
+
     public Product Build()
     {
         return Product.MakeProduct(
@@ -53,7 +60,8 @@ public class ProductBuilder
             _description,
             _commercialLine,
             _category,
-            _price
+            _price,
+            _photos
         );
     }
 }
