@@ -68,7 +68,7 @@ public class ProductServiceTest
     {
         var photos = new List<PhotoDTO>
         {
-            new PhotoDTO("foto1", ".jpg", 1000, "base64-falso")
+            new ("foto1", ".jpg", 1000, "base64-falso")
         };
 
         var productDto = new ProductDTO(
@@ -139,5 +139,46 @@ public class ProductServiceTest
 
         Assert.AreEqual(1, result.Photos.Count);
         Assert.AreEqual("uploads/foto1.jpg", result.Photos.First());
+    }
+
+    [TestMethod]
+    public void GivenValidProductDtoWithPhotos_WhenCreating_ThenPhotosAreSavedWithPath()
+    {
+        var photoDtos = new List<PhotoDTO>
+        {
+            new PhotoDTO("photo1", ".jpg", 100, "base64fake")
+        };
+
+        var productDto = new ProductDTO(
+            "COD123",
+            "Milanesa al pan",
+            "Milanesa al pan completa",
+            "Minutas clásicas",
+            "Sandwiches",
+            100,
+            photoDtos
+        );
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        storageMock
+            .Setup(s => s.Save(It.IsAny<PhotoDTO>()))
+            .Returns("uploads/photo1.jpg");
+
+        repoMock
+            .Setup(r => r.Create(It.IsAny<Product>()))
+            .Returns((Product p) => p);
+
+        var service = new ProductService(repoMock.Object, storageMock.Object);
+
+        var result = service.Create(productDto);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(1, result.Photos.Count);
+        Assert.AreEqual("uploads/photo1.jpg", result.Photos[0].Path);
+
+        storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Once);
+        repoMock.Verify(r => r.Create(It.IsAny<Product>()), Times.Once);
     }
 }
