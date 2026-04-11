@@ -138,7 +138,7 @@ public class ProductServiceTest
         Assert.IsNotNull(result);
 
         Assert.AreEqual(1, result.Photos.Count);
-        Assert.AreEqual("uploads/foto1.jpg", result.Photos.First());
+        Assert.AreEqual("uploads/foto1.jpg", result.Photos.First().Path);
     }
 
     [TestMethod]

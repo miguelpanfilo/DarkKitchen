@@ -16,7 +16,7 @@ public class ProductTest
             "Minutas clásicas",
             "Sandwiches",
             100,
-            new List<string>());
+            new List<ProductPhoto>());
 
         Assert.IsNotNull(product);
         Assert.AreEqual("COD123", product.Code);
@@ -39,7 +39,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 100,
-                new List<string>()));
+                new List<ProductPhoto>()));
 
         Assert.AreEqual("El nombre no puede estar vacío.", ex.Message);
     }
@@ -55,7 +55,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 100,
-                new List<string>()));
+                new List<ProductPhoto>()));
 
         Assert.AreEqual("El código no puede estar vacío.", ex.Message);
     }
@@ -71,7 +71,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 100,
-                new List<string>()));
+                new List<ProductPhoto>()));
 
         Assert.AreEqual("La descripción no puede estar vacío.", ex.Message);
     }
@@ -87,7 +87,7 @@ public class ProductTest
                 " ",
                 "Sandwiches",
                 100,
-                new List<string>()));
+                new List<ProductPhoto>()));
 
         Assert.AreEqual("Línea comercial no puede estar vacío.", ex.Message);
     }
@@ -103,7 +103,7 @@ public class ProductTest
                 "Minutas clásicas",
                 " ",
                 100,
-                new List<string>()));
+                new List<ProductPhoto>()));
 
         Assert.AreEqual("La categoría no puede estar vacío.", ex.Message);
     }
@@ -121,7 +121,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 100,
-                new List<string>()));
+                new List<ProductPhoto>()));
 
         Assert.AreEqual("El código debe tener entre 5 y 20 caracteres.", ex.Message);
     }
@@ -139,7 +139,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 100,
-                new List<string>()));
+                new List<ProductPhoto>()));
 
         Assert.AreEqual("El código debe tener entre 5 y 20 caracteres.", ex.Message);
     }
@@ -157,7 +157,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 100,
-                new List<string>()));
+                new List<ProductPhoto>()));
 
         Assert.AreEqual("El nombre debe tener entre 10 y 50 caracteres.", ex.Message);
     }
@@ -175,7 +175,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 100,
-                new List<string>()));
+                new List<ProductPhoto>()));
 
         Assert.AreEqual("El nombre debe tener entre 10 y 50 caracteres.", ex.Message);
     }
@@ -193,7 +193,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 100,
-                new List<string>()));
+                new List<ProductPhoto>()));
 
         Assert.AreEqual("La descripción debe tener entre 20 y 500 caracteres.", ex.Message);
     }
@@ -211,7 +211,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 100,
-                new List<string>()));
+                new List<ProductPhoto>()));
 
         Assert.AreEqual("La descripción debe tener entre 20 y 500 caracteres.", ex.Message);
     }
@@ -226,7 +226,7 @@ public class ProductTest
             "Minutas clasicas",
             "Fritos",
             100,
-            new List<string>());
+            new List<ProductPhoto>());
 
         Assert.IsTrue(product.IsActive);
     }
@@ -241,7 +241,7 @@ public class ProductTest
             "Minutas clasicas",
             "Fritos",
             100,
-            new List<string>());
+            new List<ProductPhoto>());
 
         product.Deactivate();
 
@@ -258,7 +258,7 @@ public class ProductTest
             "Minutas clasicas",
             "Fritos",
             100,
-            new List<string>());
+            new List<ProductPhoto>());
 
         product.Deactivate();
         product.Activate();
@@ -279,7 +279,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 price,
-                new List<string>()));
+                new List<ProductPhoto>()));
 
         Assert.AreEqual("El precio debe ser mayor a 0.", ex.Message);
     }

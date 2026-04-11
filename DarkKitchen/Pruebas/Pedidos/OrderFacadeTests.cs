@@ -29,7 +29,7 @@ public class OrderFacadeTests
             "Línea",
             "Categoría",
             price,
-            new List<string>());
+            new List<ProductPhoto>());
     }
 
     [TestMethod]
@@ -79,7 +79,7 @@ public class OrderFacadeTests
             "Línea",
             "Categoría",
             100m,
-            new List<string>());
+            new List<ProductPhoto>());
         product.Deactivate();
 
         productServiceMock

@@ -10,7 +10,7 @@ public class Product
     public string Description { get; private set; } = string.Empty;
     public string CommercialLine { get; private set; } = string.Empty;
     public string Category { get; private set; } = string.Empty;
-    public List<string> Photos { get; private set; } = new();
+    public List<ProductPhoto> Photos { get; private set; } = new();
 
     public bool IsActive { get; private set; }
     public decimal Price { get; private set; }
@@ -33,7 +33,7 @@ public class Product
         string commercialLine,
         string category,
         decimal price,
-        List<string> photos)
+        List<ProductPhoto> photos)
     {
         return new Product(code, name, description, commercialLine, category, price, photos);
     }
@@ -49,7 +49,7 @@ public class Product
         string commercialLine,
         string category,
         decimal price,
-        List<string> photos)
+        List<ProductPhoto> photos)
     {
         ValidateRequired(code, "El código");
         ValidateLength(code, "El código", CODE_MIN_LENGTH, CODE_MAX_LENGTH);

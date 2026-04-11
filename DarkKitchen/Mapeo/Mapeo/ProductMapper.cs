@@ -6,7 +6,7 @@ namespace Mapeo;
 
 public class ProductMapper
 {
-    public static Product ToEntity(ProductDTO productDto, List<string> savedPhotos)
+    public static Product ToEntity(ProductDTO productDto, List<ProductPhoto> savedPhotos)
     {
         return new ProductBuilder()
             .WithCode(productDto.Code)

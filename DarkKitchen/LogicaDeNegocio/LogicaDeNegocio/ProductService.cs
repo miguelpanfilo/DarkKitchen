@@ -23,14 +23,14 @@ public class ProductService
         return _repository.Create(product);
     }
 
-    private List<string> SavePhotos(ProductDTO productDto)
+    private List<ProductPhoto> SavePhotos(ProductDTO productDto)
     {
-        var savedPhotos = new List<string>();
+        var savedPhotos = new List<ProductPhoto>();
 
-        foreach (var photo in productDto.Photos)
+        foreach (var photoDto in productDto.Photos)
         {
-            var path = _productPhotoStorage.Save(photo);
-            savedPhotos.Add(path);
+            var savedPath = _productPhotoStorage.Save(photoDto);
+            savedPhotos.Add(new ProductPhoto(savedPath));
         }
 
         return savedPhotos;
