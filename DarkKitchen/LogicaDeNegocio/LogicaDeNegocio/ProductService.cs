@@ -8,13 +8,20 @@ namespace LogicaDeNegocio;
 public class ProductService
 {
     private readonly IProductRepository _repository;
-    public ProductService(IProductRepository repository)
+    private readonly IProductPhotoStorage _productPhotoStorage;
+    public ProductService(IProductRepository repository,IProductPhotoStorage photoStorage)
     {
         _repository = repository;
+        _productPhotoStorage = photoStorage;
     }
 
     public Product Create(ProductDTO productDto)
     {
+        foreach (var photo in productDto.Photos)
+        {
+            _productPhotoStorage.Save(photo);
+        }
+
         var product = ProductMapper.ToEntity(productDto);
         return _repository.Create(product);
     }

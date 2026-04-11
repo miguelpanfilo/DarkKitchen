@@ -8,8 +8,10 @@ public class ProductDTO
     public string CommercialLine { get; set; }
     public string Category { get; set; }
     public decimal Price { get; set; }
+    public List<PhotoDTO> Photos { get; set; }
 
-    public ProductDTO(string code, string name, string description, string commercialLine, string category, decimal price)
+    public ProductDTO(string code, string name, string description,
+        string commercialLine, string category, decimal price, List<PhotoDTO> photos)
     {
         Code = code;
         Name = name;
@@ -17,5 +19,6 @@ public class ProductDTO
         CommercialLine = commercialLine;
         Category = category;
         Price = price;
+        Photos = photos;
     }
 }
