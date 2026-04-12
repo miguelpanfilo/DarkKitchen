@@ -9,7 +9,14 @@ public class AuthenticationFilter : IAuthorizationFilter
 
     public void OnAuthorization(AuthorizationFilterContext context)
     {
-        if(!context.HttpContext.Request.Headers.TryGetValue(SessionHeaderName, out _))
+        if(!context.HttpContext.Request.Headers.TryGetValue(SessionHeaderName, out var values))
+        {
+            throw new UserAuthenticationException("El header de sesión es obligatorio");
+        }
+
+        var sessionId = values.FirstOrDefault();
+
+        if(string.IsNullOrWhiteSpace(sessionId))
         {
             throw new UserAuthenticationException("El header de sesión es obligatorio");
         }
