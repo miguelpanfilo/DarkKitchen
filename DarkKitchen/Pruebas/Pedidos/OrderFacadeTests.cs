@@ -29,7 +29,19 @@ public class OrderFacadeTests
             "Línea",
             "Categoría",
             price,
-            new List<ProductPhoto>());
+            ValidPhotos(1));
+    }
+
+    private static List<ProductPhoto> ValidPhotos(int count = 1)
+    {
+        var photos = new List<ProductPhoto>();
+
+        for (var i = 0; i < count; i++)
+        {
+            photos.Add(new ProductPhoto($"foto{i}.jpg"));
+        }
+
+        return photos;
     }
 
     [TestMethod]
@@ -79,7 +91,7 @@ public class OrderFacadeTests
             "Línea",
             "Categoría",
             100m,
-            new List<ProductPhoto>());
+            ValidPhotos(1));
         product.Deactivate();
 
         productServiceMock

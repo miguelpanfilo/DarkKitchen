@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Dominio.Exceptions;
 
 namespace Dominio;
@@ -41,6 +42,7 @@ public class Product
         return new Product(code, name, description, commercialLine, category, price, photos);
     }
 
+    [ExcludeFromCodeCoverage]
     private Product()
     {
     }
