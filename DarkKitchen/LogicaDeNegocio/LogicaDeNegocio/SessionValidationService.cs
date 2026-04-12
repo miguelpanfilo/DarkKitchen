@@ -28,8 +28,13 @@ public class SessionValidationService(
             throw new UserAuthenticationException("La sesión expiró");
         }
 
-        _repositoryUser.FindById(session.UserId);
+        var user = _repositoryUser.FindById(session.UserId);
 
-        return null!;
+        if(user == null)
+        {
+            throw new UserAuthenticationException("El usuario de la sesión no existe");
+        }
+
+        return user;
     }
 }
