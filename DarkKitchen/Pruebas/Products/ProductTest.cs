@@ -309,4 +309,31 @@ public class ProductTest
         Assert.IsNotNull(product);
         Assert.AreEqual(photoCount, product.Photos.Count);
     }
+
+    [DataTestMethod]
+    [DataRow(0)]
+    [DataRow(4)]
+    public void GivenInvalidNumberOfPhotos_WhenCreatingProduct_ThenThrowsProductException(int photoCount)
+    {
+        var photos = new List<ProductPhoto>();
+
+        for(var i = 0; i < photoCount; i++)
+        {
+            photos.Add(new ProductPhoto($"foto{i}.jpg"));
+        }
+
+        var exception = Assert.ThrowsException<ProductException>(() =>
+            Product.MakeProduct(
+                "COD123",
+                "Milanesa al pan",
+                "Milanesa al pan completa con fritas",
+                "Minutas clásicas",
+                "Sandwiches",
+                100,
+                photos
+            )
+        );
+
+        Assert.AreEqual("El producto debe tener entre 1 y 3 fotos.", exception.Message);
+    }
 }
