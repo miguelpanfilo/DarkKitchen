@@ -5,4 +5,5 @@ namespace AlmacenamientoAbstracciones;
 public interface IRepositorySession
 {
     Session Add(Session session);
+    Session? FindBySessionId(Guid sessionId);
 }
