@@ -10,7 +10,7 @@ namespace Pruebas.Filters;
 public class AuthenticationFilterTests
 {
     [TestMethod]
-    public void OnAuthorization_WhenEndpointAllowsAnonymous_DoesNothing()
+    public void OnAuthorization_WhenHeaderIsMissing_ThrowsException()
     {
         var filter = new AuthenticationFilter();
 
@@ -19,14 +19,13 @@ public class AuthenticationFilterTests
             new RouteData(),
             new ActionDescriptor());
 
-        actionContext.ActionDescriptor.EndpointMetadata.Add(new AllowAnonymousAttribute());
-
         var context = new AuthorizationFilterContext(
             actionContext,
             new List<IFilterMetadata>());
 
-        filter.OnAuthorization(context);
+        var ex = Assert.ThrowsException<UserAuthenticationException>(() =>
+            filter.OnAuthorization(context));
 
-        Assert.IsNull(context.Result);
+        Assert.AreEqual("El header de sesión es obligatorio", ex.Message);
     }
 }
