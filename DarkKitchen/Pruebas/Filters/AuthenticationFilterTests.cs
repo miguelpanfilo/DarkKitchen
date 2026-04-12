@@ -1,4 +1,5 @@
 using DarkKitchen.Filters;
+using Dominio;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using Microsoft.AspNetCore.Authorization;
@@ -112,5 +113,40 @@ public class AuthenticationFilterTests
         filter.OnAuthorization(context);
 
         Assert.IsNull(context.Result);
+    }
+
+    [TestMethod]
+    public void OnAuthorization_WhenSessionIsValid_SetsAuthenticatedUser()
+    {
+        var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
+        var sessionId = Guid.NewGuid();
+
+        var phoneResult = Phone.TryMakePhone("099123456");
+        Assert.IsTrue(phoneResult.Success);
+
+        var userResult = User.MakeClient(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            phoneResult.Value!,
+            "PasswordSeguraee3!");
+
+        Assert.IsTrue(userResult.Success);
+        var user = userResult.Value!;
+        user.Id = 5;
+
+        serviceMock
+            .Setup(x => x.ValidateSession(sessionId))
+            .Returns(user);
+
+        var filter = new AuthenticationFilter(serviceMock.Object);
+        var context = CreateContext(sessionId.ToString());
+
+        filter.OnAuthorization(context);
+
+        Assert.IsNotNull(context.HttpContext.User);
+        Assert.IsTrue(context.HttpContext.User.Identity?.IsAuthenticated);
+
+        serviceMock.Verify(x => x.ValidateSession(sessionId), Times.Once);
     }
 }
