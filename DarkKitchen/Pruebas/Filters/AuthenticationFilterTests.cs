@@ -92,8 +92,23 @@ public class AuthenticationFilterTests
         var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
         var sessionId = Guid.NewGuid();
 
+        var phoneResult = Phone.TryMakePhone("099123456");
+        Assert.IsTrue(phoneResult.Success);
+
+        var userResult = User.MakeClient(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            phoneResult.Value!,
+            "PasswordSeguraee3!");
+
+        Assert.IsTrue(userResult.Success);
+        var user = userResult.Value!;
+        user.Id = 5;
+
         serviceMock
-            .Setup(x => x.ValidateSession(sessionId));
+            .Setup(x => x.ValidateSession(sessionId))
+            .Returns(user);
 
         var filter = CreateFilter(serviceMock);
         var context = CreateContext(sessionId.ToString());

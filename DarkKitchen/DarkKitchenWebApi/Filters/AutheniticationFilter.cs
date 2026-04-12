@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using Microsoft.AspNetCore.Authorization;
@@ -39,6 +40,9 @@ public class AuthenticationFilter(ISessionValidationService sessionValidationSer
             throw new UserAuthenticationException("El identificador de sesión es inválido");
         }
 
-        _sessionValidationService.ValidateSession(sessionId);
+        var user = _sessionValidationService.ValidateSession(sessionId);
+
+        var identity = new ClaimsIdentity("SessionHeader");
+        context.HttpContext.User = new ClaimsPrincipal(identity);
     }
 }
