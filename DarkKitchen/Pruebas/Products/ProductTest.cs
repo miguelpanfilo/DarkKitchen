@@ -334,4 +334,22 @@ public class ProductTest
 
         Assert.AreEqual("El producto debe tener entre 1 y 3 fotos.", exception.Message);
     }
+
+    [TestMethod]
+    public void GivenNullPhotos_WhenCreatingProduct_ThenThrowsProductException()
+    {
+        var exception = Assert.ThrowsException<ProductException>(() =>
+            Product.MakeProduct(
+                "COD123",
+                "Milanesa al pan",
+                "Milanesa al pan completa con fritas",
+                "Minutas clásicas",
+                "Sandwiches",
+                100,
+                null!
+            )
+        );
+
+        Assert.AreEqual("El producto debe tener entre 1 y 3 fotos.", exception.Message);
+    }
 }
