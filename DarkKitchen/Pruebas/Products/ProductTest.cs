@@ -283,4 +283,30 @@ public class ProductTest
 
         Assert.AreEqual("El precio debe ser mayor a 0.", ex.Message);
     }
+
+    [DataTestMethod]
+    [DataRow(1)]
+    [DataRow(3)]
+    public void GivenValidNumberOfPhotos_WhenCreatingProduct_ThenProductIsCreated(int photoCount)
+    {
+        var photos = new List<ProductPhoto>();
+
+        for (var i = 0; i < photoCount; i++)
+        {
+            photos.Add(new ProductPhoto($"foto{i}.jpg"));
+        }
+
+        var product = Product.MakeProduct(
+            "COD123",
+            "Milanesa al pan",
+            "Milanesa al pan completa con fritas",
+            "Minutas clásicas",
+            "Sandwiches",
+            100,
+            photos
+        );
+
+        Assert.IsNotNull(product);
+        Assert.AreEqual(photoCount, product.Photos.Count);
+    }
 }
