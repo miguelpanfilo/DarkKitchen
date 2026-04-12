@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using DarkKitchen.Filters;
 using Dominio;
 using LogicaDeNegocioAbstracciones;
@@ -164,6 +165,7 @@ public class AuthenticationFilterTests
 
         serviceMock.Verify(x => x.ValidateSession(sessionId), Times.Once);
     }
+
     [TestMethod]
     public void OnAuthorization_WhenSessionIsValid_SetsNameIdentifierClaim()
     {

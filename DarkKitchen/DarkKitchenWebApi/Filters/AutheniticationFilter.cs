@@ -42,7 +42,12 @@ public class AuthenticationFilter(ISessionValidationService sessionValidationSer
 
         var user = _sessionValidationService.ValidateSession(sessionId);
 
-        var identity = new ClaimsIdentity("SessionHeader");
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+        };
+
+        var identity = new ClaimsIdentity(claims, "SessionHeader");
         context.HttpContext.User = new ClaimsPrincipal(identity);
     }
 }
