@@ -32,12 +32,7 @@ public class ProductService
 
         foreach (var photoDto in photos)
         {
-            var ext = photoDto.Extension.Trim().ToLower().Replace(".", string.Empty);
-
-            if (ext != "jpg")
-            {
-                throw new ProductException("Las fotos deben estar en formato JPG");
-            }
+            ValidateFormatPhoto(photoDto);
 
             var savedPath = _productPhotoStorage.Save(photoDto);
             savedPhotos.Add(new ProductPhoto(savedPath));
@@ -51,6 +46,16 @@ public class ProductService
         if (photos == null || photos.Count < 1 || photos.Count > 3)
         {
             throw new ProductException("El producto debe tener entre 1 y 3 fotos");
+        }
+    }
+
+    private void ValidateFormatPhoto(PhotoDTO photoDto)
+    {
+        var ext = photoDto.Extension.Trim().ToLower().Replace(".", string.Empty);
+
+        if (ext != "jpg")
+        {
+            throw new ProductException("Las fotos deben estar en formato JPG");
         }
     }
 }
