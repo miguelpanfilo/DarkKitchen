@@ -54,4 +54,27 @@ public class AuthenticationFilterTests
 
         Assert.AreEqual("El header de sesión es obligatorio", ex.Message);
     }
+
+    [TestMethod]
+    public void OnAuthorization_WhenSessionIdIsInvalidGuid_ThrowsException()
+    {
+        var filter = new AuthenticationFilter();
+
+        var httpContext = new DefaultHttpContext();
+        httpContext.Request.Headers["X-Session-Id"] = "abc";
+
+        var actionContext = new ActionContext(
+            httpContext,
+            new RouteData(),
+            new ActionDescriptor());
+
+        var context = new AuthorizationFilterContext(
+            actionContext,
+            new List<IFilterMetadata>());
+
+        var ex = Assert.ThrowsException<UserAuthenticationException>(() =>
+            filter.OnAuthorization(context));
+
+        Assert.AreEqual("El identificador de sesión es inválido", ex.Message);
+    }
 }
