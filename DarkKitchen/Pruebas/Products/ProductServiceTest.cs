@@ -241,14 +241,50 @@ public class ProductServiceTest
     [DataRow(".gif")]
     [DataRow(".bmp")]
     [DataRow(".webp")]
-    public void GivenNonJpgPhotos_WhenCreatingProduct_ThenThrowsProductException(string fileName)
+    public void GivenNonJpgPhotos_WhenCreatingProduct_ThenThrowsProductException(string extension)
     {
         var photos = new List<PhotoDTO>
         {
             new PhotoDTO("photo1",
-                fileName,
+                extension,
                 100,
                 "base64fake")
+        };
+
+        var productDto = new ProductDTO(
+            "COD123",
+            "Milanesa al pan",
+            "Milanesa al pan completa con fritas",
+            "Minutas clásicas",
+            "Sandwiches",
+            100,
+            photos
+        );
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        var service = new ProductService(repoMock.Object, storageMock.Object);
+
+        var exception = Assert.ThrowsException<ProductException>(() =>
+            service.Create(productDto)
+        );
+
+        Assert.AreEqual("Las fotos deben estar en formato JPG", exception.Message);
+
+        storageMock.Verify(x => x.Save(It.IsAny<PhotoDTO>()), Times.Never);
+    }
+
+    [DataTestMethod]
+    [DataRow(".jpg", ".png")]
+    [DataRow(".png", "jpg")]
+    public void GivenPhotosWithAtLeastOneNonJpgFormat_WhenCreatingProduct_ThenThrowsProductExceptionAndDoesNotSavePhotos(
+        string firstExtension, string secondExtension)
+    {
+        var photos = new List<PhotoDTO>
+        {
+            new PhotoDTO("photo1", firstExtension, 100, "base64fake"),
+            new PhotoDTO("photo2", secondExtension, 100, "base64fake")
         };
 
         var productDto = new ProductDTO(
