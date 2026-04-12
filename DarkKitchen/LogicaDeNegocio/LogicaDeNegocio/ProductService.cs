@@ -18,8 +18,6 @@ public class ProductService
 
     public Product Create(ProductDTO productDto)
     {
-        ValidatePhotos(productDto.Photos);
-
         var savePhotos = SavePhotos(productDto.Photos);
 
         var product = ProductMapper.ToEntity(productDto, savePhotos);
@@ -28,12 +26,9 @@ public class ProductService
 
     private List<ProductPhoto> SavePhotos(List<PhotoDTO> photos)
     {
+        ValidatePhotos(photos);
+        ValidateFormatPhotos(photos);
         var savedPhotos = new List<ProductPhoto>();
-
-        foreach(var photoDto in photos)
-        {
-            ValidateFormatPhoto(photoDto);
-        }
 
         foreach (var photoDto in photos)
         {
@@ -49,6 +44,14 @@ public class ProductService
         if (photos == null || photos.Count < 1 || photos.Count > 3)
         {
             throw new ProductException("El producto debe tener entre 1 y 3 fotos");
+        }
+    }
+
+    private void ValidateFormatPhotos(List<PhotoDTO> photos)
+    {
+        foreach(var photoDto in photos)
+        {
+            ValidateFormatPhoto(photoDto);
         }
     }
 

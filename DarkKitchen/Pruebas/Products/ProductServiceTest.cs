@@ -303,8 +303,7 @@ public class ProductServiceTest
         var service = new ProductService(repoMock.Object, storageMock.Object);
 
         var exception = Assert.ThrowsException<ProductException>(() =>
-            service.Create(productDto)
-        );
+            service.Create(productDto));
 
         Assert.AreEqual("Las fotos deben estar en formato JPG", exception.Message);
 
