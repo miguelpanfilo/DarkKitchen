@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
+using Moq;
 
 namespace Pruebas.Filters;
 
@@ -76,5 +77,33 @@ public class AuthenticationFilterTests
             filter.OnAuthorization(context));
 
         Assert.AreEqual("El identificador de sesión es inválido", ex.Message);
+    }
+
+    [TestMethod]
+    public void OnAuthorization_WhenSessionIdIsValid_CallsSessionValidationService()
+    {
+        var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
+        var sessionId = Guid.NewGuid();
+
+        serviceMock
+            .Setup(x => x.ValidateSession(sessionId));
+
+        var filter = new AuthenticationFilter(serviceMock.Object);
+
+        var httpContext = new DefaultHttpContext();
+        httpContext.Request.Headers["X-Session-Id"] = sessionId.ToString();
+
+        var actionContext = new ActionContext(
+            httpContext,
+            new RouteData(),
+            new ActionDescriptor());
+
+        var context = new AuthorizationFilterContext(
+            actionContext,
+            new List<IFilterMetadata>());
+
+        filter.OnAuthorization(context);
+
+        serviceMock.Verify(x => x.ValidateSession(sessionId), Times.Once);
     }
 }
