@@ -16,13 +16,15 @@ public class SessionValidationServiceTests
         var sessionId = Guid.NewGuid();
 
         var sessionRepositoryMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
 
         sessionRepositoryMock
             .Setup(x => x.FindBySessionId(sessionId))
             .Returns((Session?)null);
 
         var service = new SessionValidationService(
-            sessionRepositoryMock.Object);
+            sessionRepositoryMock.Object,
+            watchMock.Object);
 
         var ex = Assert.ThrowsException<UserAuthenticationException>(() =>
             service.ValidateSession(sessionId));
