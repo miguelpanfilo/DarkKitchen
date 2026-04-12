@@ -1,11 +1,14 @@
+using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace DarkKitchen.Filters;
 
-public class AuthenticationFilter : IAuthorizationFilter
+public class AuthenticationFilter(ISessionValidationService sessionValidationService)
+    : IAuthorizationFilter
 {
     private const string SessionHeaderName = "X-Session-Id";
+    private readonly ISessionValidationService _sessionValidationService = sessionValidationService;
 
     public void OnAuthorization(AuthorizationFilterContext context)
     {
@@ -14,16 +17,18 @@ public class AuthenticationFilter : IAuthorizationFilter
             throw new UserAuthenticationException("El header de sesión es obligatorio");
         }
 
-        var sessionId = values.FirstOrDefault();
+        var sessionID = values.FirstOrDefault();
 
-        if(string.IsNullOrWhiteSpace(sessionId))
+        if(string.IsNullOrWhiteSpace(sessionID))
         {
             throw new UserAuthenticationException("El header de sesión es obligatorio");
         }
 
-        if(!Guid.TryParse(sessionId, out _))
+        if(!Guid.TryParse(sessionID, out var sessionId))
         {
             throw new UserAuthenticationException("El identificador de sesión es inválido");
         }
+
+        _sessionValidationService.ValidateSession(sessionId);
     }
 }
