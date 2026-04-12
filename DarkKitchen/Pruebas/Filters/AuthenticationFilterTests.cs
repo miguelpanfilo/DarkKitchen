@@ -1,4 +1,5 @@
 using DarkKitchen.Filters;
+using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -16,8 +17,8 @@ public class AuthenticationFilterTests
     [TestMethod]
     public void OnAuthorization_WhenHeaderIsMissing_ThrowsException()
     {
-        var filter = new AuthenticationFilter();
-
+        var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
+        var filter = new AuthenticationFilter(serviceMock.Object);
         var actionContext = new ActionContext(
             new DefaultHttpContext(),
             new RouteData(),
@@ -36,8 +37,8 @@ public class AuthenticationFilterTests
     [TestMethod]
     public void OnAuthorization_WhenHeaderIsEmpty_ThrowsException()
     {
-        var filter = new AuthenticationFilter();
-
+        var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
+        var filter = new AuthenticationFilter(serviceMock.Object);
         var httpContext = new DefaultHttpContext();
         httpContext.Request.Headers["X-Session-Id"] = string.Empty;
 
@@ -59,7 +60,8 @@ public class AuthenticationFilterTests
     [TestMethod]
     public void OnAuthorization_WhenSessionIdIsInvalidGuid_ThrowsException()
     {
-        var filter = new AuthenticationFilter();
+        var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
+        var filter = new AuthenticationFilter(serviceMock.Object);
 
         var httpContext = new DefaultHttpContext();
         httpContext.Request.Headers["X-Session-Id"] = "abc";
