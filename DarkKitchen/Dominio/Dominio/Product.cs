@@ -65,6 +65,11 @@ public class Product
 
         ValidatePrice(price);
 
+        if (photos.Count < 1 || photos.Count > 3)
+        {
+            throw new ProductException("El producto debe tener entre 1 y 3 fotos.");
+        }
+
         Code = code.Trim();
         Name = name.Trim();
         Description = description.Trim();

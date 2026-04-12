@@ -9,6 +9,10 @@ public class ProductTest
     [TestMethod]
     public void GivenValidData_WhenCreatingProduct_ThenProductIsCreated()
     {
+        var validPhotos = new List<ProductPhoto>
+        {
+            new ProductPhoto("foto1.jpg")
+        };
         var product = Product.MakeProduct(
             "COD123",
             "Milanesa al pan",
@@ -16,7 +20,7 @@ public class ProductTest
             "Minutas clásicas",
             "Sandwiches",
             100,
-            new List<ProductPhoto>());
+            validPhotos);
 
         Assert.IsNotNull(product);
         Assert.AreEqual("COD123", product.Code);
@@ -219,6 +223,10 @@ public class ProductTest
     [TestMethod]
     public void GivenValidData_WhenCreatingProduct_ThenProductIsActiveByDefault()
     {
+        var validPhotos = new List<ProductPhoto>
+        {
+            new ProductPhoto("foto1.jpg")
+        };
         var product = Product.MakeProduct(
             "ABC12",
             "Milanesa completa",
@@ -226,7 +234,7 @@ public class ProductTest
             "Minutas clasicas",
             "Fritos",
             100,
-            new List<ProductPhoto>());
+            validPhotos);
 
         Assert.IsTrue(product.IsActive);
     }
@@ -234,6 +242,10 @@ public class ProductTest
     [TestMethod]
     public void Deactivate_WhenCalled_ProductBecomesInactive()
     {
+        var validPhotos = new List<ProductPhoto>
+        {
+            new ProductPhoto("foto1.jpg")
+        };
         var product = Product.MakeProduct(
             "ABC12",
             "Milanesa completa",
@@ -241,7 +253,7 @@ public class ProductTest
             "Minutas clasicas",
             "Fritos",
             100,
-            new List<ProductPhoto>());
+            validPhotos);
 
         product.Deactivate();
 
@@ -251,6 +263,10 @@ public class ProductTest
     [TestMethod]
     public void Activate_WhenCalled_ProductBecomesActive()
     {
+        var validPhotos = new List<ProductPhoto>
+        {
+            new ProductPhoto("foto1.jpg")
+        };
         var product = Product.MakeProduct(
             "ABC12",
             "Milanesa completa",
@@ -258,7 +274,7 @@ public class ProductTest
             "Minutas clasicas",
             "Fritos",
             100,
-            new List<ProductPhoto>());
+            validPhotos);
 
         product.Deactivate();
         product.Activate();
