@@ -108,4 +108,29 @@ public class AuthenticationFilterTests
 
         serviceMock.Verify(x => x.ValidateSession(sessionId), Times.Once);
     }
+
+    [TestMethod]
+    public void OnAuthorization_WhenEndpointAllowsAnonymous_DoesNothing()
+    {
+        var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
+        var filter = new AuthenticationFilter(serviceMock.Object);
+
+        var actionDescriptor = new ActionDescriptor
+        {
+            EndpointMetadata = new List<object> { new AllowAnonymousAttribute() }
+        };
+
+        var actionContext = new ActionContext(
+            new DefaultHttpContext(),
+            new RouteData(),
+            actionDescriptor);
+
+        var context = new AuthorizationFilterContext(
+            actionContext,
+            new List<IFilterMetadata>());
+
+        filter.OnAuthorization(context);
+
+        Assert.IsNull(context.Result);
+    }
 }
