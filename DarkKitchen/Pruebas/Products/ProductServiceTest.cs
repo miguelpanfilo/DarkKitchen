@@ -234,4 +234,44 @@ public class ProductServiceTest
         storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Never);
         repoMock.Verify(r => r.Create(It.IsAny<Product>()), Times.Never);
     }
+
+    [DataTestMethod]
+    [DataRow(".png")]
+    [DataRow(".jpeg")]
+    [DataRow(".gif")]
+    [DataRow(".bmp")]
+    [DataRow(".webp")]
+    public void GivenNonJpgPhotos_WhenCreatingProduct_ThenThrowsProductException(string fileName)
+    {
+        var photos = new List<PhotoDTO>
+        {
+            new PhotoDTO("photo1",
+                fileName,
+                100,
+                "base64fake")
+        };
+
+        var productDto = new ProductDTO(
+            "COD123",
+            "Milanesa al pan",
+            "Milanesa al pan completa con fritas",
+            "Minutas clásicas",
+            "Sandwiches",
+            100,
+            photos
+        );
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        var service = new ProductService(repoMock.Object, storageMock.Object);
+
+        var exception = Assert.ThrowsException<ProductException>(() =>
+            service.Create(productDto)
+        );
+
+        Assert.AreEqual("Las fotos deben estar en formato JPG", exception.Message);
+
+        storageMock.Verify(x => x.Save(It.IsAny<PhotoDTO>()), Times.Never);
+    }
 }
