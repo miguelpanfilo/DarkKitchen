@@ -32,6 +32,13 @@ public class ProductService
 
         foreach (var photoDto in photos)
         {
+            var ext = photoDto.Extension.Trim().ToLower().Replace(".", string.Empty);
+
+            if (ext != "jpg")
+            {
+                throw new ProductException("Las fotos deben estar en formato JPG");
+            }
+
             var savedPath = _productPhotoStorage.Save(photoDto);
             savedPhotos.Add(new ProductPhoto(savedPath));
         }
