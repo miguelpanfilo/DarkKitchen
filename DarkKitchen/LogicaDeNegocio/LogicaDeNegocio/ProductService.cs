@@ -30,10 +30,13 @@ public class ProductService
     {
         var savedPhotos = new List<ProductPhoto>();
 
-        foreach (var photoDto in photos)
+        foreach(var photoDto in photos)
         {
             ValidateFormatPhoto(photoDto);
+        }
 
+        foreach (var photoDto in photos)
+        {
             var savedPath = _productPhotoStorage.Save(photoDto);
             savedPhotos.Add(new ProductPhoto(savedPath));
         }
