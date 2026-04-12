@@ -202,4 +202,41 @@ public class AuthenticationFilterTests
 
         serviceMock.Verify(x => x.ValidateSession(sessionId), Times.Once);
     }
+
+    [TestMethod]
+    public void OnAuthorization_WhenSessionIsValid_SetsRoleClaim()
+    {
+        var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
+        var sessionId = Guid.NewGuid();
+
+        var phoneResult = Phone.TryMakePhone("099123456");
+        Assert.IsTrue(phoneResult.Success);
+
+        var userResult = User.MakeClient(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            phoneResult.Value!,
+            "PasswordSeguraee3!");
+
+        Assert.IsTrue(userResult.Success);
+        var user = userResult.Value!;
+        user.Id = 5;
+
+        serviceMock
+            .Setup(x => x.ValidateSession(sessionId))
+            .Returns(user);
+
+        var filter = CreateFilter(serviceMock);
+        var context = CreateContext(sessionId.ToString());
+
+        filter.OnAuthorization(context);
+
+        var roleClaim = context.HttpContext.User.FindFirst(ClaimTypes.Role);
+
+        Assert.IsNotNull(roleClaim);
+        Assert.AreEqual(user.Role.ToString(), roleClaim!.Value);
+
+        serviceMock.Verify(x => x.ValidateSession(sessionId), Times.Once);
+    }
 }
