@@ -7,9 +7,11 @@ namespace LogicaDeNegocio;
 
 public class SessionValidationService(
     IRepositorySession repositorySession,
+    IRepositoryUser repositoryUser,
     IReloj watch) : ISessionValidationService
 {
     private readonly IRepositorySession _repositorySession = repositorySession;
+    private readonly IRepositoryUser _repositoryUser = repositoryUser;
     private readonly IReloj _watch = watch;
 
     public User ValidateSession(Guid sessionId)
@@ -25,6 +27,8 @@ public class SessionValidationService(
         {
             throw new UserAuthenticationException("La sesión expiró");
         }
+
+        _repositoryUser.FindById(session.UserId);
 
         return null!;
     }
