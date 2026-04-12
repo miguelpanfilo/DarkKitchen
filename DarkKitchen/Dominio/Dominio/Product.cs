@@ -26,6 +26,9 @@ public class Product
 
     private const decimal MIN_PRICE = 0;
 
+    private const int MIN_PHOTOS = 1;
+    private const int MAX_PHOTOS = 3;
+
     public static Product MakeProduct(
         string code,
         string name,
@@ -65,10 +68,7 @@ public class Product
 
         ValidatePrice(price);
 
-        if (photos.Count < 1 || photos.Count > 3)
-        {
-            throw new ProductException("El producto debe tener entre 1 y 3 fotos.");
-        }
+        ValidatePhotos(photos);
 
         Code = code.Trim();
         Name = name.Trim();
@@ -113,6 +113,14 @@ public class Product
         if(price <= MIN_PRICE)
         {
             throw new ProductException("El precio debe ser mayor a 0.");
+        }
+    }
+
+    private static void ValidatePhotos(List<ProductPhoto> photos)
+    {
+        if (photos.Count < MIN_PHOTOS || photos.Count > MAX_PHOTOS)
+        {
+            throw new ProductException("El producto debe tener entre 1 y 3 fotos.");
         }
     }
 }

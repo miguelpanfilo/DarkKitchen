@@ -24,8 +24,7 @@ public class ProductServiceTest
             "Minutas clásicas",
             "Sandwiches",
             100,
-            photos
-        );
+            photos);
 
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
@@ -58,8 +57,7 @@ public class ProductServiceTest
             "Minutas clásicas",
             "Sandwiches",
             0,
-            new List<PhotoDTO>()
-        );
+            new List<PhotoDTO>());
 
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
@@ -86,8 +84,7 @@ public class ProductServiceTest
             "Minutas clásicas",
             "Sandwiches",
             100,
-            photos
-        );
+            photos);
 
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
@@ -125,8 +122,7 @@ public class ProductServiceTest
             "Minutas clásicas",
             "Sandwiches",
             100,
-            photos
-        );
+            photos);
 
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
@@ -173,8 +169,7 @@ public class ProductServiceTest
             "Minutas clásicas",
             "Sandwiches",
             100,
-            photoDtos
-        );
+            photoDtos);
 
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
@@ -226,8 +221,7 @@ public class ProductServiceTest
             "Minutas clásicas",
             "Sandwiches",
             100,
-            photoDtos
-        );
+            photoDtos);
 
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);

@@ -6,13 +6,21 @@ namespace Pruebas.Products;
 [TestClass]
 public class ProductTest
 {
+    private List<ProductPhoto> ValidPhotos(int count = 1)
+    {
+        var photos = new List<ProductPhoto>();
+
+        for (var i = 0; i < count; i++)
+        {
+            photos.Add(new ProductPhoto($"foto{i}.jpg"));
+        }
+
+        return photos;
+    }
+
     [TestMethod]
     public void GivenValidData_WhenCreatingProduct_ThenProductIsCreated()
     {
-        var validPhotos = new List<ProductPhoto>
-        {
-            new ProductPhoto("foto1.jpg")
-        };
         var product = Product.MakeProduct(
             "COD123",
             "Milanesa al pan",
@@ -20,7 +28,7 @@ public class ProductTest
             "Minutas clásicas",
             "Sandwiches",
             100,
-            validPhotos);
+            ValidPhotos());
 
         Assert.IsNotNull(product);
         Assert.AreEqual("COD123", product.Code);
@@ -43,7 +51,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 100,
-                new List<ProductPhoto>()));
+                ValidPhotos(0)));
 
         Assert.AreEqual("El nombre no puede estar vacío.", ex.Message);
     }
@@ -59,7 +67,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 100,
-                new List<ProductPhoto>()));
+                ValidPhotos(0)));
 
         Assert.AreEqual("El código no puede estar vacío.", ex.Message);
     }
@@ -75,7 +83,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 100,
-                new List<ProductPhoto>()));
+                ValidPhotos(0)));
 
         Assert.AreEqual("La descripción no puede estar vacío.", ex.Message);
     }
@@ -91,7 +99,7 @@ public class ProductTest
                 " ",
                 "Sandwiches",
                 100,
-                new List<ProductPhoto>()));
+                ValidPhotos(0)));
 
         Assert.AreEqual("Línea comercial no puede estar vacío.", ex.Message);
     }
@@ -107,7 +115,7 @@ public class ProductTest
                 "Minutas clásicas",
                 " ",
                 100,
-                new List<ProductPhoto>()));
+                ValidPhotos(0)));
 
         Assert.AreEqual("La categoría no puede estar vacío.", ex.Message);
     }
@@ -125,7 +133,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 100,
-                new List<ProductPhoto>()));
+                ValidPhotos(0)));
 
         Assert.AreEqual("El código debe tener entre 5 y 20 caracteres.", ex.Message);
     }
@@ -143,7 +151,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 100,
-                new List<ProductPhoto>()));
+                ValidPhotos(0)));
 
         Assert.AreEqual("El código debe tener entre 5 y 20 caracteres.", ex.Message);
     }
@@ -161,7 +169,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 100,
-                new List<ProductPhoto>()));
+                ValidPhotos(0)));
 
         Assert.AreEqual("El nombre debe tener entre 10 y 50 caracteres.", ex.Message);
     }
@@ -179,7 +187,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 100,
-                new List<ProductPhoto>()));
+                ValidPhotos(0)));
 
         Assert.AreEqual("El nombre debe tener entre 10 y 50 caracteres.", ex.Message);
     }
@@ -197,7 +205,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 100,
-                new List<ProductPhoto>()));
+                ValidPhotos(0)));
 
         Assert.AreEqual("La descripción debe tener entre 20 y 500 caracteres.", ex.Message);
     }
@@ -215,7 +223,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 100,
-                new List<ProductPhoto>()));
+                ValidPhotos(0)));
 
         Assert.AreEqual("La descripción debe tener entre 20 y 500 caracteres.", ex.Message);
     }
@@ -223,10 +231,6 @@ public class ProductTest
     [TestMethod]
     public void GivenValidData_WhenCreatingProduct_ThenProductIsActiveByDefault()
     {
-        var validPhotos = new List<ProductPhoto>
-        {
-            new ProductPhoto("foto1.jpg")
-        };
         var product = Product.MakeProduct(
             "ABC12",
             "Milanesa completa",
@@ -234,7 +238,7 @@ public class ProductTest
             "Minutas clasicas",
             "Fritos",
             100,
-            validPhotos);
+            ValidPhotos(1));
 
         Assert.IsTrue(product.IsActive);
     }
@@ -242,10 +246,6 @@ public class ProductTest
     [TestMethod]
     public void Deactivate_WhenCalled_ProductBecomesInactive()
     {
-        var validPhotos = new List<ProductPhoto>
-        {
-            new ProductPhoto("foto1.jpg")
-        };
         var product = Product.MakeProduct(
             "ABC12",
             "Milanesa completa",
@@ -253,7 +253,7 @@ public class ProductTest
             "Minutas clasicas",
             "Fritos",
             100,
-            validPhotos);
+            ValidPhotos(1));
 
         product.Deactivate();
 
@@ -263,10 +263,6 @@ public class ProductTest
     [TestMethod]
     public void Activate_WhenCalled_ProductBecomesActive()
     {
-        var validPhotos = new List<ProductPhoto>
-        {
-            new ProductPhoto("foto1.jpg")
-        };
         var product = Product.MakeProduct(
             "ABC12",
             "Milanesa completa",
@@ -274,7 +270,7 @@ public class ProductTest
             "Minutas clasicas",
             "Fritos",
             100,
-            validPhotos);
+            ValidPhotos(1));
 
         product.Deactivate();
         product.Activate();
@@ -295,7 +291,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 price,
-                new List<ProductPhoto>()));
+                ValidPhotos(0)));
 
         Assert.AreEqual("El precio debe ser mayor a 0.", ex.Message);
     }
@@ -305,13 +301,6 @@ public class ProductTest
     [DataRow(3)]
     public void GivenValidNumberOfPhotos_WhenCreatingProduct_ThenProductIsCreated(int photoCount)
     {
-        var photos = new List<ProductPhoto>();
-
-        for (var i = 0; i < photoCount; i++)
-        {
-            photos.Add(new ProductPhoto($"foto{i}.jpg"));
-        }
-
         var product = Product.MakeProduct(
             "COD123",
             "Milanesa al pan",
@@ -319,7 +308,7 @@ public class ProductTest
             "Minutas clásicas",
             "Sandwiches",
             100,
-            photos
+            ValidPhotos(photoCount)
         );
 
         Assert.IsNotNull(product);
@@ -331,13 +320,6 @@ public class ProductTest
     [DataRow(4)]
     public void GivenInvalidNumberOfPhotos_WhenCreatingProduct_ThenThrowsProductException(int photoCount)
     {
-        var photos = new List<ProductPhoto>();
-
-        for(var i = 0; i < photoCount; i++)
-        {
-            photos.Add(new ProductPhoto($"foto{i}.jpg"));
-        }
-
         var exception = Assert.ThrowsException<ProductException>(() =>
             Product.MakeProduct(
                 "COD123",
@@ -346,7 +328,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 100,
-                photos
+                ValidPhotos(photoCount)
             )
         );
 
