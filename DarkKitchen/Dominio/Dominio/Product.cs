@@ -118,7 +118,7 @@ public class Product
 
     private static void ValidatePhotos(List<ProductPhoto> photos)
     {
-        if (photos.Count < MIN_PHOTOS || photos.Count > MAX_PHOTOS)
+        if (photos == null || photos.Count < MIN_PHOTOS || photos.Count > MAX_PHOTOS)
         {
             throw new ProductException("El producto debe tener entre 1 y 3 fotos.");
         }
