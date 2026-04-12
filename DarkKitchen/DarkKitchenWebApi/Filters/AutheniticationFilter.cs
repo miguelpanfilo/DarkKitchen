@@ -20,5 +20,10 @@ public class AuthenticationFilter : IAuthorizationFilter
         {
             throw new UserAuthenticationException("El header de sesión es obligatorio");
         }
+
+        if(!Guid.TryParse(sessionId, out _))
+        {
+            throw new UserAuthenticationException("El identificador de sesión es inválido");
+        }
     }
 }
