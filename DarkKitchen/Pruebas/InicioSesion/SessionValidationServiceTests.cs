@@ -64,4 +64,36 @@ public class SessionValidationServiceTests
         sessionRepositoryMock.Verify(x => x.FindBySessionId(sessionId), Times.Once);
         watchMock.Verify(x => x.Ahora(), Times.Once);
     }
+    [TestMethod]
+    public void ValidateSession_WhenSessionIsValid_CallsFindByIdWithSessionUserId()
+    {
+        var sessionId = Guid.NewGuid();
+        var now = new DateTime(2026, 4, 12, 10, 0, 0);
+        var session = new Session(5, now.AddHours(1));
+
+        var sessionRepositoryMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var userRepositoryMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+
+        sessionRepositoryMock
+            .Setup(x => x.FindBySessionId(sessionId))
+            .Returns(session);
+
+        watchMock
+            .Setup(x => x.Ahora())
+            .Returns(now);
+
+        userRepositoryMock
+            .Setup(x => x.FindById(5))
+            .Returns((User?)null);
+
+        var service = new SessionValidationService(
+            sessionRepositoryMock.Object,
+            userRepositoryMock.Object,
+            watchMock.Object);
+
+        service.ValidateSession(sessionId);
+
+        userRepositoryMock.Verify(x => x.FindById(5), Times.Once);
+    }
 }
