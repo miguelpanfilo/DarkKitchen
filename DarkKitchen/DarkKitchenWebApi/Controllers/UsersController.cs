@@ -26,7 +26,7 @@ public class UsersController(
 
     [RoleAuthorization(UserRolesDto.Administrative)]
     [HttpPatch("{id}")]
-    public IActionResult UpdateInternalUser(int id, [FromBody] ModificarUsuarioRequestDTO request)
+    public IActionResult UpdateInternalUser([FromRoute] int id, [FromBody] ModificarUsuarioRequestDTO request)
     {
         var loggedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         var response = _modifyUserService.UpdateInternalUser(id, loggedUserId, request);
