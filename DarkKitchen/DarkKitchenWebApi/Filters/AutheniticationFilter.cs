@@ -1,7 +1,9 @@
+using Contratos;
 using System.Security.Claims;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace DarkKitchen.Filters;
@@ -25,30 +27,52 @@ public class AuthenticationFilter(ISessionValidationService sessionValidationSer
 
         if(!context.HttpContext.Request.Headers.TryGetValue(SessionHeaderName, out var values))
         {
-            throw new UserAuthenticationException("El header de sesión es obligatorio");
+            context.Result = BuildUnauthorizedResult("El header de sesión es obligatorio");
+            return;
         }
 
-        var sessionID = values.FirstOrDefault();
+        var sessionIdText = values.FirstOrDefault();
 
-        if(string.IsNullOrWhiteSpace(sessionID))
+        if(string.IsNullOrWhiteSpace(sessionIdText))
         {
-            throw new UserAuthenticationException("El header de sesión es obligatorio");
+            context.Result = BuildUnauthorizedResult("El header de sesión es obligatorio");
+            return;
         }
 
-        if(!Guid.TryParse(sessionID, out var sessionId))
+        if(!Guid.TryParse(sessionIdText, out var sessionId))
         {
-            throw new UserAuthenticationException("El identificador de sesión es inválido");
+            context.Result = BuildUnauthorizedResult("El identificador de sesión es inválido");
+            return;
         }
 
-        var user = _sessionValidationService.ValidateSession(sessionId);
-
-        var claims = new List<Claim>
+        try
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Role, user.Role.ToString())
+            var user = _sessionValidationService.ValidateSession(sessionId);
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Role, user.Role.ToString())
+            };
+
+            var identity = new ClaimsIdentity(claims, "SessionHeader");
+            context.HttpContext.User = new ClaimsPrincipal(identity);
+        }
+        catch(UserAuthenticationException ex)
+        {
+            context.Result = BuildUnauthorizedResult(ex.Message);
+        }
+    }
+
+    private static ObjectResult BuildUnauthorizedResult(string message)
+    {
+        return new ObjectResult(new ResponseDto
+        {
+            ExecutionSuccessful = false,
+            Message = message
+        })
+        {
+            StatusCode = StatusCodes.Status401Unauthorized
         };
-
-        var identity = new ClaimsIdentity(claims, "SessionHeader");
-        context.HttpContext.User = new ClaimsPrincipal(identity);
     }
 }

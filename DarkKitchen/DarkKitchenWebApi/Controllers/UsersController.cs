@@ -1,5 +1,6 @@
 using Contratos;
 using LogicaDeNegocioAbstracciones;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DarkKitchen.Controllers;
@@ -10,6 +11,7 @@ public class UsersController(ISignUpUserService signUpService) : ControllerBase
 {
     private readonly ISignUpUserService _signUpService = signUpService;
 
+    [AllowAnonymous]
     [HttpPost]
     public IActionResult CreateUser([FromBody] SignUpClientRequestDTO request)
     {

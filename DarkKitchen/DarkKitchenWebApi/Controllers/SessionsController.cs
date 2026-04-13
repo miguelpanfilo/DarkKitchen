@@ -1,5 +1,6 @@
 using Contratos;
 using LogicaDeNegocioAbstracciones;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DarkKitchen.Controllers;
