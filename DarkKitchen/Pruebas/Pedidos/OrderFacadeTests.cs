@@ -30,7 +30,6 @@ public sealed class OrderFacadeTests
         {
             (1, 2, 100m, 0m)
         };
-
         return Order.MakeOrder(1, DeliveryType.Express, address, items, 200m);
     }
 
