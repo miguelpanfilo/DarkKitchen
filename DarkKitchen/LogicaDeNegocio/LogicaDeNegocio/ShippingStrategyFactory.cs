@@ -12,7 +12,7 @@ public static class ShippingStrategyFactory
         {
             DeliveryType.Express => new ExpressShippingStrategy(),
             DeliveryType.TwentyFourHours => new TwentyFourHoursShippingStrategy(),
-            _ => throw new OrderException($"No shipping strategy found for delivery type: {(int)deliveryType}")
+            _ => throw new OrderException($"No se encontró estrategia de envío para el tipo de entrega: {(int)deliveryType}")
         };
     }
 }

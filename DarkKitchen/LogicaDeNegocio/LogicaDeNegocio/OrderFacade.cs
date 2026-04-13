@@ -28,7 +28,7 @@ public class OrderFacade(IOrderService orderService, IProductService productServ
             var product = _productService.GetById(i.ProductId);
             if(!product.IsActive)
             {
-                throw new OrderException($"Product {product.Name} is not available");
+                throw new OrderException($"El producto {product.Name} no está disponible");
             }
 
             return (i.ProductId, i.Quantity, product.Price, 0m);

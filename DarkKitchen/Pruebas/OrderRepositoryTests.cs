@@ -1,266 +1,210 @@
 using Almacenamiento;
 using Dominio;
+using FluentAssertions;
 
 namespace Pruebas;
 
 [TestClass]
-public class OrderRepositoryTests
+public sealed class OrderRepositoryTests
 {
-    [TestMethod]
-    public void Add_ValidOrder_ReturnsOrderWithAssignedId()
+    private OrderRepository _repo = null!;
+
+    [TestInitialize]
+    public void Initialize()
     {
-        var repo = new OrderRepository();
-        var address = Address.MakeAddress("Rivera", "1234");
-        var items = new List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)>
-        {
-            (1, 2, 100m, 0m)
-        };
-        var order = Order.MakeOrder(1, DeliveryType.Express, address, items, 200m);
+        _repo = new OrderRepository();
+    }
 
-        var result = repo.Add(order);
+    private static Address MakeAddress() => Address.MakeAddress("Rivera", "1234");
 
-        Assert.IsTrue(result.Id > 0);
+    private static List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)> MakeItems()
+    {
+        return [(1, 1, 100m, 0m)];
+    }
+
+    private Order MakeOrder(int clientId = 1) =>
+        Order.MakeOrder(clientId, DeliveryType.Express, MakeAddress(), MakeItems(), 200m);
+
+    #region Add
+    #region Success
+    [TestMethod]
+    public void Add_WhenValidOrder_ShouldReturnOrderWithAssignedId()
+    {
+        var result = _repo.Add(MakeOrder());
+
+        result.Id.Should().BeGreaterThan(0);
     }
 
     [TestMethod]
-    public void Add_ValidOrder_PersistsToRepository()
+    public void Add_WhenValidOrder_ShouldPersistToRepository()
     {
-        var repo = new OrderRepository();
-        var address = Address.MakeAddress("Rivera", "1234");
-        var items = new List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)>
-        {
-            (1, 2, 100m, 0m)
-        };
-        var order = Order.MakeOrder(1, DeliveryType.Express, address, items, 200m);
+        var order = MakeOrder();
+        _repo.Add(order);
 
-        repo.Add(order);
+        _repo.GetById(order.Id).Should().NotBeNull();
+    }
+    #endregion
+    #endregion
 
-        var result = repo.GetById(order.Id);
-        Assert.IsNotNull(result);
+    #region GetById
+    #region Success
+    [TestMethod]
+    public void GetById_WhenOrderExists_ShouldReturnOrder()
+    {
+        var added = _repo.Add(MakeOrder());
+
+        var result = _repo.GetById(added.Id);
+
+        result.Should().NotBeNull();
+        result!.Id.Should().Be(added.Id);
+    }
+    #endregion
+
+    #region Error
+    [TestMethod]
+    public void GetById_WhenOrderDoesNotExist_ShouldReturnNull()
+    {
+        var result = _repo.GetById(99);
+
+        result.Should().BeNull();
+    }
+    #endregion
+    #endregion
+
+    #region GetByClientId
+    #region Success
+    [TestMethod]
+    public void GetByClientId_WhenClientHasOrders_ShouldReturnOnlyClientOrders()
+    {
+        _repo.Add(MakeOrder(clientId: 1));
+        _repo.Add(MakeOrder(clientId: 1));
+        _repo.Add(MakeOrder(clientId: 2));
+
+        var result = _repo.GetByClientId(1, null, null, null);
+
+        result.Should().HaveCount(2);
+        result.Should().AllSatisfy(o => o.ClientId.Should().Be(1));
     }
 
     [TestMethod]
-    public void GetById_ExistingId_ReturnsOrder()
+    public void GetByClientId_WhenStatusFilterApplied_ShouldReturnFilteredOrders()
     {
-        var repo = new OrderRepository();
-        var address = Address.MakeAddress("Rivera", "1234");
-        var items = new List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)>
-        {
-            (1, 2, 100m, 0m)
-        };
-        var added = repo.Add(Order.MakeOrder(1, DeliveryType.Express, address, items, 200m));
-
-        var result = repo.GetById(added.Id);
-
-        Assert.IsNotNull(result);
-        Assert.AreEqual(added.Id, result.Id);
-    }
-
-    [TestMethod]
-    public void GetById_NonExistingId_ReturnsNull()
-    {
-        var repo = new OrderRepository();
-
-        var result = repo.GetById(99);
-
-        Assert.IsNull(result);
-    }
-
-    [TestMethod]
-    public void GetByClientId_ReturnsOnlyClientOrders()
-    {
-        var repo = new OrderRepository();
-        var address = Address.MakeAddress("Rivera", "1234");
-        var items = new List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)>
-        {
-            (1, 1, 100m, 0m)
-        };
-        repo.Add(Order.MakeOrder(1, DeliveryType.Express, address, items, 200m));
-        repo.Add(Order.MakeOrder(1, DeliveryType.Express, address, items, 200m));
-        repo.Add(Order.MakeOrder(2, DeliveryType.Express, address, items, 200m));
-
-        var result = repo.GetByClientId(1, null, null, null);
-
-        Assert.AreEqual(2, result.Count);
-        Assert.IsTrue(result.All(o => o.ClientId == 1));
-    }
-
-    [TestMethod]
-    public void GetByClientId_WithStatusFilter_ReturnsFilteredOrders()
-    {
-        var repo = new OrderRepository();
-        var address = Address.MakeAddress("Rivera", "1234");
-        var items = new List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)>
-        {
-            (1, 1, 100m, 0m)
-        };
-        var pendingOrder = Order.MakeOrder(1, DeliveryType.Express, address, items, 200m);
-        var preparedOrder = Order.MakeOrder(1, DeliveryType.Express, address, items, 200m);
+        var preparedOrder = MakeOrder();
         preparedOrder.Prepare();
-        repo.Add(pendingOrder);
-        repo.Add(preparedOrder);
+        _repo.Add(MakeOrder());
+        _repo.Add(preparedOrder);
 
-        var result = repo.GetByClientId(1, null, null, OrderStatus.Pending);
+        var result = _repo.GetByClientId(1, null, null, OrderStatus.Pending);
 
-        Assert.AreEqual(1, result.Count);
-        Assert.AreEqual(OrderStatus.Pending, result[0].Status);
+        result.Should().HaveCount(1);
+        result[0].Status.Should().Be(OrderStatus.Pending);
     }
 
     [TestMethod]
-    public void GetByClientId_NoMatchingOrders_ReturnsEmptyList()
+    public void GetByClientId_WhenClientHasNoOrders_ShouldReturnEmptyList()
     {
-        var repo = new OrderRepository();
+        var result = _repo.GetByClientId(99, null, null, null);
 
-        var result = repo.GetByClientId(99, null, null, null);
-
-        Assert.AreEqual(0, result.Count);
+        result.Should().BeEmpty();
     }
 
     [TestMethod]
-    public void GetByFilters_WithDateRange_ReturnsOrdersInRange()
+    public void GetByClientId_WhenDateFromFilterApplied_ShouldReturnOrdersAfterDate()
     {
-        var repo = new OrderRepository();
-        var address = Address.MakeAddress("Rivera", "1234");
-        var items = new List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)>
-        {
-            (1, 1, 100m, 0m)
-        };
-        repo.Add(Order.MakeOrder(1, DeliveryType.Express, address, items, 200m));
+        _repo.Add(MakeOrder());
 
-        var result = repo.GetByFilters(
-            DateTime.UtcNow.AddDays(-1),
-            DateTime.UtcNow.AddDays(1),
-            null,
-            null);
+        var result = _repo.GetByClientId(1, DateTime.UtcNow.AddDays(1), null, null);
 
-        Assert.AreEqual(1, result.Count);
+        result.Should().BeEmpty();
     }
 
     [TestMethod]
-    public void GetByFilters_WithStreetFilter_ReturnsOrdersOnStreet()
+    public void GetByClientId_WhenDateToFilterApplied_ShouldReturnOrdersBeforeDate()
     {
-        var repo = new OrderRepository();
-        var items = new List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)>
-        {
-            (1, 1, 100m, 0m)
-        };
-        repo.Add(Order.MakeOrder(1, DeliveryType.Express, Address.MakeAddress("Rivera", "1234"), items, 200m));
-        repo.Add(Order.MakeOrder(1, DeliveryType.Express, Address.MakeAddress("Bvar España", "500"), items, 200m));
+        _repo.Add(MakeOrder());
 
-        var result = repo.GetByFilters(
-            DateTime.UtcNow.AddDays(-1),
-            DateTime.UtcNow.AddDays(1),
-            "Rivera",
-            null);
+        var result = _repo.GetByClientId(1, null, DateTime.UtcNow.AddDays(-1), null);
 
-        Assert.AreEqual(1, result.Count);
-        Assert.AreEqual("Rivera", result[0].Address.Street);
+        result.Should().BeEmpty();
+    }
+    #endregion
+    #endregion
+
+    #region GetByFilters
+    #region Success
+    [TestMethod]
+    public void GetByFilters_WhenDateRangeMatches_ShouldReturnOrdersInRange()
+    {
+        _repo.Add(MakeOrder());
+
+        var result = _repo.GetByFilters(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow.AddDays(1), null, null);
+
+        result.Should().HaveCount(1);
     }
 
     [TestMethod]
-    public void GetByFilters_WithStatusFilter_ReturnsFilteredOrders()
+    public void GetByFilters_WhenStreetFilterApplied_ShouldReturnOrdersOnStreet()
     {
-        var repo = new OrderRepository();
-        var address = Address.MakeAddress("Rivera", "1234");
-        var items = new List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)>
-        {
-            (1, 1, 100m, 0m)
-        };
-        var pendingOrder = Order.MakeOrder(1, DeliveryType.Express, address, items, 200m);
-        var preparedOrder = Order.MakeOrder(1, DeliveryType.Express, address, items, 200m);
+        _repo.Add(Order.MakeOrder(1, DeliveryType.Express, Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m));
+        _repo.Add(Order.MakeOrder(1, DeliveryType.Express, Address.MakeAddress("Bvar España", "500"), MakeItems(), 200m));
+
+        var result = _repo.GetByFilters(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow.AddDays(1), "Rivera", null);
+
+        result.Should().HaveCount(1);
+        result[0].Address.Street.Should().Be("Rivera");
+    }
+
+    [TestMethod]
+    public void GetByFilters_WhenStatusFilterApplied_ShouldReturnFilteredOrders()
+    {
+        var preparedOrder = MakeOrder();
         preparedOrder.Prepare();
-        repo.Add(pendingOrder);
-        repo.Add(preparedOrder);
+        _repo.Add(MakeOrder());
+        _repo.Add(preparedOrder);
 
-        var result = repo.GetByFilters(
+        var result = _repo.GetByFilters(
             DateTime.UtcNow.AddDays(-1),
             DateTime.UtcNow.AddDays(1),
             null,
             OrderStatus.Prepared);
 
-        Assert.AreEqual(1, result.Count);
-        Assert.AreEqual(OrderStatus.Prepared, result[0].Status);
+        result.Should().HaveCount(1);
+        result[0].Status.Should().Be(OrderStatus.Prepared);
     }
 
     [TestMethod]
-    public void GetByFilters_NoMatchingOrders_ReturnsEmptyList()
+    public void GetByFilters_WhenNoMatchingOrders_ShouldReturnEmptyList()
     {
-        var repo = new OrderRepository();
+        var result = _repo.GetByFilters(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow.AddDays(1), null, null);
 
-        var result = repo.GetByFilters(
-            DateTime.UtcNow.AddDays(-1),
-            DateTime.UtcNow.AddDays(1),
-            null,
-            null);
-
-        Assert.AreEqual(0, result.Count);
+        result.Should().BeEmpty();
     }
+    #endregion
+    #endregion
 
+    #region Update
+    #region Success
     [TestMethod]
-    public void Update_ExistingOrder_PersistsStatusChange()
+    public void Update_WhenOrderExists_ShouldPersistStatusChange()
     {
-        var repo = new OrderRepository();
-        var address = Address.MakeAddress("Rivera", "1234");
-        var items = new List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)>
-        {
-            (1, 1, 100m, 0m)
-        };
-        var added = repo.Add(Order.MakeOrder(1, DeliveryType.Express, address, items, 200m));
-
+        var added = _repo.Add(MakeOrder());
         added.Prepare();
-        repo.Update(added);
 
-        var result = repo.GetById(added.Id);
-        Assert.IsNotNull(result);
-        Assert.AreEqual(OrderStatus.Prepared, result.Status);
+        _repo.Update(added);
+
+        _repo.GetById(added.Id)!.Status.Should().Be(OrderStatus.Prepared);
     }
 
     [TestMethod]
-    public void Update_NonExistingOrder_DoesNothing()
+    public void Update_WhenOrderDoesNotExist_ShouldDoNothing()
     {
-        var repo = new OrderRepository();
-        var address = Address.MakeAddress("Rivera", "1234");
-        var items = new List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)>
-        {
-            (1, 1, 100m, 0m)
-        };
-        var order = Order.MakeOrder(1, DeliveryType.Express, address, items, 200m);
+        var order = MakeOrder();
         order.Id = 99;
 
-        repo.Update(order);
+        _repo.Update(order);
 
-        Assert.IsNull(repo.GetById(99));
+        _repo.GetById(99).Should().BeNull();
     }
-
-    [TestMethod]
-    public void GetByClientId_WithDateFromFilter_ReturnsOrdersAfterDate()
-    {
-        var repo = new OrderRepository();
-        var address = Address.MakeAddress("Rivera", "1234");
-        var items = new List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)>
-        {
-            (1, 1, 100m, 0m)
-        };
-        repo.Add(Order.MakeOrder(1, DeliveryType.Express, address, items, 200m));
-
-        var result = repo.GetByClientId(1, DateTime.UtcNow.AddDays(1), null, null);
-
-        Assert.AreEqual(0, result.Count);
-    }
-
-    [TestMethod]
-    public void GetByClientId_WithDateToFilter_ReturnsOrdersBeforeDate()
-    {
-        var repo = new OrderRepository();
-        var address = Address.MakeAddress("Rivera", "1234");
-        var items = new List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)>
-        {
-            (1, 1, 100m, 0m)
-        };
-        repo.Add(Order.MakeOrder(1, DeliveryType.Express, address, items, 200m));
-
-        var result = repo.GetByClientId(1, null, DateTime.UtcNow.AddDays(-1), null);
-
-        Assert.AreEqual(0, result.Count);
-    }
+    #endregion
+    #endregion
 }

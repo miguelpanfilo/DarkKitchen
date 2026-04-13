@@ -1,48 +1,59 @@
 using Dominio;
 using Dominio.Exceptions;
+using FluentAssertions;
 using LogicaDeNegocio;
 
 namespace Pruebas.Pedidos;
 
 [TestClass]
-public class ShippingStrategyFactoryTests
+public sealed class ShippingStrategyFactoryTests
 {
+    #region Create
+    #region Success
     [TestMethod]
-    public void Create_ExpressDeliveryType_ReturnsExpressShippingStrategy()
+    public void Create_WhenDeliveryTypeIsExpress_ShouldReturnExpressShippingStrategy()
     {
         var result = ShippingStrategyFactory.Create(DeliveryType.Express);
-        Assert.IsInstanceOfType(result, typeof(ExpressShippingStrategy));
+
+        result.Should().BeOfType<ExpressShippingStrategy>();
     }
 
     [TestMethod]
-    public void Create_TwentyFourHoursDeliveryType_ReturnsTwentyFourHoursShippingStrategy()
-    {
-        var result = ShippingStrategyFactory.Create(DeliveryType.TwentyFourHours);
-        Assert.IsInstanceOfType(result, typeof(TwentyFourHoursShippingStrategy));
-    }
-
-    [TestMethod]
-    public void Create_ExpressDeliveryType_ReturnsStrategyThatCalculates200()
+    public void Create_WhenDeliveryTypeIsExpress_ShouldCalculate200()
     {
         var result = ShippingStrategyFactory.Create(DeliveryType.Express);
-        Assert.AreEqual(200m, result.Calculate(500m));
+
+        result.Calculate(500m).Should().Be(200m);
     }
 
     [TestMethod]
-    public void Create_TwentyFourHoursDeliveryType_ReturnsStrategyThatCalculates250()
+    public void Create_WhenDeliveryTypeIsTwentyFourHours_ShouldReturnTwentyFourHoursShippingStrategy()
     {
         var result = ShippingStrategyFactory.Create(DeliveryType.TwentyFourHours);
-        Assert.AreEqual(250m, result.Calculate(500m));
+
+        result.Should().BeOfType<TwentyFourHoursShippingStrategy>();
     }
 
     [TestMethod]
-    public void Create_UnknownDeliveryType_ThrowsOrderException()
+    public void Create_WhenDeliveryTypeIsTwentyFourHours_ShouldCalculate250()
+    {
+        var result = ShippingStrategyFactory.Create(DeliveryType.TwentyFourHours);
+
+        result.Calculate(500m).Should().Be(250m);
+    }
+    #endregion
+
+    #region Error
+    [TestMethod]
+    public void Create_WhenDeliveryTypeIsUnknown_ShouldThrowOrderException()
     {
         var unknownType = (DeliveryType)99;
 
-        var exception = Assert.ThrowsException<OrderException>(() =>
-            ShippingStrategyFactory.Create(unknownType));
+        var act = () => ShippingStrategyFactory.Create(unknownType);
 
-        Assert.AreEqual("No shipping strategy found for delivery type: 99", exception.Message);
+        act.Should().Throw<OrderException>()
+            .WithMessage("No se encontró estrategia de envío para el tipo de entrega: 99");
     }
+    #endregion
+    #endregion
 }
