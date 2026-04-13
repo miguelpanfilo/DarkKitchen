@@ -91,6 +91,8 @@ public class Product
 
     public void UpdateCode(string newCode)
     {
+        ValidateRequired(newCode, "El código");
+        ValidateLength(newCode, "El código", CodeMinLength, CodeMaxLength);
         Code = newCode.Trim();
     }
 
