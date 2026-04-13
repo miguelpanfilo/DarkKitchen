@@ -52,7 +52,7 @@ public sealed class ShippingStrategyFactoryTests
         var act = () => ShippingStrategyFactory.Create(unknownType);
 
         act.Should().Throw<OrderException>()
-            .WithMessage("No shipping strategy found for delivery type: 99");
+            .WithMessage("No se encontró estrategia de envío para el tipo de entrega: 99");
     }
     #endregion
     #endregion

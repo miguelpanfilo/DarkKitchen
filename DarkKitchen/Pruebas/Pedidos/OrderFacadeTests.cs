@@ -86,7 +86,7 @@ public sealed class OrderFacadeTests
             Items = [new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }]
         });
 
-        act.Should().Throw<OrderException>().WithMessage("Product Test is not available");
+        act.Should().Throw<OrderException>().WithMessage("El producto Test no está disponible");
         _productServiceMock.VerifyAll();
         _orderServiceMock.VerifyAll();
     }

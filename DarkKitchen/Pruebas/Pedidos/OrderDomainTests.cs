@@ -29,7 +29,7 @@ public sealed class OrderDomainTests
     {
         var act = () => Address.MakeAddress(string.Empty, "1234");
 
-        act.Should().Throw<OrderException>().WithMessage("Street cannot be empty");
+        act.Should().Throw<OrderException>().WithMessage("La calle no puede estar vacía");
     }
 
     [TestMethod]
@@ -37,7 +37,7 @@ public sealed class OrderDomainTests
     {
         var act = () => Address.MakeAddress("Rivera", string.Empty);
 
-        act.Should().Throw<OrderException>().WithMessage("Door number cannot be empty");
+        act.Should().Throw<OrderException>().WithMessage("El número de puerta no puede estar vacío");
     }
     #endregion
     #endregion
@@ -51,7 +51,7 @@ public sealed class OrderDomainTests
 
         var act = () => Order.MakeOrder(1, DeliveryType.Express, address, [], 200m);
 
-        act.Should().Throw<OrderException>().WithMessage("Order must have at least one product");
+        act.Should().Throw<OrderException>().WithMessage("El pedido debe tener al menos un producto");
     }
 
     [TestMethod]
@@ -115,7 +115,7 @@ public sealed class OrderDomainTests
     {
         var act = () => OrderItem.MakeOrderItem(1, 0, 100m);
 
-        act.Should().Throw<OrderException>().WithMessage("Quantity must be greater than zero");
+        act.Should().Throw<OrderException>().WithMessage("La cantidad debe ser mayor a cero");
     }
 
     [TestMethod]
@@ -123,7 +123,7 @@ public sealed class OrderDomainTests
     {
         var act = () => OrderItem.MakeOrderItem(1, 1, -1m);
 
-        act.Should().Throw<OrderException>().WithMessage("Unit price cannot be negative");
+        act.Should().Throw<OrderException>().WithMessage("El precio no puede ser negativo");
     }
 
     [TestMethod]
@@ -131,7 +131,7 @@ public sealed class OrderDomainTests
     {
         var act = () => OrderItem.MakeOrderItem(1, 1, 100m, -0.1m);
 
-        act.Should().Throw<OrderException>().WithMessage("Discount must be between 0 and 1");
+        act.Should().Throw<OrderException>().WithMessage("El descuento debe estar entre 0 y 1");
     }
 
     [TestMethod]
@@ -139,7 +139,7 @@ public sealed class OrderDomainTests
     {
         var act = () => OrderItem.MakeOrderItem(1, 1, 100m, 1.1m);
 
-        act.Should().Throw<OrderException>().WithMessage("Discount must be between 0 and 1");
+        act.Should().Throw<OrderException>().WithMessage("El descuento debe estar entre 0 y 1");
     }
     #endregion
     #endregion
@@ -151,7 +151,7 @@ public sealed class OrderDomainTests
     {
         var act = () => Product.MakeProduct(string.Empty, 100m);
 
-        act.Should().Throw<OrderException>().WithMessage("Product name cannot be empty");
+        act.Should().Throw<OrderException>().WithMessage("El nombre del producto no puede estar vacío");
     }
 
     [TestMethod]
@@ -159,7 +159,7 @@ public sealed class OrderDomainTests
     {
         var act = () => Product.MakeProduct("Burger", -1m);
 
-        act.Should().Throw<OrderException>().WithMessage("Product price cannot be negative");
+        act.Should().Throw<OrderException>().WithMessage("El precio del producto no puede ser negativo");
     }
     #endregion
     #endregion
