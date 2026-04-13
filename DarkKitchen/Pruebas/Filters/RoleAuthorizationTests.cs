@@ -28,10 +28,25 @@ public class RoleAuthorizationTests
             new List<IFilterMetadata>());
     }
 
+    private static AuthorizationFilterContext CreateUnauthenticatedContext()
+    {
+        var httpContext = new DefaultHttpContext();
+        httpContext.User = new ClaimsPrincipal(new ClaimsIdentity());
+
+        var actionContext = new ActionContext(
+            httpContext,
+            new RouteData(),
+            new ActionDescriptor());
+
+        return new AuthorizationFilterContext(
+            actionContext,
+            new List<IFilterMetadata>());
+    }
+
     [TestMethod]
     public void OnAuthorization_WhenUserHasNoRoleClaim_SetsForbiddenResult()
     {
-        var filter = new RoleAuthorizationAttribute(UserRoles.Administrative);
+        var filter = new RoleAuthorizationAttribute(UserRolesDto.Administrative);
         var context = CreateContextWithUser();
 
         filter.OnAuthorization(context);
@@ -49,7 +64,7 @@ public class RoleAuthorizationTests
     [TestMethod]
     public void OnAuthorization_WhenUserRoleIsNotAllowed_SetsForbiddenResult()
     {
-        var filter = new RoleAuthorizationAttribute(UserRoles.Administrative);
+        var filter = new RoleAuthorizationAttribute(UserRolesDto.Administrative);
         var context = CreateContextWithUser(
             new Claim(ClaimTypes.Role, UserRoles.Client.ToString()));
 
@@ -68,7 +83,7 @@ public class RoleAuthorizationTests
     [TestMethod]
     public void OnAuthorization_WhenUserRoleIsAllowed_DoesNothing()
     {
-        var filter = new RoleAuthorizationAttribute(UserRoles.Administrative);
+        var filter = new RoleAuthorizationAttribute(UserRolesDto.Administrative);
         var context = CreateContextWithUser(
             new Claim(ClaimTypes.Role, UserRoles.Administrative.ToString()));
 
@@ -81,8 +96,8 @@ public class RoleAuthorizationTests
     public void OnAuthorization_WhenUserRoleIsInAllowedRoles_DoesNothing()
     {
         var filter = new RoleAuthorizationAttribute(
-            UserRoles.Administrative,
-            UserRoles.Preparer);
+            UserRolesDto.Administrative,
+            UserRolesDto.Preparer);
 
         var context = CreateContextWithUser(
             new Claim(ClaimTypes.Role, UserRoles.Preparer.ToString()));
@@ -96,8 +111,8 @@ public class RoleAuthorizationTests
     public void OnAuthorization_WhenUserRoleIsNotInAllowedRoles_SetsForbiddenResult()
     {
         var filter = new RoleAuthorizationAttribute(
-            UserRoles.Administrative,
-            UserRoles.Preparer);
+            UserRolesDto.Administrative,
+            UserRolesDto.Preparer);
 
         var context = CreateContextWithUser(
             new Claim(ClaimTypes.Role, UserRoles.Client.ToString()));
@@ -117,7 +132,7 @@ public class RoleAuthorizationTests
     [TestMethod]
     public void OnAuthorization_WhenRoleClaimIsEmpty_SetsForbiddenResult()
     {
-        var filter = new RoleAuthorizationAttribute(UserRoles.Administrative);
+        var filter = new RoleAuthorizationAttribute(UserRolesDto.Administrative);
         var context = CreateContextWithUser(
             new Claim(ClaimTypes.Role, string.Empty));
 
@@ -131,5 +146,23 @@ public class RoleAuthorizationTests
         Assert.IsNotNull(response);
         Assert.IsFalse(response.ExecutionSuccessful);
         Assert.AreEqual("El usuario no tiene permisos para ejecutar esta acción", response.Message);
+    }
+
+    [TestMethod]
+    public void OnAuthorization_WhenUserIsNotAuthenticated_SetsUnauthorizedResult()
+    {
+        var filter = new RoleAuthorizationAttribute(UserRolesDto.Administrative);
+        var context = CreateUnauthenticatedContext();
+
+        filter.OnAuthorization(context);
+
+        var result = context.Result as ObjectResult;
+        Assert.IsNotNull(result);
+        Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
+
+        var response = result.Value as ResponseDto;
+        Assert.IsNotNull(response);
+        Assert.IsFalse(response.ExecutionSuccessful);
+        Assert.AreEqual("El usuario no está autenticado", response.Message);
     }
 }

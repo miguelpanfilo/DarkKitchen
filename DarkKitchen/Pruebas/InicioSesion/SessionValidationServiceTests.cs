@@ -1,4 +1,5 @@
 using AlmacenamientoAbstracciones;
+using Contratos;
 using Dominio;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
@@ -145,7 +146,7 @@ public class SessionValidationServiceTests
 
         var dto = (CurrentUserDto)result;
         Assert.AreEqual(5, dto.Id);
-        Assert.AreEqual("Client", dto.Role);
+        Assert.AreEqual("Client", dto.Role.ToString());
         Assert.AreEqual("miguel@gmail.com", dto.Email);
 
         sessionRepo.Verify(r => r.FindBySessionId(sessionId), Times.Once);

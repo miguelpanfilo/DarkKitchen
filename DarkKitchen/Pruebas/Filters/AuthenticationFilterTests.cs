@@ -114,7 +114,7 @@ public void OnAuthorization_WhenSessionIdIsValid_CallsSessionValidationService()
     var currentUser = new CurrentUserDto
     {
         Id = 5,
-        Role = "Client",
+        Role = UserRolesDto.Client,
         Email = "miguel@gmail.com"
     };
 
@@ -151,7 +151,7 @@ public void OnAuthorization_WhenSessionIsValid_SetsAuthenticatedUser()
     var currentUser = new CurrentUserDto
     {
         Id = 5,
-        Role = "Client",
+        Role = UserRolesDto.Client,
         Email = "miguel@gmail.com"
     };
 
@@ -179,7 +179,7 @@ public void OnAuthorization_WhenSessionIsValid_SetsNameIdentifierClaim()
     var currentUser = new CurrentUserDto
     {
         Id = 5,
-        Role = "Client",
+        Role = UserRolesDto.Client,
         Email = "miguel@gmail.com"
     };
 
@@ -209,7 +209,7 @@ public void OnAuthorization_WhenSessionIsValid_SetsRoleClaim()
     var currentUser = new CurrentUserDto
     {
         Id = 5,
-        Role = "Client",
+        Role = UserRolesDto.Client,
         Email = "miguel@gmail.com"
     };
 
@@ -266,7 +266,7 @@ public void OnAuthorization_WhenSessionIsValid_SetsCurrentUserInHttpContextItems
     var currentUser = new CurrentUserDto
     {
         Id = 5,
-        Role = "Client",
+        Role = UserRolesDto.Client,
         Email = "miguel@gmail.com"
     };
 
