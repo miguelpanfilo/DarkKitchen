@@ -97,6 +97,11 @@ public class Product
         Description = newDescription.Trim();
     }
 
+    public void UpdateCommercialLine(string newCommercialLine)
+    {
+        CommercialLine = newCommercialLine.Trim();
+    }
+
     public void Activate()
     {
         IsActive = true;

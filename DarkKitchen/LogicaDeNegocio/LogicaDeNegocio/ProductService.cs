@@ -48,6 +48,11 @@ public class ProductService
             product.UpdateDescription(patchDto.Description);
         }
 
+        if(patchDto.CommercialLine != null)
+        {
+            product.UpdateCommercialLine(patchDto.CommercialLine);
+        }
+
         return _repository.Update(product);
     }
 
