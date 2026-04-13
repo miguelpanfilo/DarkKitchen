@@ -569,6 +569,71 @@ public class ProductServiceTest
     }
 
     [TestMethod]
+    public void GivenExistingProductAndPhotosPatchWithExistingAndNewPhotos_WhenUpdating_ThenRemovesMissingPhotoAndAddsNewPhoto()
+    {
+        var product = Product.MakeProduct(
+            "COD123",
+            "Milanesa al pan",
+            "Milanesa al pan completa con fritas",
+            "Minutas clásicas",
+            "Sandwiches",
+            100,
+            new List<ProductPhoto>
+            {
+                new ProductPhoto("/images/products/1/a.jpg"),
+                new ProductPhoto("/images/products/1/b.jpg")
+            }
+        );
+
+        var patchDto = new ProductPatchDto
+        {
+            Photos = new List<ProductPatchPhotoDto>
+            {
+                new ProductPatchPhotoDto
+                {
+                    Path = "/images/products/1/a.jpg"
+                },
+                new ProductPatchPhotoDto
+                {
+                    FileName = "nueva",
+                    Extension = "jpg",
+                    SizeInBytes = 100,
+                    Base64 = "base64fake"
+                }
+            }
+        };
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        repoMock
+            .Setup(r => r.FindById(1))
+            .Returns(product);
+
+        storageMock
+            .Setup(s => s.Save(It.IsAny<PhotoDTO>()))
+            .Returns("/images/products/1/nueva.jpg");
+
+        repoMock
+            .Setup(r => r.Update(It.IsAny<Product>()))
+            .Returns((Product p) => p);
+
+        var service = new ProductService(repoMock.Object, storageMock.Object);
+
+        var result = service.Update(1, patchDto);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(2, result.Photos.Count);
+        Assert.IsTrue(result.Photos.Any(p => p.Path == "/images/products/1/a.jpg"));
+        Assert.IsTrue(result.Photos.Any(p => p.Path == "/images/products/1/nueva.jpg"));
+        Assert.IsFalse(result.Photos.Any(p => p.Path == "/images/products/1/b.jpg"));
+
+        storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Once);
+        repoMock.Verify(r => r.FindById(1), Times.Once);
+        repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Once);
+    }
+
+    [TestMethod]
     public void GivenNonExistingProduct_WhenUpdating_ThenThrowsProductException()
     {
         var patchDto = new ProductPatchDto
