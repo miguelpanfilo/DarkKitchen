@@ -2,6 +2,7 @@ using Contratos;
 using DarkKitchen.Controllers;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -141,5 +142,19 @@ public class UsersControllerTests
         controller.CreateUser(request);
 
         signUpServiceMock.Verify(s => s.SignUpClient(request), Times.Once);
+    }
+
+    [TestMethod]
+    public void CreateUser_HasAllowAnonymousAttribute()
+    {
+        var method = typeof(UsersController).GetMethod(nameof(UsersController.CreateUser));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(AllowAnonymousAttribute), false)
+            .Cast<AllowAnonymousAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
     }
 }
