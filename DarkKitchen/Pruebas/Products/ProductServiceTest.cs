@@ -1052,4 +1052,22 @@ public class ProductServiceTest
 
         repoMock.Verify(r => r.FindById(productId), Times.Once);
     }
+
+    [TestMethod]
+    public void GivenNonExistingProductId_WhenGettingById_ThenThrowsProductException()
+    {
+        var productId = 1;
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        repoMock.Setup(r => r.FindById(productId)).Returns((Product)null!);
+
+        var service = CreateService(repoMock, storageMock);
+
+        var exception = Assert.ThrowsException<ProductException>(
+            () => service.GetById(productId));
+
+        Assert.AreEqual("El producto no existe", exception.Message);
+    }
 }
