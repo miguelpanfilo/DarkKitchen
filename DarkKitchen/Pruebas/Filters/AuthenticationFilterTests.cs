@@ -256,4 +256,32 @@ public void OnAuthorization_WhenSessionValidationThrows_SetsUnauthorizedResult()
 
     sessionValidationServiceMock.Verify(x => x.ValidateSession(sessionId), Times.Once);
 }
+
+[TestMethod]
+public void OnAuthorization_WhenSessionIsValid_SetsCurrentUserInHttpContextItems()
+{
+    var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
+    var sessionId = Guid.NewGuid();
+
+    var currentUser = new CurrentUserDto
+    {
+        Id = 5,
+        Role = "Client",
+        Email = "miguel@gmail.com"
+    };
+
+    serviceMock
+        .Setup(x => x.ValidateSession(sessionId))
+        .Returns(currentUser);
+
+    var filter = CreateFilter(serviceMock);
+    var context = CreateContext(sessionId.ToString());
+
+    filter.OnAuthorization(context);
+
+    Assert.IsNull(context.Result);
+    Assert.AreEqual(currentUser, context.HttpContext.Items["CurrentUser"]);
+
+    serviceMock.Verify(x => x.ValidateSession(sessionId), Times.Once);
+}
 }
