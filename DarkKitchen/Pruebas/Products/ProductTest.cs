@@ -482,4 +482,62 @@ public class ProductTest
 
         Assert.AreEqual("El precio debe ser mayor a 0.", exception.Message);
     }
+
+    [TestMethod]
+    public void GivenValidPhotos_WhenUpdatingPhotos_ThenUpdatesProductPhotos()
+    {
+        var product = CreateValidProduct();
+        var newPhotos = new List<ProductPhoto>
+        {
+            new ProductPhoto("photo-1.jpg"),
+            new ProductPhoto("photo-2.jpg")
+        };
+
+        product.UpdatePhotos(newPhotos);
+
+        Assert.AreEqual(2, product.Photos.Count);
+        Assert.AreEqual("photo-1.jpg", product.Photos[0].Path);
+        Assert.AreEqual("photo-2.jpg", product.Photos[1].Path);
+    }
+
+    [TestMethod]
+    public void GivenNullPhotos_WhenUpdatingPhotos_ThenThrowsProductException()
+    {
+        var product = CreateValidProduct();
+
+        var exception = Assert.ThrowsException<ProductException>(
+            () => product.UpdatePhotos(null!));
+
+        Assert.AreEqual("El producto debe tener entre 1 y 3 fotos.", exception.Message);
+    }
+
+    [TestMethod]
+    public void GivenEmptyPhotos_WhenUpdatingPhotos_ThenThrowsProductException()
+    {
+        var product = CreateValidProduct();
+        var photos = new List<ProductPhoto>();
+
+        var exception = Assert.ThrowsException<ProductException>(
+            () => product.UpdatePhotos(photos));
+
+        Assert.AreEqual("El producto debe tener entre 1 y 3 fotos.", exception.Message);
+    }
+
+    [TestMethod]
+    public void GivenMoreThanThreePhotos_WhenUpdatingPhotos_ThenThrowsProductException()
+    {
+        var product = CreateValidProduct();
+        var photos = new List<ProductPhoto>
+        {
+            new ProductPhoto("photo-1.jpg"),
+            new ProductPhoto("photo-2.jpg"),
+            new ProductPhoto("photo-3.jpg"),
+            new ProductPhoto("photo-4.jpg")
+        };
+
+        var exception = Assert.ThrowsException<ProductException>(
+            () => product.UpdatePhotos(photos));
+
+        Assert.AreEqual("El producto debe tener entre 1 y 3 fotos.", exception.Message);
+    }
 }
