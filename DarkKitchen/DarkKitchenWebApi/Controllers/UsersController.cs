@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Contratos;
+using DarkKitchen.Filters;
 using LogicaDeNegocioAbstracciones;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,7 @@ public class UsersController(
         return Created("/api/v1/users", response);
     }
 
+    [RoleAuthorization(UserRolesDto.Administrative)]
     [HttpPatch("{id}")]
     public IActionResult UpdateInternalUser(int id, [FromBody] ModificarUsuarioRequestDTO request)
     {
