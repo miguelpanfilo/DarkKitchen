@@ -43,6 +43,11 @@ public class ProductService
     {
         var product = _repository.FindById(productId);
 
+        if (product == null)
+        {
+            throw new ProductException("El producto no existe");
+        }
+
         _productPhotoService.DeletePhotos(product.Photos);
         _repository.Delete(productId);
     }
