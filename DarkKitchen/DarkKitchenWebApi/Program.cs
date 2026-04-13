@@ -14,6 +14,11 @@ builder.Services.AddControllers(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Orders
+builder.Services.AddScoped<IOrderFacade, OrderFacade>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
+
 // Services
 builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<ISignUpUserService, SignUpService>();
