@@ -17,12 +17,12 @@ public class Product
     {
         if(string.IsNullOrWhiteSpace(name))
         {
-            throw new OrderException("Product name cannot be empty");
+            throw new OrderException("El nombre del producto no puede estar vacío");
         }
 
         if(price < 0)
         {
-            throw new OrderException("Product price cannot be negative");
+            throw new OrderException("El precio del producto no puede ser negativo");
         }
 
         return new Product

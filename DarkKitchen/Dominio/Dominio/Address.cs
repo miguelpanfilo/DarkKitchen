@@ -19,12 +19,12 @@ public class Address
     {
         if(string.IsNullOrWhiteSpace(street))
         {
-            throw new OrderException("Street cannot be empty");
+            throw new OrderException("La calle no puede estar vacía");
         }
 
         if(string.IsNullOrWhiteSpace(doorNumber))
         {
-            throw new OrderException("Door number cannot be empty");
+            throw new OrderException("El número de puerta no puede estar vacío");
         }
 
         return new Address(street.Trim(), doorNumber.Trim(), apartment?.Trim());
