@@ -60,7 +60,7 @@ public sealed class OrderDomainTests
         var order = Order.MakeOrder(1, DeliveryType.Express, Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m);
         order.Prepare();
 
-        var act = () => order.Prepare();
+        var act = order.Prepare;
 
         act.Should().Throw<OrderException>();
     }
@@ -71,7 +71,7 @@ public sealed class OrderDomainTests
         var order = Order.MakeOrder(1, DeliveryType.Express, Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m);
         order.Prepare();
 
-        var act = () => order.Cancel();
+        var act = order.Cancel;
 
         act.Should().Throw<OrderException>();
     }
@@ -81,7 +81,7 @@ public sealed class OrderDomainTests
     {
         var order = Order.MakeOrder(1, DeliveryType.Express, Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m);
 
-        var act = () => order.Dispatch();
+        var act = order.Dispatch;
 
         act.Should().Throw<OrderException>();
     }
@@ -91,7 +91,7 @@ public sealed class OrderDomainTests
     {
         var order = Order.MakeOrder(1, DeliveryType.Express, Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m);
 
-        var act = () => order.Deliver();
+        var act = order.Deliver;
 
         act.Should().Throw<OrderException>();
     }
@@ -101,7 +101,7 @@ public sealed class OrderDomainTests
     {
         var order = Order.MakeOrder(1, DeliveryType.Express, Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m);
 
-        var act = () => order.MarkNotDelivered();
+        var act = order.MarkNotDelivered;
 
         act.Should().Throw<OrderException>();
     }
