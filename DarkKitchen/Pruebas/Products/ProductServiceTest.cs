@@ -10,6 +10,14 @@ namespace Pruebas.Products;
 [TestClass]
 public class ProductServiceTest
 {
+    private static ProductService CreateService(
+        Mock<IProductRepository> repoMock,
+        Mock<IProductPhotoStorage> storageMock)
+    {
+        var photoService = new ProductPhotoService(storageMock.Object);
+        return new ProductService(repoMock.Object, photoService);
+    }
+
     [TestMethod]
     public void GivenValidProductDto_WhenCreating_ThenRepositoryIsCalledAndProductIsReturned()
     {
@@ -37,7 +45,7 @@ public class ProductServiceTest
             .Setup(repository => repository.Create(It.IsAny<Product>()))
             .Returns((Product product) => product);
 
-        var service = new ProductService(repoMock.Object, storageMock.Object);
+        var service = CreateService(repoMock, storageMock);
 
         var result = service.Create(productDto);
 
@@ -62,7 +70,7 @@ public class ProductServiceTest
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
-        var service = new ProductService(repoMock.Object, storageMock.Object);
+        var service = CreateService(repoMock, storageMock);
 
         Assert.ThrowsException<ProductException>(() => service.Create(dto));
 
@@ -97,7 +105,7 @@ public class ProductServiceTest
             .Setup(repository => repository.Create(It.IsAny<Product>()))
             .Returns((Product product) => product);
 
-        var service = new ProductService(repoMock.Object, storageMock.Object);
+        var service = CreateService(repoMock, storageMock);
 
         var result = service.Create(productDto);
 
@@ -135,7 +143,7 @@ public class ProductServiceTest
             .Setup(r => r.Create(It.IsAny<Product>()))
             .Returns((Product p) => p);
 
-        var service = new ProductService(repoMock.Object, storageMock.Object);
+        var service = CreateService(repoMock, storageMock);
 
         var result = service.Create(productDto);
 
@@ -182,7 +190,7 @@ public class ProductServiceTest
             .Setup(r => r.Create(It.IsAny<Product>()))
             .Returns((Product p) => p);
 
-        var service = new ProductService(repoMock.Object, storageMock.Object);
+        var service = CreateService(repoMock, storageMock);
 
         var result = service.Create(productDto);
 
@@ -226,7 +234,7 @@ public class ProductServiceTest
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
-        var service = new ProductService(repoMock.Object, storageMock.Object);
+        var service = CreateService(repoMock, storageMock);
 
         var exception = Assert.ThrowsException<ProductException>(() => service.Create(productDto));
 
@@ -264,7 +272,7 @@ public class ProductServiceTest
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
-        var service = new ProductService(repoMock.Object, storageMock.Object);
+        var service = CreateService(repoMock, storageMock);
 
         var exception = Assert.ThrowsException<ProductException>(() =>
             service.Create(productDto)
@@ -300,7 +308,7 @@ public class ProductServiceTest
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
-        var service = new ProductService(repoMock.Object, storageMock.Object);
+        var service = CreateService(repoMock, storageMock);
 
         var exception = Assert.ThrowsException<ProductException>(() =>
             service.Create(productDto));
@@ -342,7 +350,7 @@ public class ProductServiceTest
             .Setup(r => r.Update(It.IsAny<Product>()))
             .Returns((Product p) => p);
 
-        var service = new ProductService(repoMock.Object, storageMock.Object);
+        var service = CreateService(repoMock, storageMock);
 
         var result = service.Update(1, patchDto);
 
@@ -385,7 +393,7 @@ public class ProductServiceTest
             .Setup(r => r.Update(It.IsAny<Product>()))
             .Returns((Product p) => p);
 
-        var service = new ProductService(repoMock.Object, storageMock.Object);
+        var service = CreateService(repoMock, storageMock);
 
         var result = service.Update(1, patchDto);
 
@@ -428,7 +436,7 @@ public class ProductServiceTest
             .Setup(r => r.Update(It.IsAny<Product>()))
             .Returns((Product p) => p);
 
-        var service = new ProductService(repoMock.Object, storageMock.Object);
+        var service = CreateService(repoMock, storageMock);
 
         var result = service.Update(1, patchDto);
 
@@ -471,7 +479,7 @@ public class ProductServiceTest
             .Setup(r => r.Update(It.IsAny<Product>()))
             .Returns((Product p) => p);
 
-        var service = new ProductService(repoMock.Object, storageMock.Object);
+        var service = CreateService(repoMock, storageMock);
 
         var result = service.Update(1, patchDto);
 
@@ -514,7 +522,7 @@ public class ProductServiceTest
             .Setup(r => r.Update(It.IsAny<Product>()))
             .Returns((Product p) => p);
 
-        var service = new ProductService(repoMock.Object, storageMock.Object);
+        var service = CreateService(repoMock, storageMock);
 
         var result = service.Update(1, patchDto);
 
@@ -557,7 +565,7 @@ public class ProductServiceTest
             .Setup(r => r.Update(It.IsAny<Product>()))
             .Returns((Product p) => p);
 
-        var service = new ProductService(repoMock.Object, storageMock.Object);
+        var service = CreateService(repoMock, storageMock);
 
         var result = service.Update(1, patchDto);
 
@@ -618,7 +626,7 @@ public class ProductServiceTest
             .Setup(r => r.Update(It.IsAny<Product>()))
             .Returns((Product p) => p);
 
-        var service = new ProductService(repoMock.Object, storageMock.Object);
+        var service = CreateService(repoMock, storageMock);
 
         var result = service.Update(1, patchDto);
 
@@ -652,7 +660,7 @@ public class ProductServiceTest
             .Setup(r => r.Update(It.IsAny<Product>()))
             .Returns((Product p) => p);
 
-        var service = new ProductService(repoMock.Object, storageMock.Object);
+        var service = CreateService(repoMock, storageMock);
 
         var exception = Assert.ThrowsException<ProductException>(() => service.Update(1, patchDto));
 
@@ -696,7 +704,7 @@ public class ProductServiceTest
             .Setup(r => r.FindById(1))
             .Returns(product);
 
-        var service = new ProductService(repoMock.Object, storageMock.Object);
+        var service = CreateService(repoMock, storageMock);
 
         var exception = Assert.ThrowsException<ProductException>(() => service.Update(1, patchDto));
 
@@ -744,7 +752,7 @@ public class ProductServiceTest
             .Setup(r => r.FindById(1))
             .Returns(product);
 
-        var service = new ProductService(repoMock.Object, storageMock.Object);
+        var service = CreateService(repoMock, storageMock);
 
         var exception = Assert.ThrowsException<ProductException>(() => service.Update(1, patchDto));
 
