@@ -828,4 +828,39 @@ public class ProductServiceTest
         repoMock.Verify(r => r.FindById(product.Id), Times.Once);
         repoMock.Verify(r => r.Update(product), Times.Once);
     }
+
+    [TestMethod]
+    public void GivenPatchDtoWithIsActiveFalse_WhenUpdating_ThenProductIsDeactivated()
+    {
+        var product = Product.MakeProduct(
+            "COD123",
+            "Milanesa al pan",
+            "Milanesa al pan completa con fritas",
+            "Minutas clásicas",
+            "Sandwiches",
+            100,
+            new List<ProductPhoto>
+            {
+                new ProductPhoto("/images/products/1/a.jpg")
+            });
+
+        var patchDto = new ProductPatchDto
+        {
+            IsActive = false
+        };
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        repoMock.Setup(r => r.FindById(product.Id)).Returns(product);
+        repoMock.Setup(r => r.Update(product)).Returns(product);
+
+        var service = CreateService(repoMock, storageMock);
+
+        var result = service.Update(product.Id, patchDto);
+
+        Assert.IsFalse(result.IsActive);
+        repoMock.Verify(r => r.FindById(product.Id), Times.Once);
+        repoMock.Verify(r => r.Update(product), Times.Once);
+    }
 }
