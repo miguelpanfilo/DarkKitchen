@@ -83,6 +83,10 @@ public class ProductService
             {
                 product.Activate();
             }
+            else
+            {
+                product.Deactivate();
+            }
         }
     }
 }
