@@ -28,7 +28,7 @@ public class OrderFacade(IOrderService orderService, IProductService productServ
             var product = _productService.GetById(i.ProductId);
             if(!product.IsActive)
             {
-                throw new OrderException($"Product {product.Name} is not available");
+                throw new OrderException($"El producto {product.Name} no está disponible");
             }
 
             return (i.ProductId, i.Quantity, product.Price, 0m);
@@ -45,6 +45,13 @@ public class OrderFacade(IOrderService orderService, IProductService productServ
     public OrderResponse GetById(int orderId)
     {
         return _orderService.GetById(orderId).ToOrderResponse();
+    }
+
+    public List<OrderResponse> GetOrdersByFilters(DateTime dateFrom, DateTime dateTo, string? street, OrderStatus? status)
+    {
+        return _orderService.GetOrdersByFilters(dateFrom, dateTo, street, status)
+            .Select(o => o.ToOrderResponse())
+            .ToList();
     }
 
     public void Prepare(int orderId) => _orderService.Prepare(orderId);
