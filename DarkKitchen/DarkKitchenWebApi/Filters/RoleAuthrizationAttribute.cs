@@ -17,6 +17,16 @@ public class RoleAuthorizationAttribute(params UserRoles[] allowedRoles) : Attri
         if(roleClaim == null)
         {
             context.Result = BuildForbiddenResult("El usuario no tiene permisos para ejecutar esta acción");
+            return;
+        }
+
+        var currentRoleText = roleClaim.Value;
+
+        var hasPermission = _allowedRoles.Any(role => role.ToString() == currentRoleText);
+
+        if(!hasPermission)
+        {
+            context.Result = BuildForbiddenResult("El usuario no tiene permisos para ejecutar esta acción");
         }
     }
 
