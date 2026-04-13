@@ -47,6 +47,14 @@ public class ProductPhotoService
         return finalPhotos;
     }
 
+    public void DeletePhotos(List<ProductPhoto> photos)
+    {
+        foreach (var photo in photos)
+        {
+            _productPhotoStorage.Delete(photo.Path);
+        }
+    }
+
     private ProductPhoto ResolvePhoto(Product product, ProductPatchPhotoDto requestedPhoto)
     {
         if (!string.IsNullOrWhiteSpace(requestedPhoto.Path))

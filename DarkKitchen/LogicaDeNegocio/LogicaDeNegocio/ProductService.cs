@@ -39,6 +39,14 @@ public class ProductService
         return _repository.Update(product);
     }
 
+    public void Delete(int productId)
+    {
+        var product = _repository.FindById(productId);
+
+        _productPhotoService.DeletePhotos(product.Photos);
+        _repository.Delete(productId);
+    }
+
     private void ApplyPatch(Product product, ProductPatchDto patchDto)
     {
         if (patchDto.Code != null)
