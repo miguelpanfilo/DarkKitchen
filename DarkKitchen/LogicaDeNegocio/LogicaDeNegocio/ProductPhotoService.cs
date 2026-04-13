@@ -109,6 +109,11 @@ public class ProductPhotoService
         {
             throw new ProductException("Las fotos deben estar en formato JPG");
         }
+
+        if (photoDto.SizeInBytes > 500 * 1024)
+        {
+            throw new ProductException("La foto no puede superar los 500 KB");
+        }
     }
 
     private void ValidateNewPhoto(ProductPatchPhotoDto photo)
