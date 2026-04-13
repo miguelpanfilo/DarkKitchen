@@ -108,4 +108,31 @@ public class ModifyUsersControllerTests
         Assert.IsNotNull(result);
         Assert.AreSame(response, result.Value);
     }
+
+    [TestMethod]
+    public void UpdateInternalUser_WhenCalled_UsesRouteId()
+    {
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
+
+        var request = new ModificarUsuarioRequestDTO();
+        var response = new UsuarioResponseDTO();
+
+        modifyUserServiceMock
+            .Setup(x => x.UpdateInternalUser(25, 99, request))
+            .Returns(response);
+
+        var controller = new UsersController(
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object);
+
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = BuildHttpContextWithUserId(99)
+        };
+
+        controller.UpdateInternalUser(25, request);
+
+        modifyUserServiceMock.Verify(x => x.UpdateInternalUser(25, 99, request), Times.Once);
+    }
 }
