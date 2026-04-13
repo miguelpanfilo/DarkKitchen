@@ -1,6 +1,7 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
+using Dominio.Builders;
 using Dominio.Exceptions;
 using LogicaDeNegocio;
 using Moq;
@@ -16,6 +17,22 @@ public class ProductServiceTest
     {
         var photoService = new ProductPhotoService(storageMock.Object);
         return new ProductService(repoMock.Object, photoService);
+    }
+
+    private Product CreateValidProduct()
+    {
+        return new ProductBuilder()
+            .WithCode("COD123")
+            .WithName("Nombre válido producto")
+            .WithDescription("Descripción válida con más de veinte caracteres")
+            .WithCommercialLine("Línea")
+            .WithCategory("Categoría")
+            .WithPrice(100)
+            .WithPhotos(new List<ProductPhoto>
+            {
+                new ProductPhoto("photo-1.jpg")
+            })
+            .Build();
     }
 
     [TestMethod]
@@ -862,5 +879,35 @@ public class ProductServiceTest
         Assert.IsFalse(result.IsActive);
         repoMock.Verify(r => r.FindById(product.Id), Times.Once);
         repoMock.Verify(r => r.Update(product), Times.Once);
+    }
+
+    [TestMethod]
+    public void GivenExistingProduct_WhenDeleting_ThenDeletesPhotosAndProduct()
+    {
+        var productId = 1;
+        var product = CreateValidProduct();
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        repoMock.Setup(r => r.FindById(productId)).Returns(product);
+        repoMock.Setup(r => r.Delete(productId));
+
+        foreach (var photo in product.Photos)
+        {
+            storageMock.Setup(s => s.Delete(photo.Path));
+        }
+
+        var service = CreateService(repoMock, storageMock);
+
+        service.Delete(productId);
+
+        repoMock.Verify(r => r.FindById(productId), Times.Once);
+        repoMock.Verify(r => r.Delete(productId), Times.Once);
+
+        foreach (var photo in product.Photos)
+        {
+            storageMock.Verify(s => s.Delete(photo.Path), Times.Once);
+        }
     }
 }
