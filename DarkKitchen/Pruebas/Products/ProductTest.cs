@@ -377,4 +377,14 @@ public class ProductTest
 
         Assert.AreEqual(newName, product.Name);
     }
+
+    [TestMethod]
+    public void GivenEmptyName_WhenUpdatingName_ThenThrowsProductExceptionWithMessage()
+    {
+        var product = CreateValidProduct();
+
+        var ex = Assert.ThrowsException<ProductException>(() => product.UpdateName(string.Empty));
+
+        Assert.AreEqual("El nombre no puede estar vacío.", ex.Message);
+    }
 }
