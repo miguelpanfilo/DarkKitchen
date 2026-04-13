@@ -76,5 +76,13 @@ public class ProductService
             var finalPhotos = _productPhotoService.SyncPhotos(product, patchDto.Photos);
             product.UpdatePhotos(finalPhotos);
         }
+
+        if (patchDto.IsActive.HasValue)
+        {
+            if (patchDto.IsActive.Value)
+            {
+                product.Activate();
+            }
+        }
     }
 }

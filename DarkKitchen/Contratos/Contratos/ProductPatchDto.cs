@@ -9,4 +9,5 @@ public class ProductPatchDto
     public string? Category { get; init; }
     public decimal? Price { get; init; }
     public List<ProductPatchPhotoDto>? Photos { get; set; }
+    public bool? IsActive { get; init; }
 }
