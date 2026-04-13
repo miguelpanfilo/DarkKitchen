@@ -352,4 +352,33 @@ public class ProductServiceTest
         repoMock.Verify(r => r.FindById(1), Times.Once);
         repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Once);
     }
+
+    [TestMethod]
+    public void GivenNoExistingProduct_WhenUpdating_ThenThrowProductException()
+    {
+        var patchDto = new ProductPatchDto
+        {
+            Name = "Chivito al pan"
+        };
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        repoMock
+            .Setup(r => r.FindById(It.IsAny<int>()))
+            .Returns((Product)null!);
+
+        repoMock
+            .Setup(r => r.Update(It.IsAny<Product>()))
+            .Returns((Product p) => p);
+
+        var service = new ProductService(repoMock.Object, storageMock.Object);
+
+        var exception = Assert.ThrowsException<ProductException>(() => service.Update(1, patchDto));
+
+        Assert.AreEqual("El producto no existe", exception.Message);
+
+        repoMock.Verify(r => r.FindById(1), Times.Once);
+        repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Never);
+    }
 }
