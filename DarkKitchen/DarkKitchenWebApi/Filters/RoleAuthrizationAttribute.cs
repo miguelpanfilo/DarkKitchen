@@ -14,7 +14,7 @@ public class RoleAuthorizationAttribute(params UserRoles[] allowedRoles) : Attri
     {
         var roleClaim = context.HttpContext.User.FindFirst(ClaimTypes.Role);
 
-        if(roleClaim == null)
+        if(roleClaim == null || string.IsNullOrWhiteSpace(roleClaim.Value))
         {
             context.Result = BuildForbiddenResult("El usuario no tiene permisos para ejecutar esta acción");
             return;
