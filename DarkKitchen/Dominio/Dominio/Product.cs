@@ -115,6 +115,7 @@ public class Product
 
     public void UpdatePrice(decimal newPrice)
     {
+        ValidatePrice(newPrice);
         Price = newPrice;
     }
 
