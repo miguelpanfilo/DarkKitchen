@@ -564,4 +564,15 @@ public class ProductTest
 
         Assert.AreEqual("Línea comercial no puede estar vacío.", exception.Message);
     }
+
+    [TestMethod]
+    public void GivenValidCategory_WhenUpdatingCategory_ThenUpdatesProductCategory()
+    {
+        var product = CreateValidProduct();
+        var newCategory = "Nueva categoría";
+
+        product.UpdateCategory(newCategory);
+
+        Assert.AreEqual(newCategory, product.Category);
+    }
 }
