@@ -76,4 +76,19 @@ public class RoleAuthorizationTests
 
         Assert.IsNull(context.Result);
     }
+
+    [TestMethod]
+    public void OnAuthorization_WhenUserRoleIsInAllowedRoles_DoesNothing()
+    {
+        var filter = new RoleAuthorizationAttribute(
+            UserRoles.Administrative,
+            UserRoles.Preparer);
+
+        var context = CreateContextWithUser(
+            new Claim(ClaimTypes.Role, UserRoles.Preparer.ToString()));
+
+        filter.OnAuthorization(context);
+
+        Assert.IsNull(context.Result);
+    }
 }
