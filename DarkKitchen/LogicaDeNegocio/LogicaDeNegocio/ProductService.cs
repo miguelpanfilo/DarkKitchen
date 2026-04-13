@@ -43,6 +43,11 @@ public class ProductService
             product.UpdateName(patchDto.Name);
         }
 
+        if(patchDto.Description != null)
+        {
+            product.UpdateDescription(patchDto.Description);
+        }
+
         return _repository.Update(product);
     }
 

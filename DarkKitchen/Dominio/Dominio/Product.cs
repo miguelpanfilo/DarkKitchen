@@ -92,6 +92,11 @@ public class Product
         Code = newCode.Trim();
     }
 
+    public void UpdateDescription(string newDescription)
+    {
+        Description = newDescription.Trim();
+    }
+
     public void Activate()
     {
         IsActive = true;
