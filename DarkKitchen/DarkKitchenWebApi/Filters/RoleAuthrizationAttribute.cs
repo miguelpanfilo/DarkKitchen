@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Contratos;
 using Dominio;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -8,26 +9,33 @@ namespace DarkKitchen.Filters;
 
 public class RoleAuthorizationAttribute(params UserRoles[] allowedRoles) : Attribute, IAuthorizationFilter
 {
+    private const string ForbiddenMessage = "El usuario no tiene permisos para ejecutar esta acción";
     private readonly UserRoles[] _allowedRoles = allowedRoles;
 
     public void OnAuthorization(AuthorizationFilterContext context)
     {
-        var roleClaim = context.HttpContext.User.FindFirst(ClaimTypes.Role);
+        var currentRole = GetRole(context);
 
-        if(roleClaim == null || string.IsNullOrWhiteSpace(roleClaim.Value))
+        if(string.IsNullOrWhiteSpace(currentRole))
         {
-            context.Result = BuildForbiddenResult("El usuario no tiene permisos para ejecutar esta acción");
+            context.Result = BuildForbiddenResult(ForbiddenMessage);
             return;
         }
 
-        var currentRoleText = roleClaim.Value;
-
-        var hasPermission = _allowedRoles.Any(role => role.ToString() == currentRoleText);
-
-        if(!hasPermission)
+        if(!UserHasAllowedRole(currentRole))
         {
-            context.Result = BuildForbiddenResult("El usuario no tiene permisos para ejecutar esta acción");
+            context.Result = BuildForbiddenResult(ForbiddenMessage);
         }
+    }
+
+    private static string? GetRole(AuthorizationFilterContext context)
+    {
+        return context.HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+    }
+
+    private bool UserHasAllowedRole(string currentRole)
+    {
+        return _allowedRoles.Any(role => role.ToString() == currentRole);
     }
 
     private static ObjectResult BuildForbiddenResult(string message)
