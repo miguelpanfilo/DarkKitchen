@@ -85,6 +85,7 @@ public class Product
     public void UpdateName(string newName)
     {
         ValidateRequired(newName, "El nombre");
+        ValidateLength(newName, "El nombre", NameMinLength, NameMaxLength);
         Name = newName.Trim();
     }
 
