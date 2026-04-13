@@ -540,4 +540,15 @@ public class ProductTest
 
         Assert.AreEqual("El producto debe tener entre 1 y 3 fotos.", exception.Message);
     }
+
+    [TestMethod]
+    public void GivenValidCommercialLine_WhenUpdatingCommercialLine_ThenUpdatesProductCommercialLine()
+    {
+        var product = CreateValidProduct();
+        var newCommercialLine = "Nueva línea comercial";
+
+        product.UpdateCommercialLine(newCommercialLine);
+
+        Assert.AreEqual(newCommercialLine, product.CommercialLine);
+    }
 }
