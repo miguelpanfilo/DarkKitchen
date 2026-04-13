@@ -4,6 +4,7 @@ using Dominio;
 using Dominio.Builders;
 using Dominio.Exceptions;
 using LogicaDeNegocio;
+using Mapeo;
 using Moq;
 
 namespace Pruebas.Products;
@@ -927,5 +928,39 @@ public class ProductServiceTest
             () => service.Delete(productId));
 
         Assert.AreEqual("El producto no existe", exception.Message);
+    }
+
+    [TestMethod]
+    public void GivenProduct_WhenMappingToResponseDto_ThenReturnsProductResponseDtoWithMappedPhotos()
+    {
+        var product = new ProductBuilder()
+            .WithCode("COD123")
+            .WithName("Nombre válido producto")
+            .WithDescription("Descripción válida con más de veinte caracteres")
+            .WithCommercialLine("Línea")
+            .WithCategory("Categoría")
+            .WithPrice(100)
+            .WithPhotos(new List<ProductPhoto>
+            {
+                new ProductPhoto("photo-1.jpg"),
+                new ProductPhoto("photo-2.jpg")
+            })
+            .Build();
+
+        var responseDto = ProductMapper.ToResponseDto(product);
+
+        Assert.IsNotNull(responseDto);
+        Assert.AreEqual(product.Id, responseDto.Id);
+        Assert.AreEqual(product.Code, responseDto.Code);
+        Assert.AreEqual(product.Name, responseDto.Name);
+        Assert.AreEqual(product.Description, responseDto.Description);
+        Assert.AreEqual(product.CommercialLine, responseDto.CommercialLine);
+        Assert.AreEqual(product.Category, responseDto.Category);
+        Assert.AreEqual(product.Price, responseDto.Price);
+        Assert.AreEqual(product.IsActive, responseDto.IsActive);
+
+        Assert.AreEqual(2, responseDto.Photos.Count);
+        Assert.AreEqual("photo-1.jpg", responseDto.Photos[0].Path);
+        Assert.AreEqual("photo-2.jpg", responseDto.Photos[1].Path);
     }
 }
