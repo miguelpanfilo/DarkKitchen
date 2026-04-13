@@ -762,4 +762,33 @@ public class ProductServiceTest
         repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Never);
         storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Never);
     }
+
+    [TestMethod]
+    public void GivenPhotoWithSizeGreaterThan500KB_WhenCreatingProduct_ThenThrowsProductException()
+    {
+        var photos = new List<PhotoDTO>
+        {
+            new PhotoDTO("foto.jpg", "jpg", 512001, "base64")
+        };
+
+       var productDto = new ProductDTO(
+            "COD123",
+            "Nombre válido producto",
+            "Descripción válida con más de veinte caracteres",
+            "Línea",
+            "Categoría",
+            100,
+            photos
+        );
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        var service = CreateService(repoMock, storageMock);
+
+        var exception = Assert.ThrowsException<ProductException>(
+            () => service.Create(productDto));
+
+        Assert.AreEqual("La foto no puede superar los 500 KB", exception.Message);
+    }
 }
