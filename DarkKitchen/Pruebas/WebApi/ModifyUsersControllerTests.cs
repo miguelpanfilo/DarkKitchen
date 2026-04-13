@@ -31,8 +31,6 @@ public class ModifyUsersControllerTests
     {
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
         var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
-        var filterUserServiceMock = new Mock<IFilterUserService>(MockBehavior.Strict);
 
         var request = new ModificarUsuarioRequestDTO
         {
@@ -59,9 +57,7 @@ public class ModifyUsersControllerTests
 
         var controller = new UsersController(
             signUpServiceMock.Object,
-            modifyUserServiceMock.Object,
-            deleteUserServiceMock.Object,
-            filterUserServiceMock.Object);
+            modifyUserServiceMock.Object);
 
         controller.ControllerContext = new ControllerContext
         {

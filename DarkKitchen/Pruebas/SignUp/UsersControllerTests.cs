@@ -14,6 +14,7 @@ public class UsersControllerTests
     public void CreateUser_ValidRequest_ReturnsCreated()
     {
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
 
         var request = new SignUpClientRequestDTO
         {
@@ -35,7 +36,7 @@ public class UsersControllerTests
             .Setup(s => s.SignUpClient(request))
             .Returns(expectedResponse);
 
-        var controller = new UsersController(signUpServiceMock.Object);
+        var controller = new UsersController(signUpServiceMock.Object, modifyUserServiceMock.Object);
 
         var result = controller.CreateUser(request);
 
@@ -55,6 +56,7 @@ public class UsersControllerTests
     public void CreateUser_EmailAlreadyExists_ThrowsSignUpException()
     {
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
 
         var request = new SignUpClientRequestDTO
         {
@@ -69,7 +71,7 @@ public class UsersControllerTests
             .Setup(s => s.SignUpClient(request))
             .Throws(new SignUpException("Email is already registered"));
 
-        var controller = new UsersController(signUpServiceMock.Object);
+        var controller = new UsersController(signUpServiceMock.Object, modifyUserServiceMock.Object);
 
         var ex = Assert.ThrowsException<SignUpException>(() =>
             controller.CreateUser(request));
@@ -83,6 +85,7 @@ public class UsersControllerTests
     public void CreateUser_InvalidPhone_ThrowsSignUpValidationException()
     {
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
 
         var request = new SignUpClientRequestDTO
         {
@@ -97,7 +100,7 @@ public class UsersControllerTests
             .Setup(s => s.SignUpClient(request))
             .Throws(new SignUpValidationException("Phone is not valid"));
 
-        var controller = new UsersController(signUpServiceMock.Object);
+        var controller = new UsersController(signUpServiceMock.Object, modifyUserServiceMock.Object);
 
         var ex = Assert.ThrowsException<SignUpValidationException>(() =>
             controller.CreateUser(request));
@@ -111,6 +114,7 @@ public class UsersControllerTests
     public void CreateUser_ValidRequest_CallsServiceOnce()
     {
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
 
         var request = new SignUpClientRequestDTO
         {
@@ -132,7 +136,7 @@ public class UsersControllerTests
             .Setup(s => s.SignUpClient(request))
             .Returns(expectedResponse);
 
-        var controller = new UsersController(signUpServiceMock.Object);
+        var controller = new UsersController(signUpServiceMock.Object, modifyUserServiceMock.Object);
 
         controller.CreateUser(request);
 
