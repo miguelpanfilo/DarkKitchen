@@ -221,4 +221,30 @@ public class ModifyUsersControllerTests
         Assert.ThrowsException<FormatException>(() =>
             controller.UpdateInternalUser(10, request));
     }
+
+    [TestMethod]
+    public void UpdateInternalUser_WhenClaimIsMissing_DoesNotCallService()
+    {
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
+
+        var controller = new UsersController(
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object);
+
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity([], "TestAuth"))
+            }
+        };
+
+        var request = new ModificarUsuarioRequestDTO();
+
+        Assert.ThrowsException<NullReferenceException>(() =>
+            controller.UpdateInternalUser(10, request));
+
+        modifyUserServiceMock.Verify(x => x.UpdateInternalUser(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<ModificarUsuarioRequestDTO>()), Times.Never);
+    }
 }
