@@ -28,7 +28,12 @@ public class UsersController(
     [HttpPatch("{id}")]
     public IActionResult UpdateInternalUser([FromRoute] int id, [FromBody] ModificarUsuarioRequestDTO request)
     {
-        var loggedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var idClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if(!int.TryParse(idClaim, out var loggedUserId))
+        {
+            return Unauthorized();
+        }
+
         var response = _modifyUserService.UpdateInternalUser(id, loggedUserId, request);
         return Ok(response);
     }

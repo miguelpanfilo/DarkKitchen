@@ -158,7 +158,7 @@ public class ModifyUsersControllerTests
     }
 
     [TestMethod]
-    public void UpdateInternalUser_WhenNameIdentifierClaimIsMissing_ThrowsException()
+    public void UpdateInternalUser_WhenNameIdentifierClaimIsMissing_ReturnsUnauthorized()
     {
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
         var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
@@ -177,8 +177,10 @@ public class ModifyUsersControllerTests
 
         var request = new ModificarUsuarioRequestDTO();
 
-        Assert.ThrowsException<NullReferenceException>(() =>
-            controller.UpdateInternalUser(10, request));
+        var result = controller.UpdateInternalUser(10, request) as UnauthorizedResult;
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
     }
 
     [TestMethod]
@@ -196,7 +198,7 @@ public class ModifyUsersControllerTests
     }
 
     [TestMethod]
-    public void UpdateInternalUser_WhenNameIdentifierIsNotNumeric_ThrowsFormatException()
+    public void UpdateInternalUser_WhenNameIdentifierIsNotNumeric_ReturnsUnauthorized()
     {
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
         var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
@@ -218,8 +220,10 @@ public class ModifyUsersControllerTests
 
         var request = new ModificarUsuarioRequestDTO();
 
-        Assert.ThrowsException<FormatException>(() =>
-            controller.UpdateInternalUser(10, request));
+        var result = controller.UpdateInternalUser(10, request) as UnauthorizedResult;
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
     }
 
     [TestMethod]
@@ -242,9 +246,13 @@ public class ModifyUsersControllerTests
 
         var request = new ModificarUsuarioRequestDTO();
 
-        Assert.ThrowsException<NullReferenceException>(() =>
-            controller.UpdateInternalUser(10, request));
+        var result = controller.UpdateInternalUser(10, request) as UnauthorizedResult;
 
-        modifyUserServiceMock.Verify(x => x.UpdateInternalUser(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<ModificarUsuarioRequestDTO>()), Times.Never);
+        Assert.IsNotNull(result);
+        Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
+
+        modifyUserServiceMock.Verify(
+            x => x.UpdateInternalUser(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<ModificarUsuarioRequestDTO>()),
+            Times.Never);
     }
 }
