@@ -1006,4 +1006,50 @@ public class ProductServiceTest
 
         repoMock.Verify(r => r.GetAll(), Times.Once);
     }
+
+    [TestMethod]
+    public void GivenNoProducts_WhenGettingAll_ThenReturnsEmptyList()
+    {
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        repoMock.Setup(r => r.GetAll()).Returns(new List<Product>());
+
+        var service = CreateService(repoMock, storageMock);
+
+        var result = service.GetAll();
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(0, result.Count);
+
+        repoMock.Verify(r => r.GetAll(), Times.Once);
+    }
+
+    [TestMethod]
+    public void GivenExistingProductId_WhenGettingById_ThenReturnsProductResponseDto()
+    {
+        var productId = 1;
+        var product = CreateValidProduct();
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        repoMock.Setup(r => r.FindById(productId)).Returns(product);
+
+        var service = CreateService(repoMock, storageMock);
+
+        var result = service.GetById(productId);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(product.Code, result.Code);
+        Assert.AreEqual(product.Name, result.Name);
+        Assert.AreEqual(product.Description, result.Description);
+        Assert.AreEqual(product.CommercialLine, result.CommercialLine);
+        Assert.AreEqual(product.Category, result.Category);
+        Assert.AreEqual(product.Price, result.Price);
+        Assert.AreEqual(product.IsActive, result.IsActive);
+        Assert.AreEqual(product.Photos.Count, result.Photos.Count);
+
+        repoMock.Verify(r => r.FindById(productId), Times.Once);
+    }
 }
