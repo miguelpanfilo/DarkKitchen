@@ -12,6 +12,7 @@ public class AuthenticationFilter(ISessionValidationService sessionValidationSer
     : IAuthorizationFilter
 {
     private const string SessionHeaderName = "X-Session-Id";
+    private const string CurrentUserItemKey = "CurrentUser";
     private readonly ISessionValidationService _sessionValidationService = sessionValidationService;
 
     public void OnAuthorization(AuthorizationFilterContext context)
@@ -47,12 +48,13 @@ public class AuthenticationFilter(ISessionValidationService sessionValidationSer
         try
         {
             var current = _sessionValidationService.ValidateSession(sessionId);
-            context.HttpContext.Items["CurrentUser"] = current;
+            context.HttpContext.Items[CurrentUserItemKey] = current;
 
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, current.Id.ToString()),
-                new Claim(ClaimTypes.Role, current.Role)
+                new Claim(ClaimTypes.Role, current.Role.ToString()),
+                new Claim(ClaimTypes.Email, current.Email)
             };
 
             var identity = new ClaimsIdentity(claims, "SessionHeader");
@@ -66,7 +68,11 @@ public class AuthenticationFilter(ISessionValidationService sessionValidationSer
 
     private static ObjectResult BuildUnauthorizedResult(string message)
     {
-        return new ObjectResult(new ResponseDto { ExecutionSuccessful = false, Message = message })
+        return new ObjectResult(new ResponseDto
+        {
+            ExecutionSuccessful = false,
+            Message = message
+        })
         {
             StatusCode = StatusCodes.Status401Unauthorized
         };

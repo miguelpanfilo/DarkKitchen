@@ -1,3 +1,5 @@
+using Contratos;
+
 namespace LogicaDeNegocioAbstracciones;
 
 public interface ISessionValidationService

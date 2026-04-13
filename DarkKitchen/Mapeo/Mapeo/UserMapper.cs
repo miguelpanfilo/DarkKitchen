@@ -40,11 +40,23 @@ public static class UserMapper
     public static CurrentUserDto ToCurrentUserDto(this User user)
     {
         ArgumentNullException.ThrowIfNull(user);
+
         return new CurrentUserDto
         {
             Id = user.Id,
-            Role = user.Role.ToString(),
+            Role = MapRole(user.Role),
             Email = user.Email.ToString()
+        };
+    }
+
+    private static UserRolesDto MapRole(UserRoles role)
+    {
+        return role switch
+        {
+            UserRoles.Client => UserRolesDto.Client,
+            UserRoles.Preparer => UserRolesDto.Preparer,
+            UserRoles.Administrative => UserRolesDto.Administrative,
+            _ => throw new ArgumentOutOfRangeException(nameof(role), "Rol no soportado")
         };
     }
 }

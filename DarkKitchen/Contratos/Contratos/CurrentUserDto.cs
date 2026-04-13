@@ -1,6 +1,8 @@
+namespace Contratos;
+
 public class CurrentUserDto
 {
-    public int Id { get; init; }
-    public string Role { get; init; } = string.Empty;
-    public string Email { get; init; } = string.Empty;
+    public int Id { get; set; }
+    public UserRolesDto Role { get; set; }
+    public string Email { get; set; } = string.Empty;
 }
