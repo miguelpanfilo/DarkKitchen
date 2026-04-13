@@ -399,4 +399,15 @@ public class ProductTest
 
         Assert.AreEqual("El nombre debe tener entre 10 y 50 caracteres.", ex.Message);
     }
+
+    [TestMethod]
+    public void GivenValidCode_WhenUpdatingCode_ThenUpdatesProductCode()
+    {
+        var product = CreateValidProduct();
+        var newCode = "COD999";
+
+        product.UpdateCode(newCode);
+
+        Assert.AreEqual(newCode, product.Code);
+    }
 }
