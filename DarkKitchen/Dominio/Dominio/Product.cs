@@ -98,6 +98,8 @@ public class Product
 
     public void UpdateDescription(string newDescription)
     {
+        ValidateRequired(newDescription, "La descripción");
+        ValidateLength(newDescription, "La descripción", DescriptionMinLength, DescriptionMaxLength);
         Description = newDescription.Trim();
     }
 
