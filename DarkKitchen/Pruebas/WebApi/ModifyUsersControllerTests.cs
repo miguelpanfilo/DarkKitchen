@@ -194,4 +194,31 @@ public class ModifyUsersControllerTests
 
         Assert.IsNotNull(attribute);
     }
+
+    [TestMethod]
+    public void UpdateInternalUser_WhenNameIdentifierIsNotNumeric_ThrowsFormatException()
+    {
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
+
+        var httpContext = new DefaultHttpContext();
+        httpContext.User = new ClaimsPrincipal(
+            new ClaimsIdentity(
+                [new Claim(ClaimTypes.NameIdentifier, "abc")],
+                "TestAuth"));
+
+        var controller = new UsersController(
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object);
+
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = httpContext
+        };
+
+        var request = new ModificarUsuarioRequestDTO();
+
+        Assert.ThrowsException<FormatException>(() =>
+            controller.UpdateInternalUser(10, request));
+    }
 }
