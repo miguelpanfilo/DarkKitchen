@@ -436,4 +436,26 @@ public class ProductTest
 
         Assert.AreEqual(newDescription, product.Description);
     }
+
+    [DataTestMethod]
+    [DataRow("", "La descripción no puede estar vacío.")]
+    [DataRow("corta", "La descripción debe tener entre 20 y 500 caracteres.")]
+    [DataRow("Esta descripción es extremadamente larga y fue creada únicamente para superar el máximo de quinientos " +
+             "caracteres permitidos por la validación del dominio. Sigue creciendo con texto de relleno para " +
+             "asegurarnos de que realmente rompa la regla establecida en la entidad Product y " +
+             "así verificar correctamente que el método " +
+             "UpdateDescription lance la excepción esperada cuando el contenido excede ampliamente el " +
+             "límite definido. Agrego todavía más texto para no quedar corto, manteniendo la misma idea y " +
+             "forzando un caso claramente inválido dentro del test.", "La descripción debe tener entre 20 y 500 caracteres.")]
+    public void GivenInvalidDescription_WhenUpdatingDescription_ThenThrowsProductExceptionWithExpectedMessage(
+        string invalidDescription,
+        string expectedMessage)
+    {
+        var product = CreateValidProduct();
+
+        var exception = Assert.ThrowsException<ProductException>(
+            () => product.UpdateDescription(invalidDescription));
+
+        Assert.AreEqual(expectedMessage, exception.Message);
+    }
 }
