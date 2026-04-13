@@ -126,5 +126,10 @@ public class RoleAuthorizationTests
         var result = context.Result as ObjectResult;
         Assert.IsNotNull(result);
         Assert.AreEqual(StatusCodes.Status403Forbidden, result.StatusCode);
+
+        var response = result.Value as ResponseDto;
+        Assert.IsNotNull(response);
+        Assert.IsFalse(response.ExecutionSuccessful);
+        Assert.AreEqual("El usuario no tiene permisos para ejecutar esta acción", response.Message);
     }
 }
