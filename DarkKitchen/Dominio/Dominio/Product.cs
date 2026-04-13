@@ -82,6 +82,11 @@ public class Product
         Photos = photos;
     }
 
+    public void UpdateName(string newName)
+    {
+        Name = newName.Trim();
+    }
+
     public void Activate()
     {
         IsActive = true;

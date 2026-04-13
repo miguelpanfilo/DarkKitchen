@@ -24,6 +24,18 @@ public class ProductService
         return _repository.Create(product);
     }
 
+    public Product Update(int productId, ProductPatchDto patchDto)
+    {
+        var product = _repository.FindById(productId);
+
+        if(patchDto.Name != null)
+        {
+            product.UpdateName(patchDto.Name);
+        }
+
+        return _repository.Update(product);
+    }
+
     private List<ProductPhoto> SavePhotos(List<PhotoDTO> photos)
     {
         ValidatePhotos(photos);
