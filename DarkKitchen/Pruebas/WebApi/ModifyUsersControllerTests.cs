@@ -162,4 +162,19 @@ public class ModifyUsersControllerTests
 
         modifyUserServiceMock.Verify(x => x.UpdateInternalUser(10, 77, request), Times.Once);
     }
+
+    [TestMethod]
+    public void UpdateInternalUser_HasHttpPatchAttributeWithIdTemplate()
+    {
+        var method = typeof(UsersController).GetMethod(nameof(UsersController.UpdateInternalUser));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(HttpPatchAttribute), false)
+            .Cast<HttpPatchAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
+        Assert.AreEqual("{id}", attribute.Template);
+    }
 }
