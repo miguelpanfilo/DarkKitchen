@@ -28,7 +28,8 @@ public class ProductService
 
     public ProductResponseDto GetById(int productId)
     {
-        return  ProductMapper.ToResponseDto(_repository.FindById(productId));
+        var product = GetExistingProduct(productId);
+        return ProductMapper.ToResponseDto(product);
     }
 
     public ProductResponseDto Create(ProductDTO productDto)
