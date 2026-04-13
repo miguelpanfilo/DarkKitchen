@@ -157,4 +157,18 @@ public class UsersControllerTests
 
         Assert.IsNotNull(attribute);
     }
+
+    [TestMethod]
+    public void CreateUser_HasHttpPostAttribute()
+    {
+        var method = typeof(UsersController).GetMethod(nameof(UsersController.CreateUser));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(HttpPostAttribute), false)
+            .Cast<HttpPostAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
+    }
 }
