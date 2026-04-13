@@ -354,7 +354,7 @@ public class ProductServiceTest
     }
 
     [TestMethod]
-    public void GivenExistingProductAndValidCodePatch_WhenUpdating_ThenProductNameIsUpdatedAndRepositoryUpdateIsCalled()
+    public void GivenExistingProductAndValidCodePatch_WhenUpdating_ThenProductCodeIsUpdatedAndRepositoryUpdateIsCalled()
     {
         var product = Product.MakeProduct(
             "COD123",
@@ -397,7 +397,7 @@ public class ProductServiceTest
     }
 
     [TestMethod]
-    public void GivenExistingProductAndValidDescriptionPatch_WhenUpdating_ThenProductNameIsUpdatedAndRepositoryUpdateIsCalled()
+    public void GivenExistingProductAndValidDescriptionPatch_WhenUpdating_ThenProductDescriptionIsUpdatedAndRepositoryUpdateIsCalled()
     {
         var product = Product.MakeProduct(
             "COD123",
@@ -440,7 +440,7 @@ public class ProductServiceTest
     }
 
     [TestMethod]
-    public void GivenExistingProductAndValidCommercialLinePatch_WhenUpdating_ThenProductNameIsUpdatedAndRepositoryUpdateIsCalled()
+    public void GivenExistingProductAndValidCommercialLinePatch_WhenUpdating_ThenProductCommercialLineIsUpdatedAndRepositoryUpdateIsCalled()
     {
         var product = Product.MakeProduct(
             "COD123",
@@ -483,7 +483,7 @@ public class ProductServiceTest
     }
 
     [TestMethod]
-    public void GivenExistingProductAndValidCategoryPatch_WhenUpdating_ThenProductNameIsUpdatedAndRepositoryUpdateIsCalled()
+    public void GivenExistingProductAndValidCategoryPatch_WhenUpdating_ThenProductCategoryIsUpdatedAndRepositoryUpdateIsCalled()
     {
         var product = Product.MakeProduct(
             "COD123",
@@ -526,7 +526,7 @@ public class ProductServiceTest
     }
 
     [TestMethod]
-    public void GivenExistingProductAndValidPricePatch_WhenUpdating_ThenProductNameIsUpdatedAndRepositoryUpdateIsCalled()
+    public void GivenExistingProductAndValidPricePatch_WhenUpdating_ThenProductPriceIsUpdatedAndRepositoryUpdateIsCalled()
     {
         var product = Product.MakeProduct(
             "COD123",
@@ -569,7 +569,7 @@ public class ProductServiceTest
     }
 
     [TestMethod]
-    public void GivenNoExistingProduct_WhenUpdating_ThenThrowProductException()
+    public void GivenNonExistingProduct_WhenUpdating_ThenThrowsProductException()
     {
         var patchDto = new ProductPatchDto
         {
