@@ -142,6 +142,10 @@ public class ProductService
     private ProductPhoto GetExistingPhoto(Product product, string path)
     {
         var existingPhoto = product.Photos.FirstOrDefault(photo => photo.Path == path);
+        if (existingPhoto == null)
+        {
+            throw new ProductException("La foto no pertenece al producto");
+        }
 
         return existingPhoto;
     }
