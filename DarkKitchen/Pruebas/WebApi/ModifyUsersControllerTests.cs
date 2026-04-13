@@ -72,4 +72,40 @@ public class ModifyUsersControllerTests
 
         modifyUserServiceMock.Verify(x => x.UpdateInternalUser(10, 99, request), Times.Once);
     }
+
+    [TestMethod]
+    public void UpdateInternalUser_WhenRequestIsValid_ReturnsServiceResponse()
+    {
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
+
+        var request = new ModificarUsuarioRequestDTO
+        {
+            Name = "Juan"
+        };
+
+        var response = new UsuarioResponseDTO
+        {
+            Id = 10,
+            Name = "Juan"
+        };
+
+        modifyUserServiceMock
+            .Setup(x => x.UpdateInternalUser(10, 99, request))
+            .Returns(response);
+
+        var controller = new UsersController(
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object);
+
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = BuildHttpContextWithUserId(99)
+        };
+
+        var result = controller.UpdateInternalUser(10, request) as OkObjectResult;
+
+        Assert.IsNotNull(result);
+        Assert.AreSame(response, result.Value);
+    }
 }
