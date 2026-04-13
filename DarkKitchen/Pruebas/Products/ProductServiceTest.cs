@@ -483,6 +483,49 @@ public class ProductServiceTest
     }
 
     [TestMethod]
+    public void GivenExistingProductAndValidCategoryPatch_WhenUpdating_ThenProductNameIsUpdatedAndRepositoryUpdateIsCalled()
+    {
+        var product = Product.MakeProduct(
+            "COD123",
+            "Milanesa al pan",
+            "Milanesa al pan completa con fritas",
+            "Minutas clásicas",
+            "Sandwiches",
+            100,
+            new List<ProductPhoto>
+            {
+                new ProductPhoto("foto1.jpg")
+            }
+        );
+
+        var patchDto = new ProductPatchDto
+        {
+            Category = "Milanesas al pan"
+        };
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        repoMock
+            .Setup(r => r.FindById(It.IsAny<int>()))
+            .Returns(product);
+
+        repoMock
+            .Setup(r => r.Update(It.IsAny<Product>()))
+            .Returns((Product p) => p);
+
+        var service = new ProductService(repoMock.Object, storageMock.Object);
+
+        var result = service.Update(1, patchDto);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual("Milanesas al pan", result.Category);
+
+        repoMock.Verify(r => r.FindById(1), Times.Once);
+        repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Once);
+    }
+
+    [TestMethod]
     public void GivenNoExistingProduct_WhenUpdating_ThenThrowProductException()
     {
         var patchDto = new ProductPatchDto
