@@ -33,6 +33,11 @@ public class ProductService
             throw new ProductException("El producto no existe");
         }
 
+        if(patchDto.Code != null)
+        {
+            product.UpdateCode(patchDto.Code);
+        }
+
         if(patchDto.Name != null)
         {
             product.UpdateName(patchDto.Name);

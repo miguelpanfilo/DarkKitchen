@@ -87,6 +87,11 @@ public class Product
         Name = newName.Trim();
     }
 
+    public void UpdateCode(string newCode)
+    {
+        Code = newCode.Trim();
+    }
+
     public void Activate()
     {
         IsActive = true;
