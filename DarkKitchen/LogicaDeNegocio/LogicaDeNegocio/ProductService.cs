@@ -129,6 +129,8 @@ public class ProductService
             return GetExistingPhoto(product, requestedPhoto.Path);
         }
 
+        ValidateNewPhoto(requestedPhoto);
+
         var photoDto = new PhotoDTO(
             requestedPhoto.FileName!,
             requestedPhoto.Extension!,
@@ -155,6 +157,17 @@ public class ProductService
         if (count < MinPhotos || count > MaxPhotos)
         {
             throw new ProductException("El producto debe tener entre 1 y 3 fotos");
+        }
+    }
+
+    private void ValidateNewPhoto(ProductPatchPhotoDto photo)
+    {
+        if (string.IsNullOrWhiteSpace(photo.FileName) ||
+            string.IsNullOrWhiteSpace(photo.Extension) ||
+            !photo.SizeInBytes.HasValue ||
+            string.IsNullOrWhiteSpace(photo.Base64))
+        {
+            throw new ProductException("Datos de foto inválidos");
         }
     }
 
