@@ -107,6 +107,11 @@ public class Product
         Category = newCategory.Trim();
     }
 
+    public void UpdatePrice(decimal newPrice)
+    {
+        Price = newPrice;
+    }
+
     public void Activate()
     {
         IsActive = true;

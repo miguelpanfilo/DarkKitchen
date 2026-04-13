@@ -58,6 +58,11 @@ public class ProductService
             product.UpdateCategory(patchDto.Category);
         }
 
+        if(patchDto.Price.HasValue)
+        {
+            product.UpdatePrice(patchDto.Price.Value);
+        }
+
         return _repository.Update(product);
     }
 
