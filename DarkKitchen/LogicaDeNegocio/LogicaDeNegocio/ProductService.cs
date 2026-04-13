@@ -26,6 +26,11 @@ public class ProductService
             .ToList();
     }
 
+    public ProductResponseDto GetById(int productId)
+    {
+        return  ProductMapper.ToResponseDto(_repository.FindById(productId));
+    }
+
     public ProductResponseDto Create(ProductDTO productDto)
     {
         var savedPhotos = _productPhotoService.SavePhotos(productDto.Photos);
