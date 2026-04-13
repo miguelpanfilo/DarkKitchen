@@ -153,4 +153,31 @@ public class SessionValidationServiceTests
         watch.Verify(w => w.Ahora(), Times.Once);
         userRepo.Verify(r => r.FindById(5), Times.Once);
     }
+
+    [TestMethod]
+    public void ValidateSession_WhenExpireDateEqualsNow_ThrowsException()
+    {
+        var sessionId = Guid.NewGuid();
+        var now = new DateTime(2026, 4, 12, 10, 0, 0);
+        var session = new Session(5, now);
+        var sessionRepo = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var userRepo = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var watch = new Mock<IReloj>(MockBehavior.Strict);
+
+        sessionRepo.Setup(r => r.FindBySessionId(sessionId)).Returns(session);
+        watch.Setup(w => w.Ahora()).Returns(now);
+
+        var service = new SessionValidationService(
+            sessionRepo.Object,
+            userRepo.Object,
+            watch.Object);
+
+        var ex = Assert.ThrowsException<UserAuthenticationException>(() =>
+            service.ValidateSession(sessionId));
+
+        Assert.AreEqual("La sesión expiró", ex.Message);
+
+        sessionRepo.Verify(r => r.FindBySessionId(sessionId), Times.Once);
+        watch.Verify(w => w.Ahora(), Times.Once);
+    }
 }
