@@ -165,4 +165,59 @@ public class RoleAuthorizationTests
         Assert.IsFalse(response.ExecutionSuccessful);
         Assert.AreEqual("El usuario no está autenticado", response.Message);
     }
+
+    [TestMethod]
+    public void OnAuthorization_WhenRoleClaimNotParseable_SetsForbiddenResult()
+    {
+        var filter = new RoleAuthorizationAttribute(UserRolesDto.Administrative);
+        var context = CreateContextWithUser(
+            new Claim(ClaimTypes.Role, "NoSuchRole"));
+
+        filter.OnAuthorization(context);
+
+        var result = context.Result as ObjectResult;
+        Assert.IsNotNull(result);
+        Assert.AreEqual(StatusCodes.Status403Forbidden, result.StatusCode);
+    }
+
+    [TestMethod]
+    public void OnAuthorization_RoleClaimCaseInsensitive_AllowsAccess()
+    {
+        var filter = new RoleAuthorizationAttribute(UserRolesDto.Administrative);
+        var context = CreateContextWithUser(
+            new Claim(ClaimTypes.Role, "administrative"));
+
+        filter.OnAuthorization(context);
+
+        Assert.IsNull(context.Result);
+    }
+
+    [TestMethod]
+    public void OnAuthorization_WithMultipleRoleClaims_TakesFirstClaim()
+    {
+        var filter = new RoleAuthorizationAttribute(UserRolesDto.Administrative);
+        var context = CreateContextWithUser(
+            new Claim(ClaimTypes.Role, "InvalidRole"),
+            new Claim(ClaimTypes.Role, UserRolesDto.Administrative.ToString()));
+
+        filter.OnAuthorization(context);
+
+        var result = context.Result as ObjectResult;
+        Assert.IsNotNull(result);
+        Assert.AreEqual(StatusCodes.Status403Forbidden, result.StatusCode);
+    }
+
+    [TestMethod]
+    public void OnAuthorization_WhenNoRolesAreAllowed_SetsForbiddenResult()
+    {
+        var filter = new RoleAuthorizationAttribute();
+        var context = CreateContextWithUser(
+            new Claim(ClaimTypes.Role, UserRolesDto.Administrative.ToString()));
+
+        filter.OnAuthorization(context);
+
+        var result = context.Result as ObjectResult;
+        Assert.IsNotNull(result);
+        Assert.AreEqual(StatusCodes.Status403Forbidden, result.StatusCode);
+    }
 }
