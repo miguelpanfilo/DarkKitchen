@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ExceptionFilter>();
+    options.Filters.Add<AuthenticationFilter>();
 });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -21,6 +22,10 @@ builder.Services.AddScoped<IModifyUserService, ModifyUserService>();
 builder.Services.AddScoped<IDeleteUserService, DeleteUserService>();
 builder.Services.AddScoped<IFilterUserService, FilterUserService>();
 builder.Services.AddScoped<IAdminValidationService, AdminValidationService>();
+builder.Services.AddScoped<ISessionValidationService, SessionValidationService>();
+
+// Filters
+builder.Services.AddScoped<AuthenticationFilter>();
 
 // Helpers / validators
 builder.Services.AddScoped<IPhoneValidator, PhoneValidatorUruguay>();
