@@ -1,6 +1,7 @@
 using Contratos;
 using Dominio;
 using Dominio.Exceptions;
+using FluentAssertions;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
 using Moq;
@@ -8,8 +9,20 @@ using Moq;
 namespace Pruebas.Pedidos;
 
 [TestClass]
-public class OrderFacadeTests
+public sealed class OrderFacadeTests
 {
+    private Mock<IOrderService> _orderServiceMock = null!;
+    private Mock<IProductService> _productServiceMock = null!;
+    private OrderFacade _orderFacade = null!;
+
+    [TestInitialize]
+    public void Initialize()
+    {
+        _orderServiceMock = new Mock<IOrderService>(MockBehavior.Strict);
+        _productServiceMock = new Mock<IProductService>(MockBehavior.Strict);
+        _orderFacade = new OrderFacade(_orderServiceMock.Object, _productServiceMock.Object);
+    }
+
     private static Order MakeTestOrder()
     {
         var address = Address.MakeAddress("Rivera", "1234");
@@ -17,6 +30,7 @@ public class OrderFacadeTests
         {
             (1, 2, 100m, 0m)
         };
+
         return Order.MakeOrder(1, DeliveryType.Express, address, items, 200m);
     }
 
@@ -25,210 +39,175 @@ public class OrderFacadeTests
         return Product.MakeProduct("Test Product", price);
     }
 
+    #region CreateOrder
+    #region Success
     [TestMethod]
-    public void CreateOrder_ValidRequest_ReturnsOrderResponse()
+    public void CreateOrder_WhenValidRequest_ShouldReturnOrderResponse()
     {
-        var orderServiceMock = new Mock<IOrderService>();
-        var productServiceMock = new Mock<IProductService>();
-        var order = MakeTestOrder();
-
-        productServiceMock
+        _productServiceMock
             .Setup(p => p.GetById(1))
             .Returns(MakeActiveProduct());
 
-        orderServiceMock
+        _orderServiceMock
             .Setup(s => s.CreateOrder(
                 It.IsAny<int>(),
                 It.IsAny<DeliveryType>(),
                 It.IsAny<Address>(),
                 It.IsAny<List<(int, int, decimal, decimal)>>(),
                 It.IsAny<decimal>()))
-            .Returns(order);
+            .Returns(MakeTestOrder());
 
-        var facade = new OrderFacade(orderServiceMock.Object, productServiceMock.Object);
-        var request = new CreateOrderRequest
+        var result = _orderFacade.CreateOrder(1, new CreateOrderRequest
         {
             DeliveryType = DeliveryType.Express,
             Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
             Items = [new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }]
-        };
+        });
 
-        var result = facade.CreateOrder(1, request);
-
-        Assert.IsNotNull(result);
-        Assert.IsInstanceOfType(result, typeof(OrderResponse));
+        _productServiceMock.VerifyAll();
+        _orderServiceMock.VerifyAll();
+        result.Should().NotBeNull();
+        result.Should().BeOfType<OrderResponse>();
     }
+    #endregion
 
+    #region Error
     [TestMethod]
-    public void CreateOrder_InactiveProduct_ThrowsOrderException()
+    public void CreateOrder_WhenProductIsInactive_ShouldThrowOrderException()
     {
-        var orderServiceMock = new Mock<IOrderService>();
-        var productServiceMock = new Mock<IProductService>();
-
-        productServiceMock
+        _productServiceMock
             .Setup(p => p.GetById(1))
             .Returns(Product.MakeProduct("Test", 100m, isActive: false));
 
-        var facade = new OrderFacade(orderServiceMock.Object, productServiceMock.Object);
-        var request = new CreateOrderRequest
+        var act = () => _orderFacade.CreateOrder(1, new CreateOrderRequest
         {
             DeliveryType = DeliveryType.Express,
             Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
             Items = [new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }]
-        };
+        });
 
-        var ex = Assert.ThrowsException<OrderException>(() =>
-            facade.CreateOrder(1, request));
-
-        Assert.AreEqual("Product Test is not available", ex.Message);
+        act.Should().Throw<OrderException>().WithMessage("Product Test is not available");
+        _productServiceMock.VerifyAll();
+        _orderServiceMock.VerifyAll();
     }
+    #endregion
+    #endregion
 
+    #region GetClientOrders
+    #region Success
     [TestMethod]
-    public void CreateOrder_ValidRequest_CallsOrderServiceOnce()
+    public void GetClientOrders_WhenClientHasOrders_ShouldReturnOrderResponseList()
     {
-        var orderServiceMock = new Mock<IOrderService>();
-        var productServiceMock = new Mock<IProductService>();
-
-        productServiceMock
-            .Setup(p => p.GetById(1))
-            .Returns(MakeActiveProduct());
-
-        orderServiceMock
-            .Setup(s => s.CreateOrder(
-                It.IsAny<int>(),
-                It.IsAny<DeliveryType>(),
-                It.IsAny<Address>(),
-                It.IsAny<List<(int, int, decimal, decimal)>>(),
-                It.IsAny<decimal>()))
-            .Returns(MakeTestOrder());
-
-        var facade = new OrderFacade(orderServiceMock.Object, productServiceMock.Object);
-        var request = new CreateOrderRequest
-        {
-            DeliveryType = DeliveryType.Express,
-            Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
-            Items = [new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }]
-        };
-
-        facade.CreateOrder(1, request);
-
-        orderServiceMock.Verify(s => s.CreateOrder(
-            It.IsAny<int>(),
-            It.IsAny<DeliveryType>(),
-            It.IsAny<Address>(),
-            It.IsAny<List<(int, int, decimal, decimal)>>(),
-            It.IsAny<decimal>()), Times.Once);
-    }
-
-    [TestMethod]
-    public void GetClientOrders_ValidRequest_ReturnsListOfOrderResponses()
-    {
-        var orderServiceMock = new Mock<IOrderService>();
-        var productServiceMock = new Mock<IProductService>();
-
-        orderServiceMock
+        _orderServiceMock
             .Setup(s => s.GetClientOrders(1, null, null, null))
             .Returns([MakeTestOrder(), MakeTestOrder()]);
 
-        var facade = new OrderFacade(orderServiceMock.Object, productServiceMock.Object);
+        var result = _orderFacade.GetClientOrders(1, null, null, null);
 
-        var result = facade.GetClientOrders(1, null, null, null);
-
-        Assert.AreEqual(2, result.Count);
+        _orderServiceMock.VerifyAll();
+        result.Should().HaveCount(2);
     }
 
     [TestMethod]
-    public void GetClientOrders_NoOrders_ReturnsEmptyList()
+    public void GetClientOrders_WhenNoOrders_ShouldReturnEmptyList()
     {
-        var orderServiceMock = new Mock<IOrderService>();
-        var productServiceMock = new Mock<IProductService>();
-
-        orderServiceMock
+        _orderServiceMock
             .Setup(s => s.GetClientOrders(1, null, null, null))
             .Returns([]);
 
-        var facade = new OrderFacade(orderServiceMock.Object, productServiceMock.Object);
+        var result = _orderFacade.GetClientOrders(1, null, null, null);
 
-        var result = facade.GetClientOrders(1, null, null, null);
-
-        Assert.AreEqual(0, result.Count);
+        _orderServiceMock.VerifyAll();
+        result.Should().BeEmpty();
     }
+    #endregion
+    #endregion
 
+    #region GetById
+    #region Success
     [TestMethod]
-    public void GetById_ValidId_ReturnsOrderResponse()
+    public void GetById_WhenOrderExists_ShouldReturnOrderResponse()
     {
-        var orderServiceMock = new Mock<IOrderService>();
-        var productServiceMock = new Mock<IProductService>();
-
-        orderServiceMock
+        _orderServiceMock
             .Setup(s => s.GetById(1))
             .Returns(MakeTestOrder());
 
-        var facade = new OrderFacade(orderServiceMock.Object, productServiceMock.Object);
+        var result = _orderFacade.GetById(1);
 
-        var result = facade.GetById(1);
-
-        Assert.IsNotNull(result);
-        Assert.IsInstanceOfType(result, typeof(OrderResponse));
+        _orderServiceMock.VerifyAll();
+        result.Should().NotBeNull();
+        result.Should().BeOfType<OrderResponse>();
     }
+    #endregion
+    #endregion
 
+    #region Prepare
+    #region Success
     [TestMethod]
-    public void Prepare_ValidId_CallsServiceOnce()
+    public void Prepare_WhenValidId_ShouldDelegateToService()
     {
-        var orderServiceMock = new Mock<IOrderService>();
-        var productServiceMock = new Mock<IProductService>();
-        var facade = new OrderFacade(orderServiceMock.Object, productServiceMock.Object);
+        _orderServiceMock.Setup(s => s.Prepare(1));
 
-        facade.Prepare(1);
+        _orderFacade.Prepare(1);
 
-        orderServiceMock.Verify(s => s.Prepare(1), Times.Once);
+        _orderServiceMock.VerifyAll();
     }
+    #endregion
+    #endregion
 
+    #region Cancel
+    #region Success
     [TestMethod]
-    public void Cancel_ValidId_CallsServiceOnce()
+    public void Cancel_WhenValidId_ShouldDelegateToService()
     {
-        var orderServiceMock = new Mock<IOrderService>();
-        var productServiceMock = new Mock<IProductService>();
-        var facade = new OrderFacade(orderServiceMock.Object, productServiceMock.Object);
+        _orderServiceMock.Setup(s => s.Cancel(1));
 
-        facade.Cancel(1);
+        _orderFacade.Cancel(1);
 
-        orderServiceMock.Verify(s => s.Cancel(1), Times.Once);
+        _orderServiceMock.VerifyAll();
     }
+    #endregion
+    #endregion
 
+    #region Dispatch
+    #region Success
     [TestMethod]
-    public void Dispatch_ValidId_CallsServiceOnce()
+    public void Dispatch_WhenValidId_ShouldDelegateToService()
     {
-        var orderServiceMock = new Mock<IOrderService>();
-        var productServiceMock = new Mock<IProductService>();
-        var facade = new OrderFacade(orderServiceMock.Object, productServiceMock.Object);
+        _orderServiceMock.Setup(s => s.Dispatch(1));
 
-        facade.Dispatch(1);
+        _orderFacade.Dispatch(1);
 
-        orderServiceMock.Verify(s => s.Dispatch(1), Times.Once);
+        _orderServiceMock.VerifyAll();
     }
+    #endregion
+    #endregion
 
+    #region Deliver
+    #region Success
     [TestMethod]
-    public void Deliver_ValidId_CallsServiceOnce()
+    public void Deliver_WhenValidId_ShouldDelegateToService()
     {
-        var orderServiceMock = new Mock<IOrderService>();
-        var productServiceMock = new Mock<IProductService>();
-        var facade = new OrderFacade(orderServiceMock.Object, productServiceMock.Object);
+        _orderServiceMock.Setup(s => s.Deliver(1));
 
-        facade.Deliver(1);
+        _orderFacade.Deliver(1);
 
-        orderServiceMock.Verify(s => s.Deliver(1), Times.Once);
+        _orderServiceMock.VerifyAll();
     }
+    #endregion
+    #endregion
 
+    #region MarkNotDelivered
+    #region Success
     [TestMethod]
-    public void MarkNotDelivered_ValidId_CallsServiceOnce()
+    public void MarkNotDelivered_WhenValidId_ShouldDelegateToService()
     {
-        var orderServiceMock = new Mock<IOrderService>();
-        var productServiceMock = new Mock<IProductService>();
-        var facade = new OrderFacade(orderServiceMock.Object, productServiceMock.Object);
+        _orderServiceMock.Setup(s => s.MarkNotDelivered(1));
 
-        facade.MarkNotDelivered(1);
+        _orderFacade.MarkNotDelivered(1);
 
-        orderServiceMock.Verify(s => s.MarkNotDelivered(1), Times.Once);
+        _orderServiceMock.VerifyAll();
     }
+    #endregion
+    #endregion
 }

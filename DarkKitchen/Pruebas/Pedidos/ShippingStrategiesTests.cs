@@ -1,88 +1,84 @@
+using FluentAssertions;
 using LogicaDeNegocio;
-using LogicaDeNegocioAbstracciones;
 
 namespace Pruebas.Pedidos;
 
 [TestClass]
-public class ExpressShippingStrategyTests
+public sealed class ExpressShippingStrategyTests
 {
-    [TestMethod]
-    public void Calculate_AnySubtotal_Returns200()
+    private ExpressShippingStrategy _strategy = null!;
+
+    [TestInitialize]
+    public void Initialize()
     {
-        var strategy = new ExpressShippingStrategy();
+        _strategy = new ExpressShippingStrategy();
+    }
 
-        var result = strategy.Calculate(100m);
+    #region Calculate
+    #region Success
+    [TestMethod]
+    public void Calculate_WhenAnySubtotal_ShouldReturn200()
+    {
+        var result = _strategy.Calculate(100m);
 
-        Assert.AreEqual(200m, result);
+        result.Should().Be(200m);
     }
 
     [TestMethod]
-    public void Calculate_ZeroSubtotal_Returns200()
+    public void Calculate_WhenSubtotalIsZero_ShouldReturn200()
     {
-        var strategy = new ExpressShippingStrategy();
+        var result = _strategy.Calculate(0m);
 
-        var result = strategy.Calculate(0m);
-
-        Assert.AreEqual(200m, result);
+        result.Should().Be(200m);
     }
 
     [TestMethod]
-    public void Calculate_LargeSubtotal_Returns200()
+    public void Calculate_WhenSubtotalIsLarge_ShouldReturn200()
     {
-        var strategy = new ExpressShippingStrategy();
+        var result = _strategy.Calculate(10000m);
 
-        var result = strategy.Calculate(10000m);
-
-        Assert.AreEqual(200m, result);
+        result.Should().Be(200m);
     }
-
-    [TestMethod]
-    public void ExpressShippingStrategy_ImplementsIShippingCostStrategy()
-    {
-        IShippingCostStrategy strategy = new ExpressShippingStrategy();
-
-        Assert.IsNotNull(strategy);
-    }
+    #endregion
+    #endregion
 }
 
 [TestClass]
-public class TwentyFourHoursShippingStrategyTests
+public sealed class TwentyFourHoursShippingStrategyTests
 {
-    [TestMethod]
-    public void Calculate_AnySubtotal_Returns250()
+    private TwentyFourHoursShippingStrategy _strategy = null!;
+
+    [TestInitialize]
+    public void Initialize()
     {
-        var strategy = new TwentyFourHoursShippingStrategy();
+        _strategy = new TwentyFourHoursShippingStrategy();
+    }
 
-        var result = strategy.Calculate(100m);
+    #region Calculate
+    #region Success
+    [TestMethod]
+    public void Calculate_WhenAnySubtotal_ShouldReturn250()
+    {
+        var result = _strategy.Calculate(100m);
 
-        Assert.AreEqual(250m, result);
+        result.Should().Be(250m);
     }
 
     [TestMethod]
-    public void Calculate_ZeroSubtotal_Returns250()
+    public void Calculate_WhenSubtotalIsZero_ShouldReturn250()
     {
-        var strategy = new TwentyFourHoursShippingStrategy();
+        var result = _strategy.Calculate(0m);
 
-        var result = strategy.Calculate(0m);
-
-        Assert.AreEqual(250m, result);
+        result.Should().Be(250m);
     }
 
     [TestMethod]
-    public void Calculate_LargeSubtotal_Returns250()
+    public void Calculate_WhenSubtotalIsLarge_ShouldReturn250()
     {
-        var strategy = new TwentyFourHoursShippingStrategy();
+        var result = _strategy.Calculate(10000m);
 
-        var result = strategy.Calculate(10000m);
-
-        Assert.AreEqual(250m, result);
+        result.Should().Be(250m);
     }
-
-    [TestMethod]
-    public void TwentyFourHoursShippingStrategy_ImplementsIShippingCostStrategy()
-    {
-        IShippingCostStrategy strategy = new TwentyFourHoursShippingStrategy();
-
-        Assert.IsNotNull(strategy);
-    }
+    #endregion
+    #endregion
 }
