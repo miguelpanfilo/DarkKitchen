@@ -53,6 +53,11 @@ public class ProductService
             product.UpdateCommercialLine(patchDto.CommercialLine);
         }
 
+        if(patchDto.Category != null)
+        {
+            product.UpdateCategory(patchDto.Category);
+        }
+
         return _repository.Update(product);
     }
 

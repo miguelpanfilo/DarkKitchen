@@ -102,6 +102,11 @@ public class Product
         CommercialLine = newCommercialLine.Trim();
     }
 
+    public void UpdateCategory(string newCategory)
+    {
+        Category = newCategory.Trim();
+    }
+
     public void Activate()
     {
         IsActive = true;
