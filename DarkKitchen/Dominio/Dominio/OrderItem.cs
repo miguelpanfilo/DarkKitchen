@@ -22,17 +22,17 @@ public class OrderItem
     {
         if(quantity <= 0)
         {
-            throw new OrderException("Quantity must be greater than zero");
+            throw new OrderException("La cantidad debe ser mayor a cero");
         }
 
         if(unitPrice < 0)
         {
-            throw new OrderException("Unit price cannot be negative");
+            throw new OrderException("El precio no puede ser negativo");
         }
 
         if(discountApplied < 0 || discountApplied > 1)
         {
-            throw new OrderException("Discount must be between 0 and 1");
+            throw new OrderException("El descuento debe estar entre 0 y 1");
         }
 
         return new OrderItem
