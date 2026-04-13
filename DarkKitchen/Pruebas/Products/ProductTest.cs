@@ -575,4 +575,17 @@ public class ProductTest
 
         Assert.AreEqual(newCategory, product.Category);
     }
+
+    [DataTestMethod]
+    [DataRow("")]
+    [DataRow("   ")]
+    public void GivenInvalidCategory_WhenUpdatingCategory_ThenThrowsProductException(string invalidCategory)
+    {
+        var product = CreateValidProduct();
+
+        var exception = Assert.ThrowsException<ProductException>(
+            () => product.UpdateCategory(invalidCategory));
+
+        Assert.AreEqual("La categoría no puede estar vacío.", exception.Message);
+    }
 }
