@@ -15,8 +15,7 @@ public class ProductTest
             "Minutas clásicas",
             "Sandwiches",
             100,
-            ValidPhotos()
-        );
+            ValidPhotos());
     }
 
     private static List<ProductPhoto> ValidPhotos(int count = 1)
@@ -251,7 +250,7 @@ public class ProductTest
             "Minutas clasicas",
             "Fritos",
             100,
-            ValidPhotos(1));
+            ValidPhotos());
 
         Assert.IsTrue(product.IsActive);
     }
@@ -266,7 +265,7 @@ public class ProductTest
             "Minutas clasicas",
             "Fritos",
             100,
-            ValidPhotos(1));
+            ValidPhotos());
 
         product.Deactivate();
 
@@ -283,7 +282,7 @@ public class ProductTest
             "Minutas clasicas",
             "Fritos",
             100,
-            ValidPhotos(1));
+            ValidPhotos());
 
         product.Deactivate();
         product.Activate();
@@ -321,8 +320,7 @@ public class ProductTest
             "Minutas clásicas",
             "Sandwiches",
             100,
-            ValidPhotos(photoCount)
-        );
+            ValidPhotos(photoCount));
 
         Assert.IsNotNull(product);
         Assert.AreEqual(photoCount, product.Photos.Count);
@@ -341,9 +339,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 100,
-                ValidPhotos(photoCount)
-            )
-        );
+                ValidPhotos(photoCount)));
 
         Assert.AreEqual("El producto debe tener entre 1 y 3 fotos.", exception.Message);
     }
@@ -359,9 +355,7 @@ public class ProductTest
                 "Minutas clásicas",
                 "Sandwiches",
                 100,
-                null!
-            )
-        );
+                null!));
 
         Assert.AreEqual("El producto debe tener entre 1 y 3 fotos.", exception.Message);
     }

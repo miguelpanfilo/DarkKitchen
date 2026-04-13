@@ -111,6 +111,7 @@ public class Product
 
     public void UpdateCategory(string newCategory)
     {
+        ValidateRequired(newCategory, "La categoría");
         Category = newCategory.Trim();
     }
 
