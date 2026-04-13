@@ -1,6 +1,7 @@
 using Contratos;
 using Dominio;
 using Dominio.Exceptions;
+using FluentAssertions;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
 using Moq;
@@ -80,7 +81,7 @@ public class OrderFacadeTests
         var ex = Assert.ThrowsException<OrderException>(() =>
             facade.CreateOrder(1, request));
 
-        Assert.AreEqual("Product Test is not available", ex.Message);
+        Assert.AreEqual("El producto Test no está disponible", ex.Message);
     }
 
     [TestMethod]
@@ -231,4 +232,46 @@ public class OrderFacadeTests
 
         orderServiceMock.Verify(s => s.MarkNotDelivered(1), Times.Once);
     }
+
+    #region GetOrdersByFilters
+    #region Success
+    [TestMethod]
+    public void GetOrdersByFilters_WhenOrdersMatch_ShouldReturnOrderResponseList()
+    {
+        var orderServiceMock = new Mock<IOrderService>(MockBehavior.Strict);
+        var productServiceMock = new Mock<IProductService>(MockBehavior.Strict);
+        var facade = new OrderFacade(orderServiceMock.Object, productServiceMock.Object);
+        var dateFrom = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        var dateTo = new DateTime(2026, 1, 31, 0, 0, 0, DateTimeKind.Utc);
+
+        orderServiceMock
+            .Setup(s => s.GetOrdersByFilters(dateFrom, dateTo, null, null))
+            .Returns([MakeTestOrder(), MakeTestOrder()]);
+
+        var result = facade.GetOrdersByFilters(dateFrom, dateTo, null, null);
+
+        orderServiceMock.VerifyAll();
+        result.Should().HaveCount(2);
+    }
+
+    [TestMethod]
+    public void GetOrdersByFilters_WhenNoMatch_ShouldReturnEmptyList()
+    {
+        var orderServiceMock = new Mock<IOrderService>(MockBehavior.Strict);
+        var productServiceMock = new Mock<IProductService>(MockBehavior.Strict);
+        var facade = new OrderFacade(orderServiceMock.Object, productServiceMock.Object);
+        var dateFrom = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        var dateTo = new DateTime(2026, 1, 31, 0, 0, 0, DateTimeKind.Utc);
+
+        orderServiceMock
+            .Setup(s => s.GetOrdersByFilters(dateFrom, dateTo, null, null))
+            .Returns([]);
+
+        var result = facade.GetOrdersByFilters(dateFrom, dateTo, null, null);
+
+        orderServiceMock.VerifyAll();
+        result.Should().BeEmpty();
+    }
+    #endregion
+    #endregion
 }
