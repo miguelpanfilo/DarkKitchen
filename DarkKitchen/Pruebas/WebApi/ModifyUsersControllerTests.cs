@@ -1,10 +1,11 @@
+using System.Security.Claims;
 using Contratos;
 using DarkKitchen.Controllers;
+using DarkKitchen.Filters;
 using LogicaDeNegocioAbstracciones;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System.Security.Claims;
 
 namespace Pruebas.WebApi;
 
@@ -178,5 +179,19 @@ public class ModifyUsersControllerTests
 
         Assert.ThrowsException<NullReferenceException>(() =>
             controller.UpdateInternalUser(10, request));
+    }
+
+    [TestMethod]
+    public void UpdateInternalUser_HasRoleAuthorizationAttribute()
+    {
+        var method = typeof(UsersController).GetMethod(nameof(UsersController.UpdateInternalUser));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
+            .Cast<RoleAuthorizationAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
     }
 }
