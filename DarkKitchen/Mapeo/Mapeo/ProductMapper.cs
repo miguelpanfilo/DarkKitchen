@@ -18,4 +18,25 @@ public class ProductMapper
             .WithPhotos(savedPhotos)
             .Build();
     }
+
+    public static ProductResponseDto ToResponseDto(Product product)
+    {
+        return new ProductResponseDto
+        {
+            Id = product.Id,
+            Code = product.Code,
+            Name = product.Name,
+            Description = product.Description,
+            CommercialLine = product.CommercialLine,
+            Category = product.Category,
+            Price = product.Price,
+            IsActive = product.IsActive,
+            Photos = product.Photos
+                .Select(photo => new PhotoResponseDto
+                {
+                    Path = photo.Path
+                })
+                .ToList()
+        };
+    }
 }
