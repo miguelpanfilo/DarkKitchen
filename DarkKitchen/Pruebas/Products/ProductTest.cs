@@ -387,4 +387,16 @@ public class ProductTest
 
         Assert.AreEqual("El nombre no puede estar vacío.", ex.Message);
     }
+
+    [DataTestMethod]
+    [DataRow("corto")]
+    [DataRow("este nombre es extremadamente largo y supera los cincuenta caracteres permitidos")]
+    public void GivenInvalidLengthName_WhenUpdatingName_ThenThrowsProductExceptionWithMessage(string invalidName)
+    {
+        var product = CreateValidProduct();
+
+        var ex = Assert.ThrowsException<ProductException>(() => product.UpdateName(invalidName));
+
+        Assert.AreEqual("El nombre debe tener entre 10 y 50 caracteres.", ex.Message);
+    }
 }
