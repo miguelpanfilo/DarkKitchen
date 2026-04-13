@@ -963,4 +963,47 @@ public class ProductServiceTest
         Assert.AreEqual("photo-1.jpg", responseDto.Photos[0].Path);
         Assert.AreEqual("photo-2.jpg", responseDto.Photos[1].Path);
     }
+
+    [TestMethod]
+    public void GivenExistingProducts_WhenGettingAll_ThenReturnsProductResponseDtoList()
+    {
+        var products = new List<Product>
+        {
+            CreateValidProduct(),
+            new ProductBuilder()
+                .WithCode("COD456")
+                .WithName("Segundo producto válido")
+                .WithDescription("Otra descripción válida con más de veinte caracteres")
+                .WithCommercialLine("Otra línea")
+                .WithCategory("Otra categoría")
+                .WithPrice(200)
+                .WithPhotos(new List<ProductPhoto>
+                {
+                    new ProductPhoto("photo-2.jpg")
+                })
+                .Build()
+        };
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        repoMock.Setup(r => r.GetAll()).Returns(products);
+
+        var service = CreateService(repoMock, storageMock);
+
+        var result = service.GetAll();
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(2, result.Count);
+
+        Assert.AreEqual(products[0].Code, result[0].Code);
+        Assert.AreEqual(products[0].Name, result[0].Name);
+
+        Assert.AreEqual(products[1].Code, result[1].Code);
+        Assert.AreEqual(products[1].Name, result[1].Name);
+
+        Assert.AreEqual(products[0].Photos.Count, result[0].Photos.Count);
+
+        repoMock.Verify(r => r.GetAll(), Times.Once);
+    }
 }
