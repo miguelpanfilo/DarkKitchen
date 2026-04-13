@@ -171,4 +171,38 @@ public class UsersControllerTests
 
         Assert.IsNotNull(attribute);
     }
+
+    [TestMethod]
+    public void CreateUser_ValidRequest_ReturnsCreatedWithCorrectLocation()
+    {
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
+
+        var request = new SignUpClientRequestDTO
+        {
+            Name = "Miguel",
+            LastName = "Lopez",
+            Email = "miguel@gmail.com",
+            Phone = "099123456",
+            Password = "Password@2Ok6Abc"
+        };
+
+        var expectedResponse = new SignUpClientResponseDTO
+        {
+            Name = "Miguel",
+            LastName = "Lopez",
+            Email = "miguel@gmail.com"
+        };
+
+        signUpServiceMock
+            .Setup(s => s.SignUpClient(request))
+            .Returns(expectedResponse);
+
+        var controller = new UsersController(signUpServiceMock.Object, modifyUserServiceMock.Object);
+
+        var result = controller.CreateUser(request) as CreatedResult;
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual("/api/v1/users", result.Location);
+    }
 }
