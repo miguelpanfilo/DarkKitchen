@@ -551,4 +551,17 @@ public class ProductTest
 
         Assert.AreEqual(newCommercialLine, product.CommercialLine);
     }
+
+    [DataTestMethod]
+    [DataRow("")]
+    [DataRow("   ")]
+    public void GivenInvalidCommercialLine_WhenUpdatingCommercialLine_ThenThrowsProductException(string invalidCommercialLine)
+    {
+        var product = CreateValidProduct();
+
+        var exception = Assert.ThrowsException<ProductException>(
+            () => product.UpdateCommercialLine(invalidCommercialLine));
+
+        Assert.AreEqual("Línea comercial no puede estar vacío.", exception.Message);
+    }
 }
