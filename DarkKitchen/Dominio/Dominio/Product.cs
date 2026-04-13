@@ -16,19 +16,19 @@ public class Product
     public bool IsActive { get; private set; }
     public decimal Price { get; private set; }
 
-    private const int CODE_MIN_LENGTH = 5;
-    private const int CODE_MAX_LENGTH = 20;
+    private const int CodeMinLength = 5;
+    private const int CodeMaxLength = 20;
 
-    private const int NAME_MIN_LENGTH = 10;
-    private const int NAME_MAX_LENGTH = 50;
+    private const int NameMinLength = 10;
+    private const int NameMaxLength = 50;
 
-    private const int DESCRIPTION_MIN_LENGTH = 20;
-    private const int DESCRIPTION_MAX_LENGTH = 500;
+    private const int DescriptionMinLength = 20;
+    private const int DescriptionMaxLength = 500;
 
-    private const decimal MIN_PRICE = 0;
+    private const decimal MinPrice = 0;
 
-    private const int MIN_PHOTOS = 1;
-    private const int MAX_PHOTOS = 3;
+    private const int MinPhotos = 1;
+    private const int MaxPhotos = 3;
 
     public static Product MakeProduct(
         string code,
@@ -57,13 +57,13 @@ public class Product
         List<ProductPhoto> photos)
     {
         ValidateRequired(code, "El código");
-        ValidateLength(code, "El código", CODE_MIN_LENGTH, CODE_MAX_LENGTH);
+        ValidateLength(code, "El código", CodeMinLength, CodeMaxLength);
 
         ValidateRequired(name, "El nombre");
-        ValidateLength(name, "El nombre", NAME_MIN_LENGTH, NAME_MAX_LENGTH);
+        ValidateLength(name, "El nombre", NameMinLength, NameMaxLength);
 
         ValidateRequired(description, "La descripción");
-        ValidateLength(description, "La descripción", DESCRIPTION_MIN_LENGTH, DESCRIPTION_MAX_LENGTH);
+        ValidateLength(description, "La descripción", DescriptionMinLength, DescriptionMaxLength);
 
         ValidateRequired(commercialLine, "Línea comercial");
         ValidateRequired(category, "La categoría");
@@ -112,6 +112,11 @@ public class Product
         Price = newPrice;
     }
 
+    public void UpdatePhotos(List<ProductPhoto> photos)
+    {
+        Photos = new List<ProductPhoto>(photos);
+    }
+
     public void Activate()
     {
         IsActive = true;
@@ -142,7 +147,7 @@ public class Product
 
     private static void ValidatePrice(decimal price)
     {
-        if(price <= MIN_PRICE)
+        if(price <= MinPrice)
         {
             throw new ProductException("El precio debe ser mayor a 0.");
         }
@@ -150,7 +155,7 @@ public class Product
 
     private static void ValidatePhotos(List<ProductPhoto> photos)
     {
-        if (photos == null || photos.Count < MIN_PHOTOS || photos.Count > MAX_PHOTOS)
+        if (photos == null || photos.Count < MinPhotos || photos.Count > MaxPhotos)
         {
             throw new ProductException("El producto debe tener entre 1 y 3 fotos.");
         }

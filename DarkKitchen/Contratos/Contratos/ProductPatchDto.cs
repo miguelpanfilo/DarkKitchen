@@ -8,4 +8,5 @@ public class ProductPatchDto
     public string? CommercialLine { get; init; }
     public string? Category { get; init; }
     public decimal? Price { get; init; }
+    public List<ProductPatchPhotoDto>? Photos { get; set; }
 }

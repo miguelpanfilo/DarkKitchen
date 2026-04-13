@@ -8,6 +8,9 @@ namespace LogicaDeNegocio;
 
 public class ProductService
 {
+    private const int MinPhotos = 1;
+    private const int MaxPhotos = 3;
+
     private readonly IProductRepository _repository;
     private readonly IProductPhotoStorage _productPhotoStorage;
     public ProductService(IProductRepository repository,IProductPhotoStorage photoStorage)
@@ -27,73 +30,127 @@ public class ProductService
     public Product Update(int productId, ProductPatchDto patchDto)
     {
         var product = _repository.FindById(productId);
-
-        if(product == null)
+        if (product == null)
         {
             throw new ProductException("El producto no existe");
         }
 
-        if(patchDto.Code != null)
-        {
-            product.UpdateCode(patchDto.Code);
-        }
-
-        if(patchDto.Name != null)
-        {
-            product.UpdateName(patchDto.Name);
-        }
-
-        if(patchDto.Description != null)
-        {
-            product.UpdateDescription(patchDto.Description);
-        }
-
-        if(patchDto.CommercialLine != null)
-        {
-            product.UpdateCommercialLine(patchDto.CommercialLine);
-        }
-
-        if(patchDto.Category != null)
-        {
-            product.UpdateCategory(patchDto.Category);
-        }
-
-        if(patchDto.Price.HasValue)
-        {
-            product.UpdatePrice(patchDto.Price.Value);
-        }
+        ApplyPatch(product, patchDto);
 
         return _repository.Update(product);
     }
 
+    private void ApplyPatch(Product product, ProductPatchDto patchDto)
+    {
+        if (patchDto.Code != null)
+        {
+            product.UpdateCode(patchDto.Code);
+        }
+
+        if (patchDto.Name != null)
+        {
+            product.UpdateName(patchDto.Name);
+        }
+
+        if (patchDto.Description != null)
+        {
+            product.UpdateDescription(patchDto.Description);
+        }
+
+        if (patchDto.CommercialLine != null)
+        {
+            product.UpdateCommercialLine(patchDto.CommercialLine);
+        }
+
+        if (patchDto.Category != null)
+        {
+            product.UpdateCategory(patchDto.Category);
+        }
+
+        if (patchDto.Price.HasValue)
+        {
+            product.UpdatePrice(patchDto.Price.Value);
+        }
+
+        if (patchDto.Photos != null)
+        {
+            var finalPhotos = SyncPhotos(product, patchDto.Photos);
+            product.UpdatePhotos(finalPhotos);
+        }
+    }
+
     private List<ProductPhoto> SavePhotos(List<PhotoDTO> photos)
     {
-        ValidatePhotos(photos);
+        ValidatePhotosCount(photos.Count);
         ValidateFormatPhotos(photos);
+
         var savedPhotos = new List<ProductPhoto>();
 
-        foreach (var photoDto in photos)
+        foreach (var photo in photos)
         {
-            var savedPath = _productPhotoStorage.Save(photoDto);
-            savedPhotos.Add(new ProductPhoto(savedPath));
+            savedPhotos.Add(SavePhoto(photo));
         }
 
         return savedPhotos;
     }
 
-    private void ValidatePhotos(List<PhotoDTO> photos)
+    private void ValidateFormatPhotos(List<PhotoDTO> photoDtos)
     {
-        if (photos == null || photos.Count < 1 || photos.Count > 3)
+        foreach(var photoDto in photoDtos)
         {
-            throw new ProductException("El producto debe tener entre 1 y 3 fotos");
+            ValidateFormatPhoto(photoDto);
         }
     }
 
-    private void ValidateFormatPhotos(List<PhotoDTO> photos)
+    private ProductPhoto SavePhoto(PhotoDTO photoDto)
     {
-        foreach(var photoDto in photos)
+        var savedPath = _productPhotoStorage.Save(photoDto);
+        return new ProductPhoto(savedPath);
+    }
+
+    private List<ProductPhoto> SyncPhotos(Product product, List<ProductPatchPhotoDto> requestedPhotos)
+    {
+        ValidatePhotosCount(requestedPhotos.Count);
+
+        var finalPhotos = new List<ProductPhoto>();
+
+        foreach (var requestedPhoto in requestedPhotos)
         {
-            ValidateFormatPhoto(photoDto);
+            finalPhotos.Add(ResolvePhoto(product, requestedPhoto));
+        }
+
+        return finalPhotos;
+    }
+
+    private ProductPhoto ResolvePhoto(Product product, ProductPatchPhotoDto requestedPhoto)
+    {
+        if (!string.IsNullOrWhiteSpace(requestedPhoto.Path))
+        {
+            return GetExistingPhoto(product, requestedPhoto.Path);
+        }
+
+        var photoDto = new PhotoDTO(
+            requestedPhoto.FileName!,
+            requestedPhoto.Extension!,
+            requestedPhoto.SizeInBytes!.Value,
+            requestedPhoto.Base64!
+        );
+
+        return SavePhoto(photoDto);
+    }
+
+    private ProductPhoto GetExistingPhoto(Product product, string path)
+    {
+        var existingPhoto = product.Photos.FirstOrDefault(photo => photo.Path == path);
+
+        return existingPhoto;
+    }
+
+    private void ValidatePhotosCount(int count)
+    {
+        if (count < MinPhotos || count > MaxPhotos)
+        {
+            throw new ProductException("El producto debe tener entre 1 y 3 fotos");
         }
     }
 
