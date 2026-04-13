@@ -410,4 +410,19 @@ public class ProductTest
 
         Assert.AreEqual(newCode, product.Code);
     }
+
+    [DataTestMethod]
+    [DataRow("", "El código no puede estar vacío.")]
+    [DataRow("abc", "El código debe tener entre 5 y 20 caracteres.")]
+    [DataRow("este-codigo-es-demasiado-largo-para-ser-valido", "El código debe tener entre 5 y 20 caracteres.")]
+    public void GivenInvalidCode_WhenUpdatingCode_ThenThrowsProductExceptionWithExpectedMessage(
+        string invalidCode,
+        string expectedMessage)
+    {
+        var product = CreateValidProduct();
+
+        var exception = Assert.ThrowsException<ProductException>(() => product.UpdateCode(invalidCode));
+
+        Assert.AreEqual(expectedMessage, exception.Message);
+    }
 }
