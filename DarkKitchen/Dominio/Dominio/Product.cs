@@ -105,6 +105,7 @@ public class Product
 
     public void UpdateCommercialLine(string newCommercialLine)
     {
+        ValidateRequired(newCommercialLine, "Línea comercial");
         CommercialLine = newCommercialLine.Trim();
     }
 
