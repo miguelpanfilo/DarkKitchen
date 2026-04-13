@@ -1,7 +1,6 @@
 using System.Security.Claims;
 using Contratos;
 using DarkKitchen.Filters;
-using Dominio;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -66,7 +65,7 @@ public class RoleAuthorizationTests
     {
         var filter = new RoleAuthorizationAttribute(UserRolesDto.Administrative);
         var context = CreateContextWithUser(
-            new Claim(ClaimTypes.Role, UserRoles.Client.ToString()));
+            new Claim(ClaimTypes.Role, UserRolesDto.Client.ToString()));
 
         filter.OnAuthorization(context);
 
@@ -85,7 +84,7 @@ public class RoleAuthorizationTests
     {
         var filter = new RoleAuthorizationAttribute(UserRolesDto.Administrative);
         var context = CreateContextWithUser(
-            new Claim(ClaimTypes.Role, UserRoles.Administrative.ToString()));
+            new Claim(ClaimTypes.Role, UserRolesDto.Administrative.ToString()));
 
         filter.OnAuthorization(context);
 
@@ -100,7 +99,7 @@ public class RoleAuthorizationTests
             UserRolesDto.Preparer);
 
         var context = CreateContextWithUser(
-            new Claim(ClaimTypes.Role, UserRoles.Preparer.ToString()));
+            new Claim(ClaimTypes.Role, UserRolesDto.Preparer.ToString()));
 
         filter.OnAuthorization(context);
 
@@ -115,7 +114,7 @@ public class RoleAuthorizationTests
             UserRolesDto.Preparer);
 
         var context = CreateContextWithUser(
-            new Claim(ClaimTypes.Role, UserRoles.Client.ToString()));
+            new Claim(ClaimTypes.Role, UserRolesDto.Client.ToString()));
 
         filter.OnAuthorization(context);
 
