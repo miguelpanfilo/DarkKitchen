@@ -9,6 +9,7 @@ public class ProductPhotoService
 {
     private const int MinPhotos = 1;
     private const int MaxPhotos = 3;
+    private const long MaxPhotoSizeInBytes = 500 * 1024;
 
     private readonly IProductPhotoStorage _productPhotoStorage;
 
@@ -19,7 +20,7 @@ public class ProductPhotoService
 
     public List<ProductPhoto> SavePhotos(List<PhotoDTO> photos)
     {
-        ValidatePhotosCount(photos.Count);
+        ValidatePhotosCollection(photos);
         ValidateFormatPhotos(photos);
 
         var savedPhotos = new List<ProductPhoto>();
@@ -34,7 +35,7 @@ public class ProductPhotoService
 
     public List<ProductPhoto> SyncPhotos(Product product, List<ProductPatchPhotoDto> requestedPhotos)
     {
-        ValidatePhotosCount(requestedPhotos.Count);
+        ValidatePhotosCollection(requestedPhotos);
 
         var finalPhotos = new List<ProductPhoto>();
 
@@ -85,9 +86,9 @@ public class ProductPhotoService
         return new ProductPhoto(savedPath);
     }
 
-    private void ValidatePhotosCount(int count)
+    private void ValidatePhotosCollection<T>(ICollection<T>? photos)
     {
-        if (count < MinPhotos || count > MaxPhotos)
+        if (photos == null || photos.Count < MinPhotos || photos.Count > MaxPhotos)
         {
             throw new ProductException("El producto debe tener entre 1 y 3 fotos");
         }
@@ -110,7 +111,12 @@ public class ProductPhotoService
             throw new ProductException("Las fotos deben estar en formato JPG");
         }
 
-        if (photoDto.SizeInBytes > 500 * 1024)
+        ValidatePhotoSize(photoDto.SizeInBytes);
+    }
+
+    private void ValidatePhotoSize(long sizeInBytes)
+    {
+        if (sizeInBytes > MaxPhotoSizeInBytes)
         {
             throw new ProductException("La foto no puede superar los 500 KB");
         }
