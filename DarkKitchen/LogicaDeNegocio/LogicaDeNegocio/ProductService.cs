@@ -17,6 +17,15 @@ public class ProductService
         _productPhotoService = productPhotoService;
     }
 
+    public List<ProductResponseDto> GetAll()
+    {
+        var products = _repository.GetAll();
+
+        return products
+            .Select(ProductMapper.ToResponseDto)
+            .ToList();
+    }
+
     public ProductResponseDto Create(ProductDTO productDto)
     {
         var savedPhotos = _productPhotoService.SavePhotos(productDto.Photos);
