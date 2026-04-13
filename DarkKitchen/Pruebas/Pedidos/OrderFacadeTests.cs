@@ -93,9 +93,20 @@ public sealed class OrderFacadeTests
     [TestMethod]
     public void CreateOrder_WhenProductIsInactive_ShouldThrowOrderException()
     {
+        var product = Product.MakeProduct(
+            "COD123",
+            "Producto Test",
+            "Descripción de prueba válida",
+            "Línea",
+            "Categoría",
+            100m,
+            ValidPhotos(1));
+
+        product.Deactivate();
+
         _productServiceMock
             .Setup(p => p.GetById(1))
-            .Returns(Product.MakeProduct("Test", 100m, isActive: false));
+            .Returns(product);
 
         var act = () => _orderFacade.CreateOrder(1, new CreateOrderRequest
         {
@@ -104,7 +115,10 @@ public sealed class OrderFacadeTests
             Items = [new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }]
         });
 
-        act.Should().Throw<OrderException>().WithMessage("El producto Test no está disponible");
+        act.Should()
+            .Throw<OrderException>()
+            .WithMessage("El producto Producto Test no está disponible");
+
         _productServiceMock.VerifyAll();
         _orderServiceMock.VerifyAll();
     }
