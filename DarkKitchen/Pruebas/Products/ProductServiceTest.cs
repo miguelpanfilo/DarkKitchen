@@ -791,4 +791,41 @@ public class ProductServiceTest
 
         Assert.AreEqual("La foto no puede superar los 500 KB", exception.Message);
     }
+
+    [TestMethod]
+    public void GivenPatchDtoWithIsActiveTrue_WhenUpdating_ThenProductIsActivated()
+    {
+        var product = Product.MakeProduct(
+            "COD123",
+            "Milanesa al pan",
+            "Milanesa al pan completa con fritas",
+            "Minutas clásicas",
+            "Sandwiches",
+            100,
+            new List<ProductPhoto>
+            {
+                new ProductPhoto("/images/products/1/a.jpg")
+            });
+
+        product.Deactivate();
+
+        var patchDto = new ProductPatchDto
+        {
+            IsActive = true
+        };
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        repoMock.Setup(r => r.FindById(product.Id)).Returns(product);
+        repoMock.Setup(r => r.Update(product)).Returns(product);
+
+        var service = CreateService(repoMock, storageMock);
+
+        var result = service.Update(product.Id, patchDto);
+
+        Assert.IsTrue(result.IsActive);
+        repoMock.Verify(r => r.FindById(product.Id), Times.Once);
+        repoMock.Verify(r => r.Update(product), Times.Once);
+    }
 }
