@@ -661,4 +661,49 @@ public class ProductServiceTest
         repoMock.Verify(r => r.FindById(1), Times.Once);
         repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Never);
     }
+
+    [TestMethod]
+    public void GivenPhotosPatchWithPathThatDoesNotBelongToProduct_WhenUpdating_ThenThrowsProductException()
+    {
+        var product = Product.MakeProduct(
+            "COD123",
+            "Milanesa al pan",
+            "Milanesa al pan completa con fritas",
+            "Minutas clásicas",
+            "Sandwiches",
+            100,
+            new List<ProductPhoto>
+            {
+                new ProductPhoto("/images/products/1/a.jpg")
+            }
+        );
+
+        var patchDto = new ProductPatchDto
+        {
+            Photos = new List<ProductPatchPhotoDto>
+            {
+                new ProductPatchPhotoDto
+                {
+                    Path = "/images/products/1/no-existe.jpg"
+                }
+            }
+        };
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        repoMock
+            .Setup(r => r.FindById(1))
+            .Returns(product);
+
+        var service = new ProductService(repoMock.Object, storageMock.Object);
+
+        var exception = Assert.ThrowsException<ProductException>(() => service.Update(1, patchDto));
+
+        Assert.AreEqual("La foto no pertenece al producto", exception.Message);
+
+        repoMock.Verify(r => r.FindById(1), Times.Once);
+        repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Never);
+        storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Never);
+    }
 }
