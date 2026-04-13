@@ -135,4 +135,31 @@ public class ModifyUsersControllerTests
 
         modifyUserServiceMock.Verify(x => x.UpdateInternalUser(25, 99, request), Times.Once);
     }
+
+    [TestMethod]
+    public void UpdateInternalUser_WhenCalled_UsesLoggedUserIdFromClaims()
+    {
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
+
+        var request = new ModificarUsuarioRequestDTO();
+        var response = new UsuarioResponseDTO();
+
+        modifyUserServiceMock
+            .Setup(x => x.UpdateInternalUser(10, 77, request))
+            .Returns(response);
+
+        var controller = new UsersController(
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object);
+
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = BuildHttpContextWithUserId(77)
+        };
+
+        controller.UpdateInternalUser(10, request);
+
+        modifyUserServiceMock.Verify(x => x.UpdateInternalUser(10, 77, request), Times.Once);
+    }
 }
