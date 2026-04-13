@@ -6,7 +6,20 @@ namespace Pruebas.Products;
 [TestClass]
 public class ProductTest
 {
-    private List<ProductPhoto> ValidPhotos(int count = 1)
+    private static Product CreateValidProduct()
+    {
+        return Product.MakeProduct(
+            "COD123",
+            "Milanesa al pan",
+            "Milanesa al pan completa con fritas",
+            "Minutas clásicas",
+            "Sandwiches",
+            100,
+            ValidPhotos()
+        );
+    }
+
+    private static List<ProductPhoto> ValidPhotos(int count = 1)
     {
         var photos = new List<ProductPhoto>();
 
@@ -351,5 +364,17 @@ public class ProductTest
         );
 
         Assert.AreEqual("El producto debe tener entre 1 y 3 fotos.", exception.Message);
+    }
+
+    [TestMethod]
+    public void GivenValidName_WhenUpdatingName_ThenNameIsUpdated()
+    {
+        var product = CreateValidProduct();
+
+        var newName = "Chivito completo";
+
+        product.UpdateName(newName);
+
+        Assert.AreEqual(newName, product.Name);
     }
 }
