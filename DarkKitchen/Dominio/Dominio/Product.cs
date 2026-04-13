@@ -121,6 +121,7 @@ public class Product
 
     public void UpdatePhotos(List<ProductPhoto> photos)
     {
+        ValidatePhotos(photos);
         Photos = new List<ProductPhoto>(photos);
     }
 
