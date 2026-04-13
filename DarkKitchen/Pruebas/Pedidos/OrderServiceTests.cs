@@ -36,18 +36,18 @@ public sealed class OrderServiceTests
     [TestMethod]
     public void CreateOrder_WhenValidData_ShouldReturnCreatedOrder()
     {
-        var address = Address.MakeAddress("Rivera", "1234");
-        var items = new List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)>
-        {
-            (1, 2, 100m, 0m)
-        };
         var expected = MakeOrder();
 
         _orderRepositoryMock
             .Setup(r => r.Add(It.IsAny<Order>()))
             .Returns(expected);
 
-        var result = _orderService.CreateOrder(1, DeliveryType.Express, address, items, 200m);
+        var result = _orderService.CreateOrder(
+            1,
+            DeliveryType.Express,
+            Address.MakeAddress("Rivera", "1234"),
+            [(1, 2, 100m, 0m)],
+            200m);
 
         _orderRepositoryMock.VerifyAll();
         result.Should().NotBeNull();
