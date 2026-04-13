@@ -469,4 +469,17 @@ public class ProductTest
 
         Assert.AreEqual(newPrice, product.Price);
     }
+
+    [DataTestMethod]
+    [DataRow(0.0)]
+    [DataRow(-10.0)]
+    public void GivenInvalidPrice_WhenUpdatingPrice_ThenThrowsProductException(double invalidPrice)
+    {
+        var product = CreateValidProduct();
+
+        var exception = Assert.ThrowsException<ProductException>(
+            () => product.UpdatePrice((decimal)invalidPrice));
+
+        Assert.AreEqual("El precio debe ser mayor a 0.", exception.Message);
+    }
 }
