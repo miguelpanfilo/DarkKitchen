@@ -31,7 +31,7 @@ public class Order
     {
         if(items.Count == 0)
         {
-            throw new OrderException("Order must have at least one product");
+            throw new OrderException("El pedido debe tener al menos un producto");
         }
 
         var order = new Order
@@ -96,7 +96,7 @@ public class Order
     {
         if(Status != required)
         {
-            throw new OrderException($"Cannot transition from {Status}. Expected status: {required}");
+            throw new OrderException($"No se puede transicionar desde {Status}. Estado esperado: {required}");
         }
     }
 

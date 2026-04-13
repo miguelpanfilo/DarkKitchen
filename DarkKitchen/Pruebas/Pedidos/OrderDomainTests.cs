@@ -1,131 +1,166 @@
 using Dominio;
 using Dominio.Exceptions;
+using FluentAssertions;
 
 namespace Pruebas.Pedidos;
 
 [TestClass]
-public class OrderDomainTests
+public sealed class OrderDomainTests
 {
     private static List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)> MakeItems()
     {
         return [(1, 2, 100m, 0m)];
     }
 
-    // Address
+    #region Address
+    #region Success
     [TestMethod]
-    public void Address_EmptyStreet_ThrowsOrderException()
-    {
-        var ex = Assert.ThrowsException<OrderException>(() =>
-            Address.MakeAddress(string.Empty, "1234"));
-
-        Assert.AreEqual("Street cannot be empty", ex.Message);
-    }
-
-    [TestMethod]
-    public void Address_EmptyDoorNumber_ThrowsOrderException()
-    {
-        var ex = Assert.ThrowsException<OrderException>(() =>
-            Address.MakeAddress("Rivera", string.Empty));
-
-        Assert.AreEqual("Door number cannot be empty", ex.Message);
-    }
-
-    [TestMethod]
-    public void Address_WithApartment_SetsApartment()
+    public void MakeAddress_WhenApartmentProvided_ShouldSetApartment()
     {
         var address = Address.MakeAddress("Rivera", "1234", "3A");
 
-        Assert.AreEqual("3A", address.Apartment);
+        address.Apartment.Should().Be("3A");
+    }
+    #endregion
+
+    #region Error
+    [TestMethod]
+    public void MakeAddress_WhenStreetIsEmpty_ShouldThrowOrderException()
+    {
+        var act = () => Address.MakeAddress(string.Empty, "1234");
+
+        act.Should().Throw<OrderException>().WithMessage("La calle no puede estar vacía");
     }
 
-    // Order
     [TestMethod]
-    public void Order_EmptyItems_ThrowsOrderException()
+    public void MakeAddress_WhenDoorNumberIsEmpty_ShouldThrowOrderException()
+    {
+        var act = () => Address.MakeAddress("Rivera", string.Empty);
+
+        act.Should().Throw<OrderException>().WithMessage("El número de puerta no puede estar vacío");
+    }
+    #endregion
+    #endregion
+
+    #region Order
+    #region Error
+    [TestMethod]
+    public void MakeOrder_WhenNoItems_ShouldThrowOrderException()
     {
         var address = Address.MakeAddress("Rivera", "1234");
 
-        var ex = Assert.ThrowsException<OrderException>(() =>
-            Order.MakeOrder(1, DeliveryType.Express, address, [], 200m));
+        var act = () => Order.MakeOrder(1, DeliveryType.Express, address, [], 200m);
 
-        Assert.AreEqual("Order must have at least one product", ex.Message);
+        act.Should().Throw<OrderException>().WithMessage("El pedido debe tener al menos un producto");
     }
 
     [TestMethod]
-    public void Order_Prepare_WhenNotPending_ThrowsOrderException()
+    public void Prepare_WhenOrderIsNotPending_ShouldThrowOrderException()
     {
         var order = Order.MakeOrder(1, DeliveryType.Express, Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m);
         order.Prepare();
 
-        Assert.ThrowsException<OrderException>(order.Prepare);
+        var act = order.Prepare;
+
+        act.Should().Throw<OrderException>();
     }
 
     [TestMethod]
-    public void Order_Cancel_WhenNotPending_ThrowsOrderException()
+    public void Cancel_WhenOrderIsNotPending_ShouldThrowOrderException()
     {
         var order = Order.MakeOrder(1, DeliveryType.Express, Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m);
         order.Prepare();
 
-        Assert.ThrowsException<OrderException>(order.Cancel);
+        var act = order.Cancel;
+
+        act.Should().Throw<OrderException>();
     }
 
     [TestMethod]
-    public void Order_Dispatch_WhenNotPrepared_ThrowsOrderException()
+    public void Dispatch_WhenOrderIsNotPrepared_ShouldThrowOrderException()
     {
         var order = Order.MakeOrder(1, DeliveryType.Express, Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m);
 
-        Assert.ThrowsException<OrderException>(order.Dispatch);
+        var act = order.Dispatch;
+
+        act.Should().Throw<OrderException>();
     }
 
     [TestMethod]
-    public void Order_Deliver_WhenNotOnTheWay_ThrowsOrderException()
+    public void Deliver_WhenOrderIsNotOnTheWay_ShouldThrowOrderException()
     {
         var order = Order.MakeOrder(1, DeliveryType.Express, Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m);
 
-        Assert.ThrowsException<OrderException>(order.Deliver);
+        var act = order.Deliver;
+
+        act.Should().Throw<OrderException>();
     }
 
     [TestMethod]
-    public void Order_MarkNotDelivered_WhenNotOnTheWay_ThrowsOrderException()
+    public void MarkNotDelivered_WhenOrderIsNotOnTheWay_ShouldThrowOrderException()
     {
         var order = Order.MakeOrder(1, DeliveryType.Express, Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m);
 
-        Assert.ThrowsException<OrderException>(order.MarkNotDelivered);
+        var act = order.MarkNotDelivered;
+
+        act.Should().Throw<OrderException>();
     }
+    #endregion
+    #endregion
 
-    // OrderItem
+    #region OrderItem
+    #region Error
     [TestMethod]
-    public void OrderItem_ZeroQuantity_ThrowsOrderException()
+    public void MakeOrderItem_WhenQuantityIsZero_ShouldThrowOrderException()
     {
-        var ex = Assert.ThrowsException<OrderException>(() =>
-            OrderItem.MakeOrderItem(1, 0, 100m));
+        var act = () => OrderItem.MakeOrderItem(1, 0, 100m);
 
-        Assert.AreEqual("Quantity must be greater than zero", ex.Message);
-    }
-
-    [TestMethod]
-    public void OrderItem_NegativeUnitPrice_ThrowsOrderException()
-    {
-        var ex = Assert.ThrowsException<OrderException>(() =>
-            OrderItem.MakeOrderItem(1, 1, -1m));
-
-        Assert.AreEqual("Unit price cannot be negative", ex.Message);
+        act.Should().Throw<OrderException>().WithMessage("La cantidad debe ser mayor a cero");
     }
 
     [TestMethod]
-    public void OrderItem_NegativeDiscount_ThrowsOrderException()
+    public void MakeOrderItem_WhenUnitPriceIsNegative_ShouldThrowOrderException()
     {
-        var ex = Assert.ThrowsException<OrderException>(() =>
-            OrderItem.MakeOrderItem(1, 1, 100m, -0.1m));
+        var act = () => OrderItem.MakeOrderItem(1, 1, -1m);
 
-        Assert.AreEqual("Discount must be between 0 and 1", ex.Message);
+        act.Should().Throw<OrderException>().WithMessage("El precio no puede ser negativo");
     }
 
     [TestMethod]
-    public void OrderItem_DiscountGreaterThanOne_ThrowsOrderException()
+    public void MakeOrderItem_WhenDiscountIsNegative_ShouldThrowOrderException()
     {
-        var ex = Assert.ThrowsException<OrderException>(() =>
-            OrderItem.MakeOrderItem(1, 1, 100m, 1.1m));
+        var act = () => OrderItem.MakeOrderItem(1, 1, 100m, -0.1m);
 
-        Assert.AreEqual("Discount must be between 0 and 1", ex.Message);
+        act.Should().Throw<OrderException>().WithMessage("El descuento debe estar entre 0 y 1");
     }
+
+    [TestMethod]
+    public void MakeOrderItem_WhenDiscountExceedsOne_ShouldThrowOrderException()
+    {
+        var act = () => OrderItem.MakeOrderItem(1, 1, 100m, 1.1m);
+
+        act.Should().Throw<OrderException>().WithMessage("El descuento debe estar entre 0 y 1");
+    }
+    #endregion
+    #endregion
+
+    #region Product
+    #region Error
+    [TestMethod]
+    public void MakeProduct_WhenNameIsEmpty_ShouldThrowOrderException()
+    {
+        var act = () => Product.MakeProduct(string.Empty, 100m);
+
+        act.Should().Throw<OrderException>().WithMessage("El nombre del producto no puede estar vacío");
+    }
+
+    [TestMethod]
+    public void MakeProduct_WhenPriceIsNegative_ShouldThrowOrderException()
+    {
+        var act = () => Product.MakeProduct("Burger", -1m);
+
+        act.Should().Throw<OrderException>().WithMessage("El precio del producto no puede ser negativo");
+    }
+    #endregion
+    #endregion
 }
