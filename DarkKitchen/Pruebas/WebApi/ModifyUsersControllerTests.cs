@@ -177,4 +177,18 @@ public class ModifyUsersControllerTests
         Assert.IsNotNull(attribute);
         Assert.AreEqual("{id}", attribute.Template);
     }
+
+    [TestMethod]
+    public void UpdateInternalUser_HasRoleAuthorizationAttribute()
+    {
+        var method = typeof(UsersController).GetMethod(nameof(UsersController.UpdateInternalUser));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
+            .Cast<RoleAuthorizationAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
+    }
 }
