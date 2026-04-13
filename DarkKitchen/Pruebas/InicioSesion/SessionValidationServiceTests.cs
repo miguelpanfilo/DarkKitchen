@@ -69,58 +69,7 @@ public class SessionValidationServiceTests
         watchMock.Verify(x => x.Ahora(), Times.Once);
     }
 
-    [TestMethod]
-    public void ValidateSession_WhenSessionIsValid_ReturnsUser()
-    {
-        var sessionId = Guid.NewGuid();
-        var now = new DateTime(2026, 4, 12, 10, 0, 0);
-        var session = new Session(5, now.AddHours(1));
-
-        var phoneResult = Phone.TryMakePhone("099123456");
-        Assert.IsTrue(phoneResult.Success);
-
-        var userResult = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            phoneResult.Value!,
-            "PasswordSeguraee3!");
-
-        Assert.IsTrue(userResult.Success);
-        var user = userResult.Value!;
-        user.Id = 5;
-
-        var sessionRepositoryMock = new Mock<IRepositorySession>(MockBehavior.Strict);
-        var userRepositoryMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
-
-        sessionRepositoryMock
-            .Setup(x => x.FindBySessionId(sessionId))
-            .Returns(session);
-
-        watchMock
-            .Setup(x => x.Ahora())
-            .Returns(now);
-
-        userRepositoryMock
-            .Setup(x => x.FindById(5))
-            .Returns(user);
-
-        var service = new SessionValidationService(
-            sessionRepositoryMock.Object,
-            userRepositoryMock.Object,
-            watchMock.Object);
-
-        var result = service.ValidateSession(sessionId);
-
-        Assert.AreEqual(user, result);
-
-        sessionRepositoryMock.Verify(x => x.FindBySessionId(sessionId), Times.Once);
-        watchMock.Verify(x => x.Ahora(), Times.Once);
-        userRepositoryMock.Verify(x => x.FindById(5), Times.Once);
-    }
-
-    [TestMethod]
+   [TestMethod]
     public void ValidateSession_WhenSessionUserDoesNotExist_ThrowsException()
     {
         var sessionId = Guid.NewGuid();

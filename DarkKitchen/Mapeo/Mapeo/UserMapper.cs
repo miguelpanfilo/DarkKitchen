@@ -36,4 +36,15 @@ public static class UserMapper
             Phone = user.Phone.Value
         };
     }
+
+    public static CurrentUserDto ToCurrentUserDto(this User user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        return new CurrentUserDto
+        {
+            Id = user.Id,
+            Role = user.Role.ToString(),
+            Email = user.Email.ToString()
+        };
+    }
 }

@@ -1,5 +1,5 @@
-using Contratos;
 using System.Security.Claims;
+using Contratos;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using Microsoft.AspNetCore.Authorization;
@@ -32,7 +32,6 @@ public class AuthenticationFilter(ISessionValidationService sessionValidationSer
         }
 
         var sessionIdText = values.FirstOrDefault();
-
         if(string.IsNullOrWhiteSpace(sessionIdText))
         {
             context.Result = BuildUnauthorizedResult("El header de sesión es obligatorio");
@@ -47,12 +46,13 @@ public class AuthenticationFilter(ISessionValidationService sessionValidationSer
 
         try
         {
-            var user = _sessionValidationService.ValidateSession(sessionId);
+            var current = _sessionValidationService.ValidateSession(sessionId);
+            context.HttpContext.Items["CurrentUser"] = current;
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Role, user.Role.ToString())
+                new Claim(ClaimTypes.NameIdentifier, current.Id.ToString()),
+                new Claim(ClaimTypes.Role, current.Role)
             };
 
             var identity = new ClaimsIdentity(claims, "SessionHeader");
@@ -66,11 +66,7 @@ public class AuthenticationFilter(ISessionValidationService sessionValidationSer
 
     private static ObjectResult BuildUnauthorizedResult(string message)
     {
-        return new ObjectResult(new ResponseDto
-        {
-            ExecutionSuccessful = false,
-            Message = message
-        })
+        return new ObjectResult(new ResponseDto { ExecutionSuccessful = false, Message = message })
         {
             StatusCode = StatusCodes.Status401Unauthorized
         };

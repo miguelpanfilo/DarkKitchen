@@ -1,6 +1,6 @@
 using System.Security.Claims;
+using Contratos;
 using DarkKitchen.Filters;
-using Dominio;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using Microsoft.AspNetCore.Authorization;
@@ -52,191 +52,208 @@ public class AuthenticationFilterTests
     }
 
     [TestMethod]
-    public void OnAuthorization_WhenHeaderIsMissing_ThrowsException()
+    public void OnAuthorization_WhenHeaderIsMissing_SetsUnauthorizedResult()
     {
         var filter = CreateFilter();
         var context = CreateContext();
 
-        var ex = Assert.ThrowsException<UserAuthenticationException>(() =>
-            filter.OnAuthorization(context));
+        filter.OnAuthorization(context);
 
-        Assert.AreEqual("El header de sesión es obligatorio", ex.Message);
+        var result = context.Result as ObjectResult;
+        Assert.IsNotNull(result);
+        Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
+
+        var response = result.Value as ResponseDto;
+        Assert.IsNotNull(response);
+        Assert.IsFalse(response.ExecutionSuccessful);
+        Assert.AreEqual("El header de sesión es obligatorio", response.Message);
     }
 
     [TestMethod]
-    public void OnAuthorization_WhenHeaderIsEmpty_ThrowsException()
+    public void OnAuthorization_WhenHeaderIsEmpty_SetsUnauthorizedResult()
     {
         var filter = CreateFilter();
         var context = CreateContext(string.Empty);
 
-        var ex = Assert.ThrowsException<UserAuthenticationException>(() =>
-            filter.OnAuthorization(context));
+        filter.OnAuthorization(context);
 
-        Assert.AreEqual("El header de sesión es obligatorio", ex.Message);
+        var result = context.Result as ObjectResult;
+        Assert.IsNotNull(result);
+        Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
+
+        var response = result.Value as ResponseDto;
+        Assert.IsNotNull(response);
+        Assert.IsFalse(response.ExecutionSuccessful);
+        Assert.AreEqual("El header de sesión es obligatorio", response.Message);
     }
 
     [TestMethod]
-    public void OnAuthorization_WhenSessionIdIsInvalidGuid_ThrowsException()
+    public void OnAuthorization_WhenSessionIdIsInvalidGuid_SetsUnauthorizedResult()
     {
         var filter = CreateFilter();
         var context = CreateContext("abc");
 
-        var ex = Assert.ThrowsException<UserAuthenticationException>(() =>
-            filter.OnAuthorization(context));
-
-        Assert.AreEqual("El identificador de sesión es inválido", ex.Message);
-    }
-
-    [TestMethod]
-    public void OnAuthorization_WhenSessionIdIsValid_CallsSessionValidationService()
-    {
-        var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
-        var sessionId = Guid.NewGuid();
-
-        var phoneResult = Phone.TryMakePhone("099123456");
-        Assert.IsTrue(phoneResult.Success);
-
-        var userResult = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            phoneResult.Value!,
-            "PasswordSeguraee3!");
-
-        Assert.IsTrue(userResult.Success);
-        var user = userResult.Value!;
-        user.Id = 5;
-
-        serviceMock
-            .Setup(x => x.ValidateSession(sessionId))
-            .Returns(user);
-
-        var filter = CreateFilter(serviceMock);
-        var context = CreateContext(sessionId.ToString());
-
         filter.OnAuthorization(context);
 
-        serviceMock.Verify(x => x.ValidateSession(sessionId), Times.Once);
+        var result = context.Result as ObjectResult;
+        Assert.IsNotNull(result);
+        Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
+
+        var response = result.Value as ResponseDto;
+        Assert.IsNotNull(response);
+        Assert.IsFalse(response.ExecutionSuccessful);
+        Assert.AreEqual("El identificador de sesión es inválido", response.Message);
     }
 
-    [TestMethod]
-    public void OnAuthorization_WhenEndpointAllowsAnonymous_DoesNothing()
+   [TestMethod]
+public void OnAuthorization_WhenSessionIdIsValid_CallsSessionValidationService()
+{
+    var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
+    var sessionId = Guid.NewGuid();
+
+    var currentUser = new CurrentUserDto
     {
-        var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
-        var filter = CreateFilter(serviceMock);
-        var context = CreateContext(allowAnonymous: true);
+        Id = 5,
+        Role = "Client",
+        Email = "miguel@gmail.com"
+    };
 
-        filter.OnAuthorization(context);
+    serviceMock
+        .Setup(x => x.ValidateSession(sessionId))
+        .Returns(currentUser);
 
-        Assert.IsNull(context.Result);
-    }
+    var filter = CreateFilter(serviceMock);
+    var context = CreateContext(sessionId.ToString());
 
-    [TestMethod]
-    public void OnAuthorization_WhenSessionIsValid_SetsAuthenticatedUser()
+    filter.OnAuthorization(context);
+
+    serviceMock.Verify(x => x.ValidateSession(sessionId), Times.Once);
+}
+
+[TestMethod]
+public void OnAuthorization_WhenEndpointAllowsAnonymous_DoesNothing()
+{
+    var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
+    var filter = CreateFilter(serviceMock);
+    var context = CreateContext(allowAnonymous: true);
+
+    filter.OnAuthorization(context);
+
+    Assert.IsNull(context.Result);
+}
+
+[TestMethod]
+public void OnAuthorization_WhenSessionIsValid_SetsAuthenticatedUser()
+{
+    var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
+    var sessionId = Guid.NewGuid();
+
+    var currentUser = new CurrentUserDto
     {
-        var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
-        var sessionId = Guid.NewGuid();
+        Id = 5,
+        Role = "Client",
+        Email = "miguel@gmail.com"
+    };
 
-        var phoneResult = Phone.TryMakePhone("099123456");
-        Assert.IsTrue(phoneResult.Success);
+    serviceMock
+        .Setup(x => x.ValidateSession(sessionId))
+        .Returns(currentUser);
 
-        var userResult = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            phoneResult.Value!,
-            "PasswordSeguraee3!");
+    var filter = new AuthenticationFilter(serviceMock.Object);
+    var context = CreateContext(sessionId.ToString());
 
-        Assert.IsTrue(userResult.Success);
-        var user = userResult.Value!;
-        user.Id = 5;
+    filter.OnAuthorization(context);
 
-        serviceMock
-            .Setup(x => x.ValidateSession(sessionId))
-            .Returns(user);
+    Assert.IsNotNull(context.HttpContext.User);
+    Assert.IsTrue(context.HttpContext.User.Identity?.IsAuthenticated);
 
-        var filter = new AuthenticationFilter(serviceMock.Object);
-        var context = CreateContext(sessionId.ToString());
+    serviceMock.Verify(x => x.ValidateSession(sessionId), Times.Once);
+}
 
-        filter.OnAuthorization(context);
+[TestMethod]
+public void OnAuthorization_WhenSessionIsValid_SetsNameIdentifierClaim()
+{
+    var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
+    var sessionId = Guid.NewGuid();
 
-        Assert.IsNotNull(context.HttpContext.User);
-        Assert.IsTrue(context.HttpContext.User.Identity?.IsAuthenticated);
-
-        serviceMock.Verify(x => x.ValidateSession(sessionId), Times.Once);
-    }
-
-    [TestMethod]
-    public void OnAuthorization_WhenSessionIsValid_SetsNameIdentifierClaim()
+    var currentUser = new CurrentUserDto
     {
-        var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
-        var sessionId = Guid.NewGuid();
+        Id = 5,
+        Role = "Client",
+        Email = "miguel@gmail.com"
+    };
 
-        var phoneResult = Phone.TryMakePhone("099123456");
-        Assert.IsTrue(phoneResult.Success);
+    serviceMock
+        .Setup(x => x.ValidateSession(sessionId))
+        .Returns(currentUser);
 
-        var userResult = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            phoneResult.Value!,
-            "PasswordSeguraee3!");
+    var filter = CreateFilter(serviceMock);
+    var context = CreateContext(sessionId.ToString());
 
-        Assert.IsTrue(userResult.Success);
-        var user = userResult.Value!;
-        user.Id = 5;
+    filter.OnAuthorization(context);
 
-        serviceMock
-            .Setup(x => x.ValidateSession(sessionId))
-            .Returns(user);
+    var userIdClaim = context.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
 
-        var filter = CreateFilter(serviceMock);
-        var context = CreateContext(sessionId.ToString());
+    Assert.IsNotNull(userIdClaim);
+    Assert.AreEqual("5", userIdClaim!.Value);
 
-        filter.OnAuthorization(context);
+    serviceMock.Verify(x => x.ValidateSession(sessionId), Times.Once);
+}
 
-        var userIdClaim = context.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+[TestMethod]
+public void OnAuthorization_WhenSessionIsValid_SetsRoleClaim()
+{
+    var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
+    var sessionId = Guid.NewGuid();
 
-        Assert.IsNotNull(userIdClaim);
-        Assert.AreEqual("5", userIdClaim!.Value);
-
-        serviceMock.Verify(x => x.ValidateSession(sessionId), Times.Once);
-    }
-
-    [TestMethod]
-    public void OnAuthorization_WhenSessionIsValid_SetsRoleClaim()
+    var currentUser = new CurrentUserDto
     {
-        var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
-        var sessionId = Guid.NewGuid();
+        Id = 5,
+        Role = "Client",
+        Email = "miguel@gmail.com"
+    };
 
-        var phoneResult = Phone.TryMakePhone("099123456");
-        Assert.IsTrue(phoneResult.Success);
+    serviceMock
+        .Setup(x => x.ValidateSession(sessionId))
+        .Returns(currentUser);
 
-        var userResult = User.MakeClient(
-            "Miguel",
-            "Lopez",
-            "miguel@gmail.com",
-            phoneResult.Value!,
-            "PasswordSeguraee3!");
+    var filter = CreateFilter(serviceMock);
+    var context = CreateContext(sessionId.ToString());
 
-        Assert.IsTrue(userResult.Success);
-        var user = userResult.Value!;
-        user.Id = 5;
+    filter.OnAuthorization(context);
 
-        serviceMock
-            .Setup(x => x.ValidateSession(sessionId))
-            .Returns(user);
+    var roleClaim = context.HttpContext.User.FindFirst(ClaimTypes.Role);
 
-        var filter = CreateFilter(serviceMock);
-        var context = CreateContext(sessionId.ToString());
+    Assert.IsNotNull(roleClaim);
+    Assert.AreEqual("Client", roleClaim!.Value);
 
-        filter.OnAuthorization(context);
+    serviceMock.Verify(x => x.ValidateSession(sessionId), Times.Once);
+}
 
-        var roleClaim = context.HttpContext.User.FindFirst(ClaimTypes.Role);
+[TestMethod]
+public void OnAuthorization_WhenSessionValidationThrows_SetsUnauthorizedResult()
+{
+    var sessionId = Guid.NewGuid();
+    var sessionValidationServiceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
 
-        Assert.IsNotNull(roleClaim);
-        Assert.AreEqual(user.Role.ToString(), roleClaim!.Value);
+    sessionValidationServiceMock
+        .Setup(x => x.ValidateSession(sessionId))
+        .Throws(new UserAuthenticationException("Sesión inválida o expirada"));
 
-        serviceMock.Verify(x => x.ValidateSession(sessionId), Times.Once);
-    }
+    var filter = new AuthenticationFilter(sessionValidationServiceMock.Object);
+    var context = CreateContext(sessionId.ToString());
+
+    filter.OnAuthorization(context);
+
+    var result = context.Result as ObjectResult;
+    Assert.IsNotNull(result);
+    Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
+
+    var response = result.Value as ResponseDto;
+    Assert.IsNotNull(response);
+    Assert.IsFalse(response.ExecutionSuccessful);
+    Assert.AreEqual("Sesión inválida o expirada", response.Message);
+
+    sessionValidationServiceMock.Verify(x => x.ValidateSession(sessionId), Times.Once);
+}
 }

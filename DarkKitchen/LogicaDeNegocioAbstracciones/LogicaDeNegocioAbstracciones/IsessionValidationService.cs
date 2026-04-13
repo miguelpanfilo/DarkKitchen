@@ -1,8 +1,6 @@
-using Dominio;
-
 namespace LogicaDeNegocioAbstracciones;
 
 public interface ISessionValidationService
 {
-    User ValidateSession(Guid sessionId);
+    CurrentUserDto ValidateSession(Guid sessionId);
 }

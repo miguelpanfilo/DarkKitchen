@@ -2,6 +2,7 @@ using AlmacenamientoAbstracciones;
 using Dominio;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
+using Mapeo;
 
 namespace LogicaDeNegocio;
 
@@ -18,14 +19,14 @@ public class SessionValidationService(
     private readonly IRepositoryUser _repositoryUser = repositoryUser;
     private readonly IReloj _watch = watch;
 
-    public User ValidateSession(Guid sessionId)
+    public CurrentUserDto ValidateSession(Guid sessionId)
     {
         var session = GetSessionOrThrow(sessionId);
         ValidateSessionIsNotExpired(session);
 
         var user = GetUserOrThrow(session.UserId);
 
-        return user;
+        return user.ToCurrentUserDto();
     }
 
     private Session GetSessionOrThrow(Guid sessionId)
