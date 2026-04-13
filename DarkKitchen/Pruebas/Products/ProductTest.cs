@@ -425,4 +425,15 @@ public class ProductTest
 
         Assert.AreEqual(expectedMessage, exception.Message);
     }
+
+    [TestMethod]
+    public void GivenValidDescription_WhenUpdatingDescription_ThenUpdatesProductDescription()
+    {
+        var product = CreateValidProduct();
+        var newDescription = "Esta es una descripción válida con más de veinte caracteres.";
+
+        product.UpdateDescription(newDescription);
+
+        Assert.AreEqual(newDescription, product.Description);
+    }
 }
