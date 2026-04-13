@@ -458,4 +458,15 @@ public class ProductTest
 
         Assert.AreEqual(expectedMessage, exception.Message);
     }
+
+    [TestMethod]
+    public void GivenValidPrice_WhenUpdatingPrice_ThenUpdatesProductPrice()
+    {
+        var product = CreateValidProduct();
+        var newPrice = 200;
+
+        product.UpdatePrice(newPrice);
+
+        Assert.AreEqual(newPrice, product.Price);
+    }
 }
