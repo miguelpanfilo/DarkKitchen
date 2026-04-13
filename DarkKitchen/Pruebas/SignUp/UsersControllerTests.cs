@@ -1,5 +1,6 @@
 using Contratos;
 using DarkKitchen.Controllers;
+using DarkKitchen.Filters;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using Microsoft.AspNetCore.Authorization;
@@ -204,5 +205,19 @@ public class UsersControllerTests
 
         Assert.IsNotNull(result);
         Assert.AreEqual("/api/v1/users", result.Location);
+    }
+
+    [TestMethod]
+    public void CreateUser_DoesNotHaveRoleAuthorizationAttribute()
+    {
+        var method = typeof(UsersController).GetMethod(nameof(UsersController.CreateUser));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
+            .Cast<RoleAuthorizationAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNull(attribute);
     }
 }
