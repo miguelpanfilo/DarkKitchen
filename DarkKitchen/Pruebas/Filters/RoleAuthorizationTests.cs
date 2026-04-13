@@ -113,4 +113,18 @@ public class RoleAuthorizationTests
         Assert.IsFalse(response.ExecutionSuccessful);
         Assert.AreEqual("El usuario no tiene permisos para ejecutar esta acción", response.Message);
     }
+
+    [TestMethod]
+    public void OnAuthorization_WhenRoleClaimIsEmpty_SetsForbiddenResult()
+    {
+        var filter = new RoleAuthorizationAttribute(UserRoles.Administrative);
+        var context = CreateContextWithUser(
+            new Claim(ClaimTypes.Role, string.Empty));
+
+        filter.OnAuthorization(context);
+
+        var result = context.Result as ObjectResult;
+        Assert.IsNotNull(result);
+        Assert.AreEqual(StatusCodes.Status403Forbidden, result.StatusCode);
+    }
 }
