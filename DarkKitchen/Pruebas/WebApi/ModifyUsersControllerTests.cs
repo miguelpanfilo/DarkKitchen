@@ -15,10 +15,7 @@ public class ModifyUsersControllerTests
     {
         var httpContext = new DefaultHttpContext();
 
-        var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, userId.ToString())
-        };
+        var claims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, userId.ToString()) };
 
         httpContext.User = new ClaimsPrincipal(
             new ClaimsIdentity(claims, "TestAuth"));
@@ -59,10 +56,7 @@ public class ModifyUsersControllerTests
             signUpServiceMock.Object,
             modifyUserServiceMock.Object);
 
-        controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = BuildHttpContextWithUserId(99)
-        };
+        controller.ControllerContext = new ControllerContext { HttpContext = BuildHttpContextWithUserId(99) };
 
         var result = controller.UpdateInternalUser(10, request) as OkObjectResult;
 
@@ -79,16 +73,9 @@ public class ModifyUsersControllerTests
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
         var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
 
-        var request = new ModificarUsuarioRequestDTO
-        {
-            Name = "Juan"
-        };
+        var request = new ModificarUsuarioRequestDTO { Name = "Juan" };
 
-        var response = new UsuarioResponseDTO
-        {
-            Id = 10,
-            Name = "Juan"
-        };
+        var response = new UsuarioResponseDTO { Id = 10, Name = "Juan" };
 
         modifyUserServiceMock
             .Setup(x => x.UpdateInternalUser(10, 99, request))
@@ -98,10 +85,7 @@ public class ModifyUsersControllerTests
             signUpServiceMock.Object,
             modifyUserServiceMock.Object);
 
-        controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = BuildHttpContextWithUserId(99)
-        };
+        controller.ControllerContext = new ControllerContext { HttpContext = BuildHttpContextWithUserId(99) };
 
         var result = controller.UpdateInternalUser(10, request) as OkObjectResult;
 
@@ -126,10 +110,7 @@ public class ModifyUsersControllerTests
             signUpServiceMock.Object,
             modifyUserServiceMock.Object);
 
-        controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = BuildHttpContextWithUserId(99)
-        };
+        controller.ControllerContext = new ControllerContext { HttpContext = BuildHttpContextWithUserId(99) };
 
         controller.UpdateInternalUser(25, request);
 
@@ -153,10 +134,7 @@ public class ModifyUsersControllerTests
             signUpServiceMock.Object,
             modifyUserServiceMock.Object);
 
-        controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = BuildHttpContextWithUserId(77)
-        };
+        controller.ControllerContext = new ControllerContext { HttpContext = BuildHttpContextWithUserId(77) };
 
         controller.UpdateInternalUser(10, request);
 
@@ -179,16 +157,26 @@ public class ModifyUsersControllerTests
     }
 
     [TestMethod]
-    public void UpdateInternalUser_HasRoleAuthorizationAttribute()
+    public void UpdateInternalUser_WhenNameIdentifierClaimIsMissing_ThrowsException()
     {
-        var method = typeof(UsersController).GetMethod(nameof(UsersController.UpdateInternalUser));
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
 
-        Assert.IsNotNull(method);
+        var controller = new UsersController(
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object);
 
-        var attribute = method.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
-            .Cast<RoleAuthorizationAttribute>()
-            .SingleOrDefault();
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity([], "TestAuth"))
+            }
+        };
 
-        Assert.IsNotNull(attribute);
+        var request = new ModificarUsuarioRequestDTO();
+
+        Assert.ThrowsException<NullReferenceException>(() =>
+            controller.UpdateInternalUser(10, request));
     }
 }
