@@ -30,6 +30,7 @@ public sealed class OrderFacadeTests
         {
             (1, 2, 100m, 0m)
         };
+
         return Order.MakeOrder(1, DeliveryType.Express, address, items, 200m);
     }
 
@@ -85,10 +86,9 @@ public sealed class OrderFacadeTests
             Items = [new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }]
         });
 
-        var ex = Assert.ThrowsException<OrderException>(() =>
-            facade.CreateOrder(1, request));
-
-        Assert.AreEqual("El producto Test no está disponible", ex.Message);
+        act.Should().Throw<OrderException>().WithMessage("El producto Test no está disponible");
+        _productServiceMock.VerifyAll();
+        _orderServiceMock.VerifyAll();
     }
     #endregion
     #endregion
@@ -137,6 +137,42 @@ public sealed class OrderFacadeTests
         _orderServiceMock.VerifyAll();
         result.Should().NotBeNull();
         result.Should().BeOfType<OrderResponse>();
+    }
+    #endregion
+    #endregion
+
+    #region GetOrdersByFilters
+    #region Success
+    [TestMethod]
+    public void GetOrdersByFilters_WhenOrdersMatch_ShouldReturnOrderResponseList()
+    {
+        var dateFrom = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        var dateTo = new DateTime(2026, 1, 31, 0, 0, 0, DateTimeKind.Utc);
+
+        _orderServiceMock
+            .Setup(s => s.GetOrdersByFilters(dateFrom, dateTo, null, null))
+            .Returns([MakeTestOrder(), MakeTestOrder()]);
+
+        var result = _orderFacade.GetOrdersByFilters(dateFrom, dateTo, null, null);
+
+        _orderServiceMock.VerifyAll();
+        result.Should().HaveCount(2);
+    }
+
+    [TestMethod]
+    public void GetOrdersByFilters_WhenNoMatch_ShouldReturnEmptyList()
+    {
+        var dateFrom = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        var dateTo = new DateTime(2026, 1, 31, 0, 0, 0, DateTimeKind.Utc);
+
+        _orderServiceMock
+            .Setup(s => s.GetOrdersByFilters(dateFrom, dateTo, null, null))
+            .Returns([]);
+
+        var result = _orderFacade.GetOrdersByFilters(dateFrom, dateTo, null, null);
+
+        _orderServiceMock.VerifyAll();
+        result.Should().BeEmpty();
     }
     #endregion
     #endregion
@@ -207,46 +243,6 @@ public sealed class OrderFacadeTests
         _orderFacade.MarkNotDelivered(1);
 
         _orderServiceMock.VerifyAll();
-    }
-
-    #region GetOrdersByFilters
-    #region Success
-    [TestMethod]
-    public void GetOrdersByFilters_WhenOrdersMatch_ShouldReturnOrderResponseList()
-    {
-        var orderServiceMock = new Mock<IOrderService>(MockBehavior.Strict);
-        var productServiceMock = new Mock<IProductService>(MockBehavior.Strict);
-        var facade = new OrderFacade(orderServiceMock.Object, productServiceMock.Object);
-        var dateFrom = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        var dateTo = new DateTime(2026, 1, 31, 0, 0, 0, DateTimeKind.Utc);
-
-        orderServiceMock
-            .Setup(s => s.GetOrdersByFilters(dateFrom, dateTo, null, null))
-            .Returns([MakeTestOrder(), MakeTestOrder()]);
-
-        var result = facade.GetOrdersByFilters(dateFrom, dateTo, null, null);
-
-        orderServiceMock.VerifyAll();
-        result.Should().HaveCount(2);
-    }
-
-    [TestMethod]
-    public void GetOrdersByFilters_WhenNoMatch_ShouldReturnEmptyList()
-    {
-        var orderServiceMock = new Mock<IOrderService>(MockBehavior.Strict);
-        var productServiceMock = new Mock<IProductService>(MockBehavior.Strict);
-        var facade = new OrderFacade(orderServiceMock.Object, productServiceMock.Object);
-        var dateFrom = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        var dateTo = new DateTime(2026, 1, 31, 0, 0, 0, DateTimeKind.Utc);
-
-        orderServiceMock
-            .Setup(s => s.GetOrdersByFilters(dateFrom, dateTo, null, null))
-            .Returns([]);
-
-        var result = facade.GetOrdersByFilters(dateFrom, dateTo, null, null);
-
-        orderServiceMock.VerifyAll();
-        result.Should().BeEmpty();
     }
     #endregion
     #endregion
