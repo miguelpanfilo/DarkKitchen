@@ -54,6 +54,7 @@ public class UsersController(IUserService userService) : ControllerBase
         return NoContent();
     }
 
+    [RoleAuthorization(UserRolesDto.Administrative)]
     [HttpGet]
     public IActionResult SearchUsers([FromQuery] FindUserRequestDTO request)
     {

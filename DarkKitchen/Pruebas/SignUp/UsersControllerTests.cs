@@ -410,4 +410,19 @@ public class UsersControllerTests
             x => x.BuscarUsuarios(It.IsAny<int>(), It.IsAny<FindUserRequestDTO>()),
             Times.Never);
     }
+
+    [TestMethod]
+    public void SearchUsers_HasRoleAuthorizationForAdministrative()
+    {
+        var method = typeof(UsersController).GetMethod(nameof(UsersController.SearchUsers));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
+            .Cast<RoleAuthorizationAttribute>()
+            .FirstOrDefault();
+
+        Assert.IsNotNull(attribute);
+        Assert.AreEqual(UserRolesDto.Administrative, attribute.Role);
+    }
 }
