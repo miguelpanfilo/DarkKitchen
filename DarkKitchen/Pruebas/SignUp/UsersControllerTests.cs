@@ -405,4 +405,18 @@ public class UsersControllerTests
             x => x.MakeInterUser(99, request),
             Times.Once);
     }
+
+    [TestMethod]
+    public void CreateInternalUser_HasRoleAuthorizationAttribute()
+    {
+        var method = typeof(UsersController).GetMethod(nameof(UsersController.CreateInternalUser));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
+            .Cast<RoleAuthorizationAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
+    }
 }
