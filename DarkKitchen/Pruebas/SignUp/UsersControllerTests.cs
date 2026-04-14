@@ -380,4 +380,34 @@ public class UsersControllerTests
             x => x.BuscarUsuarios(It.IsAny<int>(), It.IsAny<FindUserRequestDTO>()),
             Times.Never);
     }
+
+    [TestMethod]
+    public void SearchUsers_WhenClaimIsMissing_ReturnsUnauthorized()
+    {
+        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
+        var controller = new UsersController(userServiceMock.Object);
+
+        var request = new FindUserRequestDTO
+        {
+            Name = "Juan",
+            LastName = "Perez"
+        };
+
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity([], "TestAuth"))
+            }
+        };
+
+        var result = controller.SearchUsers(request) as UnauthorizedResult;
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
+
+        userServiceMock.Verify(
+            x => x.BuscarUsuarios(It.IsAny<int>(), It.IsAny<FindUserRequestDTO>()),
+            Times.Never);
+    }
 }
