@@ -22,7 +22,11 @@ public class UsersController(
     [HttpPost]
     public IActionResult CreateInternalUser([FromBody] SingUpInternUserRequestDTO request)
     {
-        var loggedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var idClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if(!int.TryParse(idClaim, out var loggedUserId))
+        {
+            return Unauthorized();
+        }
 
         var response = _signUpService.MakeInterUser(loggedUserId, request);
         return Created(string.Empty, response);
