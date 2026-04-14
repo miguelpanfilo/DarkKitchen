@@ -328,4 +328,48 @@ public class UsersControllerTests
 
         Assert.IsNotNull(attribute);
     }
+
+    [TestMethod]
+    public void SearchUsers_CallsFilterServiceOnce()
+    {
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+        var filterUserServiceMock = new Mock<IFilterUserService>(MockBehavior.Strict);
+
+        var request = new FindUserRequestDTO
+        {
+            Name = "Juan",
+            LastName = "Perez"
+        };
+
+        filterUserServiceMock
+            .Setup(x => x.BuscarUsuarios(99, request))
+            .Returns(new List<UsuarioResponseDTO>());
+
+        var controller = new UsersController(
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object,
+            filterUserServiceMock.Object);
+
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(
+                    new ClaimsIdentity(
+                        new[]
+                        {
+                            new Claim(ClaimTypes.NameIdentifier, "99")
+                        }))
+            }
+        };
+
+        controller.SearchUsers(request);
+
+        filterUserServiceMock.Verify(
+            x => x.BuscarUsuarios(99, request),
+            Times.Once);
+    }
 }
