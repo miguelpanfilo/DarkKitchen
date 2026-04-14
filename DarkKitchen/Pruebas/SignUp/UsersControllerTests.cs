@@ -345,4 +345,18 @@ public class UsersControllerTests
 
         Assert.IsNotNull(attribute);
     }
+
+    [TestMethod]
+    public void DeleteInternalUser_HasRoleAuthorizationAttribute()
+    {
+        var method = typeof(UsersController).GetMethod(nameof(UsersController.DeleteInternalUser));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
+            .Cast<RoleAuthorizationAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
+    }
 }
