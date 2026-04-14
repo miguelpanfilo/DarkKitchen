@@ -55,6 +55,6 @@ public class GettingUserServiceTests
         var ex = Assert.ThrowsException<NotFoundException>(() =>
             service.GetCurrentClient(5));
 
-        Assert.AreEqual("Client not found", ex.Message);
+        Assert.AreEqual("Not found", ex.Message);
     }
 }

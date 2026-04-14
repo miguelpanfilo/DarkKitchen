@@ -1,6 +1,7 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Exceptions;
 
 namespace LogicaDeNegocio;
 
@@ -10,7 +11,13 @@ public class GetClientService(IRepositoryUser repositoryUser) : IGetClientServic
 
     public UsuarioResponseDTO GetCurrentClient(int loggedUserId)
     {
-        _repositoryUser.FindById(loggedUserId);
+        var user = _repositoryUser.FindById(loggedUserId);
+
+        if(user == null)
+        {
+            throw new NotFoundException("Not found");
+        }
+
         return new UsuarioResponseDTO();
     }
 }
