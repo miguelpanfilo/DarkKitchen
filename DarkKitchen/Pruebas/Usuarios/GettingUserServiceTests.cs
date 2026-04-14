@@ -57,4 +57,34 @@ public class GettingUserServiceTests
 
         Assert.AreEqual("Not found", ex.Message);
     }
+
+    [TestMethod]
+    public void GetCurrentClient_WhenUserExists_ReturnsNotNull()
+    {
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+
+        var phoneResult = Phone.TryMakePhone("099123456");
+        Assert.IsTrue(phoneResult.Success);
+
+        var userResult = User.MakeClient(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            phoneResult.Value!,
+            "PasswordSeguraee3!");
+
+        Assert.IsTrue(userResult.Success);
+        var user = userResult.Value!;
+        user.Id = 5;
+
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns(user);
+
+        var service = new GetClientService(repoMock.Object);
+
+        var result = service.GetCurrentClient(5);
+
+        Assert.IsNotNull(result);
+    }
 }
