@@ -31,4 +31,9 @@
       <ProjectReference Include="..\LogicaDeNegocio\LogicaDeNegocio\LogicaDeNegocio.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\AlmacenamientoAbstracciones\AlmacenamientoAbstracciones\AlmacenamientoAbstracciones.csproj" />
+      <ProjectReference Include="..\LogicaDeNegocio\LogicaDeNegocio\LogicaDeNegocio.csproj" />
+    </ItemGroup>
+
 </Project>

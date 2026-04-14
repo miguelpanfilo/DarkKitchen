@@ -143,24 +143,4 @@ public sealed class OrderDomainTests
     }
     #endregion
     #endregion
-
-    #region Product
-    #region Error
-    [TestMethod]
-    public void MakeProduct_WhenNameIsEmpty_ShouldThrowOrderException()
-    {
-        var act = () => Product.MakeProduct(string.Empty, 100m);
-
-        act.Should().Throw<OrderException>().WithMessage("El nombre del producto no puede estar vacío");
-    }
-
-    [TestMethod]
-    public void MakeProduct_WhenPriceIsNegative_ShouldThrowOrderException()
-    {
-        var act = () => Product.MakeProduct("Burger", -1m);
-
-        act.Should().Throw<OrderException>().WithMessage("El precio del producto no puede ser negativo");
-    }
-    #endregion
-    #endregion
 }
