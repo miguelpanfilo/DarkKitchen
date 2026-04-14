@@ -298,4 +298,37 @@ public class UsersControllerTests
 
         Assert.IsInstanceOfType(result, typeof(NoContentResult));
     }
+
+    [TestMethod]
+    public void DeleteInternalUser_WhenClaimIsInvalid_ReturnsUnauthorized()
+    {
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+
+        var controller = new UsersController(
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object);
+
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(
+                    new ClaimsIdentity(
+                        new[]
+                        {
+                            new Claim(ClaimTypes.NameIdentifier, "abc")
+                        }))
+            }
+        };
+
+        var result = controller.DeleteInternalUser(2);
+
+        Assert.IsInstanceOfType(result, typeof(UnauthorizedResult));
+        deleteUserServiceMock.Verify(
+            x => x.DeleteInterUser(It.IsAny<int>(), It.IsAny<int>()),
+            Times.Never);
+    }
 }
