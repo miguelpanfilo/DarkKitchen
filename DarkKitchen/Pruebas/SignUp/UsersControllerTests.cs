@@ -359,4 +359,19 @@ public class UsersControllerTests
 
         Assert.IsNotNull(attribute);
     }
+
+    [TestMethod]
+    public void DeleteInternalUser_HasHttpDeleteAttributeWithIdTemplate()
+    {
+        var method = typeof(UsersController).GetMethod(nameof(UsersController.DeleteInternalUser));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(HttpDeleteAttribute), false)
+            .Cast<HttpDeleteAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
+        Assert.AreEqual("{id}", attribute.Template);
+    }
 }
