@@ -331,4 +331,18 @@ public class UsersControllerTests
             x => x.DeleteInterUser(It.IsAny<int>(), It.IsAny<int>()),
             Times.Never);
     }
+
+    [TestMethod]
+    public void DeleteInternalUser_HasHttpDeleteAttribute()
+    {
+        var method = typeof(UsersController).GetMethod(nameof(UsersController.DeleteInternalUser));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(HttpDeleteAttribute), false)
+            .Cast<HttpDeleteAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
+    }
 }
