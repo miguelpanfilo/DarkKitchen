@@ -1,9 +1,11 @@
+using System.Security.Claims;
 using Contratos;
 using DarkKitchen.Controllers;
 using DarkKitchen.Filters;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -219,5 +221,38 @@ public class UsersControllerTests
             .SingleOrDefault();
 
         Assert.IsNull(attribute);
+    }
+
+    [TestMethod]
+    public void DeleteInternalUser_CallsDeleteServiceOnce()
+    {
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+
+        deleteUserServiceMock
+            .Setup(x => x.DeleteInterUser(2, 99));
+
+        var controller = new UsersController(
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object);
+
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(
+                    new ClaimsIdentity(
+                        new[]
+                        {
+                            new Claim(ClaimTypes.NameIdentifier, "99")
+                        }))
+            }
+        };
+
+        controller.DeleteInternalUser(2);
+
+        deleteUserServiceMock.Verify(x => x.DeleteInterUser(2, 99), Times.Once);
     }
 }
