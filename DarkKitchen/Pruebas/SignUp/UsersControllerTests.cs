@@ -419,4 +419,62 @@ public class UsersControllerTests
 
         Assert.IsNotNull(attribute);
     }
+
+    [TestMethod]
+    public void CreateInternalUser_ValidRequest_ReturnsCreatedWithResponse()
+    {
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+
+        var request = new SingUpInternUserRequestDTO
+        {
+            Name = "Juan",
+            LastName = "Perez",
+            Email = "juan@gmail.com",
+            Phone = "099123456",
+            Password = "PasswordSeguraee3!",
+            Role = UserRolesDto.Administrative.ToString()
+        };
+
+        var response = new UsuarioResponseDTO
+        {
+            Id = 10,
+            Name = "Juan",
+            LastName = "Perez",
+            Email = "juan@gmail.com",
+            Phone = "099123456",
+            Role = UserRolesDto.Administrative.ToString()
+        };
+
+        signUpServiceMock
+            .Setup(x => x.MakeInterUser(99, request))
+            .Returns(response);
+
+        var controller = new UsersController(
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object);
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(
+        [
+            new Claim(ClaimTypes.NameIdentifier, "99")
+        ]));
+
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = user
+            }
+        };
+
+        var result = controller.CreateInternalUser(request);
+
+        var createdResult = result as CreatedResult;
+
+        Assert.IsNotNull(createdResult);
+        Assert.AreEqual(201, createdResult.StatusCode);
+        Assert.AreEqual(response, createdResult.Value);
+    }
 }
