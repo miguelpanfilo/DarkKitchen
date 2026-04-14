@@ -1,6 +1,7 @@
 using Almacenamiento;
 using AlmacenamientoAbstracciones;
 using DarkKitchen.Filters;
+using Dominio;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
 
@@ -43,7 +44,40 @@ if(app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Seed admin en memoria
+using(var scope = app.Services.CreateScope())
+{
+    var userRepository = scope.ServiceProvider.GetRequiredService<IRepositoryUser>();
+
+    if(!userRepository.EmailExist("admin@gmail.com"))
+    {
+        var phoneResult = Phone.TryMakePhone("099123456");
+
+        if(phoneResult.Success)
+        {
+            var adminResult = User.MakeIntern(
+                "Admin",
+                "Principal",
+                "admin@gmail.com",
+                phoneResult.Value!,
+                "PasswordSeguraee3!",
+                UserRoles.Administrative);
+
+            if(adminResult.Success)
+            {
+                userRepository.Add(adminResult.Value!);
+            }
+        }
+    }
+}
+
 app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();app.UseHttpsRedirection();
 
 app.MapControllers();
 
