@@ -26,18 +26,13 @@ public class AuthenticationFilter(ISessionValidationService sessionValidationSer
             return;
         }
 
-        if(!context.HttpContext.Request.Headers.TryGetValue(SessionHeaderName, out var values))
+        if (!context.HttpContext.Request.Headers.TryGetValue(SessionHeaderName, out var values) || !values.Any() || string.IsNullOrWhiteSpace(values.FirstOrDefault()))
         {
             context.Result = BuildUnauthorizedResult("El header de sesión es obligatorio");
             return;
         }
 
         var sessionIdText = values.FirstOrDefault();
-        if(string.IsNullOrWhiteSpace(sessionIdText))
-        {
-            context.Result = BuildUnauthorizedResult("El header de sesión es obligatorio");
-            return;
-        }
 
         if(!Guid.TryParse(sessionIdText, out var sessionId))
         {
