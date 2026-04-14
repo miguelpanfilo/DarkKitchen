@@ -5,6 +5,7 @@ using Dominio;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -241,5 +242,18 @@ public class SessionsControllerTests
         repoUserMock.Verify(r => r.FindByEmail("miguel@gmail.com"), Times.Once);
         watchMock.Verify(r => r.Ahora(), Times.Once);
         repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Once);
+    }
+
+    [TestMethod]
+    public void CreateSession_HasAllowAnonymousAttribute()
+    {
+        var method = typeof(SessionsController)
+            .GetMethod("CreateSession");
+
+        var hasAttribute = method!
+            .GetCustomAttributes(typeof(AllowAnonymousAttribute), false)
+            .Any();
+
+        Assert.IsTrue(hasAttribute);
     }
 }
