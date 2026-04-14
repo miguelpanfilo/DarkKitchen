@@ -40,6 +40,7 @@ public class UsersController(
         return Ok(response);
     }
 
+    [RoleAuthorization(UserRolesDto.Administrative)]
     [HttpDelete("{id}")]
     public IActionResult DeleteInternalUser([FromRoute] int id)
     {
