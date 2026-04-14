@@ -24,9 +24,8 @@ public class UsersController(
     {
         var loggedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
-        _signUpService.MakeInterUser(loggedUserId, request);
-
-        return Created(string.Empty, null);
+        var response = _signUpService.MakeInterUser(loggedUserId, request);
+        return Created(string.Empty, response);
     }
 
     [RoleAuthorization(UserRolesDto.Administrative)]
