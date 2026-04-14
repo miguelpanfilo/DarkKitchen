@@ -374,4 +374,49 @@ public class UsersControllerTests
         Assert.IsNotNull(attribute);
         Assert.AreEqual("{id}", attribute.Template);
     }
+
+    [TestMethod]
+    public void CreateInternalUser_CallsSignUpServiceOnce()
+    {
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+
+        var request = new SingUpInternUserRequestDTO
+        {
+            Name = "Juan",
+            LastName = "Perez",
+            Email = "juan@gmail.com",
+            Phone = "099123456",
+            Password = "PasswordSeguraee3!",
+            Role = UserRolesDto.Administrative
+        };
+
+        signUpServiceMock
+            .Setup(x => x.SignUpInternalUser(request, 99));
+
+        var controller = new UsersController(
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object);
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(
+        [
+            new Claim(ClaimTypes.NameIdentifier, "99")
+        ]));
+
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = user
+            }
+        };
+
+        controller.CreateInternalUser(request);
+
+        signUpServiceMock.Verify(
+            x => x.SignUpInternalUser(request, 99),
+            Times.Once);
+    }
 }
