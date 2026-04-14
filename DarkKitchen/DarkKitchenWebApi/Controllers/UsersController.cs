@@ -2,7 +2,6 @@ using System.Security.Claims;
 using Contratos;
 using DarkKitchen.Filters;
 using LogicaDeNegocioAbstracciones;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DarkKitchen.Controllers;
@@ -22,27 +21,27 @@ public class UsersController(
     [HttpPost]
     public IActionResult CreateInternalUser([FromBody] SingUpInternUserRequestDTO request)
     {
-        var idClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if(!int.TryParse(idClaim, out var loggedUserId))
+        var loggedUserId = GetLoggedUserId();
+        if(loggedUserId == null)
         {
             return Unauthorized();
         }
 
-        var response = _signUpService.MakeInterUser(loggedUserId, request);
-        return Created(string.Empty, response);
+        var response = _signUpService.MakeInterUser(loggedUserId.Value, request);
+        return Created("/api/v1/users", response);
     }
 
     [RoleAuthorization(UserRolesDto.Administrative)]
     [HttpPatch("{id}")]
     public IActionResult UpdateInternalUser([FromRoute] int id, [FromBody] ModificarUsuarioRequestDTO request)
     {
-        var idClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if(!int.TryParse(idClaim, out var loggedUserId))
+        var loggedUserId = GetLoggedUserId();
+        if(loggedUserId == null)
         {
             return Unauthorized();
         }
 
-        var response = _modifyUserService.UpdateInternalUser(id, loggedUserId, request);
+        var response = _modifyUserService.UpdateInternalUser(id, loggedUserId.Value, request);
         return Ok(response);
     }
 
@@ -50,13 +49,25 @@ public class UsersController(
     [HttpDelete("{id}")]
     public IActionResult DeleteInternalUser([FromRoute] int id)
     {
-        var idClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if(!int.TryParse(idClaim, out var loggedUserId))
+        var loggedUserId = GetLoggedUserId();
+        if(loggedUserId == null)
         {
             return Unauthorized();
         }
 
-        _deleteUserService.DeleteInterUser(id, loggedUserId);
+        _deleteUserService.DeleteInterUser(id, loggedUserId.Value);
         return NoContent();
+    }
+
+    private int? GetLoggedUserId()
+    {
+        var idClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if(int.TryParse(idClaim, out var id))
+        {
+            return id;
+        }
+
+        return null;
     }
 }
