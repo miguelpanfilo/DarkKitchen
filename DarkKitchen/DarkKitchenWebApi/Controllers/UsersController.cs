@@ -18,6 +18,7 @@ public class UsersController(
     private readonly IModifyUserService _modifyUserService = modifyUserService;
     private readonly IDeleteUserService _deleteUserService = deleteUserService;
 
+    [RoleAuthorization(UserRolesDto.Administrative)]
     [HttpPost]
     public IActionResult CreateInternalUser([FromBody] SingUpInternUserRequestDTO request)
     {
