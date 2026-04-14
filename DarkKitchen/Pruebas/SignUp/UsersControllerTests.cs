@@ -216,7 +216,7 @@ public class UsersControllerTests
         var result = controller.CreateUser(request) as CreatedResult;
 
         Assert.IsNotNull(result);
-        Assert.AreEqual("/api/v1/users", result.Location);
+        Assert.AreEqual("/api/v1/clients", result.Location);
     }
 
     [TestMethod]
@@ -389,11 +389,12 @@ public class UsersControllerTests
             Email = "juan@gmail.com",
             Phone = "099123456",
             Password = "PasswordSeguraee3!",
-            Role = UserRolesDto.Administrative
+            Role = UserRolesDto.Administrative.ToString()
         };
 
         signUpServiceMock
-            .Setup(x => x.SignUpInternalUser(request, 99));
+            .Setup(x => x.MakeInterUser(99, request))
+            .Returns((UsuarioResponseDTO)null!);
 
         var controller = new UsersController(
             signUpServiceMock.Object,
@@ -416,7 +417,7 @@ public class UsersControllerTests
         controller.CreateInternalUser(request);
 
         signUpServiceMock.Verify(
-            x => x.SignUpInternalUser(request, 99),
+            x => x.MakeInterUser(99, request),
             Times.Once);
     }
 }

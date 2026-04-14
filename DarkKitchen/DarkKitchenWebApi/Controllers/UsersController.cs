@@ -17,13 +17,22 @@ public class UsersController(
     private readonly ISignUpUserService _signUpService = signUpService;
     private readonly IModifyUserService _modifyUserService = modifyUserService;
     private readonly IDeleteUserService _deleteUserService = deleteUserService;
-
     [AllowAnonymous]
     [HttpPost]
     public IActionResult CreateUser([FromBody] SignUpClientRequestDTO request)
     {
         var response = _signUpService.SignUpClient(request);
-        return Created("/api/v1/users", response);
+        return Created("/api/v1/clients", response);
+    }
+
+    [HttpPost]
+    public IActionResult CreateInternalUser([FromBody] SingUpInternUserRequestDTO request)
+    {
+        var loggedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+        _signUpService.MakeInterUser(loggedUserId, request);
+
+        return Created(string.Empty, null);
     }
 
     [RoleAuthorization(UserRolesDto.Administrative)]
