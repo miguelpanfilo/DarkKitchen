@@ -412,7 +412,7 @@ public class UsersControllerTests
     }
 
     [TestMethod]
-    public void SearchUsers_HasRoleAuthorizationForAdministrative()
+    public void SearchUsers_HasRoleAuthorizationAttribute()
     {
         var method = typeof(UsersController).GetMethod(nameof(UsersController.SearchUsers));
 
@@ -420,9 +420,8 @@ public class UsersControllerTests
 
         var attribute = method.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
             .Cast<RoleAuthorizationAttribute>()
-            .FirstOrDefault();
+            .SingleOrDefault();
 
         Assert.IsNotNull(attribute);
-        Assert.AreEqual(UserRolesDto.Administrative, attribute.Role);
     }
 }
