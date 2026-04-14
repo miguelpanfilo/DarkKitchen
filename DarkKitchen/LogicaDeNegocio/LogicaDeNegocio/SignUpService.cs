@@ -19,11 +19,6 @@ public class SignUpService(
 
     public SignUpClientResponseDTO SignUpClient(SignUpClientRequestDTO requestDto)
     {
-        if(_repositoryUser.EmailExist(requestDto.Email))
-        {
-            throw new ConflictException("Email is already registered");
-        }
-
         var phone = MakeAndValidatePhone(requestDto.Phone);
 
         var userResult = User.MakeClient(
@@ -36,6 +31,11 @@ public class SignUpService(
         if(!userResult.Success)
         {
             throw new ValidationException(userResult.ErrorMessage!);
+        }
+
+        if(_repositoryUser.EmailExist(requestDto.Email))
+        {
+            throw new ConflictException("Email is already registered");
         }
 
         var newUser = _repositoryUser.Add(userResult.Value!);
@@ -55,16 +55,16 @@ public class SignUpService(
         var role = GetInternRoleValid(requestDto.Role);
         var phone = MakeAndValidatePhone(requestDto.Phone);
 
-        if(_repositoryUser.EmailExist(requestDto.Email))
-        {
-            throw new ConflictException("Email is already registered");
-        }
-
         var userResult = requestDto.MappingDTOToInternUser(phone, role);
 
         if(!userResult.Success)
         {
             throw new ValidationException(userResult.ErrorMessage!);
+        }
+
+        if(_repositoryUser.EmailExist(requestDto.Email))
+        {
+            throw new ConflictException("Email is already registered");
         }
 
         var newUser = _repositoryUser.Add(userResult.Value!);
