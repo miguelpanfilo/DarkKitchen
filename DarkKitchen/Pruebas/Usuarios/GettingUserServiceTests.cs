@@ -40,4 +40,21 @@ public class GettingUserServiceTests
 
         repoMock.Verify(r => r.FindById(5), Times.Once);
     }
+
+    [TestMethod]
+    public void GetCurrentClient_WhenUserDoesNotExist_ThrowsNotFoundException()
+    {
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+
+        repoMock
+            .Setup(r => r.FindById(5))
+            .Returns((User?)null);
+
+        var service = new GetClientService(repoMock.Object);
+
+        var ex = Assert.ThrowsException<NotFoundException>(() =>
+            service.GetCurrentClient(5));
+
+        Assert.AreEqual("Client not found", ex.Message);
+    }
 }
