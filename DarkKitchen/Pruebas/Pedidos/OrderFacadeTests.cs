@@ -85,16 +85,10 @@ public sealed class OrderFacadeTests
             Items = [new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }]
         });
 
-<<<<<<< HEAD
         var ex = Assert.ThrowsException<OrderException>(() =>
             facade.CreateOrder(1, request));
 
         Assert.AreEqual("El producto Test no está disponible", ex.Message);
-=======
-        act.Should().Throw<OrderException>().WithMessage("El producto Test no está disponible");
-        _productServiceMock.VerifyAll();
-        _orderServiceMock.VerifyAll();
->>>>>>> develop
     }
     #endregion
     #endregion
