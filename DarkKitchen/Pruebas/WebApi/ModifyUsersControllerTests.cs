@@ -29,7 +29,7 @@ public class ModifyUsersControllerTests
     {
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
         var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
         var request = new ModificarUsuarioRequestDTO
         {
             Name = "Juan",
@@ -55,7 +55,8 @@ public class ModifyUsersControllerTests
 
         var controller = new UsersController(
             signUpServiceMock.Object,
-            modifyUserServiceMock.Object);
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object);
 
         controller.ControllerContext = new ControllerContext { HttpContext = BuildHttpContextWithUserId(99) };
 
@@ -73,7 +74,7 @@ public class ModifyUsersControllerTests
     {
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
         var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
         var request = new ModificarUsuarioRequestDTO { Name = "Juan" };
 
         var response = new UsuarioResponseDTO { Id = 10, Name = "Juan" };
@@ -84,7 +85,8 @@ public class ModifyUsersControllerTests
 
         var controller = new UsersController(
             signUpServiceMock.Object,
-            modifyUserServiceMock.Object);
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object);
 
         controller.ControllerContext = new ControllerContext { HttpContext = BuildHttpContextWithUserId(99) };
 
@@ -99,7 +101,7 @@ public class ModifyUsersControllerTests
     {
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
         var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
         var request = new ModificarUsuarioRequestDTO();
         var response = new UsuarioResponseDTO();
 
@@ -109,7 +111,8 @@ public class ModifyUsersControllerTests
 
         var controller = new UsersController(
             signUpServiceMock.Object,
-            modifyUserServiceMock.Object);
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object);
 
         controller.ControllerContext = new ControllerContext { HttpContext = BuildHttpContextWithUserId(99) };
 
@@ -123,7 +126,7 @@ public class ModifyUsersControllerTests
     {
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
         var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
         var request = new ModificarUsuarioRequestDTO();
         var response = new UsuarioResponseDTO();
 
@@ -133,7 +136,8 @@ public class ModifyUsersControllerTests
 
         var controller = new UsersController(
             signUpServiceMock.Object,
-            modifyUserServiceMock.Object);
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object);
 
         controller.ControllerContext = new ControllerContext { HttpContext = BuildHttpContextWithUserId(77) };
 
@@ -162,10 +166,11 @@ public class ModifyUsersControllerTests
     {
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
         var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
         var controller = new UsersController(
             signUpServiceMock.Object,
-            modifyUserServiceMock.Object);
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object);
 
         controller.ControllerContext = new ControllerContext
         {
@@ -202,7 +207,7 @@ public class ModifyUsersControllerTests
     {
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
         var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
         var httpContext = new DefaultHttpContext();
         httpContext.User = new ClaimsPrincipal(
             new ClaimsIdentity(
@@ -211,7 +216,8 @@ public class ModifyUsersControllerTests
 
         var controller = new UsersController(
             signUpServiceMock.Object,
-            modifyUserServiceMock.Object);
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object);
 
         controller.ControllerContext = new ControllerContext
         {
@@ -231,10 +237,11 @@ public class ModifyUsersControllerTests
     {
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
         var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
         var controller = new UsersController(
             signUpServiceMock.Object,
-            modifyUserServiceMock.Object);
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object);
 
         controller.ControllerContext = new ControllerContext
         {

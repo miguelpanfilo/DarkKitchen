@@ -181,7 +181,7 @@ public class ModifyPasswordTests
         var ex = Assert.ThrowsException<ValidationException>(() =>
             service.UpdateUserPassword(5, 99, request));
 
-        Assert.AreEqual("Current password is incorrect", ex.Message);
+        Assert.AreEqual("La contraseña actual es incorrecta", ex.Message);
     }
 
     [TestMethod]

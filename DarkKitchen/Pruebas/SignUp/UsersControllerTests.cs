@@ -19,7 +19,7 @@ public class UsersControllerTests
     {
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
         var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
         var request = new SignUpClientRequestDTO
         {
             Name = "Miguel",
@@ -40,8 +40,10 @@ public class UsersControllerTests
             .Setup(s => s.SignUpClient(request))
             .Returns(expectedResponse);
 
-        var controller = new UsersController(signUpServiceMock.Object, modifyUserServiceMock.Object);
-
+        var controller = new UsersController(
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object);
         var result = controller.CreateUser(request);
 
         var createdResult = result as CreatedResult;
@@ -61,7 +63,7 @@ public class UsersControllerTests
     {
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
         var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
         var request = new SignUpClientRequestDTO
         {
             Name = "Miguel",
@@ -75,8 +77,10 @@ public class UsersControllerTests
             .Setup(s => s.SignUpClient(request))
             .Throws(new SignUpException("Email is already registered"));
 
-        var controller = new UsersController(signUpServiceMock.Object, modifyUserServiceMock.Object);
-
+        var controller = new UsersController(
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object);
         var ex = Assert.ThrowsException<SignUpException>(() =>
             controller.CreateUser(request));
 
@@ -90,7 +94,7 @@ public class UsersControllerTests
     {
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
         var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
         var request = new SignUpClientRequestDTO
         {
             Name = "Miguel",
@@ -104,8 +108,10 @@ public class UsersControllerTests
             .Setup(s => s.SignUpClient(request))
             .Throws(new SignUpValidationException("Phone is not valid"));
 
-        var controller = new UsersController(signUpServiceMock.Object, modifyUserServiceMock.Object);
-
+        var controller = new UsersController(
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object);
         var ex = Assert.ThrowsException<SignUpValidationException>(() =>
             controller.CreateUser(request));
 
@@ -119,7 +125,7 @@ public class UsersControllerTests
     {
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
         var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
         var request = new SignUpClientRequestDTO
         {
             Name = "Miguel",
@@ -140,8 +146,10 @@ public class UsersControllerTests
             .Setup(s => s.SignUpClient(request))
             .Returns(expectedResponse);
 
-        var controller = new UsersController(signUpServiceMock.Object, modifyUserServiceMock.Object);
-
+        var controller = new UsersController(
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object);
         controller.CreateUser(request);
 
         signUpServiceMock.Verify(s => s.SignUpClient(request), Times.Once);
@@ -180,7 +188,7 @@ public class UsersControllerTests
     {
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
         var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
         var request = new SignUpClientRequestDTO
         {
             Name = "Miguel",
@@ -201,8 +209,10 @@ public class UsersControllerTests
             .Setup(s => s.SignUpClient(request))
             .Returns(expectedResponse);
 
-        var controller = new UsersController(signUpServiceMock.Object, modifyUserServiceMock.Object);
-
+        var controller = new UsersController(
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object);
         var result = controller.CreateUser(request) as CreatedResult;
 
         Assert.IsNotNull(result);

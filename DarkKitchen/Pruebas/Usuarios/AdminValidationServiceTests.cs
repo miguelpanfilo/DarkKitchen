@@ -90,7 +90,7 @@ public class AdminValidationServiceTests
 
         var ex = ThrowsException<NotFoundException>(() => service.GetExistingUser(99));
 
-        AreEqual("User does not exist", ex.Message);
+        AreEqual("El usuario no existe", ex.Message);
     }
 
     [TestMethod]
@@ -125,7 +125,7 @@ public class AdminValidationServiceTests
         var ex = ThrowsException<ForbiddenException>(() =>
             service.EnsureUserIsAdmin(5));
 
-        AreEqual("Only an administrative user can perform this action", ex.Message);
+        AreEqual("Solo un usuario administrador puede realizar esta acción", ex.Message);
     }
 
     [TestMethod]
@@ -142,7 +142,7 @@ public class AdminValidationServiceTests
         var ex = ThrowsException<NotFoundException>(() =>
             service.EnsureUserIsAdmin(5));
 
-        AreEqual("User does not exist", ex.Message);
+        AreEqual("El usuario no existe", ex.Message);
     }
 
     [TestMethod]

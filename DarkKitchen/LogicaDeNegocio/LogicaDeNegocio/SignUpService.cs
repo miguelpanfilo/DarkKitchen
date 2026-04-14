@@ -19,6 +19,11 @@ public class SignUpService(
 
     public SignUpClientResponseDTO SignUpClient(SignUpClientRequestDTO requestDto)
     {
+        if(_repositoryUser.EmailExist(requestDto.Email))
+        {
+            throw new ConflictException("Email is already registered");
+        }
+
         var phone = MakeAndValidatePhone(requestDto.Phone);
 
         var userResult = User.MakeClient(
@@ -31,11 +36,6 @@ public class SignUpService(
         if(!userResult.Success)
         {
             throw new ValidationException(userResult.ErrorMessage!);
-        }
-
-        if(_repositoryUser.EmailExist(requestDto.Email))
-        {
-            throw new ConflictException("Email is already registered");
         }
 
         var newUser = _repositoryUser.Add(userResult.Value!);

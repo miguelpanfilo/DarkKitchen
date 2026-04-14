@@ -302,7 +302,7 @@ public class ModifyInternUserTest
         var ex = Assert.ThrowsException<ValidationException>(() =>
             service.UpdateInternalUser(5, 99, request));
 
-        Assert.AreEqual("Phone is not valid", ex.Message);
+        Assert.AreEqual("El teléfono no es válido", ex.Message);
     }
 
     [TestMethod]
@@ -565,7 +565,7 @@ public class ModifyInternUserTest
         var ex = Assert.ThrowsException<ConflictException>(() =>
             service.UpdateInternalUser(5, 99, request));
 
-        Assert.AreEqual("Email is already registered", ex.Message);
+        Assert.AreEqual("El email ya está registrado", ex.Message);
     }
 
     [TestMethod]
@@ -624,7 +624,7 @@ public class ModifyInternUserTest
         var ex = Assert.ThrowsException<ValidationException>(() =>
             service.UpdateInternalUser(5, 99, request));
 
-        Assert.AreEqual("Internal role is not valid", ex.Message);
+        Assert.AreEqual("El rol interno no es válido", ex.Message);
     }
 
     [TestMethod]
