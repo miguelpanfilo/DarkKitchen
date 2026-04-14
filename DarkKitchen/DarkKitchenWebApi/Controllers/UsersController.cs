@@ -11,10 +11,12 @@ namespace DarkKitchen.Controllers;
 [Route("api/v1/users")]
 public class UsersController(
     ISignUpUserService signUpService,
-    IModifyUserService modifyUserService) : ControllerBase
+    IModifyUserService modifyUserService,
+    IDeleteUserService deleteUserService) : ControllerBase
 {
     private readonly ISignUpUserService _signUpService = signUpService;
     private readonly IModifyUserService _modifyUserService = modifyUserService;
+    private readonly IDeleteUserService _deleteUserService = deleteUserService;
 
     [AllowAnonymous]
     [HttpPost]
@@ -36,5 +38,18 @@ public class UsersController(
 
         var response = _modifyUserService.UpdateInternalUser(id, loggedUserId, request);
         return Ok(response);
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult DeleteInternalUser([FromRoute] int id)
+    {
+        var idClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if(!int.TryParse(idClaim, out var loggedUserId))
+        {
+            return Unauthorized();
+        }
+
+        _deleteUserService.DeleteInterUser(id, loggedUserId);
+        return NoContent();
     }
 }
