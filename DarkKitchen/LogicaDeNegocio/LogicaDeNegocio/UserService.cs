@@ -7,7 +7,7 @@ public class UserService(
     ISignUpUserService signUpUserService,
     IModifyUserService modifyUserService,
     IDeleteUserService deleteUserService,
-    IFilterUserService filterUserService)
+    IFilterUserService filterUserService) : IUserService
 {
     private readonly ISignUpUserService _signUpUserService = signUpUserService;
     private readonly IModifyUserService _modifyUserService = modifyUserService;

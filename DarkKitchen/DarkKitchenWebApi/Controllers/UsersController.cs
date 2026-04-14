@@ -8,14 +8,9 @@ namespace DarkKitchen.Controllers;
 
 [ApiController]
 [Route("api/v1/users")]
-public class UsersController(
-    ISignUpUserService signUpService,
-    IModifyUserService modifyUserService,
-    IDeleteUserService deleteUserService) : ControllerBase
+public class UsersController(IUserService userService) : ControllerBase
 {
-    private readonly ISignUpUserService _signUpService = signUpService;
-    private readonly IModifyUserService _modifyUserService = modifyUserService;
-    private readonly IDeleteUserService _deleteUserService = deleteUserService;
+    private readonly IUserService _userService = userService;
 
     [RoleAuthorization(UserRolesDto.Administrative)]
     [HttpPost]
@@ -27,7 +22,7 @@ public class UsersController(
             return Unauthorized();
         }
 
-        var response = _signUpService.MakeInterUser(loggedUserId.Value, request);
+        var response = _userService.CrearUsuarioInterno(loggedUserId.Value, request);
         return Created("/api/v1/users", response);
     }
 
@@ -41,7 +36,7 @@ public class UsersController(
             return Unauthorized();
         }
 
-        var response = _modifyUserService.UpdateInternalUser(id, loggedUserId.Value, request);
+        var response = _userService.ModificarUsuarioInterno(id, loggedUserId.Value, request);
         return Ok(response);
     }
 
@@ -55,8 +50,21 @@ public class UsersController(
             return Unauthorized();
         }
 
-        _deleteUserService.DeleteInterUser(id, loggedUserId.Value);
+        _userService.EliminarUsuarioInterno(id, loggedUserId.Value);
         return NoContent();
+    }
+
+    [HttpGet]
+    public IActionResult SearchUsers([FromQuery] FindUserRequestDTO request)
+    {
+        var loggedUserId = GetLoggedUserId();
+        if (loggedUserId == null)
+        {
+            return Unauthorized();
+        }
+
+        var response = _userService.BuscarUsuarios(loggedUserId.Value, request);
+        return Ok(response);
     }
 
     private int? GetLoggedUserId()

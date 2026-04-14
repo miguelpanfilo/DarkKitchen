@@ -27,9 +27,8 @@ public class ModifyUsersControllerTests
     [TestMethod]
     public void UpdateInternalUser_WhenRequestIsValid_ReturnsOk()
     {
-        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
-        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
+
         var request = new ModificarUsuarioRequestDTO
         {
             Name = "Juan",
@@ -49,16 +48,16 @@ public class ModifyUsersControllerTests
             Role = "Preparer"
         };
 
-        modifyUserServiceMock
-            .Setup(x => x.UpdateInternalUser(10, 99, request))
+        userServiceMock
+            .Setup(x => x.ModificarUsuarioInterno(10, 99, request))
             .Returns(response);
 
-        var controller = new UsersController(
-            signUpServiceMock.Object,
-            modifyUserServiceMock.Object,
-            deleteUserServiceMock.Object);
+        var controller = new UsersController(userServiceMock.Object);
 
-        controller.ControllerContext = new ControllerContext { HttpContext = BuildHttpContextWithUserId(99) };
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = BuildHttpContextWithUserId(99)
+        };
 
         var result = controller.UpdateInternalUser(10, request) as OkObjectResult;
 
@@ -66,29 +65,29 @@ public class ModifyUsersControllerTests
         Assert.AreEqual(StatusCodes.Status200OK, result.StatusCode);
         Assert.AreEqual(response, result.Value);
 
-        modifyUserServiceMock.Verify(x => x.UpdateInternalUser(10, 99, request), Times.Once);
+        userServiceMock.Verify(
+            x => x.ModificarUsuarioInterno(10, 99, request),
+            Times.Once);
     }
 
     [TestMethod]
     public void UpdateInternalUser_WhenRequestIsValid_ReturnsServiceResponse()
     {
-        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
-        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
-        var request = new ModificarUsuarioRequestDTO { Name = "Juan" };
+        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
 
+        var request = new ModificarUsuarioRequestDTO { Name = "Juan" };
         var response = new UsuarioResponseDTO { Id = 10, Name = "Juan" };
 
-        modifyUserServiceMock
-            .Setup(x => x.UpdateInternalUser(10, 99, request))
+        userServiceMock
+            .Setup(x => x.ModificarUsuarioInterno(10, 99, request))
             .Returns(response);
 
-        var controller = new UsersController(
-            signUpServiceMock.Object,
-            modifyUserServiceMock.Object,
-            deleteUserServiceMock.Object);
+        var controller = new UsersController(userServiceMock.Object);
 
-        controller.ControllerContext = new ControllerContext { HttpContext = BuildHttpContextWithUserId(99) };
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = BuildHttpContextWithUserId(99)
+        };
 
         var result = controller.UpdateInternalUser(10, request) as OkObjectResult;
 
@@ -99,51 +98,52 @@ public class ModifyUsersControllerTests
     [TestMethod]
     public void UpdateInternalUser_WhenCalled_UsesRouteId()
     {
-        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
-        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
+
         var request = new ModificarUsuarioRequestDTO();
         var response = new UsuarioResponseDTO();
 
-        modifyUserServiceMock
-            .Setup(x => x.UpdateInternalUser(25, 99, request))
+        userServiceMock
+            .Setup(x => x.ModificarUsuarioInterno(25, 99, request))
             .Returns(response);
 
-        var controller = new UsersController(
-            signUpServiceMock.Object,
-            modifyUserServiceMock.Object,
-            deleteUserServiceMock.Object);
+        var controller = new UsersController(userServiceMock.Object);
 
-        controller.ControllerContext = new ControllerContext { HttpContext = BuildHttpContextWithUserId(99) };
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = BuildHttpContextWithUserId(99)
+        };
 
         controller.UpdateInternalUser(25, request);
 
-        modifyUserServiceMock.Verify(x => x.UpdateInternalUser(25, 99, request), Times.Once);
+        userServiceMock.Verify(
+            x => x.ModificarUsuarioInterno(25, 99, request),
+            Times.Once);
     }
 
     [TestMethod]
     public void UpdateInternalUser_WhenCalled_UsesLoggedUserIdFromClaims()
     {
-        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
-        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
+        var controller = new UsersController(userServiceMock.Object);
+
         var request = new ModificarUsuarioRequestDTO();
         var response = new UsuarioResponseDTO();
 
-        modifyUserServiceMock
-            .Setup(x => x.UpdateInternalUser(10, 77, request))
+        userServiceMock
+            .Setup(x => x.ModificarUsuarioInterno(10, 77, request))
             .Returns(response);
 
-        var controller = new UsersController(
-            signUpServiceMock.Object,
-            modifyUserServiceMock.Object,
-            deleteUserServiceMock.Object);
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = BuildHttpContextWithUserId(77)
+        };
 
-        controller.ControllerContext = new ControllerContext { HttpContext = BuildHttpContextWithUserId(77) };
+        var result = controller.UpdateInternalUser(10, request);
 
-        controller.UpdateInternalUser(10, request);
-
-        modifyUserServiceMock.Verify(x => x.UpdateInternalUser(10, 77, request), Times.Once);
+        userServiceMock.Verify(
+            x => x.ModificarUsuarioInterno(10, 77, request),
+            Times.Once);
     }
 
     [TestMethod]
@@ -164,13 +164,9 @@ public class ModifyUsersControllerTests
     [TestMethod]
     public void UpdateInternalUser_WhenNameIdentifierClaimIsMissing_ReturnsUnauthorized()
     {
-        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
-        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+        var userService = new Mock<IUserService>(MockBehavior.Strict);
         var controller = new UsersController(
-            signUpServiceMock.Object,
-            modifyUserServiceMock.Object,
-            deleteUserServiceMock.Object);
+            userService.Object);
 
         controller.ControllerContext = new ControllerContext
         {
@@ -205,21 +201,17 @@ public class ModifyUsersControllerTests
     [TestMethod]
     public void UpdateInternalUser_WhenNameIdentifierIsNotNumeric_ReturnsUnauthorized()
     {
-        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
-        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+        var userService = new Mock<IUserService>(MockBehavior.Strict);
+        var controller = new UsersController(
+            userService.Object);
+
         var httpContext = new DefaultHttpContext();
         httpContext.User = new ClaimsPrincipal(
             new ClaimsIdentity(
                 [new Claim(ClaimTypes.NameIdentifier, "abc")],
                 "TestAuth"));
 
-        var controller = new UsersController(
-            signUpServiceMock.Object,
-            modifyUserServiceMock.Object,
-            deleteUserServiceMock.Object);
-
-        controller.ControllerContext = new ControllerContext
+       controller.ControllerContext = new ControllerContext
         {
             HttpContext = httpContext
         };
@@ -235,13 +227,8 @@ public class ModifyUsersControllerTests
     [TestMethod]
     public void UpdateInternalUser_WhenClaimIsMissing_DoesNotCallService()
     {
-        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
-        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
-        var controller = new UsersController(
-            signUpServiceMock.Object,
-            modifyUserServiceMock.Object,
-            deleteUserServiceMock.Object);
+        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
+        var controller = new UsersController(userServiceMock.Object);
 
         controller.ControllerContext = new ControllerContext
         {
@@ -258,8 +245,11 @@ public class ModifyUsersControllerTests
         Assert.IsNotNull(result);
         Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
 
-        modifyUserServiceMock.Verify(
-            x => x.UpdateInternalUser(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<ModificarUsuarioRequestDTO>()),
+        userServiceMock.Verify(
+            x => x.ModificarUsuarioInterno(
+                It.IsAny<int>(),
+                It.IsAny<int>(),
+                It.IsAny<ModificarUsuarioRequestDTO>()),
             Times.Never);
     }
 }

@@ -15,17 +15,12 @@ public class UsersControllerTests
     [TestMethod]
     public void DeleteInternalUser_CallsDeleteServiceOnce()
     {
-        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
-        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
 
-        deleteUserServiceMock
-            .Setup(x => x.DeleteInterUser(2, 99));
+        userServiceMock
+            .Setup(x => x.EliminarUsuarioInterno(2, 99));
 
-        var controller = new UsersController(
-            signUpServiceMock.Object,
-            modifyUserServiceMock.Object,
-            deleteUserServiceMock.Object);
+        var controller = new UsersController(userServiceMock.Object);
 
         controller.ControllerContext = new ControllerContext
         {
@@ -42,23 +37,20 @@ public class UsersControllerTests
 
         controller.DeleteInternalUser(2);
 
-        deleteUserServiceMock.Verify(x => x.DeleteInterUser(2, 99), Times.Once);
+        userServiceMock.Verify(
+            x => x.EliminarUsuarioInterno(2, 99),
+            Times.Once);
     }
 
     [TestMethod]
     public void DeleteInternalUser_WhenClaimIsValid_ReturnsNoContent()
     {
-        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
-        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
 
-        deleteUserServiceMock
-            .Setup(x => x.DeleteInterUser(2, 99));
+        userServiceMock
+            .Setup(x => x.EliminarUsuarioInterno(2, 99));
 
-        var controller = new UsersController(
-            signUpServiceMock.Object,
-            modifyUserServiceMock.Object,
-            deleteUserServiceMock.Object);
+        var controller = new UsersController(userServiceMock.Object);
 
         controller.ControllerContext = new ControllerContext
         {
@@ -81,14 +73,9 @@ public class UsersControllerTests
     [TestMethod]
     public void DeleteInternalUser_WhenClaimIsInvalid_ReturnsUnauthorized()
     {
-        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
-        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
 
-        var controller = new UsersController(
-            signUpServiceMock.Object,
-            modifyUserServiceMock.Object,
-            deleteUserServiceMock.Object);
+        var controller = new UsersController(userServiceMock.Object);
 
         controller.ControllerContext = new ControllerContext
         {
@@ -106,8 +93,8 @@ public class UsersControllerTests
         var result = controller.DeleteInternalUser(2);
 
         Assert.IsInstanceOfType(result, typeof(UnauthorizedResult));
-        deleteUserServiceMock.Verify(
-            x => x.DeleteInterUser(It.IsAny<int>(), It.IsAny<int>()),
+        userServiceMock.Verify(
+            x => x.EliminarUsuarioInterno(It.IsAny<int>(), It.IsAny<int>()),
             Times.Never);
     }
 
@@ -157,9 +144,7 @@ public class UsersControllerTests
     [TestMethod]
     public void CreateInternalUser_CallsSignUpServiceOnce()
     {
-        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
-        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
 
         var request = new SingUpInternUserRequestDTO
         {
@@ -171,14 +156,11 @@ public class UsersControllerTests
             Role = UserRolesDto.Administrative.ToString()
         };
 
-        signUpServiceMock
-            .Setup(x => x.MakeInterUser(99, request))
+        userServiceMock
+            .Setup(x => x.CrearUsuarioInterno(99, request))
             .Returns((UsuarioResponseDTO)null!);
 
-        var controller = new UsersController(
-            signUpServiceMock.Object,
-            modifyUserServiceMock.Object,
-            deleteUserServiceMock.Object);
+        var controller = new UsersController(userServiceMock.Object);
 
         var user = new ClaimsPrincipal(new ClaimsIdentity(
         [
@@ -195,8 +177,8 @@ public class UsersControllerTests
 
         controller.CreateInternalUser(request);
 
-        signUpServiceMock.Verify(
-            x => x.MakeInterUser(99, request),
+        userServiceMock.Verify(
+            x => x.CrearUsuarioInterno(99, request),
             Times.Once);
     }
 
@@ -217,9 +199,7 @@ public class UsersControllerTests
     [TestMethod]
     public void CreateInternalUser_ValidRequest_ReturnsCreatedWithResponse()
     {
-        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
-        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
 
         var request = new SingUpInternUserRequestDTO
         {
@@ -241,14 +221,11 @@ public class UsersControllerTests
             Role = UserRolesDto.Administrative.ToString()
         };
 
-        signUpServiceMock
-            .Setup(x => x.MakeInterUser(99, request))
+        userServiceMock
+            .Setup(x => x.CrearUsuarioInterno(99, request))
             .Returns(response);
 
-        var controller = new UsersController(
-            signUpServiceMock.Object,
-            modifyUserServiceMock.Object,
-            deleteUserServiceMock.Object);
+        var controller = new UsersController(userServiceMock.Object);
 
         var user = new ClaimsPrincipal(new ClaimsIdentity(
         [
@@ -268,16 +245,14 @@ public class UsersControllerTests
         var createdResult = result as CreatedResult;
 
         Assert.IsNotNull(createdResult);
-        Assert.AreEqual(201, createdResult.StatusCode);
+        Assert.AreEqual(StatusCodes.Status201Created, createdResult.StatusCode);
         Assert.AreEqual(response, createdResult.Value);
     }
 
     [TestMethod]
     public void CreateInternalUser_WhenClaimIsInvalid_ReturnsUnauthorized()
     {
-        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
-        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
 
         var request = new SingUpInternUserRequestDTO
         {
@@ -289,10 +264,7 @@ public class UsersControllerTests
             Role = UserRolesDto.Administrative.ToString()
         };
 
-        var controller = new UsersController(
-            signUpServiceMock.Object,
-            modifyUserServiceMock.Object,
-            deleteUserServiceMock.Object);
+        var controller = new UsersController(userServiceMock.Object);
 
         controller.ControllerContext = new ControllerContext
         {
@@ -307,11 +279,13 @@ public class UsersControllerTests
             }
         };
 
-        var result = controller.CreateInternalUser(request);
+        var result = controller.CreateInternalUser(request) as UnauthorizedResult;
 
-        Assert.IsInstanceOfType(result, typeof(UnauthorizedResult));
-        signUpServiceMock.Verify(
-            x => x.MakeInterUser(It.IsAny<int>(), It.IsAny<SingUpInternUserRequestDTO>()),
+        Assert.IsNotNull(result);
+        Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
+
+        userServiceMock.Verify(
+            x => x.CrearUsuarioInterno(It.IsAny<int>(), It.IsAny<SingUpInternUserRequestDTO>()),
             Times.Never);
     }
 
@@ -332,10 +306,7 @@ public class UsersControllerTests
     [TestMethod]
     public void SearchUsers_CallsFilterServiceOnce()
     {
-        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
-        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
-        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
-        var filterUserServiceMock = new Mock<IFilterUserService>(MockBehavior.Strict);
+        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
 
         var request = new FindUserRequestDTO
         {
@@ -343,15 +314,13 @@ public class UsersControllerTests
             LastName = "Perez"
         };
 
-        filterUserServiceMock
-            .Setup(x => x.BuscarUsuarios(99, request))
-            .Returns(new List<UsuarioResponseDTO>());
+        var response = new List<UsuarioResponseDTO>();
 
-        var controller = new UsersController(
-            signUpServiceMock.Object,
-            modifyUserServiceMock.Object,
-            deleteUserServiceMock.Object,
-            filterUserServiceMock.Object);
+        userServiceMock
+            .Setup(x => x.BuscarUsuarios(99, request))
+            .Returns(response);
+
+        var controller = new UsersController(userServiceMock.Object);
 
         controller.ControllerContext = new ControllerContext
         {
@@ -366,9 +335,13 @@ public class UsersControllerTests
             }
         };
 
-        controller.SearchUsers(request);
+        var result = controller.SearchUsers(request) as OkObjectResult;
 
-        filterUserServiceMock.Verify(
+        Assert.IsNotNull(result);
+        Assert.AreEqual(StatusCodes.Status200OK, result.StatusCode);
+        Assert.AreEqual(response, result.Value);
+
+        userServiceMock.Verify(
             x => x.BuscarUsuarios(99, request),
             Times.Once);
     }
