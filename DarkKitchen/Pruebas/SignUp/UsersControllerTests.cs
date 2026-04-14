@@ -477,4 +477,47 @@ public class UsersControllerTests
         Assert.AreEqual(201, createdResult.StatusCode);
         Assert.AreEqual(response, createdResult.Value);
     }
+
+    [TestMethod]
+    public void CreateInternalUser_WhenClaimIsInvalid_ReturnsUnauthorized()
+    {
+        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var modifyUserServiceMock = new Mock<IModifyUserService>(MockBehavior.Strict);
+        var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
+
+        var request = new SingUpInternUserRequestDTO
+        {
+            Name = "Juan",
+            LastName = "Perez",
+            Email = "juan@gmail.com",
+            Phone = "099123456",
+            Password = "PasswordSeguraee3!",
+            Role = UserRolesDto.Administrative.ToString()
+        };
+
+        var controller = new UsersController(
+            signUpServiceMock.Object,
+            modifyUserServiceMock.Object,
+            deleteUserServiceMock.Object);
+
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(
+                    new ClaimsIdentity(
+                        new[]
+                        {
+                            new Claim(ClaimTypes.NameIdentifier, "abc")
+                        }))
+            }
+        };
+
+        var result = controller.CreateInternalUser(request);
+
+        Assert.IsInstanceOfType(result, typeof(UnauthorizedResult));
+        signUpServiceMock.Verify(
+            x => x.MakeInterUser(It.IsAny<int>(), It.IsAny<SingUpInternUserRequestDTO>()),
+            Times.Never);
+    }
 }
