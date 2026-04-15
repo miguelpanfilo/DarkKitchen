@@ -1,7 +1,6 @@
 using Almacenamiento;
 using AlmacenamientoAbstracciones;
 using DarkKitchen.Filters;
-using Dominio;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
 
@@ -25,6 +24,7 @@ builder.Services.AddScoped<IDeleteUserService, DeleteUserService>();
 builder.Services.AddScoped<IFilterUserService, FilterUserService>();
 builder.Services.AddScoped<IAdminValidationService, AdminValidationService>();
 builder.Services.AddScoped<ISessionsValidationService, SessionsValidationService>();
+builder.Services.AddSingleton<IInitializationService, InitializationService>();
 
 // Filters
 builder.Services.AddScoped<AuthenticationFilter>();
@@ -39,37 +39,16 @@ builder.Services.AddSingleton<IRepositorySession, RepositorySession>();
 
 var app = builder.Build();
 
+using(var scope = app.Services.CreateScope())
+{
+    var initializationService = scope.ServiceProvider.GetRequiredService<IInitializationService>();
+    initializationService.EnsureInitialized();
+}
+
 if(app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-}
-
-// Seed admin en memoria
-using(var scope = app.Services.CreateScope())
-{
-    var userRepository = scope.ServiceProvider.GetRequiredService<IRepositoryUser>();
-
-    if(!userRepository.EmailExist("admin@gmail.com"))
-    {
-        var phoneResult = Phone.TryMakePhone("099123456");
-
-        if(phoneResult.Success)
-        {
-            var adminResult = User.MakeIntern(
-                "Admin",
-                "Principal",
-                "admin@gmail.com",
-                phoneResult.Value!,
-                "PasswordSeguraee3!",
-                UserRoles.Administrative);
-
-            if(adminResult.Success)
-            {
-                userRepository.Add(adminResult.Value!);
-            }
-        }
-    }
 }
 
 app.UseHttpsRedirection();
