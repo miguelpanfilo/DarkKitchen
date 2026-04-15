@@ -217,4 +217,19 @@ public class DependencyInjectionTests
         Assert.AreEqual(typeof(RepositoryUser), descriptor.ImplementationType);
         Assert.AreEqual(ServiceLifetime.Singleton, descriptor.Lifetime);
     }
+
+    [TestMethod]
+    public void AddDarkKitchenDependencies_RegistersSessionRepository()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder().Build();
+
+        services.AddDarkKitchenDependencies(configuration);
+
+        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(IRepositorySession));
+
+        Assert.IsNotNull(descriptor);
+        Assert.AreEqual(typeof(RepositorySession), descriptor.ImplementationType);
+        Assert.AreEqual(ServiceLifetime.Singleton, descriptor.Lifetime);
+    }
 }
