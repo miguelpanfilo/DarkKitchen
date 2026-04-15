@@ -10,6 +10,18 @@ namespace Pruebas.Usuarios;
 [TestClass]
 public class DeleteUserTests
 {
+    private Mock<IRepositoryUser> _repoMock = null!;
+    private Mock<IAdminValidationService> _adminValidationMock = null!;
+    private DeleteUserService _service = null!;
+
+    [TestInitialize]
+    public void Initialize()
+    {
+        _repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        _adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
+        _service = new DeleteUserService(_repoMock.Object, _adminValidationMock.Object);
+    }
+
     private static Phone CreateValidPhone()
     {
         var phoneResult = Phone.TryMakePhone("099123456");
@@ -39,39 +51,29 @@ public class DeleteUserTests
     [TestMethod]
     public void DeleteInternalUser_ValidData_CallsRemoveOnce()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
         var userToDelete = CreateAdminUser(52);
 
-        adminValidationMock.Setup(v => v.EnsureUserIsAdmin(5));
-        adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(52, 5, It.IsAny<string>()));
-        adminValidationMock.Setup(v => v.GetExistingUser(52)).Returns(userToDelete);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(5));
+        _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(52, 5, It.IsAny<string>()));
+        _adminValidationMock.Setup(v => v.GetExistingUser(52)).Returns(userToDelete);
 
-        repoMock.Setup(r => r.Remove(52));
+        _repoMock.Setup(r => r.Remove(52));
 
-        var service = new DeleteUserService(repoMock.Object, adminValidationMock.Object);
+        _service.DeleteInterUser(52, 5);
 
-        service.DeleteInterUser(52, 5);
-
-        repoMock.Verify(r => r.Remove(52), Times.Once);
+        _repoMock.Verify(r => r.Remove(52), Times.Once);
     }
 
     [TestMethod]
     public void DeleteInternalUser_WhenDeletingItself_ThrowsException()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        adminValidationMock.Setup(v => v.EnsureUserIsAdmin(5));
-        adminValidationMock
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(5));
+        _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(5, 5, "Un usuario no puede eliminarse a sí mismo"))
             .Throws(new ConflictException("Un usuario no puede eliminarse a sí mismo"));
 
-        var service = new DeleteUserService(repoMock.Object, adminValidationMock.Object);
-
         var ex = Assert.ThrowsException<ConflictException>(() =>
-            service.DeleteInterUser(5, 5));
+            _service.DeleteInterUser(5, 5));
 
         Assert.AreEqual("Un usuario no puede eliminarse a sí mismo", ex.Message);
     }
@@ -79,40 +81,30 @@ public class DeleteUserTests
     [TestMethod]
     public void DeleteInternalUser_WhenDeletingItself_DoesNotCallRemove()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        adminValidationMock.Setup(v => v.EnsureUserIsAdmin(5));
-        adminValidationMock
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(5));
+        _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(5, 5, "Un usuario no puede eliminarse a sí mismo"))
             .Throws(new ConflictException("Un usuario no puede eliminarse a sí mismo"));
 
-        var service = new DeleteUserService(repoMock.Object, adminValidationMock.Object);
-
         var ex = Assert.ThrowsException<ConflictException>(() =>
-            service.DeleteInterUser(5, 5));
+            _service.DeleteInterUser(5, 5));
 
         Assert.AreEqual("Un usuario no puede eliminarse a sí mismo", ex.Message);
 
-        repoMock.Verify(r => r.Remove(It.IsAny<int>()), Times.Never);
+        _repoMock.Verify(r => r.Remove(It.IsAny<int>()), Times.Never);
     }
 
     [TestMethod]
     public void DeleteInternalUser_UserDoesNotExist_ThrowsException()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        adminValidationMock.Setup(v => v.EnsureUserIsAdmin(99));
-        adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(5, 99, It.IsAny<string>()));
-        adminValidationMock
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(99));
+        _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(5, 99, It.IsAny<string>()));
+        _adminValidationMock
             .Setup(v => v.GetExistingUser(5))
             .Throws(new NotFoundException("El usuario no existe"));
 
-        var service = new DeleteUserService(repoMock.Object, adminValidationMock.Object);
-
         var ex = Assert.ThrowsException<NotFoundException>(() =>
-            service.DeleteInterUser(5, 99));
+            _service.DeleteInterUser(5, 99));
 
         Assert.AreEqual("El usuario no existe", ex.Message);
     }
@@ -120,40 +112,27 @@ public class DeleteUserTests
     [TestMethod]
     public void DeleteInternalUser_UserDoesNotExist_DoesNotCallRemove()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        adminValidationMock.Setup(v => v.EnsureUserIsAdmin(99));
-
-        adminValidationMock
-            .Setup(v => v.EnsureIsNotSelfAction(5, 99, It.IsAny<string>())); // 🔥 FIX
-
-        adminValidationMock
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(99));
+        _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(5, 99, It.IsAny<string>()));
+        _adminValidationMock
             .Setup(v => v.GetExistingUser(5))
             .Throws(new NotFoundException("User does not exist"));
 
-        var service = new DeleteUserService(repoMock.Object, adminValidationMock.Object);
-
         Assert.ThrowsException<NotFoundException>(() =>
-            service.DeleteInterUser(5, 99));
+            _service.DeleteInterUser(5, 99));
 
-        repoMock.Verify(r => r.Remove(It.IsAny<int>()), Times.Never);
+        _repoMock.Verify(r => r.Remove(It.IsAny<int>()), Times.Never);
     }
 
     [TestMethod]
     public void DeleteInternalUser_LoggedUserIsNotAdmin_ThrowsException()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(5))
             .Throws(new ForbiddenException("Only an administrative user can perform this action"));
 
-        var service = new DeleteUserService(repoMock.Object, adminValidationMock.Object);
-
         var ex = Assert.ThrowsException<ForbiddenException>(() =>
-            service.DeleteInterUser(10, 5));
+            _service.DeleteInterUser(10, 5));
 
         Assert.AreEqual("Only an administrative user can perform this action", ex.Message);
     }
@@ -161,83 +140,63 @@ public class DeleteUserTests
     [TestMethod]
     public void DeleteInternalUser_LoggedUserIsNotAdmin_DoesNotCallRemove()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(5))
             .Throws(new ForbiddenException("Only an administrative user can perform this action"));
 
-        var service = new DeleteUserService(repoMock.Object, adminValidationMock.Object);
-
         Assert.ThrowsException<ForbiddenException>(() =>
-            service.DeleteInterUser(10, 5));
+            _service.DeleteInterUser(10, 5));
 
-        repoMock.Verify(r => r.Remove(It.IsAny<int>()), Times.Never);
+        _repoMock.Verify(r => r.Remove(It.IsAny<int>()), Times.Never);
     }
 
-  [TestMethod]
-public void DeleteInterUser_AlwaysValidatesThatLoggedUserIsAdmin()
-{
-    var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-    var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
+    [TestMethod]
+    public void DeleteInterUser_AlwaysValidatesThatLoggedUserIsAdmin()
+    {
+        var userToDelete = CreateAdminUser(52);
 
-    var userToDelete = CreateAdminUser(52);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(5));
+        _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(52, 5, It.IsAny<string>()));
+        _adminValidationMock.Setup(v => v.GetExistingUser(52)).Returns(userToDelete);
 
-    adminValidationMock.Setup(v => v.EnsureUserIsAdmin(5));
-    adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(52, 5, It.IsAny<string>()));
-    adminValidationMock.Setup(v => v.GetExistingUser(52)).Returns(userToDelete);
+        _repoMock.Setup(r => r.Remove(52));
 
-    repoMock.Setup(r => r.Remove(52));
+        _service.DeleteInterUser(52, 5);
 
-    var service = new DeleteUserService(repoMock.Object, adminValidationMock.Object);
+        _adminValidationMock.Verify(v => v.EnsureUserIsAdmin(5), Times.Once);
+    }
 
-    service.DeleteInterUser(52, 5);
+    [TestMethod]
+    public void DeleteInterUser_AlwaysValidatesThatUserIsNotDeletingThemselves()
+    {
+        var userToDelete = CreateAdminUser(52);
 
-    adminValidationMock.Verify(v => v.EnsureUserIsAdmin(5), Times.Once);
-}
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(5));
+        _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(52, 5, It.IsAny<string>()));
+        _adminValidationMock.Setup(v => v.GetExistingUser(52)).Returns(userToDelete);
 
-[TestMethod]
-public void DeleteInterUser_AlwaysValidatesThatUserIsNotDeletingThemselves()
-{
-    var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-    var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
+        _repoMock.Setup(r => r.Remove(52));
 
-    var userToDelete = CreateAdminUser(52);
+        _service.DeleteInterUser(52, 5);
 
-    adminValidationMock.Setup(v => v.EnsureUserIsAdmin(5));
-    adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(52, 5, It.IsAny<string>()));
-    adminValidationMock.Setup(v => v.GetExistingUser(52)).Returns(userToDelete);
+        _adminValidationMock.Verify(
+            v => v.EnsureIsNotSelfAction(52, 5, It.IsAny<string>()),
+            Times.Once);
+    }
 
-    repoMock.Setup(r => r.Remove(52));
+    [TestMethod]
+    public void DeleteInterUser_GetsExistingUserFromAdminValidationService()
+    {
+        var userToDelete = CreateAdminUser(52);
 
-    var service = new DeleteUserService(repoMock.Object, adminValidationMock.Object);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(5));
+        _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(52, 5, It.IsAny<string>()));
+        _adminValidationMock.Setup(v => v.GetExistingUser(52)).Returns(userToDelete);
 
-    service.DeleteInterUser(52, 5);
+        _repoMock.Setup(r => r.Remove(52));
 
-    adminValidationMock.Verify(
-        v => v.EnsureIsNotSelfAction(52, 5, It.IsAny<string>()),
-        Times.Once);
-}
+        _service.DeleteInterUser(52, 5);
 
-[TestMethod]
-public void DeleteInterUser_GetsExistingUserFromAdminValidationService()
-{
-    var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-    var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-    var userToDelete = CreateAdminUser(52);
-
-    adminValidationMock.Setup(v => v.EnsureUserIsAdmin(5));
-    adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(52, 5, It.IsAny<string>()));
-    adminValidationMock.Setup(v => v.GetExistingUser(52)).Returns(userToDelete);
-
-    repoMock.Setup(r => r.Remove(52));
-
-    var service = new DeleteUserService(repoMock.Object, adminValidationMock.Object);
-
-    service.DeleteInterUser(52, 5);
-
-    adminValidationMock.Verify(v => v.GetExistingUser(52), Times.Once);
-}
+        _adminValidationMock.Verify(v => v.GetExistingUser(52), Times.Once);
+    }
 }

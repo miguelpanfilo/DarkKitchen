@@ -11,45 +11,27 @@ namespace Pruebas.Usuarios;
 [TestClass]
 public class SignUpInternUserTests
 {
-    [TestMethod]
-    public void CreateInternalUser_ValidData_ReturnsUserResponse()
+    private Mock<IRepositoryUser> _repoMock = null!;
+    private Mock<IPhoneValidator> _phoneValidatorMock = null!;
+    private Mock<IAdminValidationService> _adminValidationMock = null!;
+    private SignUpService _service = null!;
+
+    [TestInitialize]
+    public void Initialize()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
+        _repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        _phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        _adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
-        var phoneResult = Phone.TryMakePhone("099999999");
-        Assert.IsTrue(phoneResult.Success);
-        var loggedInUserResult = User.MakeIntern(
-            "Admin",
-            "Root",
-            "root@gmail.com",
-            phoneResult.Value!,
-            "PasswordSeguraee3!",
-            UserRoles.Administrative);
-        Assert.IsTrue(loggedInUserResult.Success);
-        var loggedInUser = loggedInUserResult.Value!;
-        loggedInUser.Id = 1;
+        _service = new SignUpService(
+            _repoMock.Object,
+            _phoneValidatorMock.Object,
+            _adminValidationMock.Object);
+    }
 
-        adminValidationMock.Setup(v => v.EnsureUserIsAdmin(1));
-
-        phoneValidatorMock.Setup(v => v.ItsValid("099123456")).Returns(true);
-
-        repoMock.Setup(r => r.EmailExist("admin@gmail.com")).Returns(false);
-
-        repoMock.Setup(r => r.Add(It.IsAny<User>()))
-            .Returns((User u) =>
-            {
-                u.Id = 10;
-                return u;
-            });
-
-        var service = new SignUpService(
-            repoMock.Object,
-            phoneValidatorMock.Object,
-            adminValidationMock.Object);
-
-        var request = new SingUpInternUserRequestDTO
+    private static SingUpInternUserRequestDTO CreateValidInternalUserRequest()
+    {
+        return new SingUpInternUserRequestDTO
         {
             Name = "Juan",
             LastName = "Perez",
@@ -58,8 +40,25 @@ public class SignUpInternUserTests
             Password = "PasswordSeguraee3!",
             Role = "Administrative"
         };
+    }
 
-        var result = service.MakeInterUser(1, request);
+    [TestMethod]
+    public void CreateInternalUser_ValidData_ReturnsUserResponse()
+    {
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(1));
+        _phoneValidatorMock.Setup(v => v.ItsValid("099123456")).Returns(true);
+        _repoMock.Setup(r => r.EmailExist("admin@gmail.com")).Returns(false);
+
+        _repoMock.Setup(r => r.Add(It.IsAny<User>()))
+            .Returns((User u) =>
+            {
+                u.Id = 10;
+                return u;
+            });
+
+        var request = CreateValidInternalUserRequest();
+
+        var result = _service.MakeInterUser(1, request);
 
         Assert.AreEqual(10, result.Id);
         Assert.AreEqual("Juan", result.Name);
@@ -71,18 +70,8 @@ public class SignUpInternUserTests
     [TestMethod]
     public void CreateInternalUser_InvalidPhone_ThrowsException()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        adminValidationMock.Setup(v => v.EnsureUserIsAdmin(1));
-
-        phoneValidatorMock.Setup(v => v.ItsValid("123")).Returns(false);
-
-        var service = new SignUpService(
-            repoMock.Object,
-            phoneValidatorMock.Object,
-            adminValidationMock.Object);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(1));
+        _phoneValidatorMock.Setup(v => v.ItsValid("123")).Returns(false);
 
         var request = new SingUpInternUserRequestDTO
         {
@@ -95,25 +84,16 @@ public class SignUpInternUserTests
         };
 
         var ex = Assert.ThrowsException<ValidationException>(() =>
-            service.MakeInterUser(1, request));
+            _service.MakeInterUser(1, request));
 
-        Assert.AreEqual("Phone is not valid", ex.Message);
+        Assert.AreEqual("Telefono no valido", ex.Message);
     }
 
     [TestMethod]
     public void CreateInternalUser_InvalidPhone_ThrowsExceptionAndDoesNotCallRepository()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        adminValidationMock.Setup(v => v.EnsureUserIsAdmin(1));
-        phoneValidatorMock.Setup(v => v.ItsValid("091123456")).Returns(false);
-
-        var service = new SignUpService(
-            repoMock.Object,
-            phoneValidatorMock.Object,
-            adminValidationMock.Object);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(1));
+        _phoneValidatorMock.Setup(v => v.ItsValid("091123456")).Returns(false);
 
         var request = new SingUpInternUserRequestDTO
         {
@@ -126,66 +106,40 @@ public class SignUpInternUserTests
         };
 
         var ex = Assert.ThrowsException<ValidationException>(() =>
-            service.MakeInterUser(1, request));
+            _service.MakeInterUser(1, request));
 
-        Assert.AreEqual("Phone is not valid", ex.Message);
+        Assert.AreEqual("Telefono no valido", ex.Message);
 
-        repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);
+        _repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);
     }
 
     [TestMethod]
     public void CreateInternalUser_ValidData_CallsRepositoryOnce()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(1));
+        _phoneValidatorMock.Setup(v => v.ItsValid("099123456")).Returns(true);
+        _repoMock.Setup(r => r.EmailExist("admin@gmail.com")).Returns(false);
 
-        adminValidationMock.Setup(v => v.EnsureUserIsAdmin(1));
-        phoneValidatorMock.Setup(v => v.ItsValid("099123456")).Returns(true);
-        repoMock.Setup(r => r.EmailExist("admin@gmail.com")).Returns(false);
-
-        repoMock.Setup(r => r.Add(It.IsAny<User>()))
+        _repoMock.Setup(r => r.Add(It.IsAny<User>()))
             .Returns((User u) =>
             {
                 u.Id = 10;
                 return u;
             });
 
-        var service = new SignUpService(
-            repoMock.Object,
-            phoneValidatorMock.Object,
-            adminValidationMock.Object);
+        var request = CreateValidInternalUserRequest();
 
-        var request = new SingUpInternUserRequestDTO
-        {
-            Name = "Juan",
-            LastName = "Perez",
-            Email = "admin@gmail.com",
-            Phone = "099123456",
-            Password = "PasswordSeguraee3!",
-            Role = "Administrative"
-        };
+        _service.MakeInterUser(1, request);
 
-        service.MakeInterUser(1, request);
-
-        repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Once);
+        _repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Once);
     }
 
     [TestMethod]
     public void CreateInternalUser_EmailAlreadyRegistered_DoesNotCallAdd()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        adminValidationMock.Setup(v => v.EnsureUserIsAdmin(1));
-        phoneValidatorMock.Setup(v => v.ItsValid("099123456")).Returns(true);
-        repoMock.Setup(r => r.EmailExist("admin@gmail.com")).Returns(true);
-
-        var service = new SignUpService(
-            repoMock.Object,
-            phoneValidatorMock.Object,
-            adminValidationMock.Object);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(1));
+        _phoneValidatorMock.Setup(v => v.ItsValid("099123456")).Returns(true);
+        _repoMock.Setup(r => r.EmailExist("admin@gmail.com")).Returns(true);
 
         var request = new SingUpInternUserRequestDTO
         {
@@ -198,27 +152,18 @@ public class SignUpInternUserTests
         };
 
         var ex = Assert.ThrowsException<ConflictException>(() =>
-            service.MakeInterUser(1, request));
+            _service.MakeInterUser(1, request));
 
-        Assert.AreEqual("Email is already registered", ex.Message);
+        Assert.AreEqual("Email ya registrado", ex.Message);
 
-        repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);
+        _repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);
     }
 
     [TestMethod]
     public void CreateInternalUser_InvalidRole_ThrowsException()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        adminValidationMock.Setup(v => v.EnsureUserIsAdmin(1));
-        phoneValidatorMock.Setup(v => v.ItsValid("099123456")).Returns(true);
-
-        var service = new SignUpService(
-            repoMock.Object,
-            phoneValidatorMock.Object,
-            adminValidationMock.Object);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(1));
+        _phoneValidatorMock.Setup(v => v.ItsValid("099123456")).Returns(true);
 
         var request = new SingUpInternUserRequestDTO
         {
@@ -226,29 +171,20 @@ public class SignUpInternUserTests
         };
 
         var ex = Assert.ThrowsException<ValidationException>(() =>
-            service.MakeInterUser(1, request));
+            _service.MakeInterUser(1, request));
 
-        Assert.AreEqual("Internal role is not valid", ex.Message);
+        Assert.AreEqual("El rol no es válido", ex.Message);
     }
 
     [TestMethod]
     public void CreateInternalUser_NonAdministrativeUser_ThrowsException()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(5))
             .Throws(new ForbiddenException("Only an administrative user can perform this action"));
 
-        var service = new SignUpService(
-            repoMock.Object,
-            phoneValidatorMock.Object,
-            adminValidationMock.Object);
-
         var ex = Assert.ThrowsException<ForbiddenException>(() =>
-            service.MakeInterUser(5, new SingUpInternUserRequestDTO()));
+            _service.MakeInterUser(5, new SingUpInternUserRequestDTO()));
 
         Assert.AreEqual("Only an administrative user can perform this action", ex.Message);
     }
@@ -256,22 +192,18 @@ public class SignUpInternUserTests
     [TestMethod]
     public void CreateInternalUser_CallsAdminValidationService()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(1));
 
-        phoneValidatorMock
+        _phoneValidatorMock
             .Setup(v => v.ItsValid("099123456"))
             .Returns(true);
 
-        repoMock
+        _repoMock
             .Setup(r => r.EmailExist("admin@gmail.com"))
             .Returns(false);
 
-        repoMock
+        _repoMock
             .Setup(r => r.Add(It.IsAny<User>()))
             .Returns((User u) =>
             {
@@ -279,45 +211,23 @@ public class SignUpInternUserTests
                 return u;
             });
 
-        var service = new SignUpService(
-            repoMock.Object,
-            phoneValidatorMock.Object,
-            adminValidationMock.Object);
+        var request = CreateValidInternalUserRequest();
 
-        var request = new SingUpInternUserRequestDTO
-        {
-            Name = "Juan",
-            LastName = "Perez",
-            Email = "admin@gmail.com",
-            Phone = "099123456",
-            Password = "PasswordSeguraee3!",
-            Role = "Administrative"
-        };
+        _service.MakeInterUser(1, request);
 
-        service.MakeInterUser(1, request);
-
-        adminValidationMock.Verify(v => v.EnsureUserIsAdmin(1), Times.Once);
+        _adminValidationMock.Verify(v => v.EnsureUserIsAdmin(1), Times.Once);
     }
 
     [TestMethod]
     public void CreateInternalUser_NotAdmin_DoesNotCallRepository()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(1))
             .Throws(new ForbiddenException("Only an administrative user can perform this action"));
 
-        var service = new SignUpService(
-            repoMock.Object,
-            phoneValidatorMock.Object,
-            adminValidationMock.Object);
-
         Assert.ThrowsException<ForbiddenException>(() =>
-            service.MakeInterUser(1, new SingUpInternUserRequestDTO()));
+            _service.MakeInterUser(1, new SingUpInternUserRequestDTO()));
 
-        repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);
+        _repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);
     }
 }

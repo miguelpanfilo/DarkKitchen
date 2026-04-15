@@ -17,9 +17,9 @@ namespace Pruebas.Filters;
 public class AuthenticationFilterTests
 {
     private static AuthenticationFilter CreateFilter(
-        Mock<ISessionValidationService>? serviceMock = null)
+        Mock<ISessionsValidationService>? serviceMock = null)
     {
-        serviceMock ??= new Mock<ISessionValidationService>(MockBehavior.Strict);
+        serviceMock ??= new Mock<ISessionsValidationService>(MockBehavior.Strict);
         return new AuthenticationFilter(serviceMock.Object);
     }
 
@@ -108,7 +108,7 @@ public class AuthenticationFilterTests
    [TestMethod]
 public void OnAuthorization_WhenSessionIdIsValid_CallsSessionValidationService()
 {
-    var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
+    var serviceMock = new Mock<ISessionsValidationService>(MockBehavior.Strict);
     var sessionId = Guid.NewGuid();
 
     var currentUser = new CurrentUserDto
@@ -133,7 +133,7 @@ public void OnAuthorization_WhenSessionIdIsValid_CallsSessionValidationService()
 [TestMethod]
 public void OnAuthorization_WhenEndpointAllowsAnonymous_DoesNothing()
 {
-    var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
+    var serviceMock = new Mock<ISessionsValidationService>(MockBehavior.Strict);
     var filter = CreateFilter(serviceMock);
     var context = CreateContext(allowAnonymous: true);
 
@@ -145,7 +145,7 @@ public void OnAuthorization_WhenEndpointAllowsAnonymous_DoesNothing()
 [TestMethod]
 public void OnAuthorization_WhenSessionIsValid_SetsAuthenticatedUser()
 {
-    var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
+    var serviceMock = new Mock<ISessionsValidationService>(MockBehavior.Strict);
     var sessionId = Guid.NewGuid();
 
     var currentUser = new CurrentUserDto
@@ -173,7 +173,7 @@ public void OnAuthorization_WhenSessionIsValid_SetsAuthenticatedUser()
 [TestMethod]
 public void OnAuthorization_WhenSessionIsValid_SetsNameIdentifierClaim()
 {
-    var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
+    var serviceMock = new Mock<ISessionsValidationService>(MockBehavior.Strict);
     var sessionId = Guid.NewGuid();
 
     var currentUser = new CurrentUserDto
@@ -203,7 +203,7 @@ public void OnAuthorization_WhenSessionIsValid_SetsNameIdentifierClaim()
 [TestMethod]
 public void OnAuthorization_WhenSessionIsValid_SetsRoleClaim()
 {
-    var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
+    var serviceMock = new Mock<ISessionsValidationService>(MockBehavior.Strict);
     var sessionId = Guid.NewGuid();
 
     var currentUser = new CurrentUserDto
@@ -234,7 +234,7 @@ public void OnAuthorization_WhenSessionIsValid_SetsRoleClaim()
 public void OnAuthorization_WhenSessionValidationThrows_SetsUnauthorizedResult()
 {
     var sessionId = Guid.NewGuid();
-    var sessionValidationServiceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
+    var sessionValidationServiceMock = new Mock<ISessionsValidationService>(MockBehavior.Strict);
 
     sessionValidationServiceMock
         .Setup(x => x.ValidateSession(sessionId))
@@ -260,7 +260,7 @@ public void OnAuthorization_WhenSessionValidationThrows_SetsUnauthorizedResult()
 [TestMethod]
 public void OnAuthorization_WhenSessionIsValid_SetsCurrentUserInHttpContextItems()
 {
-    var serviceMock = new Mock<ISessionValidationService>(MockBehavior.Strict);
+    var serviceMock = new Mock<ISessionsValidationService>(MockBehavior.Strict);
     var sessionId = Guid.NewGuid();
 
     var currentUser = new CurrentUserDto

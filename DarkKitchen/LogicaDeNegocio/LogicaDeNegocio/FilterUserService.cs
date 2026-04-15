@@ -14,7 +14,7 @@ public class FilterUserService(
     private readonly IRepositoryUser _repositoryUsers = repositoryUsers;
     private readonly IAdminValidationService _adminValidationService = adminValidationService;
 
-    public List<UsuarioResponseDTO> BuscarUsuarios(int idUserLogin, FindUserRequestDTO requestDto)
+    public List<UsuarioResponseDTO> FindUser(int idUserLogin, FindUserRequestDTO requestDto)
     {
         _adminValidationService.EnsureUserIsAdmin(idUserLogin);
 

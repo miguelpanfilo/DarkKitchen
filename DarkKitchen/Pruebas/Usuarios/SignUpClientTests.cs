@@ -12,6 +12,24 @@ namespace Pruebas.Usuarios;
 [TestClass]
 public class UserServiceTests
 {
+    private Mock<IRepositoryUser> _repoMock = null!;
+    private Mock<IPhoneValidator> _validatorPhoneMock = null!;
+    private Mock<IAdminValidationService> _adminValidationMock = null!;
+    private SignUpService _service = null!;
+
+    [TestInitialize]
+    public void Initialize()
+    {
+        _repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        _validatorPhoneMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        _adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
+
+        _service = new SignUpService(
+            _repoMock.Object,
+            _validatorPhoneMock.Object,
+            _adminValidationMock.Object);
+    }
+
     private static Phone CreateValidPhone(string number)
     {
         var phoneResult = Phone.TryMakePhone(number);
@@ -20,31 +38,9 @@ public class UserServiceTests
         return phoneResult.Value!;
     }
 
-    [TestMethod]
-    public void SignUpClient_ValidData_ReturnsResponseDto()
+    private static SignUpClientRequestDTO CreateValidSignUpRequest()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var validatorPhoneMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        repoMock
-            .Setup(r => r.EmailExist(It.IsAny<string>()))
-            .Returns(false);
-
-        validatorPhoneMock
-            .Setup(v => v.ItsValid(It.IsAny<string>()))
-            .Returns(true);
-
-        repoMock
-            .Setup(r => r.Add(It.IsAny<User>()))
-            .Returns((User u) => u);
-
-        var service = new SignUpService(
-            repoMock.Object,
-            validatorPhoneMock.Object,
-            adminValidationMock.Object);
-
-        var request = new SignUpClientRequestDTO
+        return new SignUpClientRequestDTO
         {
             Name = "Miguel",
             LastName = "Lopez",
@@ -52,72 +48,65 @@ public class UserServiceTests
             Phone = "099123456",
             Password = "Password@2Ok6Abc"
         };
+    }
 
-        var result = service.SignUpClient(request);
+    [TestMethod]
+    public void SignUpClient_ValidData_ReturnsResponseDto()
+    {
+        _repoMock
+            .Setup(r => r.EmailExist(It.IsAny<string>()))
+            .Returns(false);
+
+        _validatorPhoneMock
+            .Setup(v => v.ItsValid(It.IsAny<string>()))
+            .Returns(true);
+
+        _repoMock
+            .Setup(r => r.Add(It.IsAny<User>()))
+            .Returns((User u) => u);
+
+        var request = CreateValidSignUpRequest();
+
+        var result = _service.SignUpClient(request);
 
         Assert.IsNotNull(result);
         Assert.AreEqual("Miguel", result.Name);
         Assert.AreEqual("Lopez", result.LastName);
         Assert.AreEqual("miguel@gmail.com", result.Email);
 
-        repoMock.Verify(r => r.EmailExist("miguel@gmail.com"), Times.Once);
-        validatorPhoneMock.Verify(v => v.ItsValid("099123456"), Times.Once);
-        repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Once);
+        _repoMock.Verify(r => r.EmailExist("miguel@gmail.com"), Times.Once);
+        _validatorPhoneMock.Verify(v => v.ItsValid("099123456"), Times.Once);
+        _repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Once);
     }
 
     [TestMethod]
     public void SignUpClient_DuplicateEmail_ThrowsException_AndDoesNotValidatePhoneOrAdd()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var validatorPhoneMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        repoMock
+        _repoMock
             .Setup(r => r.EmailExist("miguel@gmail.com"))
             .Returns(true);
 
-        var service = new SignUpService(
-            repoMock.Object,
-            validatorPhoneMock.Object,
-            adminValidationMock.Object);
-
-        var request = new SignUpClientRequestDTO
-        {
-            Name = "Miguel",
-            LastName = "Lopez",
-            Email = "miguel@gmail.com",
-            Phone = "099123456",
-            Password = "Password@2Ok6Abc"
-        };
+        var request = CreateValidSignUpRequest();
 
         var ex = Assert.ThrowsException<ConflictException>(() =>
-            service.SignUpClient(request));
+            _service.SignUpClient(request));
 
-        Assert.AreEqual("Email is already registered", ex.Message);
+        Assert.AreEqual("Email ya registrado", ex.Message);
 
-        validatorPhoneMock.Verify(v => v.ItsValid(It.IsAny<string>()), Times.Never);
-        repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);
+        _validatorPhoneMock.Verify(v => v.ItsValid(It.IsAny<string>()), Times.Never);
+        _repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);
     }
 
     [TestMethod]
     public void SignUpClient_InvalidPhoneAccordingToValidator_ThrowsException_AndDoesNotAdd()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var validatorPhoneMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        repoMock
+        _repoMock
             .Setup(r => r.EmailExist(It.IsAny<string>()))
             .Returns(false);
 
-        validatorPhoneMock
+        _validatorPhoneMock
             .Setup(v => v.ItsValid("123"))
             .Returns(false);
-
-        var service = new SignUpService(
-            repoMock.Object,
-            validatorPhoneMock.Object,
-            adminValidationMock.Object);
 
         var request = new SignUpClientRequestDTO
         {
@@ -129,29 +118,20 @@ public class UserServiceTests
         };
 
         var ex = Assert.ThrowsException<ValidationException>(() =>
-            service.SignUpClient(request));
+            _service.SignUpClient(request));
 
-        Assert.AreEqual("Phone is not valid", ex.Message);
+        Assert.AreEqual("Telefono no valido", ex.Message);
 
-        validatorPhoneMock.Verify(v => v.ItsValid("123"), Times.Once);
-        repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);
+        _validatorPhoneMock.Verify(v => v.ItsValid("123"), Times.Once);
+        _repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);
     }
 
     [TestMethod]
     public void SignUpClient_EmptyPhone_ThrowsException_BeforeCallingValidator()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var validatorPhoneMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        repoMock
+        _repoMock
             .Setup(r => r.EmailExist(It.IsAny<string>()))
             .Returns(false);
-
-        var service = new SignUpService(
-            repoMock.Object,
-            validatorPhoneMock.Object,
-            adminValidationMock.Object);
 
         var request = new SignUpClientRequestDTO
         {
@@ -163,33 +143,24 @@ public class UserServiceTests
         };
 
         var ex = Assert.ThrowsException<ValidationException>(() =>
-            service.SignUpClient(request));
+            _service.SignUpClient(request));
 
-        Assert.AreEqual("Phone cannot be empty", ex.Message);
+        Assert.AreEqual("Telefono no puede estar vacío", ex.Message);
 
-        validatorPhoneMock.Verify(v => v.ItsValid(It.IsAny<string>()), Times.Never);
-        repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);
+        _validatorPhoneMock.Verify(v => v.ItsValid(It.IsAny<string>()), Times.Never);
+        _repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);
     }
 
     [TestMethod]
     public void SignUpClient_InvalidEmailFormat_ThrowsException_AndDoesNotAdd()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var validatorPhoneMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        repoMock
+        _repoMock
             .Setup(r => r.EmailExist(It.IsAny<string>()))
             .Returns(false);
 
-        validatorPhoneMock
+        _validatorPhoneMock
             .Setup(v => v.ItsValid("099123456"))
             .Returns(true);
-
-        var service = new SignUpService(
-            repoMock.Object,
-            validatorPhoneMock.Object,
-            adminValidationMock.Object);
 
         var request = new SignUpClientRequestDTO
         {
@@ -201,32 +172,23 @@ public class UserServiceTests
         };
 
         var ex = Assert.ThrowsException<ValidationException>(() =>
-            service.SignUpClient(request));
+            _service.SignUpClient(request));
 
-        Assert.AreEqual("Email format is not valid", ex.Message);
+        Assert.AreEqual("Formato de Email inválido", ex.Message);
 
-        repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);
+        _repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);
     }
 
     [TestMethod]
     public void SignUpClient_EmptyEmail_ThrowsException_AndDoesNotAdd()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var validatorPhoneMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        repoMock
+        _repoMock
             .Setup(r => r.EmailExist(It.IsAny<string>()))
             .Returns(false);
 
-        validatorPhoneMock
+        _validatorPhoneMock
             .Setup(v => v.ItsValid("099123456"))
             .Returns(true);
-
-        var service = new SignUpService(
-            repoMock.Object,
-            validatorPhoneMock.Object,
-            adminValidationMock.Object);
 
         var request = new SignUpClientRequestDTO
         {
@@ -238,32 +200,23 @@ public class UserServiceTests
         };
 
         var ex = Assert.ThrowsException<ValidationException>(() =>
-            service.SignUpClient(request));
+            _service.SignUpClient(request));
 
-        Assert.AreEqual("Email cannot be empty", ex.Message);
+        Assert.AreEqual("Email no puede estar vacío", ex.Message);
 
-        repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);
+        _repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);
     }
 
     [TestMethod]
     public void SignUpClient_NameWithNumbers_ThrowsException_AndDoesNotAdd()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var validatorPhoneMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        repoMock
+        _repoMock
             .Setup(r => r.EmailExist(It.IsAny<string>()))
             .Returns(false);
 
-        validatorPhoneMock
+        _validatorPhoneMock
             .Setup(v => v.ItsValid("099123456"))
             .Returns(true);
-
-        var service = new SignUpService(
-            repoMock.Object,
-            validatorPhoneMock.Object,
-            adminValidationMock.Object);
 
         var request = new SignUpClientRequestDTO
         {
@@ -275,51 +228,35 @@ public class UserServiceTests
         };
 
         var ex = Assert.ThrowsException<ValidationException>(() =>
-            service.SignUpClient(request));
+            _service.SignUpClient(request));
 
-        Assert.AreEqual("Name cannot contain numbers", ex.Message);
+        Assert.AreEqual("Nombre no puede contener números", ex.Message);
 
-        repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);
+        _repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);
     }
 
     [TestMethod]
     public void SignUpClient_DoesNotUseAdminValidationService()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var validatorPhoneMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        repoMock
+        _repoMock
             .Setup(r => r.EmailExist("miguel@gmail.com"))
             .Returns(false);
 
-        validatorPhoneMock
+        _validatorPhoneMock
             .Setup(v => v.ItsValid("099123456"))
             .Returns(true);
 
-        repoMock
+        _repoMock
             .Setup(r => r.Add(It.IsAny<User>()))
             .Returns((User u) => u);
 
-        var service = new SignUpService(
-            repoMock.Object,
-            validatorPhoneMock.Object,
-            adminValidationMock.Object);
+        var request = CreateValidSignUpRequest();
 
-        var request = new SignUpClientRequestDTO
-        {
-            Name = "Miguel",
-            LastName = "Lopez",
-            Email = "miguel@gmail.com",
-            Phone = "099123456",
-            Password = "Password@2Ok6Abc"
-        };
-
-        var result = service.SignUpClient(request);
+        var result = _service.SignUpClient(request);
 
         Assert.IsNotNull(result);
 
-        adminValidationMock.Verify(v => v.EnsureUserIsAdmin(It.IsAny<int>()), Times.Never);
+        _adminValidationMock.Verify(v => v.EnsureUserIsAdmin(It.IsAny<int>()), Times.Never);
     }
 
     [TestMethod]
@@ -335,7 +272,7 @@ public class UserServiceTests
             "Password@2026Ok");
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Name cannot be empty", result.ErrorMessage);
+        Assert.AreEqual("Nombre no puede estar vacío", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -367,7 +304,7 @@ public class UserServiceTests
             "Password@2Ok6Abc");
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Name cannot be empty", result.ErrorMessage);
+        Assert.AreEqual("Nombre no puede estar vacío", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -383,7 +320,7 @@ public class UserServiceTests
             "Password@2026Ok");
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Last name cannot be empty", result.ErrorMessage);
+        Assert.AreEqual("El apellido no puede estar vacio", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -401,7 +338,7 @@ public class UserServiceTests
             "Password@2026Ok");
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Last name must be between 3 and 25 characters", result.ErrorMessage);
+        Assert.AreEqual("El apellido tiene que tener entre 3 y 25 caracteres", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -419,7 +356,7 @@ public class UserServiceTests
             "Password@2026Ok");
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Last name must be between 3 and 25 characters", result.ErrorMessage);
+        Assert.AreEqual("El apellido tiene que tener entre 3 y 25 caracteres", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -473,37 +410,21 @@ public class UserServiceTests
     [TestMethod]
     public void RegisterClient_ValidUruguayanPhone_SuccessfulRegistration()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var validatorPhoneMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        repoMock
+        _repoMock
             .Setup(r => r.EmailExist(It.IsAny<string>()))
             .Returns(false);
 
-        validatorPhoneMock
+        _validatorPhoneMock
             .Setup(v => v.ItsValid(It.IsAny<string>()))
             .Returns(true);
 
-        repoMock
+        _repoMock
             .Setup(r => r.Add(It.IsAny<User>()))
             .Returns((User u) => u);
 
-        var signUpService = new SignUpService(
-            repoMock.Object,
-            validatorPhoneMock.Object,
-            adminValidationMock.Object);
+        var signUpRequest = CreateValidSignUpRequest();
 
-        var signUpRequest = new SignUpClientRequestDTO
-        {
-            Name = "Miguel",
-            LastName = "Lopez",
-            Email = "miguel@gmail.com",
-            Phone = "099123456",
-            Password = "Password@2Ok6Abc"
-        };
-
-        var clientResult = signUpService.SignUpClient(signUpRequest);
+        var clientResult = _service.SignUpClient(signUpRequest);
 
         Assert.IsNotNull(clientResult);
         Assert.AreEqual("Miguel", clientResult.Name);
@@ -529,37 +450,21 @@ public class UserServiceTests
     [TestMethod]
     public void RegisterClient_EmailNotDuplicated_SuccessfulRegistration()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var validatorPhoneMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        repoMock
+        _repoMock
             .Setup(r => r.EmailExist(It.IsAny<string>()))
             .Returns(false);
 
-        repoMock
+        _repoMock
             .Setup(r => r.Add(It.IsAny<User>()))
             .Returns((User u) => u);
 
-        validatorPhoneMock
+        _validatorPhoneMock
             .Setup(v => v.ItsValid(It.IsAny<string>()))
             .Returns(true);
 
-        var singUpService = new SignUpService(
-            repoMock.Object,
-            validatorPhoneMock.Object,
-            adminValidationMock.Object);
+        var signUpRequest = CreateValidSignUpRequest();
 
-        var signUpRequest = new SignUpClientRequestDTO
-        {
-            Name = "Miguel",
-            LastName = "Lopez",
-            Email = "miguel@gmail.com",
-            Phone = "099123456",
-            Password = "Password@2Ok6Abc"
-        };
-
-        var signUpDTO = singUpService.SignUpClient(signUpRequest);
+        var signUpDTO = _service.SignUpClient(signUpRequest);
 
         Assert.IsNotNull(signUpDTO);
         Assert.AreEqual("miguel@gmail.com", signUpDTO.Email);
@@ -579,7 +484,7 @@ public class UserServiceTests
             password);
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Password format is not valid", result.ErrorMessage);
+        Assert.AreEqual("Formato de clave inválida", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -597,7 +502,7 @@ public class UserServiceTests
             passwordWithLengthLessThanMin);
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Password format is not valid", result.ErrorMessage);
+        Assert.AreEqual("Formato de clave inválida", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -615,7 +520,7 @@ public class UserServiceTests
             passwordGreaterThanLimit);
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Password format is not valid", result.ErrorMessage);
+        Assert.AreEqual("Formato de clave inválida", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -632,7 +537,7 @@ public class UserServiceTests
             password);
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Password format is not valid", result.ErrorMessage);
+        Assert.AreEqual("Formato de clave inválida", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -649,7 +554,7 @@ public class UserServiceTests
             password);
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Password format is not valid", result.ErrorMessage);
+        Assert.AreEqual("Formato de clave inválida", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -666,7 +571,7 @@ public class UserServiceTests
             password);
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Password format is not valid", result.ErrorMessage);
+        Assert.AreEqual("Formato de clave inválida", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -683,7 +588,7 @@ public class UserServiceTests
             password);
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Password format is not valid", result.ErrorMessage);
+        Assert.AreEqual("Formato de clave inválida", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -700,7 +605,7 @@ public class UserServiceTests
             password);
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Password format is not valid", result.ErrorMessage);
+        Assert.AreEqual("Formato de clave inválida", result.ErrorMessage);
     }
 
     [TestMethod]

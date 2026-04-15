@@ -97,11 +97,11 @@ public class ClientsControllerTests
 
         signUpServiceMock
             .Setup(s => s.SignUpClient(request))
-            .Throws(new SignUpValidationException("Phone is not valid"));
+            .Throws(new ValidationException("Phone is not valid"));
 
         var controller = new ClientsController(signUpServiceMock.Object);
 
-        var ex = Assert.ThrowsException<SignUpValidationException>(() =>
+        var ex = Assert.ThrowsException<ValidationException>(() =>
             controller.CreateClient(request));
 
         Assert.AreEqual("Phone is not valid", ex.Message);

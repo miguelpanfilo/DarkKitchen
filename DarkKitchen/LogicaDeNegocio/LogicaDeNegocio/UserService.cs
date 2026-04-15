@@ -53,6 +53,6 @@ public class UserService(
 
     public List<UsuarioResponseDTO> BuscarUsuarios(int idUsuarioLogueado, FindUserRequestDTO requestDto)
     {
-        return _filterUserService.BuscarUsuarios(idUsuarioLogueado, requestDto);
+        return _filterUserService.FindUser(idUsuarioLogueado, requestDto);
     }
 }

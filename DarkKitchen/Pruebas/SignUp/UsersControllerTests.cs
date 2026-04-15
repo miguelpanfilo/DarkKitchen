@@ -12,32 +12,68 @@ namespace Pruebas.SignUp;
 [TestClass]
 public class UsersControllerTests
 {
-    [TestMethod]
-    public void DeleteInternalUser_CallsDeleteServiceOnce()
+    private Mock<IUserService> _userServiceMock = null!;
+    private UsersController _controller = null!;
+
+    [TestInitialize]
+    public void Initialize()
     {
-        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
+        _userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
+        _controller = new UsersController(_userServiceMock.Object);
+    }
 
-        userServiceMock
-            .Setup(x => x.EliminarUsuarioInterno(2, 99));
+    private void SetUserClaim(string? userIdClaimValue)
+    {
+        var claims = new List<Claim>();
 
-        var controller = new UsersController(userServiceMock.Object);
+        if(userIdClaimValue != null)
+        {
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, userIdClaimValue));
+        }
 
-        controller.ControllerContext = new ControllerContext
+        _controller.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext
             {
                 User = new ClaimsPrincipal(
-                    new ClaimsIdentity(
-                        new[]
-                        {
-                            new Claim(ClaimTypes.NameIdentifier, "99")
-                        }))
+                    new ClaimsIdentity(claims, "TestAuth"))
             }
         };
+    }
 
-        controller.DeleteInternalUser(2);
+    private static SingUpInternUserRequestDTO CreateValidInternalUserRequest()
+    {
+        return new SingUpInternUserRequestDTO
+        {
+            Name = "Juan",
+            LastName = "Perez",
+            Email = "juan@gmail.com",
+            Phone = "099123456",
+            Password = "PasswordSeguraee3!",
+            Role = UserRolesDto.Administrative.ToString()
+        };
+    }
 
-        userServiceMock.Verify(
+    private static FindUserRequestDTO CreateFindUserRequest()
+    {
+        return new FindUserRequestDTO
+        {
+            Name = "Juan",
+            LastName = "Perez"
+        };
+    }
+
+    [TestMethod]
+    public void DeleteInternalUser_CallsDeleteServiceOnce()
+    {
+        _userServiceMock
+            .Setup(x => x.EliminarUsuarioInterno(2, 99));
+
+        SetUserClaim("99");
+
+        _controller.DeleteInternalUser(2);
+
+        _userServiceMock.Verify(
             x => x.EliminarUsuarioInterno(2, 99),
             Times.Once);
     }
@@ -45,27 +81,12 @@ public class UsersControllerTests
     [TestMethod]
     public void DeleteInternalUser_WhenClaimIsValid_ReturnsNoContent()
     {
-        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
-
-        userServiceMock
+        _userServiceMock
             .Setup(x => x.EliminarUsuarioInterno(2, 99));
 
-        var controller = new UsersController(userServiceMock.Object);
+        SetUserClaim("99");
 
-        controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = new DefaultHttpContext
-            {
-                User = new ClaimsPrincipal(
-                    new ClaimsIdentity(
-                        new[]
-                        {
-                            new Claim(ClaimTypes.NameIdentifier, "99")
-                        }))
-            }
-        };
-
-        var result = controller.DeleteInternalUser(2);
+        var result = _controller.DeleteInternalUser(2);
 
         Assert.IsInstanceOfType(result, typeof(NoContentResult));
     }
@@ -73,27 +94,12 @@ public class UsersControllerTests
     [TestMethod]
     public void DeleteInternalUser_WhenClaimIsInvalid_ReturnsUnauthorized()
     {
-        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
+        SetUserClaim("abc");
 
-        var controller = new UsersController(userServiceMock.Object);
-
-        controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = new DefaultHttpContext
-            {
-                User = new ClaimsPrincipal(
-                    new ClaimsIdentity(
-                        new[]
-                        {
-                            new Claim(ClaimTypes.NameIdentifier, "abc")
-                        }))
-            }
-        };
-
-        var result = controller.DeleteInternalUser(2);
+        var result = _controller.DeleteInternalUser(2);
 
         Assert.IsInstanceOfType(result, typeof(UnauthorizedResult));
-        userServiceMock.Verify(
+        _userServiceMock.Verify(
             x => x.EliminarUsuarioInterno(It.IsAny<int>(), It.IsAny<int>()),
             Times.Never);
     }
@@ -144,40 +150,17 @@ public class UsersControllerTests
     [TestMethod]
     public void CreateInternalUser_CallsSignUpServiceOnce()
     {
-        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
+        var request = CreateValidInternalUserRequest();
 
-        var request = new SingUpInternUserRequestDTO
-        {
-            Name = "Juan",
-            LastName = "Perez",
-            Email = "juan@gmail.com",
-            Phone = "099123456",
-            Password = "PasswordSeguraee3!",
-            Role = UserRolesDto.Administrative.ToString()
-        };
-
-        userServiceMock
+        _userServiceMock
             .Setup(x => x.CrearUsuarioInterno(99, request))
             .Returns((UsuarioResponseDTO)null!);
 
-        var controller = new UsersController(userServiceMock.Object);
+        SetUserClaim("99");
 
-        var user = new ClaimsPrincipal(new ClaimsIdentity(
-        [
-            new Claim(ClaimTypes.NameIdentifier, "99")
-        ]));
+        _controller.CreateInternalUser(request);
 
-        controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = new DefaultHttpContext
-            {
-                User = user
-            }
-        };
-
-        controller.CreateInternalUser(request);
-
-        userServiceMock.Verify(
+        _userServiceMock.Verify(
             x => x.CrearUsuarioInterno(99, request),
             Times.Once);
     }
@@ -199,17 +182,7 @@ public class UsersControllerTests
     [TestMethod]
     public void CreateInternalUser_ValidRequest_ReturnsCreatedWithResponse()
     {
-        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
-
-        var request = new SingUpInternUserRequestDTO
-        {
-            Name = "Juan",
-            LastName = "Perez",
-            Email = "juan@gmail.com",
-            Phone = "099123456",
-            Password = "PasswordSeguraee3!",
-            Role = UserRolesDto.Administrative.ToString()
-        };
+        var request = CreateValidInternalUserRequest();
 
         var response = new UsuarioResponseDTO
         {
@@ -221,26 +194,13 @@ public class UsersControllerTests
             Role = UserRolesDto.Administrative.ToString()
         };
 
-        userServiceMock
+        _userServiceMock
             .Setup(x => x.CrearUsuarioInterno(99, request))
             .Returns(response);
 
-        var controller = new UsersController(userServiceMock.Object);
+        SetUserClaim("99");
 
-        var user = new ClaimsPrincipal(new ClaimsIdentity(
-        [
-            new Claim(ClaimTypes.NameIdentifier, "99")
-        ]));
-
-        controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = new DefaultHttpContext
-            {
-                User = user
-            }
-        };
-
-        var result = controller.CreateInternalUser(request);
+        var result = _controller.CreateInternalUser(request);
 
         var createdResult = result as CreatedResult;
 
@@ -252,39 +212,16 @@ public class UsersControllerTests
     [TestMethod]
     public void CreateInternalUser_WhenClaimIsInvalid_ReturnsUnauthorized()
     {
-        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
+        var request = CreateValidInternalUserRequest();
 
-        var request = new SingUpInternUserRequestDTO
-        {
-            Name = "Juan",
-            LastName = "Perez",
-            Email = "juan@gmail.com",
-            Phone = "099123456",
-            Password = "PasswordSeguraee3!",
-            Role = UserRolesDto.Administrative.ToString()
-        };
+        SetUserClaim("abc");
 
-        var controller = new UsersController(userServiceMock.Object);
-
-        controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = new DefaultHttpContext
-            {
-                User = new ClaimsPrincipal(
-                    new ClaimsIdentity(
-                        new[]
-                        {
-                            new Claim(ClaimTypes.NameIdentifier, "abc")
-                        }))
-            }
-        };
-
-        var result = controller.CreateInternalUser(request) as UnauthorizedResult;
+        var result = _controller.CreateInternalUser(request) as UnauthorizedResult;
 
         Assert.IsNotNull(result);
         Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
 
-        userServiceMock.Verify(
+        _userServiceMock.Verify(
             x => x.CrearUsuarioInterno(It.IsAny<int>(), It.IsAny<SingUpInternUserRequestDTO>()),
             Times.Never);
     }
@@ -306,42 +243,22 @@ public class UsersControllerTests
     [TestMethod]
     public void SearchUsers_CallsFilterServiceOnce()
     {
-        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
-
-        var request = new FindUserRequestDTO
-        {
-            Name = "Juan",
-            LastName = "Perez"
-        };
-
+        var request = CreateFindUserRequest();
         var response = new List<UsuarioResponseDTO>();
 
-        userServiceMock
+        _userServiceMock
             .Setup(x => x.BuscarUsuarios(99, request))
             .Returns(response);
 
-        var controller = new UsersController(userServiceMock.Object);
+        SetUserClaim("99");
 
-        controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = new DefaultHttpContext
-            {
-                User = new ClaimsPrincipal(
-                    new ClaimsIdentity(
-                        new[]
-                        {
-                            new Claim(ClaimTypes.NameIdentifier, "99")
-                        }))
-            }
-        };
-
-        var result = controller.SearchUsers(request) as OkObjectResult;
+        var result = _controller.SearchUsers(request) as OkObjectResult;
 
         Assert.IsNotNull(result);
         Assert.AreEqual(StatusCodes.Status200OK, result.StatusCode);
         Assert.AreEqual(response, result.Value);
 
-        userServiceMock.Verify(
+        _userServiceMock.Verify(
             x => x.BuscarUsuarios(99, request),
             Times.Once);
     }
@@ -349,34 +266,16 @@ public class UsersControllerTests
     [TestMethod]
     public void SearchUsers_WhenClaimIsInvalid_ReturnsUnauthorized()
     {
-        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
-        var controller = new UsersController(userServiceMock.Object);
+        var request = CreateFindUserRequest();
 
-        var request = new FindUserRequestDTO
-        {
-            Name = "Juan",
-            LastName = "Perez"
-        };
+        SetUserClaim("abc");
 
-        controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = new DefaultHttpContext
-            {
-                User = new ClaimsPrincipal(
-                    new ClaimsIdentity(
-                        new[]
-                        {
-                            new Claim(ClaimTypes.NameIdentifier, "abc")
-                        }))
-            }
-        };
-
-        var result = controller.SearchUsers(request) as UnauthorizedResult;
+        var result = _controller.SearchUsers(request) as UnauthorizedResult;
 
         Assert.IsNotNull(result);
         Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
 
-        userServiceMock.Verify(
+        _userServiceMock.Verify(
             x => x.BuscarUsuarios(It.IsAny<int>(), It.IsAny<FindUserRequestDTO>()),
             Times.Never);
     }
@@ -384,29 +283,16 @@ public class UsersControllerTests
     [TestMethod]
     public void SearchUsers_WhenClaimIsMissing_ReturnsUnauthorized()
     {
-        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
-        var controller = new UsersController(userServiceMock.Object);
+        var request = CreateFindUserRequest();
 
-        var request = new FindUserRequestDTO
-        {
-            Name = "Juan",
-            LastName = "Perez"
-        };
+        SetUserClaim(null);
 
-        controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = new DefaultHttpContext
-            {
-                User = new ClaimsPrincipal(new ClaimsIdentity([], "TestAuth"))
-            }
-        };
-
-        var result = controller.SearchUsers(request) as UnauthorizedResult;
+        var result = _controller.SearchUsers(request) as UnauthorizedResult;
 
         Assert.IsNotNull(result);
         Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
 
-        userServiceMock.Verify(
+        _userServiceMock.Verify(
             x => x.BuscarUsuarios(It.IsAny<int>(), It.IsAny<FindUserRequestDTO>()),
             Times.Never);
     }

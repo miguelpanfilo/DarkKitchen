@@ -56,7 +56,7 @@ public class LoginServiceTests
             .Returns((Session s) => s);
 
         relojMock
-            .Setup(r => r.Ahora())
+            .Setup(r => r.Now())
             .Returns(DateTime.Now);
 
         var service = new LoginService(
@@ -102,7 +102,7 @@ public class LoginServiceTests
 
         var ex = Assert.ThrowsException<UserAuthenticationException>(() => service.Login(request));
 
-        Assert.AreEqual("Invalid credentials", ex.Message);
+        Assert.AreEqual("Credenciales inválidas", ex.Message);
 
         repoSesionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Never);
     }
@@ -133,7 +133,7 @@ public class LoginServiceTests
 
         var ex = Assert.ThrowsException<UserAuthenticationException>(() => service.Login(request));
 
-        Assert.AreEqual("Invalid credentials", ex.Message);
+        Assert.AreEqual("Credenciales inválidas", ex.Message);
 
         repoSesionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Never);
     }
@@ -156,7 +156,7 @@ public class LoginServiceTests
             .Returns((Session s) => s);
 
         watchMock
-            .Setup(r => r.Ahora())
+            .Setup(r => r.Now())
             .Returns(DateTime.Now);
 
         var service = new LoginService(
@@ -193,7 +193,7 @@ public class LoginServiceTests
             .Returns((Session s) => s);
 
         watchMock
-            .Setup(r => r.Ahora())
+            .Setup(r => r.Now())
             .Returns(DateTime.Now);
 
         var service = new LoginService(
@@ -230,7 +230,7 @@ public class LoginServiceTests
             .Returns((Session s) => s);
 
         watchMock
-            .Setup(r => r.Ahora())
+            .Setup(r => r.Now())
             .Returns(DateTime.Now);
 
         var service = new LoginService(
@@ -267,7 +267,7 @@ public class LoginServiceTests
             .Returns((Session s) => s);
 
         watchMock
-            .Setup(r => r.Ahora())
+            .Setup(r => r.Now())
             .Returns(DateTime.Now);
 
         var service = new LoginService(
@@ -363,7 +363,7 @@ public class LoginServiceTests
         var coordinatedDate = new DateTime(2026, 1, 1, 10, 0, 0);
 
         watch
-            .Setup(r => r.Ahora())
+            .Setup(r => r.Now())
             .Returns(coordinatedDate);
 
         var service = new LoginService(
@@ -402,7 +402,7 @@ public class LoginServiceTests
             .Returns((Session s) => s);
 
         watchMock
-            .Setup(r => r.Ahora())
+            .Setup(r => r.Now())
             .Returns(DateTime.Now);
 
         var service = new LoginService(
@@ -432,7 +432,7 @@ public class LoginServiceTests
         var fechaFija = new DateTime(2026, 1, 1, 10, 0, 0);
 
         watchMock
-            .Setup(r => r.Ahora())
+            .Setup(r => r.Now())
             .Returns(fechaFija);
 
         var user = CreateValidClientUser(1);

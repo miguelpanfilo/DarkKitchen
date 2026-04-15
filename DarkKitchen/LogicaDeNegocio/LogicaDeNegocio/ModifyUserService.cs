@@ -109,9 +109,7 @@ public class ModifyUserService(
         }
     }
 
-    // 🔥 VALIDACIONES CORRECTAS (null ≠ vacío)
-
-    private static string ResolveFinalName(ModificarUsuarioRequestDTO requestDto, User user)
+   private static string ResolveFinalName(ModificarUsuarioRequestDTO requestDto, User user)
     {
         if(requestDto.Name == null)
         {

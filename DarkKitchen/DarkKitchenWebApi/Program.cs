@@ -24,7 +24,7 @@ builder.Services.AddScoped<IModifyUserService, ModifyUserService>();
 builder.Services.AddScoped<IDeleteUserService, DeleteUserService>();
 builder.Services.AddScoped<IFilterUserService, FilterUserService>();
 builder.Services.AddScoped<IAdminValidationService, AdminValidationService>();
-builder.Services.AddScoped<ISessionValidationService, SessionValidationService>();
+builder.Services.AddScoped<ISessionsValidationService, SessionsValidationService>();
 
 // Filters
 builder.Services.AddScoped<AuthenticationFilter>();

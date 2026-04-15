@@ -156,7 +156,7 @@ public class SessionsControllerTests
         var ex = Assert.ThrowsException<UserAuthenticationException>(() =>
             service.Login(request));
 
-        Assert.AreEqual("Invalid credentials", ex.Message);
+        Assert.AreEqual("Credenciales inválidas", ex.Message);
 
         repoUserMock.Verify(r => r.FindByEmail("miguel@gmail.com"), Times.Once);
         repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Never);
@@ -190,7 +190,7 @@ public class SessionsControllerTests
         var ex = Assert.ThrowsException<UserAuthenticationException>(() =>
             service.Login(request));
 
-        Assert.AreEqual("Invalid credentials", ex.Message);
+        Assert.AreEqual("Credenciales inválidas", ex.Message);
 
         repoUserMock.Verify(r => r.FindByEmail("miguel@gmail.com"), Times.Once);
         repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Never);
@@ -206,7 +206,7 @@ public class SessionsControllerTests
         var fixedNow = new DateTime(2026, 1, 1, 10, 0, 0);
 
         watchMock
-            .Setup(r => r.Ahora())
+            .Setup(r => r.Now())
             .Returns(fixedNow);
 
         var user = CreateValidUser("miguel@gmail.com", "Password@2Ok6Abc");
@@ -240,7 +240,7 @@ public class SessionsControllerTests
         Assert.AreNotEqual(Guid.Empty, result.SessionId);
 
         repoUserMock.Verify(r => r.FindByEmail("miguel@gmail.com"), Times.Once);
-        watchMock.Verify(r => r.Ahora(), Times.Once);
+        watchMock.Verify(r => r.Now(), Times.Once);
         repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Once);
     }
 

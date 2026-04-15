@@ -109,7 +109,7 @@ public class FilterUserTests
             Name = "Juan"
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(2, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Name);
@@ -145,7 +145,7 @@ public class FilterUserTests
             Name = "Juan"
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(0, resultado.Count);
     }
@@ -188,7 +188,7 @@ public class FilterUserTests
             Name = "Juan"
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Name);
@@ -224,7 +224,7 @@ public class FilterUserTests
             Name = "juAn"
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Name);
@@ -250,7 +250,7 @@ public class FilterUserTests
             Name = "Juan"
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(0, resultado.Count);
     }
@@ -283,7 +283,7 @@ public class FilterUserTests
             Name = "Juan"
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual(100, resultado[0].Id);
@@ -332,7 +332,7 @@ public class FilterUserTests
             LastName = "Perez"
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(2, resultado.Count);
         Assert.AreEqual("Perez", resultado[0].LastName);
@@ -377,7 +377,7 @@ public class FilterUserTests
             LastName = "PeReZ"
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(2, resultado.Count);
         Assert.AreEqual("Perez", resultado[0].LastName);
@@ -413,7 +413,7 @@ public class FilterUserTests
             LastName = "Perez"
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(0, resultado.Count);
     }
@@ -456,7 +456,7 @@ public class FilterUserTests
             LastName = "Perez"
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Name);
@@ -486,7 +486,7 @@ public class FilterUserTests
             LastName = "Perez"
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(0, resultado.Count);
     }
@@ -520,7 +520,7 @@ public class FilterUserTests
             LastName = "  Perez   "
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(1, resultado.Count);
     }
@@ -554,7 +554,7 @@ public class FilterUserTests
             Name = "   Juan  "
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Name);
@@ -590,7 +590,7 @@ public class FilterUserTests
             LastName = " pErEz "
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Name);
@@ -615,7 +615,7 @@ public class FilterUserTests
         };
 
         var ex = Assert.ThrowsException<ForbiddenException>(() =>
-            service.BuscarUsuarios(5, request));
+            service.FindUser(5, request));
 
         Assert.AreEqual("Only an administrative user can perform this action", ex.Message);
     }
@@ -638,7 +638,7 @@ public class FilterUserTests
         };
 
         var ex = Assert.ThrowsException<ForbiddenException>(() =>
-            service.BuscarUsuarios(5, request));
+            service.FindUser(5, request));
 
         Assert.AreEqual("Only an administrative user can perform this action", ex.Message);
 
@@ -680,7 +680,7 @@ public class FilterUserTests
 
         var request = new FindUserRequestDTO();
 
-        var result = service.BuscarUsuarios(99, request);
+        var result = service.FindUser(99, request);
 
         Assert.AreEqual(2, result.Count);
     }
@@ -724,7 +724,7 @@ public class FilterUserTests
             LastName = "Perez"
         };
 
-        var result = service.BuscarUsuarios(99, request);
+        var result = service.FindUser(99, request);
 
         Assert.AreEqual(1, result.Count);
         Assert.AreEqual("Juan", result[0].Name);
