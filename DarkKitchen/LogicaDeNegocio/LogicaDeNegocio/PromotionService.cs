@@ -34,6 +34,10 @@ public class PromotionService
         }
 
         var product = _productRepository.GetById(productId);
+        if(product == null)
+        {
+            throw new PromotionException("El producto no existe");
+        }
 
         promotion.AssociateProduct(product);
 
