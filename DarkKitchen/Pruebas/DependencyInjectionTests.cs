@@ -1,4 +1,6 @@
 using FactoryService;
+using LogicaDeNegocio;
+using LogicaDeNegocioAbstracciones;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

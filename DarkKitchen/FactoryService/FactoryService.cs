@@ -1,3 +1,5 @@
+using LogicaDeNegocio;
+using LogicaDeNegocioAbstracciones;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,6 +11,8 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddScoped<ILoginService, LoginService>();
+
         return services;
     }
 }

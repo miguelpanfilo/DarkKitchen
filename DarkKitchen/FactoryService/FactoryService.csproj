@@ -12,4 +12,9 @@
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="11.0.0-preview.3.26207.106" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\LogicaDeNegocioAbstracciones\LogicaDeNegocioAbstracciones\LogicaDeNegocioAbstracciones.csproj" />
+      <ProjectReference Include="..\LogicaDeNegocio\LogicaDeNegocio\LogicaDeNegocio.csproj" />
+    </ItemGroup>
+
 </Project>
