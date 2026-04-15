@@ -1,6 +1,7 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
+using Dominio.Exceptions;
 using Mapeo;
 
 namespace LogicaDeNegocio;
@@ -27,6 +28,11 @@ public class PromotionService
     public PromotionResponseDto AssociateProduct(int promotionId, int productId)
     {
         var promotion = _promotionRepository.GetById(promotionId);
+        if (promotion == null)
+        {
+            throw new PromotionException("La promoción no existe");
+        }
+
         var product = _productRepository.GetById(productId);
 
         promotion.AssociateProduct(product);
