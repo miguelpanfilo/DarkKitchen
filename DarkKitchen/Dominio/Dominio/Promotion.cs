@@ -1,3 +1,5 @@
+using Dominio.Exceptions;
+
 namespace Dominio;
 
 public class Promotion
@@ -13,6 +15,11 @@ public class Promotion
         DateOnly startDate,
         DateOnly endDate)
     {
+        if(string.IsNullOrWhiteSpace(name))
+        {
+            throw new PromotionException("El nombre de la promoción no puede ser vacío");
+        }
+
         Name = name;
         DiscountPercentage = discountPercentage;
         StartDate = startDate;
