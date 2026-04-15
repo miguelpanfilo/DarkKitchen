@@ -18,12 +18,10 @@ public class Promotion
         DateOnly endDate)
     {
         ValidateName(name);
+
         ValidatePercentage(discountPercentage);
 
-        if (startDate > endDate)
-        {
-            throw new PromotionException("La fecha de inicio no puede ser mayor a la fecha de fin");
-        }
+        ValidateDateRange(startDate, endDate);
 
         Name = name;
         DiscountPercentage = discountPercentage;
@@ -53,6 +51,14 @@ public class Promotion
         if(discountPercentage is <= MinPercentage or > MaxPercentage)
         {
             throw new PromotionException("El porcentaje de descuento debe estar entre 1 y 100");
+        }
+    }
+
+    private void ValidateDateRange(DateOnly startDate, DateOnly endDate)
+    {
+        if (startDate > endDate)
+        {
+            throw new PromotionException("La fecha de inicio no puede ser mayor a la fecha de fin");
         }
     }
 }
