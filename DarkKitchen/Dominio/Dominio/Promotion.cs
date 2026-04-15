@@ -7,7 +7,7 @@ public class Promotion
     public DateOnly StartDate { get; set; }
     public DateOnly EndDate { get; set; }
 
-    public Promotion(
+    private Promotion(
         string name,
         decimal discountPercentage,
         DateOnly startDate,
@@ -17,5 +17,14 @@ public class Promotion
         DiscountPercentage = discountPercentage;
         StartDate = startDate;
         EndDate = endDate;
+    }
+
+    public static Promotion MakePromotion(
+        string name,
+        decimal discountPercentage,
+        DateOnly startDate,
+        DateOnly endDate)
+    {
+        return new Promotion(name, discountPercentage, startDate, endDate);
     }
 }

@@ -1,6 +1,7 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
+using Mapeo;
 
 namespace LogicaDeNegocio;
 
@@ -15,12 +16,7 @@ public class PromotionService
 
     public Promotion Create(PromotionDto promotionDto)
     {
-        var promotion = new Promotion(
-            promotionDto.Name,
-            promotionDto.DiscountPercentage,
-            promotionDto.StartDate,
-            promotionDto.EndDate
-        );
+        var promotion = PromotionMapper.ToEntity(promotionDto);
         return _promotionRepository.Create(promotion);
     }
 }
