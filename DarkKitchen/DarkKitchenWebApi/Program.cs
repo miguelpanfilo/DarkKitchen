@@ -17,6 +17,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Services
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<ISignUpUserService, SignUpService>();
 builder.Services.AddScoped<IModifyUserService, ModifyUserService>();
@@ -72,13 +73,6 @@ using(var scope = app.Services.CreateScope())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
-app.Run();app.UseHttpsRedirection();
-
-app.MapControllers();
-
 app.Run();
