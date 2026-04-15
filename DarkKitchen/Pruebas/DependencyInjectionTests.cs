@@ -109,4 +109,19 @@ public class DependencyInjectionTests
         Assert.AreEqual(typeof(FilterUserService), descriptor.ImplementationType);
         Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
     }
+
+    [TestMethod]
+    public void AddDarkKitchenDependencies_RegistersAdminValidationService()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder().Build();
+
+        services.AddDarkKitchenDependencies(configuration);
+
+        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(IAdminValidationService));
+
+        Assert.IsNotNull(descriptor);
+        Assert.AreEqual(typeof(AdminValidationService), descriptor.ImplementationType);
+        Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
+    }
 }
