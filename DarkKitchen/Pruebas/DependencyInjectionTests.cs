@@ -159,21 +159,6 @@ public class DependencyInjectionTests
     }
 
     [TestMethod]
-    public void AddDarkKitchenDependencies_RegistersAuthenticationFilter()
-    {
-        var services = new ServiceCollection();
-        var configuration = new ConfigurationBuilder().Build();
-
-        services.AddDarkKitchenDependencies(configuration);
-
-        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(AuthenticationFilter));
-
-        Assert.IsNotNull(descriptor);
-        Assert.AreEqual(typeof(AuthenticationFilter), descriptor.ImplementationType);
-        Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
-    }
-
-    [TestMethod]
     public void AddDarkKitchenDependencies_RegistersPhoneValidator()
     {
         var services = new ServiceCollection();

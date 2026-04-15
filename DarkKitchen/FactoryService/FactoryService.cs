@@ -1,6 +1,5 @@
 using Almacenamiento;
 using AlmacenamientoAbstracciones;
-using DarkKitchen.Filters;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
 using Microsoft.Extensions.Configuration;
@@ -23,7 +22,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAdminValidationService, AdminValidationService>();
         services.AddScoped<ISessionsValidationService, SessionsValidationService>();
         services.AddSingleton<IInitializationService, InitializationService>();
-        services.AddScoped<AuthenticationFilter>();
         services.AddScoped<IPhoneValidator, PhoneValidatorUruguay>();
         services.AddScoped<IReloj, WatchSystem>();
         services.AddSingleton<IRepositoryUser, RepositoryUser>();
