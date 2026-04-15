@@ -7,7 +7,7 @@ public class UserService(
     ISignUpUserService signUpUserService,
     IModifyUserService modifyUserService,
     IDeleteUserService deleteUserService,
-    IFilterUserService filterUserService)
+    IFilterUserService filterUserService) : IUserService
 {
     private readonly ISignUpUserService _signUpUserService = signUpUserService;
     private readonly IModifyUserService _modifyUserService = modifyUserService;
@@ -53,6 +53,6 @@ public class UserService(
 
     public List<UsuarioResponseDTO> BuscarUsuarios(int idUsuarioLogueado, FindUserRequestDTO requestDto)
     {
-        return _filterUserService.BuscarUsuarios(idUsuarioLogueado, requestDto);
+        return _filterUserService.FindUser(idUsuarioLogueado, requestDto);
     }
 }

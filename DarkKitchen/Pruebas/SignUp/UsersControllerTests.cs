@@ -1,7 +1,9 @@
+using System.Security.Claims;
 using Contratos;
 using DarkKitchen.Controllers;
+using DarkKitchen.Filters;
 using LogicaDeNegocioAbstracciones;
-using LogicaDeNegocioAbstracciones.Exceptions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -10,132 +12,302 @@ namespace Pruebas.SignUp;
 [TestClass]
 public class UsersControllerTests
 {
-    [TestMethod]
-    public void CreateUser_ValidRequest_ReturnsCreated()
+    private Mock<IUserService> _userServiceMock = null!;
+    private UsersController _controller = null!;
+
+    [TestInitialize]
+    public void Initialize()
     {
-        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        _userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
+        _controller = new UsersController(_userServiceMock.Object);
+    }
 
-        var request = new SignUpClientRequestDTO
+    private void SetUserClaim(string? userIdClaimValue)
+    {
+        var claims = new List<Claim>();
+
+        if(userIdClaimValue != null)
         {
-            Name = "Miguel",
-            LastName = "Lopez",
-            Email = "miguel@gmail.com",
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, userIdClaimValue));
+        }
+
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(
+                    new ClaimsIdentity(claims, "TestAuth"))
+            }
+        };
+    }
+
+    private static SingUpInternUserRequestDTO CreateValidInternalUserRequest()
+    {
+        return new SingUpInternUserRequestDTO
+        {
+            Name = "Juan",
+            LastName = "Perez",
+            Email = "juan@gmail.com",
             Phone = "099123456",
-            Password = "Password@2Ok6Abc"
+            Password = "PasswordSeguraee3!",
+            Role = UserRolesDto.Administrative.ToString()
         };
+    }
 
-        var expectedResponse = new SignUpClientResponseDTO
+    private static FindUserRequestDTO CreateFindUserRequest()
+    {
+        return new FindUserRequestDTO
         {
-            Name = "Miguel",
-            LastName = "Lopez",
-            Email = "miguel@gmail.com"
+            Name = "Juan",
+            LastName = "Perez"
+        };
+    }
+
+    [TestMethod]
+    public void DeleteInternalUser_CallsDeleteServiceOnce()
+    {
+        _userServiceMock
+            .Setup(x => x.EliminarUsuarioInterno(2, 99));
+
+        SetUserClaim("99");
+
+        _controller.DeleteInternalUser(2);
+
+        _userServiceMock.Verify(
+            x => x.EliminarUsuarioInterno(2, 99),
+            Times.Once);
+    }
+
+    [TestMethod]
+    public void DeleteInternalUser_WhenClaimIsValid_ReturnsNoContent()
+    {
+        _userServiceMock
+            .Setup(x => x.EliminarUsuarioInterno(2, 99));
+
+        SetUserClaim("99");
+
+        var result = _controller.DeleteInternalUser(2);
+
+        Assert.IsInstanceOfType(result, typeof(NoContentResult));
+    }
+
+    [TestMethod]
+    public void DeleteInternalUser_WhenClaimIsInvalid_ReturnsUnauthorized()
+    {
+        SetUserClaim("abc");
+
+        var result = _controller.DeleteInternalUser(2);
+
+        Assert.IsInstanceOfType(result, typeof(UnauthorizedResult));
+        _userServiceMock.Verify(
+            x => x.EliminarUsuarioInterno(It.IsAny<int>(), It.IsAny<int>()),
+            Times.Never);
+    }
+
+    [TestMethod]
+    public void DeleteInternalUser_HasHttpDeleteAttribute()
+    {
+        var method = typeof(UsersController).GetMethod(nameof(UsersController.DeleteInternalUser));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(HttpDeleteAttribute), false)
+            .Cast<HttpDeleteAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
+    }
+
+    [TestMethod]
+    public void DeleteInternalUser_HasRoleAuthorizationAttribute()
+    {
+        var method = typeof(UsersController).GetMethod(nameof(UsersController.DeleteInternalUser));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
+            .Cast<RoleAuthorizationAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
+    }
+
+    [TestMethod]
+    public void DeleteInternalUser_HasHttpDeleteAttributeWithIdTemplate()
+    {
+        var method = typeof(UsersController).GetMethod(nameof(UsersController.DeleteInternalUser));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(HttpDeleteAttribute), false)
+            .Cast<HttpDeleteAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
+        Assert.AreEqual("{id}", attribute.Template);
+    }
+
+    [TestMethod]
+    public void CreateInternalUser_CallsSignUpServiceOnce()
+    {
+        var request = CreateValidInternalUserRequest();
+
+        _userServiceMock
+            .Setup(x => x.CrearUsuarioInterno(99, request))
+            .Returns((UsuarioResponseDTO)null!);
+
+        SetUserClaim("99");
+
+        _controller.CreateInternalUser(request);
+
+        _userServiceMock.Verify(
+            x => x.CrearUsuarioInterno(99, request),
+            Times.Once);
+    }
+
+    [TestMethod]
+    public void CreateInternalUser_HasRoleAuthorizationAttribute()
+    {
+        var method = typeof(UsersController).GetMethod(nameof(UsersController.CreateInternalUser));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
+            .Cast<RoleAuthorizationAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
+    }
+
+    [TestMethod]
+    public void CreateInternalUser_ValidRequest_ReturnsCreatedWithResponse()
+    {
+        var request = CreateValidInternalUserRequest();
+
+        var response = new UsuarioResponseDTO
+        {
+            Id = 10,
+            Name = "Juan",
+            LastName = "Perez",
+            Email = "juan@gmail.com",
+            Phone = "099123456",
+            Role = UserRolesDto.Administrative.ToString()
         };
 
-        signUpServiceMock
-            .Setup(s => s.SignUpClient(request))
-            .Returns(expectedResponse);
+        _userServiceMock
+            .Setup(x => x.CrearUsuarioInterno(99, request))
+            .Returns(response);
 
-        var controller = new UsersController(signUpServiceMock.Object);
+        SetUserClaim("99");
 
-        var result = controller.CreateUser(request);
+        var result = _controller.CreateInternalUser(request);
 
         var createdResult = result as CreatedResult;
 
         Assert.IsNotNull(createdResult);
-        Assert.AreEqual(201, createdResult.StatusCode);
-
-        var value = createdResult.Value as SignUpClientResponseDTO;
-        Assert.IsNotNull(value);
-        Assert.AreEqual("Miguel", value.Name);
-        Assert.AreEqual("Lopez", value.LastName);
-        Assert.AreEqual("miguel@gmail.com", value.Email);
+        Assert.AreEqual(StatusCodes.Status201Created, createdResult.StatusCode);
+        Assert.AreEqual(response, createdResult.Value);
     }
 
     [TestMethod]
-    public void CreateUser_EmailAlreadyExists_ThrowsSignUpException()
+    public void CreateInternalUser_WhenClaimIsInvalid_ReturnsUnauthorized()
     {
-        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var request = CreateValidInternalUserRequest();
 
-        var request = new SignUpClientRequestDTO
-        {
-            Name = "Miguel",
-            LastName = "Lopez",
-            Email = "miguel@gmail.com",
-            Phone = "099123456",
-            Password = "Password@2Ok6Abc"
-        };
+        SetUserClaim("abc");
 
-        signUpServiceMock
-            .Setup(s => s.SignUpClient(request))
-            .Throws(new SignUpException("Email is already registered"));
+        var result = _controller.CreateInternalUser(request) as UnauthorizedResult;
 
-        var controller = new UsersController(signUpServiceMock.Object);
+        Assert.IsNotNull(result);
+        Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
 
-        var ex = Assert.ThrowsException<SignUpException>(() =>
-            controller.CreateUser(request));
-
-        Assert.AreEqual("Email is already registered", ex.Message);
-
-        signUpServiceMock.Verify(s => s.SignUpClient(request), Times.Once);
+        _userServiceMock.Verify(
+            x => x.CrearUsuarioInterno(It.IsAny<int>(), It.IsAny<SingUpInternUserRequestDTO>()),
+            Times.Never);
     }
 
     [TestMethod]
-    public void CreateUser_InvalidPhone_ThrowsSignUpValidationException()
+    public void CreateInternalUser_HasHttpPostAttribute()
     {
-        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var method = typeof(UsersController).GetMethod(nameof(UsersController.CreateInternalUser));
 
-        var request = new SignUpClientRequestDTO
-        {
-            Name = "Miguel",
-            LastName = "Lopez",
-            Email = "miguel@gmail.com",
-            Phone = "099123456",
-            Password = "Password@2Ok6Abc"
-        };
+        Assert.IsNotNull(method);
 
-        signUpServiceMock
-            .Setup(s => s.SignUpClient(request))
-            .Throws(new SignUpValidationException("Phone is not valid"));
+        var attribute = method.GetCustomAttributes(typeof(HttpPostAttribute), false)
+            .Cast<HttpPostAttribute>()
+            .SingleOrDefault();
 
-        var controller = new UsersController(signUpServiceMock.Object);
-
-        var ex = Assert.ThrowsException<SignUpValidationException>(() =>
-            controller.CreateUser(request));
-
-        Assert.AreEqual("Phone is not valid", ex.Message);
-
-        signUpServiceMock.Verify(s => s.SignUpClient(request), Times.Once);
+        Assert.IsNotNull(attribute);
     }
 
     [TestMethod]
-    public void CreateUser_ValidRequest_CallsServiceOnce()
+    public void SearchUsers_CallsFilterServiceOnce()
     {
-        var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
+        var request = CreateFindUserRequest();
+        var response = new List<UsuarioResponseDTO>();
 
-        var request = new SignUpClientRequestDTO
-        {
-            Name = "Miguel",
-            LastName = "Lopez",
-            Email = "miguel@gmail.com",
-            Phone = "099123456",
-            Password = "Password@2Ok6Abc"
-        };
+        _userServiceMock
+            .Setup(x => x.BuscarUsuarios(99, request))
+            .Returns(response);
 
-        var expectedResponse = new SignUpClientResponseDTO
-        {
-            Name = "Miguel",
-            LastName = "Lopez",
-            Email = "miguel@gmail.com"
-        };
+        SetUserClaim("99");
 
-        signUpServiceMock
-            .Setup(s => s.SignUpClient(request))
-            .Returns(expectedResponse);
+        var result = _controller.SearchUsers(request) as OkObjectResult;
 
-        var controller = new UsersController(signUpServiceMock.Object);
+        Assert.IsNotNull(result);
+        Assert.AreEqual(StatusCodes.Status200OK, result.StatusCode);
+        Assert.AreEqual(response, result.Value);
 
-        controller.CreateUser(request);
+        _userServiceMock.Verify(
+            x => x.BuscarUsuarios(99, request),
+            Times.Once);
+    }
 
-        signUpServiceMock.Verify(s => s.SignUpClient(request), Times.Once);
+    [TestMethod]
+    public void SearchUsers_WhenClaimIsInvalid_ReturnsUnauthorized()
+    {
+        var request = CreateFindUserRequest();
+
+        SetUserClaim("abc");
+
+        var result = _controller.SearchUsers(request) as UnauthorizedResult;
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
+
+        _userServiceMock.Verify(
+            x => x.BuscarUsuarios(It.IsAny<int>(), It.IsAny<FindUserRequestDTO>()),
+            Times.Never);
+    }
+
+    [TestMethod]
+    public void SearchUsers_WhenClaimIsMissing_ReturnsUnauthorized()
+    {
+        var request = CreateFindUserRequest();
+
+        SetUserClaim(null);
+
+        var result = _controller.SearchUsers(request) as UnauthorizedResult;
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
+
+        _userServiceMock.Verify(
+            x => x.BuscarUsuarios(It.IsAny<int>(), It.IsAny<FindUserRequestDTO>()),
+            Times.Never);
+    }
+
+    [TestMethod]
+    public void SearchUsers_HasRoleAuthorizationAttribute()
+    {
+        var method = typeof(UsersController).GetMethod(nameof(UsersController.SearchUsers));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
+            .Cast<RoleAuthorizationAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
     }
 }

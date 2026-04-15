@@ -184,7 +184,7 @@ public class UserServiceIntegrationTests
         var request = new FindUserRequestDTO { Name = "Juan", LastName = "Perez" };
 
         filterUserServiceMock
-            .Setup(x => x.BuscarUsuarios(99, request))
+            .Setup(x => x.FindUser(99, request))
             .Returns([]);
 
         var service = new UserService(
@@ -196,7 +196,7 @@ public class UserServiceIntegrationTests
         service.BuscarUsuarios(99, request);
 
         filterUserServiceMock.Verify(
-            x => x.BuscarUsuarios(99, request),
+            x => x.FindUser(99, request),
             Times.Once);
     }
 }

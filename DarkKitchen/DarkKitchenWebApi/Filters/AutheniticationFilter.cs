@@ -8,12 +8,12 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace DarkKitchen.Filters;
 
-public class AuthenticationFilter(ISessionValidationService sessionValidationService)
+public class AuthenticationFilter(ISessionsValidationService sessionsValidationService)
     : IAuthorizationFilter
 {
     private const string SessionHeaderName = "X-Session-Id";
     private const string CurrentUserItemKey = "CurrentUser";
-    private readonly ISessionValidationService _sessionValidationService = sessionValidationService;
+    private readonly ISessionsValidationService _sessionsValidationService = sessionsValidationService;
 
     public void OnAuthorization(AuthorizationFilterContext context)
     {
@@ -26,18 +26,13 @@ public class AuthenticationFilter(ISessionValidationService sessionValidationSer
             return;
         }
 
-        if(!context.HttpContext.Request.Headers.TryGetValue(SessionHeaderName, out var values))
+        if (!context.HttpContext.Request.Headers.TryGetValue(SessionHeaderName, out var values) || !values.Any() || string.IsNullOrWhiteSpace(values.FirstOrDefault()))
         {
             context.Result = BuildUnauthorizedResult("El header de sesión es obligatorio");
             return;
         }
 
         var sessionIdText = values.FirstOrDefault();
-        if(string.IsNullOrWhiteSpace(sessionIdText))
-        {
-            context.Result = BuildUnauthorizedResult("El header de sesión es obligatorio");
-            return;
-        }
 
         if(!Guid.TryParse(sessionIdText, out var sessionId))
         {
@@ -47,7 +42,7 @@ public class AuthenticationFilter(ISessionValidationService sessionValidationSer
 
         try
         {
-            var current = _sessionValidationService.ValidateSession(sessionId);
+            var current = _sessionsValidationService.ValidateSession(sessionId);
             context.HttpContext.Items[CurrentUserItemKey] = current;
 
             var claims = new List<Claim>

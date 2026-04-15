@@ -7,8 +7,8 @@ namespace LogicaDeNegocio;
 
 public class AdminValidationService(IRepositoryUser repositoryUser) : IAdminValidationService
 {
-    private const string UserNotFoundMessage = "User does not exist";
-    private const string OnlyAdminMessage = "Only an administrative user can perform this action";
+    private const string UserNotFoundMessage = "El usuario no existe";
+    private const string OnlyAdminMessage = "Solo un usuario administrador puede realizar esta acción";
     private readonly IRepositoryUser _repositoryUser = repositoryUser;
 
     public User GetExistingUser(int userId)
