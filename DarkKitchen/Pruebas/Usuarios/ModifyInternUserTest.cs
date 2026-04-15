@@ -621,4 +621,99 @@ public class ModifyInternUserTest
 
         _adminValidationMock.Verify(v => v.GetExistingUser(It.IsAny<int>()), Times.Never);
     }
+
+    [TestMethod]
+    public void UpdateInternalUser_EmptyName_ThrowsException()
+    {
+        var user = CreateAdministrativeUser(
+            "Juan", "Perez", "admin@gmail.com", "099123456",
+            "PasswordSeguraee3!", UserRoles.Administrative, 5);
+
+        _adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
+        _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
+
+        var request = new ModificarUsuarioRequestDTO { Name = "   " };
+
+        var ex = Assert.ThrowsException<ValidationException>(() =>
+            _service.UpdateInternalUser(5, 99, request));
+
+        Assert.AreEqual("El nombre no puede estar vacío", ex.Message);
+    }
+
+    [TestMethod]
+    public void UpdateInternalUser_EmptyLastName_ThrowsException()
+    {
+        var user = CreateAdministrativeUser(
+            "Juan", "Perez", "admin@gmail.com", "099123456",
+            "PasswordSeguraee3!", UserRoles.Administrative, 5);
+
+        _adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
+        _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
+
+        var request = new ModificarUsuarioRequestDTO { LastName = "   " };
+
+        var ex = Assert.ThrowsException<ValidationException>(() =>
+            _service.UpdateInternalUser(5, 99, request));
+
+        Assert.AreEqual("El apellido no puede estar vacío", ex.Message);
+    }
+
+    [TestMethod]
+    public void UpdateInternalUser_EmptyEmail_ThrowsException()
+    {
+        var user = CreateAdministrativeUser(
+            "Juan", "Perez", "admin@gmail.com", "099123456",
+            "PasswordSeguraee3!", UserRoles.Administrative, 5);
+
+        _adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
+        _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
+
+        var request = new ModificarUsuarioRequestDTO { Email = "   " };
+
+        var ex = Assert.ThrowsException<ValidationException>(() =>
+            _service.UpdateInternalUser(5, 99, request));
+
+        Assert.AreEqual("El email no puede estar vacío", ex.Message);
+    }
+
+    [TestMethod]
+    public void UpdateInternalUser_EmptyPhone_ThrowsException()
+    {
+        var user = CreateAdministrativeUser(
+            "Juan", "Perez", "admin@gmail.com", "099123456",
+            "PasswordSeguraee3!", UserRoles.Administrative, 5);
+
+        _adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
+        _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
+
+        var request = new ModificarUsuarioRequestDTO { Phone = "   " };
+
+        var ex = Assert.ThrowsException<ValidationException>(() =>
+            _service.UpdateInternalUser(5, 99, request));
+
+        Assert.AreEqual("El teléfono no puede estar vacío", ex.Message);
+    }
+
+    [TestMethod]
+    public void UpdateInternalUser_EmptyRole_ThrowsException()
+    {
+        var user = CreateAdministrativeUser(
+            "Juan", "Perez", "admin@gmail.com", "099123456",
+            "PasswordSeguraee3!", UserRoles.Administrative, 5);
+
+        _adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
+        _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
+
+        var request = new ModificarUsuarioRequestDTO { Role = "   " };
+
+        var ex = Assert.ThrowsException<ValidationException>(() =>
+            _service.UpdateInternalUser(5, 99, request));
+
+        Assert.AreEqual("El rol no puede estar vacío", ex.Message);
+    }
 }
