@@ -19,6 +19,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IFilterUserService, FilterUserService>();
         services.AddScoped<IAdminValidationService, AdminValidationService>();
         services.AddScoped<ISessionsValidationService, SessionsValidationService>();
+        services.AddSingleton<IInitializationService, InitializationService>();
 
         return services;
     }
