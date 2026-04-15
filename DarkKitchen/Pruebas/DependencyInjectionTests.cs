@@ -185,4 +185,19 @@ public class DependencyInjectionTests
         Assert.AreEqual(typeof(PhoneValidatorUruguay), descriptor.ImplementationType);
         Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
     }
+
+    [TestMethod]
+    public void AddDarkKitchenDependencies_RegistersWatchSystem()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder().Build();
+
+        services.AddDarkKitchenDependencies(configuration);
+
+        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(IReloj));
+
+        Assert.IsNotNull(descriptor);
+        Assert.AreEqual(typeof(WatchSystem), descriptor.ImplementationType);
+        Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
+    }
 }
