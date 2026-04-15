@@ -16,6 +16,11 @@ public class Promotion
         DateOnly endDate)
     {
         ValidateName(name);
+        if(discountPercentage < 1 || discountPercentage > 100)
+        {
+            throw new PromotionException("El porcentaje de descuento debe estar entre 1 y 100");
+        }
+
         Name = name;
         DiscountPercentage = discountPercentage;
         StartDate = startDate;
