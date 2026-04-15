@@ -23,6 +23,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IInitializationService, InitializationService>();
         services.AddScoped<AuthenticationFilter>();
         services.AddScoped<IPhoneValidator, PhoneValidatorUruguay>();
+        services.AddScoped<IReloj, WatchSystem>();
         return services;
     }
 }
