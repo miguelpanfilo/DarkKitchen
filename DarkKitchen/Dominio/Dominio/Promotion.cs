@@ -19,6 +19,12 @@ public class Promotion
     {
         ValidateName(name);
         ValidatePercentage(discountPercentage);
+
+        if (startDate > endDate)
+        {
+            throw new PromotionException("La fecha de inicio no puede ser mayor a la fecha de fin");
+        }
+
         Name = name;
         DiscountPercentage = discountPercentage;
         StartDate = startDate;
