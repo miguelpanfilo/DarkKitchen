@@ -27,6 +27,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPhoneValidator, PhoneValidatorUruguay>();
         services.AddScoped<IReloj, WatchSystem>();
         services.AddSingleton<IRepositoryUser, RepositoryUser>();
+        services.AddSingleton<IRepositorySession, RepositorySession>();
         return services;
     }
 }
