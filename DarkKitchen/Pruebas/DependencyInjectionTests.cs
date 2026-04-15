@@ -1,3 +1,5 @@
+using Almacenamiento;
+using AlmacenamientoAbstracciones;
 using DarkKitchen.Filters;
 using FactoryService;
 using LogicaDeNegocio;
@@ -199,5 +201,20 @@ public class DependencyInjectionTests
         Assert.IsNotNull(descriptor);
         Assert.AreEqual(typeof(WatchSystem), descriptor.ImplementationType);
         Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
+    }
+
+    [TestMethod]
+    public void AddDarkKitchenDependencies_RegistersUserRepository()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder().Build();
+
+        services.AddDarkKitchenDependencies(configuration);
+
+        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(IRepositoryUser));
+
+        Assert.IsNotNull(descriptor);
+        Assert.AreEqual(typeof(RepositoryUser), descriptor.ImplementationType);
+        Assert.AreEqual(ServiceLifetime.Singleton, descriptor.Lifetime);
     }
 }
