@@ -13,14 +13,14 @@ public sealed class Email
     {
         if(string.IsNullOrWhiteSpace(email))
         {
-            return Result<Email>.Fail("Email cannot be empty");
+            return Result<Email>.Fail("Email no puede estar vacío");
         }
 
         var emailNormalized = email.Trim().ToLowerInvariant();
 
         if(!HaveCorrectFormat(emailNormalized))
         {
-            return Result<Email>.Fail("Email format is not valid");
+            return Result<Email>.Fail("Formato de Email inválido");
         }
 
         return Result<Email>.Ok(new Email(emailNormalized));

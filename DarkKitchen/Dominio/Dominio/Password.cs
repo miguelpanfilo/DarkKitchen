@@ -59,7 +59,7 @@ public sealed class Password
     {
         if(!Validate(password))
         {
-            return Result<Password>.Fail("Password format is not valid");
+            return Result<Password>.Fail("Formato de clave inválida");
         }
 
         var hash = HashearMd5(password!);

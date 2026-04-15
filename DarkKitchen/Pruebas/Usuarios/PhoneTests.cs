@@ -33,7 +33,7 @@ public class PhoneTests
         var result = Phone.TryMakePhone(phone);
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Phone cannot be empty", result.ErrorMessage);
+        Assert.AreEqual("Telefono no puede estar vacío", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -42,7 +42,7 @@ public class PhoneTests
         var result = Phone.TryMakePhone(string.Empty);
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Phone cannot be empty", result.ErrorMessage);
+        Assert.AreEqual("Telefono no puede estar vacío", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -51,7 +51,7 @@ public class PhoneTests
         var result = Phone.TryMakePhone("09912a456");
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Phone must contain only digits", result.ErrorMessage);
+        Assert.AreEqual("Telefono solo puede contener números", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -60,7 +60,7 @@ public class PhoneTests
         var result = Phone.TryMakePhone("09912-456");
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Phone must contain only digits", result.ErrorMessage);
+        Assert.AreEqual("Telefono solo puede contener números", result.ErrorMessage);
     }
 
     [TestMethod]

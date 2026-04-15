@@ -7,10 +7,10 @@ using Mapeo;
 
 namespace LogicaDeNegocio;
 
-public class SessionValidationService(
+public class SessionsValidationService(
     IRepositorySession repositorySession,
     IRepositoryUser repositoryUser,
-    IReloj watch) : ISessionValidationService
+    IReloj watch) : ISessionsValidationService
 {
     private const string SessionNotFoundMessage = "La sesión no existe";
     private const string SessionExpiredMessage = "La sesión expiró";
@@ -44,7 +44,7 @@ public class SessionValidationService(
 
     private void ValidateSessionIsNotExpired(Session session)
     {
-        if(session.ExpireDate <= _watch.Ahora())
+        if(session.ExpireDate <= _watch.Now())
         {
             throw new UserAuthenticationException(SessionExpiredMessage);
         }

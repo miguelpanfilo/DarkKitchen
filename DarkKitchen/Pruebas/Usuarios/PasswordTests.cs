@@ -142,7 +142,7 @@ public class PasswordTests
         var result = Password.TryMakePassword(password);
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Password format is not valid", result.ErrorMessage);
+        Assert.AreEqual("Formato de clave inválida", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -153,7 +153,7 @@ public class PasswordTests
         var result = Password.TryMakePassword(password);
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Password format is not valid", result.ErrorMessage);
+        Assert.AreEqual("Formato de clave inválida", result.ErrorMessage);
     }
 
     [TestMethod]

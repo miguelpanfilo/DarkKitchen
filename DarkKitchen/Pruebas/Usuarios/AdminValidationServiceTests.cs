@@ -10,6 +10,16 @@ namespace Pruebas.Usuarios;
 [TestClass]
 public class AdminValidationServiceTests
 {
+    private Mock<IRepositoryUser> _repoMock = null!;
+    private AdminValidationService _service = null!;
+
+    [TestInitialize]
+    public void Initialize()
+    {
+        _repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        _service = new AdminValidationService(_repoMock.Object);
+    }
+
     private static Phone CreateValidPhone()
     {
         var phoneResult = Phone.TryMakePhone("099123456");
@@ -60,17 +70,13 @@ public class AdminValidationServiceTests
     [TestMethod]
     public void GetExistingUser_UserExists_ReturnsUser()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-
         var user = CreateAdministrativeUser(5);
 
-        repoMock
+        _repoMock
             .Setup(r => r.FindById(5))
             .Returns(user);
 
-        var service = new AdminValidationService(repoMock.Object);
-
-        var result = service.GetExistingUser(5);
+        var result = _service.GetExistingUser(5);
 
         IsNotNull(result);
         AreEqual(5, result.Id);
@@ -80,79 +86,60 @@ public class AdminValidationServiceTests
     [TestMethod]
     public void GetExistingUser_UserDoesNotExist_ThrowsExceptionWithCorrectMessage()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-
-        repoMock
+        _repoMock
             .Setup(r => r.FindById(99))
             .Returns((User?)null);
 
-        var service = new AdminValidationService(repoMock.Object);
+        var ex = ThrowsException<NotFoundException>(() => _service.GetExistingUser(99));
 
-        var ex = ThrowsException<NotFoundException>(() => service.GetExistingUser(99));
-
-        AreEqual("User does not exist", ex.Message);
+        AreEqual("El usuario no existe", ex.Message);
     }
 
     [TestMethod]
     public void EnsureUserIsAdmin_UserIsAdministrative_DoesNotThrowException()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-
         var user = CreateAdministrativeUser(5);
 
-        repoMock
+        _repoMock
             .Setup(r => r.FindById(5))
             .Returns(user);
 
-        var service = new AdminValidationService(repoMock.Object);
-
-        service.EnsureUserIsAdmin(5);
+        _service.EnsureUserIsAdmin(5);
     }
 
     [TestMethod]
     public void EnsureUserIsAdmin_UserIsNotAdministrative_ThrowsExceptionWithCorrectMessage()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-
         var user = CreateClientUser(5);
 
-        repoMock
+        _repoMock
             .Setup(r => r.FindById(5))
             .Returns(user);
 
-        var service = new AdminValidationService(repoMock.Object);
-
         var ex = ThrowsException<ForbiddenException>(() =>
-            service.EnsureUserIsAdmin(5));
+            _service.EnsureUserIsAdmin(5));
 
-        AreEqual("Only an administrative user can perform this action", ex.Message);
+        AreEqual("Solo un usuario administrador puede realizar esta acción", ex.Message);
     }
 
     [TestMethod]
     public void EnsureUserIsAdmin_UserDoesNotExist_ThrowsExceptionWithCorrectMessage()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-
-        repoMock
+        _repoMock
             .Setup(r => r.FindById(5))
             .Returns((User?)null);
 
-        var service = new AdminValidationService(repoMock.Object);
-
         var ex = ThrowsException<NotFoundException>(() =>
-            service.EnsureUserIsAdmin(5));
+            _service.EnsureUserIsAdmin(5));
 
-        AreEqual("User does not exist", ex.Message);
+        AreEqual("El usuario no existe", ex.Message);
     }
 
     [TestMethod]
     public void EnsureIsNotSelfAction_SameUser_ThrowsException()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var service = new AdminValidationService(repoMock.Object);
-
         var ex = ThrowsException<ConflictException>(() =>
-            service.EnsureIsNotSelfAction(5, 5, "A user cannot modify itself"));
+            _service.EnsureIsNotSelfAction(5, 5, "A user cannot modify itself"));
 
         AreEqual("A user cannot modify itself", ex.Message);
     }
@@ -160,10 +147,7 @@ public class AdminValidationServiceTests
     [TestMethod]
     public void EnsureIsNotSelfAction_DifferentUsers_DoesNotThrowException()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var service = new AdminValidationService(repoMock.Object);
-
-        service.EnsureIsNotSelfAction(10, 5, "A user cannot modify itself");
+        _service.EnsureIsNotSelfAction(10, 5, "A user cannot modify itself");
 
         IsTrue(true);
     }
