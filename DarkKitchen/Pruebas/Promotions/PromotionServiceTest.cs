@@ -79,4 +79,29 @@ public class PromotionServiceTest
 
         Assert.AreEqual("El porcentaje de descuento debe estar entre 1 y 100", ex.Message);
     }
+
+    [DataTestMethod]
+    [DataRow(2026, 1, 30, 2026, 1, 25)]
+    public void GivenPromotionDtoWithInvalidDateRange_WhenCreating_ThenThrowsPromotionException(
+        int startYear,
+        int startMonth,
+        int startDay,
+        int endYear,
+        int endMonth,
+        int endDay)
+    {
+        var promotionDto = new PromotionDto(
+            "Black Friday",
+            10,
+            new DateOnly(startYear, startMonth, startDay),
+            new DateOnly(endYear, endMonth, endDay)
+        );
+
+        var repositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var service = new PromotionService(repositoryMock.Object);
+
+        var ex = Assert.ThrowsException<PromotionException>(() => service.Create(promotionDto));
+
+        Assert.AreEqual("La fecha de inicio no puede ser mayor a la fecha de fin", ex.Message);
+    }
 }
