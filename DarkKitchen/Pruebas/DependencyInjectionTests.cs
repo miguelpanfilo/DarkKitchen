@@ -49,4 +49,19 @@ public class DependencyInjectionTests
         Assert.AreEqual(typeof(SignUpService), descriptor.ImplementationType);
         Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
     }
+
+    [TestMethod]
+    public void AddDarkKitchenDependencies_RegistersUserService()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder().Build();
+
+        services.AddDarkKitchenDependencies(configuration);
+
+        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(IUserService));
+
+        Assert.IsNotNull(descriptor);
+        Assert.AreEqual(typeof(UserService), descriptor.ImplementationType);
+        Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
+    }
 }
