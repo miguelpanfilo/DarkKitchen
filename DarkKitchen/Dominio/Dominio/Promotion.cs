@@ -15,11 +15,7 @@ public class Promotion
         DateOnly startDate,
         DateOnly endDate)
     {
-        if(string.IsNullOrWhiteSpace(name))
-        {
-            throw new PromotionException("El nombre de la promoción no puede ser vacío");
-        }
-
+        ValidateName(name);
         Name = name;
         DiscountPercentage = discountPercentage;
         StartDate = startDate;
@@ -33,5 +29,13 @@ public class Promotion
         DateOnly endDate)
     {
         return new Promotion(name, discountPercentage, startDate, endDate);
+    }
+
+    private void ValidateName(string name)
+    {
+        if(string.IsNullOrWhiteSpace(name))
+        {
+            throw new PromotionException("El nombre de la promoción no puede ser vacío");
+        }
     }
 }
