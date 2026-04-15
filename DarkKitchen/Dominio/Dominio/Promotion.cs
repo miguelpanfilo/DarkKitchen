@@ -8,6 +8,8 @@ public class Promotion
     public decimal DiscountPercentage { get; set; }
     public DateOnly StartDate { get; set; }
     public DateOnly EndDate { get; set; }
+    private const decimal MinPercentage = 0;
+    private const decimal MaxPercentage = 100;
 
     private Promotion(
         string name,
@@ -16,11 +18,7 @@ public class Promotion
         DateOnly endDate)
     {
         ValidateName(name);
-        if(discountPercentage < 1 || discountPercentage > 100)
-        {
-            throw new PromotionException("El porcentaje de descuento debe estar entre 1 y 100");
-        }
-
+        ValidatePercentage(discountPercentage);
         Name = name;
         DiscountPercentage = discountPercentage;
         StartDate = startDate;
@@ -41,6 +39,14 @@ public class Promotion
         if(string.IsNullOrWhiteSpace(name))
         {
             throw new PromotionException("El nombre de la promoción no puede ser vacío");
+        }
+    }
+
+    private void ValidatePercentage(decimal discountPercentage)
+    {
+        if(discountPercentage is <= MinPercentage or > MaxPercentage)
+        {
+            throw new PromotionException("El porcentaje de descuento debe estar entre 1 y 100");
         }
     }
 }
