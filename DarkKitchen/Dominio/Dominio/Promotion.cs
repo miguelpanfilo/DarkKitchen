@@ -43,6 +43,11 @@ public class Promotion
 
     public void AssociateProduct(Product product)
     {
+        if(Products.Contains(product))
+        {
+            throw new PromotionException("El producto ya está asociado a la promoción");
+        }
+
         Products.Add(product);
     }
 
