@@ -8,28 +8,36 @@ namespace Pruebas.InicioSesion;
 [TestClass]
 public class InitializationServiceTests
 {
+    private Mock<IRepositoryUser> _repositoryUserMock = null!;
+    private InitializationService _service = null!;
+    private User? _addedUser;
+
+    [TestInitialize]
+    public void TestInitialize()
+    {
+        _repositoryUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        _service = new InitializationService(_repositoryUserMock.Object);
+        _addedUser = null;
+    }
+
     [TestMethod]
     public void EnsureInitialized_WhenAdminDoesNotExist_CreatesAdminUser()
     {
-        var repositoryUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-
-        repositoryUserMock
+        _repositoryUserMock
             .Setup(x => x.FindByEmail("admin@gmail.com"))
             .Returns((User?)null);
 
-        repositoryUserMock
+        _repositoryUserMock
             .Setup(x => x.Add(It.IsAny<User>()))
             .Returns((User user) => user);
 
-        var service = new InitializationService(repositoryUserMock.Object);
+        _service.EnsureInitialized();
 
-        service.EnsureInitialized();
-
-        repositoryUserMock.Verify(
+        _repositoryUserMock.Verify(
             x => x.FindByEmail("admin@gmail.com"),
             Times.Once);
 
-        repositoryUserMock.Verify(
+        _repositoryUserMock.Verify(
             x => x.Add(It.IsAny<User>()),
             Times.Once);
     }
@@ -50,21 +58,17 @@ public class InitializationServiceTests
 
         Assert.IsTrue(existingUserResult.Success);
 
-        var repositoryUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-
-        repositoryUserMock
+        _repositoryUserMock
             .Setup(x => x.FindByEmail("admin@gmail.com"))
             .Returns(existingUserResult.Value!);
 
-        var service = new InitializationService(repositoryUserMock.Object);
+        _service.EnsureInitialized();
 
-        service.EnsureInitialized();
-
-        repositoryUserMock.Verify(
+        _repositoryUserMock.Verify(
             x => x.FindByEmail("admin@gmail.com"),
             Times.Once);
 
-        repositoryUserMock.Verify(
+        _repositoryUserMock.Verify(
             x => x.Add(It.IsAny<User>()),
             Times.Never);
     }
@@ -72,74 +76,56 @@ public class InitializationServiceTests
     [TestMethod]
     public void EnsureInitialized_WhenAdminDoesNotExist_AddsUserWithExpectedEmail()
     {
-        User? addedUser = null;
-
-        var repositoryUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-
-        repositoryUserMock
+        _repositoryUserMock
             .Setup(x => x.FindByEmail("admin@gmail.com"))
             .Returns((User?)null);
 
-        repositoryUserMock
+        _repositoryUserMock
             .Setup(x => x.Add(It.IsAny<User>()))
-            .Callback<User>(user => addedUser = user)
+            .Callback<User>(user => _addedUser = user)
             .Returns((User user) => user);
 
-        var service = new InitializationService(repositoryUserMock.Object);
+        _service.EnsureInitialized();
 
-        service.EnsureInitialized();
-
-        Assert.IsNotNull(addedUser);
-        Assert.AreEqual("admin@gmail.com", addedUser.Email.ToString());
+        Assert.IsNotNull(_addedUser);
+        Assert.AreEqual("admin@gmail.com", _addedUser.Email.ToString());
     }
 
     [TestMethod]
     public void EnsureInitialized_WhenAdminDoesNotExist_AddsAdministrativeUser()
     {
-        User? addedUser = null;
-
-        var repositoryUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-
-        repositoryUserMock
+        _repositoryUserMock
             .Setup(x => x.FindByEmail("admin@gmail.com"))
             .Returns((User?)null);
 
-        repositoryUserMock
+        _repositoryUserMock
             .Setup(x => x.Add(It.IsAny<User>()))
-            .Callback<User>(user => addedUser = user)
+            .Callback<User>(user => _addedUser = user)
             .Returns((User user) => user);
 
-        var service = new InitializationService(repositoryUserMock.Object);
+        _service.EnsureInitialized();
 
-        service.EnsureInitialized();
-
-        Assert.IsNotNull(addedUser);
-        Assert.AreEqual(UserRoles.Administrative, addedUser.Role);
+        Assert.IsNotNull(_addedUser);
+        Assert.AreEqual(UserRoles.Administrative, _addedUser.Role);
     }
 
     [TestMethod]
     public void EnsureInitialized_WhenAdminDoesNotExist_AddsUserWithExpectedNameAndLastName()
     {
-        User? addedUser = null;
-
-        var repositoryUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-
-        repositoryUserMock
+        _repositoryUserMock
             .Setup(x => x.FindByEmail("admin@gmail.com"))
             .Returns((User?)null);
 
-        repositoryUserMock
+        _repositoryUserMock
             .Setup(x => x.Add(It.IsAny<User>()))
-            .Callback<User>(user => addedUser = user)
+            .Callback<User>(user => _addedUser = user)
             .Returns((User user) => user);
 
-        var service = new InitializationService(repositoryUserMock.Object);
+        _service.EnsureInitialized();
 
-        service.EnsureInitialized();
-
-        Assert.IsNotNull(addedUser);
-        Assert.AreEqual("Admin", addedUser.Name);
-        Assert.AreEqual("System", addedUser.LastName);
+        Assert.IsNotNull(_addedUser);
+        Assert.AreEqual("Admin", _addedUser.Name);
+        Assert.AreEqual("System", _addedUser.LastName);
     }
 
     [TestMethod]
@@ -147,24 +133,20 @@ public class InitializationServiceTests
     {
         User? existingUser = null;
 
-        var repositoryUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-
-        repositoryUserMock
+        _repositoryUserMock
             .SetupSequence(x => x.FindByEmail("admin@gmail.com"))
             .Returns((User?)null)
             .Returns(() => existingUser);
 
-        repositoryUserMock
+        _repositoryUserMock
             .Setup(x => x.Add(It.IsAny<User>()))
             .Callback<User>(user => existingUser = user)
             .Returns((User user) => user);
 
-        var service = new InitializationService(repositoryUserMock.Object);
+        _service.EnsureInitialized();
+        _service.EnsureInitialized();
 
-        service.EnsureInitialized();
-        service.EnsureInitialized();
-
-        repositoryUserMock.Verify(
+        _repositoryUserMock.Verify(
             x => x.Add(It.IsAny<User>()),
             Times.Once);
     }
