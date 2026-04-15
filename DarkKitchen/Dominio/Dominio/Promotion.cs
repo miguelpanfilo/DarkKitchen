@@ -4,6 +4,7 @@ namespace Dominio;
 
 public class Promotion
 {
+    public int Id { get; set; }
     public string Name { get; set; }
     public decimal DiscountPercentage { get; set; }
     public DateOnly StartDate { get; set; }

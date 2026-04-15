@@ -14,4 +14,14 @@ public class PromotionMapper
             dto.EndDate
         );
     }
+
+    public static PromotionResponseDto ToResponseDto(Promotion promotion)
+    {
+        return new PromotionResponseDto(
+            promotion.Id,
+            promotion.Name,
+            promotion.DiscountPercentage,
+            promotion.StartDate,
+            promotion.EndDate);
+    }
 }

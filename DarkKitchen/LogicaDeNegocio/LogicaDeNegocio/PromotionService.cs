@@ -14,9 +14,11 @@ public class PromotionService
         _promotionRepository = promotionRepository;
     }
 
-    public Promotion Create(PromotionDto promotionDto)
+    public PromotionResponseDto Create(PromotionDto promotionDto)
     {
         var promotion = PromotionMapper.ToEntity(promotionDto);
-        return _promotionRepository.Create(promotion);
+        var createPromotion = _promotionRepository.Create(promotion);
+
+        return PromotionMapper.ToResponseDto(createPromotion);
     }
 }
