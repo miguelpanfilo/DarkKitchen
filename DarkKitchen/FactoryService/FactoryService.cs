@@ -16,6 +16,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IModifyUserService, ModifyUserService>();
         services.AddScoped<IDeleteUserService, DeleteUserService>();
+        services.AddScoped<IFilterUserService, FilterUserService>();
 
         return services;
     }
