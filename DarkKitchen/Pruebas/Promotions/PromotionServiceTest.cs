@@ -168,4 +168,46 @@ public class PromotionServiceTest
         promotionRepositoryMock.VerifyAll();
         productRepositoryMock.VerifyAll();
     }
+
+    [TestMethod]
+    public void GivenProductAlreadyAssociatedToPromotion_WhenAssociatingProduct_ThenThrowsPromotionException()
+    {
+        var promotion = Promotion.MakePromotion(
+            "Black Friday",
+            10,
+            new DateOnly(2026, 1, 25),
+            new DateOnly(2026, 1, 30)
+        );
+
+        var product = CreateValidProduct();
+
+        promotion.AssociateProduct(product);
+
+        var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        promotionRepositoryMock
+            .Setup(r => r.GetById(1))
+            .Returns(promotion);
+
+        productRepositoryMock
+            .Setup(r => r.GetById(100))
+            .Returns(product);
+
+        var service = new PromotionService(
+            promotionRepositoryMock.Object,
+            productRepositoryMock.Object
+        );
+
+        var ex = Assert.ThrowsException<PromotionException>(
+            () => service.AssociateProduct(1, 100)
+        );
+
+        Assert.AreEqual("El producto ya está asociado a la promoción", ex.Message);
+
+        promotionRepositoryMock.Verify(r => r.Update(It.IsAny<Promotion>()), Times.Never);
+
+        promotionRepositoryMock.VerifyAll();
+        productRepositoryMock.VerifyAll();
+    }
 }
