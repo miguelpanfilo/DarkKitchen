@@ -1,3 +1,5 @@
+using Almacenamiento;
+using AlmacenamientoAbstracciones;
 using DarkKitchen.Filters;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
@@ -24,6 +26,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<AuthenticationFilter>();
         services.AddScoped<IPhoneValidator, PhoneValidatorUruguay>();
         services.AddScoped<IReloj, WatchSystem>();
+        services.AddSingleton<IRepositoryUser, RepositoryUser>();
         return services;
     }
 }
