@@ -1,6 +1,7 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
+using Dominio.Exceptions;
 using LogicaDeNegocio;
 using Moq;
 
@@ -36,5 +37,25 @@ public class PromotionServiceTest
         Assert.AreEqual(promotionDto.EndDate, result.EndDate);
 
         repositoryMock.Verify(r => r.Create(It.IsAny<Promotion>()), Times.Once);
+    }
+
+    [DataTestMethod]
+    [DataRow("")]
+    [DataRow(" ")]
+    public void GivenPromotionDtoWithInvalidName_WhenCreating_ThenThrowsPromotionException(string invalidName)
+    {
+        var promotionDto = new PromotionDto(
+            invalidName,
+            10,
+            new DateOnly(2026, 1, 25),
+            new DateOnly(2026, 1, 30)
+        );
+
+        var repositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var service = new PromotionService(repositoryMock.Object);
+
+        var ex = Assert.ThrowsException<PromotionException>(() => service.Create(promotionDto));
+
+        Assert.AreEqual("El nombre de la promoción no puede ser vacío", ex.Message);
     }
 }
