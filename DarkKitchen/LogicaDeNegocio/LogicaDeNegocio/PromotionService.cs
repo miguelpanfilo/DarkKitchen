@@ -28,21 +28,31 @@ public class PromotionService
     public PromotionResponseDto AssociateProduct(int promotionId, int productId)
     {
         var promotion = _promotionRepository.GetById(promotionId);
-        if (promotion == null)
-        {
-            throw new PromotionException("La promoción no existe");
-        }
+        ValidatePromotionExists(promotion);
 
         var product = _productRepository.GetById(productId);
-        if(product == null)
-        {
-            throw new PromotionException("El producto no existe");
-        }
+        ValidateProductExists(product);
 
         promotion.AssociateProduct(product);
 
         var updatePromotion = _promotionRepository.Update(promotion);
 
         return PromotionMapper.ToResponseDto(updatePromotion);
+    }
+
+    private void ValidatePromotionExists(Promotion? promotion)
+    {
+        if (promotion == null)
+        {
+            throw new PromotionException("La promoción no existe");
+        }
+    }
+
+    private void ValidateProductExists(Product? product)
+    {
+        if (product == null)
+        {
+            throw new PromotionException("El producto no existe");
+        }
     }
 }
