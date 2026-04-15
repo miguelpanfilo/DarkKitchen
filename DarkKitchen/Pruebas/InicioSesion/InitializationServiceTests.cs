@@ -1,5 +1,6 @@
 using AlmacenamientoAbstracciones;
 using Dominio;
+using LogicaDeNegocio;
 using Moq;
 
 namespace Pruebas.InicioSesion;
@@ -17,7 +18,8 @@ public class InitializationServiceTests
             .Returns((User?)null);
 
         repositoryUserMock
-            .Setup(x => x.Add(It.IsAny<User>()));
+            .Setup(x => x.Add(It.IsAny<User>()))
+            .Returns((User user) => user);
 
         var service = new InitializationService(repositoryUserMock.Object);
 
