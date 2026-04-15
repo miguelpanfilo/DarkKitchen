@@ -28,6 +28,7 @@
       <ProjectReference Include="..\Contratos\Contratos\Contratos.csproj" />
       <ProjectReference Include="..\DarkKitchenWebApi\DarkKitchenWebApi.csproj" />
       <ProjectReference Include="..\Dominio\Dominio\Dominio.csproj" />
+      <ProjectReference Include="..\FactoryService\FactoryService.csproj" />
       <ProjectReference Include="..\LogicaDeNegocio\LogicaDeNegocio\LogicaDeNegocio.csproj" />
     </ItemGroup>
 

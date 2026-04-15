@@ -1,8 +1,8 @@
-using DarkKitchen.ServiceFactory;
+using FactoryService;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Pruebas.ServiceFactory;
+namespace Pruebas;
 
 [TestClass]
 public class DependencyInjectionTests
