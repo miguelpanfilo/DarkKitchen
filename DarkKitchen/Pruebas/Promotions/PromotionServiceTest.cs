@@ -1,6 +1,7 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
+using Dominio.Builders;
 using Dominio.Exceptions;
 using LogicaDeNegocio;
 using Moq;
@@ -10,6 +11,22 @@ namespace Pruebas.Promotions;
 [TestClass]
 public class PromotionServiceTest
 {
+    private Product CreateValidProduct()
+    {
+        return new ProductBuilder()
+            .WithCode("COD123")
+            .WithName("Nombre válido producto")
+            .WithDescription("Descripción válida con más de veinte caracteres")
+            .WithCommercialLine("Línea")
+            .WithCategory("Categoría")
+            .WithPrice(100)
+            .WithPhotos(new List<ProductPhoto>
+            {
+                new ProductPhoto("photo-1.jpg")
+            })
+            .Build();
+    }
+
     [TestMethod]
     public void GivenValidPromotionDto_WhenCreating_ThenRepositoryIsCalledAndPromotionIsReturned()
     {
@@ -103,5 +120,44 @@ public class PromotionServiceTest
         var ex = Assert.ThrowsException<PromotionException>(() => service.Create(promotionDto));
 
         Assert.AreEqual("La fecha de inicio no puede ser mayor a la fecha de fin", ex.Message);
+    }
+
+    [TestMethod]
+    public void GivenExistingPromotionAndProduct_WhenAssociatingProduct_ThenProductIsAddedToPromotion()
+    {
+        var promotion = Promotion.MakePromotion(
+            "Black Friday",
+            10,
+            new DateOnly(2026, 1, 25),
+            new DateOnly(2026, 1, 30)
+        );
+
+        var product = CreateValidProduct();
+
+        var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        promotionRepositoryMock
+            .Setup(r => r.GetById(1))
+            .Returns(promotion);
+
+        productRepositoryMock
+            .Setup(r => r.GetById(100))
+            .Returns(product);
+
+        promotionRepositoryMock
+            .Setup(r => r.Update(promotion));
+
+        var service = new PromotionService(
+            promotionRepositoryMock.Object,
+            productRepositoryMock.Object
+        );
+
+        service.AssociateProduct(1, 100);
+
+        Assert.IsTrue(promotion.Products.Contains(product));
+
+        promotionRepositoryMock.VerifyAll();
+        productRepositoryMock.VerifyAll();
     }
 }
