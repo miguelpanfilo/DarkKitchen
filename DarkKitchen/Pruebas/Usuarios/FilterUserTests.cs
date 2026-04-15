@@ -644,4 +644,44 @@ public class FilterUserTests
 
         repoMock.Verify(r => r.GetAll(), Times.Never);
     }
+
+    [TestMethod]
+    public void SearchUsers_WithoutNameAndLastName_ReturnsAllUsers()
+    {
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
+
+        var user1 = CreateInternalUser(
+            "Juan",
+            "Perez",
+            "juan@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            UserRoles.Administrative,
+            1);
+
+        var user2 = CreateInternalUser(
+            "Pedro",
+            "Gomez",
+            "pedro@gmail.com",
+            "099111222",
+            "PasswordSeguraaa4!",
+            UserRoles.Preparer,
+            2);
+
+        adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(99));
+
+        repoMock
+            .Setup(r => r.GetAll())
+            .Returns([user1, user2]);
+
+        var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
+
+        var request = new FindUserRequestDTO();
+
+        var result = service.BuscarUsuarios(99, request);
+
+        Assert.AreEqual(2, result.Count);
+    }
 }
