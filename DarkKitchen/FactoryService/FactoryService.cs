@@ -1,3 +1,4 @@
+using DarkKitchen.Filters;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
 using Microsoft.Extensions.Configuration;
@@ -20,7 +21,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAdminValidationService, AdminValidationService>();
         services.AddScoped<ISessionsValidationService, SessionsValidationService>();
         services.AddSingleton<IInitializationService, InitializationService>();
-
+        services.AddScoped<AuthenticationFilter>();
         return services;
     }
 }

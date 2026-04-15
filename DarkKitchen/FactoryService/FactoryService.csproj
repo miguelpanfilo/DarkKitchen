@@ -13,6 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\DarkKitchenWebApi\DarkKitchenWebApi.csproj" />
       <ProjectReference Include="..\LogicaDeNegocioAbstracciones\LogicaDeNegocioAbstracciones\LogicaDeNegocioAbstracciones.csproj" />
       <ProjectReference Include="..\LogicaDeNegocio\LogicaDeNegocio\LogicaDeNegocio.csproj" />
     </ItemGroup>
