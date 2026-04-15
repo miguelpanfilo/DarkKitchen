@@ -116,4 +116,29 @@ public class InitializationServiceTests
         Assert.IsNotNull(addedUser);
         Assert.AreEqual(UserRoles.Administrative, addedUser.Role);
     }
+
+    [TestMethod]
+    public void EnsureInitialized_WhenAdminDoesNotExist_AddsUserWithExpectedNameAndLastName()
+    {
+        User? addedUser = null;
+
+        var repositoryUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+
+        repositoryUserMock
+            .Setup(x => x.FindByEmail("admin@gmail.com"))
+            .Returns((User?)null);
+
+        repositoryUserMock
+            .Setup(x => x.Add(It.IsAny<User>()))
+            .Callback<User>(user => addedUser = user)
+            .Returns((User user) => user);
+
+        var service = new InitializationService(repositoryUserMock.Object);
+
+        service.EnsureInitialized();
+
+        Assert.IsNotNull(addedUser);
+        Assert.AreEqual("Admin", addedUser.Name);
+        Assert.AreEqual("System", addedUser.LastName);
+    }
 }
