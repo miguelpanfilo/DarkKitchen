@@ -58,4 +58,25 @@ public class PromotionServiceTest
 
         Assert.AreEqual("El nombre de la promoción no puede ser vacío", ex.Message);
     }
+
+    [DataTestMethod]
+    [DataRow(0)]
+    [DataRow(-1)]
+    [DataRow(101)]
+    public void GivenPromotionDtoWithInvalidDiscountPercentage_WhenCreating_ThenThrowsPromotionException(int invalidDiscount)
+    {
+        var promotionDto = new PromotionDto(
+            "Black Friday",
+            (decimal)invalidDiscount,
+            new DateOnly(2026, 1, 25),
+            new DateOnly(2026, 1, 30)
+        );
+
+        var repositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var service = new PromotionService(repositoryMock.Object);
+
+        var ex = Assert.ThrowsException<PromotionException>(() => service.Create(promotionDto));
+
+        Assert.AreEqual("El porcentaje de descuento debe estar entre 1 y 100", ex.Message);
+    }
 }
