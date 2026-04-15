@@ -8,10 +8,12 @@ namespace LogicaDeNegocio;
 public class PromotionService
 {
     private readonly IPromotionRepository _promotionRepository;
+    private readonly IProductRepository _productRepository;
 
-    public PromotionService(IPromotionRepository promotionRepository)
+    public PromotionService(IPromotionRepository promotionRepository, IProductRepository productRepository)
     {
         _promotionRepository = promotionRepository;
+        _productRepository = productRepository;
     }
 
     public PromotionResponseDto Create(PromotionDto promotionDto)
@@ -20,5 +22,17 @@ public class PromotionService
         var createPromotion = _promotionRepository.Create(promotion);
 
         return PromotionMapper.ToResponseDto(createPromotion);
+    }
+
+    public PromotionResponseDto AssociateProduct(int promotionId, int productId)
+    {
+        var promotion = _promotionRepository.GetById(promotionId);
+        var product = _productRepository.GetById(productId);
+
+        promotion.AssociateProduct(product);
+
+        var updatePromotion = _promotionRepository.Update(promotion);
+
+        return PromotionMapper.ToResponseDto(updatePromotion);
     }
 }

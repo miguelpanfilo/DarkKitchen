@@ -9,6 +9,8 @@ public class Promotion
     public decimal DiscountPercentage { get; set; }
     public DateOnly StartDate { get; set; }
     public DateOnly EndDate { get; set; }
+    public List<Product> Products { get; private set; } = new();
+
     private const decimal MinPercentage = 0;
     private const decimal MaxPercentage = 100;
 
@@ -37,6 +39,11 @@ public class Promotion
         DateOnly endDate)
     {
         return new Promotion(name, discountPercentage, startDate, endDate);
+    }
+
+    public void AssociateProduct(Product product)
+    {
+        Products.Add(product);
     }
 
     private void ValidateName(string name)

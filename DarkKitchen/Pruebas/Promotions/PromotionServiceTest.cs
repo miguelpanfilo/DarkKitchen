@@ -38,12 +38,13 @@ public class PromotionServiceTest
         );
 
         var repositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
 
         repositoryMock
             .Setup(r => r.Create(It.IsAny<Promotion>()))
             .Returns((Promotion promotion) => promotion);
 
-        var service = new PromotionService(repositoryMock.Object);
+        var service = new PromotionService(repositoryMock.Object, productRepositoryMock.Object);
 
         var result = service.Create(promotionDto);
 
@@ -69,7 +70,9 @@ public class PromotionServiceTest
         );
 
         var repositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
-        var service = new PromotionService(repositoryMock.Object);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        var service = new PromotionService(repositoryMock.Object, productRepositoryMock.Object);
 
         var ex = Assert.ThrowsException<PromotionException>(() => service.Create(promotionDto));
 
@@ -90,7 +93,9 @@ public class PromotionServiceTest
         );
 
         var repositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
-        var service = new PromotionService(repositoryMock.Object);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        var service = new PromotionService(repositoryMock.Object,productRepositoryMock.Object);
 
         var ex = Assert.ThrowsException<PromotionException>(() => service.Create(promotionDto));
 
@@ -115,7 +120,9 @@ public class PromotionServiceTest
         );
 
         var repositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
-        var service = new PromotionService(repositoryMock.Object);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        var service = new PromotionService(repositoryMock.Object, productRepositoryMock.Object);
 
         var ex = Assert.ThrowsException<PromotionException>(() => service.Create(promotionDto));
 
@@ -146,7 +153,8 @@ public class PromotionServiceTest
             .Returns(product);
 
         promotionRepositoryMock
-            .Setup(r => r.Update(promotion));
+            .Setup(r => r.Update(promotion))
+            .Returns(promotion);
 
         var service = new PromotionService(
             promotionRepositoryMock.Object,
