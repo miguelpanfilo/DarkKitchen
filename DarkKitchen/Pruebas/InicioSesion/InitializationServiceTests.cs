@@ -141,4 +141,31 @@ public class InitializationServiceTests
         Assert.AreEqual("Admin", addedUser.Name);
         Assert.AreEqual("System", addedUser.LastName);
     }
+
+    [TestMethod]
+    public void EnsureInitialized_WhenCalledTwice_DoesNotAddAdminTwice()
+    {
+        User? existingUser = null;
+
+        var repositoryUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+
+        repositoryUserMock
+            .SetupSequence(x => x.FindByEmail("admin@gmail.com"))
+            .Returns((User?)null)
+            .Returns(() => existingUser);
+
+        repositoryUserMock
+            .Setup(x => x.Add(It.IsAny<User>()))
+            .Callback<User>(user => existingUser = user)
+            .Returns((User user) => user);
+
+        var service = new InitializationService(repositoryUserMock.Object);
+
+        service.EnsureInitialized();
+        service.EnsureInitialized();
+
+        repositoryUserMock.Verify(
+            x => x.Add(It.IsAny<User>()),
+            Times.Once);
+    }
 }
