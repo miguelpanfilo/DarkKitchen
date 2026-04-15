@@ -68,4 +68,28 @@ public class InitializationServiceTests
             x => x.Add(It.IsAny<User>()),
             Times.Never);
     }
+
+    [TestMethod]
+    public void EnsureInitialized_WhenAdminDoesNotExist_AddsUserWithExpectedEmail()
+    {
+        User? addedUser = null;
+
+        var repositoryUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+
+        repositoryUserMock
+            .Setup(x => x.FindByEmail("admin@gmail.com"))
+            .Returns((User?)null);
+
+        repositoryUserMock
+            .Setup(x => x.Add(It.IsAny<User>()))
+            .Callback<User>(user => addedUser = user)
+            .Returns((User user) => user);
+
+        var service = new InitializationService(repositoryUserMock.Object);
+
+        service.EnsureInitialized();
+
+        Assert.IsNotNull(addedUser);
+        Assert.AreEqual("admin@gmail.com", addedUser.Email.ToString());
+    }
 }
