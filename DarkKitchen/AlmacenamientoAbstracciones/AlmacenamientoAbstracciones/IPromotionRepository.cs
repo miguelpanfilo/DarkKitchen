@@ -1,6 +1,8 @@
+using Dominio;
+
 namespace AlmacenamientoAbstracciones;
 
-public class IPromotionRepository
+public interface IPromotionRepository
 {
-    
+    public Promotion Create(Promotion promotion);
 }
