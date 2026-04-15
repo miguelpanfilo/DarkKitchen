@@ -12,6 +12,7 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration)
     {
         services.AddScoped<ILoginService, LoginService>();
+        services.AddScoped<ISignUpUserService, SignUpService>();
 
         return services;
     }
