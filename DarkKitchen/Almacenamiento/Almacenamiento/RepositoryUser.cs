@@ -1,25 +1,24 @@
 using AlmacenamientoAbstracciones;
 using Dominio;
+using Microsoft.EntityFrameworkCore;
 
 namespace Almacenamiento;
 
-public class RepositoryUser : IRepositoryUser
+public class RepositoryUser(SqlContext context) : IRepositoryUser
 {
-    private readonly List<User> _users = [];
-
-    private int _lastId = 0;
-
+    private readonly SqlContext _context = context;
     public User Add(User user)
     {
-        _lastId++;
-        user.Id = _lastId;
-        _users.Add(user);
+        _context.Users.Add(user);
+        _context.SaveChanges();
         return user;
     }
 
     public List<User> GetAll()
     {
-        return _users;
+        return _context.Users
+            .AsNoTracking()
+            .ToList();
     }
 
     public bool EmailExist(string email)
@@ -33,7 +32,9 @@ public class RepositoryUser : IRepositoryUser
 
         var searchingEmail = emailResult.Value!;
 
-        return _users.Any(u => u.Email.IsTheSame(searchingEmail));
+        return _context.Users
+            .AsNoTracking()
+            .Any(u => u.Email.Value == searchingEmail.Value);
     }
 
     public User? FindByEmail(string email)
@@ -47,21 +48,26 @@ public class RepositoryUser : IRepositoryUser
 
         var searchingEmail = emailResult.Value!;
 
-        return _users.FirstOrDefault(u => u.Email.IsTheSame(searchingEmail));
+        return _context.Users
+            .AsNoTracking()
+            .SingleOrDefault(u => u.Email.Value == searchingEmail.Value);
     }
 
     public User? FindById(int id)
     {
-        return _users.FirstOrDefault(u => u.Id == id);
+        return _context.Users
+            .AsNoTracking()
+            .SingleOrDefault(u => u.Id == id);
     }
 
     public void Remove(int id)
     {
-        var user = _users.FirstOrDefault(u => u.Id == id);
+        var user = _context.Users.SingleOrDefault(u => u.Id == id);
 
         if(user != null)
         {
-            _users.Remove(user);
+            _context.Users.Remove(user);
+            _context.SaveChanges();
         }
     }
 }

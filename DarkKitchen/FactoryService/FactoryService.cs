@@ -2,6 +2,7 @@ using Almacenamiento;
 using AlmacenamientoAbstracciones;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +14,9 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddDbContext<SqlContext>(options =>
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
         services.AddScoped<ILoginService, LoginService>();
         services.AddScoped<ISignUpUserService, SignUpService>();
         services.AddScoped<IUserService, UserService>();
@@ -21,11 +25,15 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IFilterUserService, FilterUserService>();
         services.AddScoped<IAdminValidationService, AdminValidationService>();
         services.AddScoped<ISessionsValidationService, SessionsValidationService>();
-        services.AddSingleton<IInitializationService, InitializationService>();
+
+        services.AddScoped<IInitializationService, InitializationService>();
+
         services.AddScoped<IPhoneValidator, PhoneValidatorUruguay>();
         services.AddScoped<IReloj, WatchSystem>();
-        services.AddSingleton<IRepositoryUser, RepositoryUser>();
+
+        services.AddScoped<IRepositoryUser, RepositoryUser>();
         services.AddSingleton<IRepositorySession, RepositorySession>();
+
         return services;
     }
 }
