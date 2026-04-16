@@ -99,4 +99,32 @@ public class RepositorySessionSqlTests
 
         Assert.AreEqual(0, sessions.Count);
     }
+
+    [TestMethod]
+    public void RemoveAll_WhenThereAreNoSessions_DoesNothing()
+    {
+        _repository.RemoveAll();
+
+        var sessions = _context.Sessions.ToList();
+
+        Assert.AreEqual(0, sessions.Count);
+    }
+
+    [TestMethod]
+    public void FindBySessionId_WhenThereAreMultipleSessions_ReturnsMatchingSession()
+    {
+        var firstSession = new Session(1, new DateTime(2026, 4, 16, 12, 0, 0));
+        var secondSession = new Session(2, new DateTime(2026, 4, 16, 13, 0, 0));
+
+        _context.Sessions.Add(firstSession);
+        _context.Sessions.Add(secondSession);
+        _context.SaveChanges();
+
+        var foundSession = _repository.FindBySessionId(secondSession.SessionId);
+
+        Assert.IsNotNull(foundSession);
+        Assert.AreEqual(secondSession.SessionId, foundSession.SessionId);
+        Assert.AreEqual(2, foundSession.UserId);
+        Assert.AreEqual(new DateTime(2026, 4, 16, 13, 0, 0), foundSession.ExpireDate);
+    }
 }
