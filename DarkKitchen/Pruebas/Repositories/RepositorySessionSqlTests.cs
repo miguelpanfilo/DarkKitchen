@@ -127,4 +127,24 @@ public class RepositorySessionSqlTests
         Assert.AreEqual(2, foundSession.UserId);
         Assert.AreEqual(new DateTime(2026, 4, 16, 13, 0, 0), foundSession.ExpireDate);
     }
+
+    [TestMethod]
+    public void RemoveAll_ThenAddNewSession_OnlyLastSessionRemainsInDatabase()
+    {
+        var firstSession = new Session(1, new DateTime(2026, 4, 16, 12, 0, 0));
+        var secondSession = new Session(2, new DateTime(2026, 4, 16, 13, 0, 0));
+
+        _repository.Add(firstSession);
+
+        _repository.RemoveAll();
+
+        _repository.Add(secondSession);
+
+        var sessions = _context.Sessions.ToList();
+
+        Assert.AreEqual(1, sessions.Count);
+        Assert.AreEqual(secondSession.SessionId, sessions[0].SessionId);
+        Assert.AreEqual(2, sessions[0].UserId);
+        Assert.AreEqual(new DateTime(2026, 4, 16, 13, 0, 0), sessions[0].ExpireDate);
+    }
 }
