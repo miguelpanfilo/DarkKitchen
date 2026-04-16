@@ -11,5 +11,4 @@ public interface IRepositoryUser
     User? FindById(int id);
     void Remove(int id);
     User Update(User user);
-    List<User> Find(string? name, string? lastName);
 }
