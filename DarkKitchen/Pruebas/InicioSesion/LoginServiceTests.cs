@@ -52,6 +52,9 @@ public class LoginServiceTests
             .Returns(usuario);
 
         repoSesionMock
+            .Setup(r => r.RemoveAll());
+
+        repoSesionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
 
@@ -152,6 +155,9 @@ public class LoginServiceTests
             .Returns(user);
 
         repoSessionMock
+            .Setup(r => r.RemoveAll());
+
+        repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
 
@@ -172,6 +178,7 @@ public class LoginServiceTests
 
         service.Login(request);
 
+        repoSessionMock.Verify(r => r.RemoveAll(), Times.Once);
         repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Once);
     }
 
@@ -187,6 +194,9 @@ public class LoginServiceTests
         repoUserMock
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
             .Returns(user);
+
+        repoSessionMock
+            .Setup(r => r.RemoveAll());
 
         repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
@@ -226,6 +236,9 @@ public class LoginServiceTests
             .Returns(user);
 
         repoSessionMock
+            .Setup(r => r.RemoveAll());
+
+        repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
 
@@ -263,6 +276,9 @@ public class LoginServiceTests
             .Returns(user);
 
         repoSessionMock
+            .Setup(r => r.RemoveAll());
+
+        repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
 
@@ -275,11 +291,7 @@ public class LoginServiceTests
             repoSessionMock.Object,
             watchMock.Object);
 
-        var request = new LoginRequestDTO
-        {
-            Email = "miguel@gmail.com",
-            Password = "Password@2Ok6Abc"
-        };
+        var request = new LoginRequestDTO { Email = "miguel@gmail.com", Password = "Password@2Ok6Abc" };
 
         var response = service.Login(request);
 
@@ -355,6 +367,9 @@ public class LoginServiceTests
             .Returns(user);
 
         repoSessionMock
+            .Setup(r => r.RemoveAll());
+
+        repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
 
@@ -396,6 +411,9 @@ public class LoginServiceTests
         repoUserMock
             .Setup(r => r.FindByEmail("MIGUEL@GMAIL.COM"))
             .Returns(user);
+
+        repoSessionMock
+            .Setup(r => r.RemoveAll());
 
         repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
@@ -442,6 +460,9 @@ public class LoginServiceTests
         repoUserMock
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
             .Returns(user);
+
+        repoSessionMock
+            .Setup(r => r.RemoveAll());
 
         repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
@@ -504,5 +525,47 @@ public class LoginServiceTests
 
         repoSessionMock.Verify(r => r.RemoveAll(), Times.Once);
         repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Once);
+    }
+
+    [TestMethod]
+    public void Login_WhenCalledTwice_OnlySecondSessionIsValid()
+    {
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+
+        var user = CreateValidClientUser(1);
+
+        repoUserMock
+            .Setup(r => r.FindByEmail("miguel@gmail.com"))
+            .Returns(user);
+
+        repoSessionMock
+            .Setup(r => r.RemoveAll());
+
+        repoSessionMock
+            .Setup(r => r.Add(It.IsAny<Session>()))
+            .Returns((Session s) => s);
+
+        watchMock
+            .Setup(r => r.Now())
+            .Returns(DateTime.Now);
+
+        var service = new LoginService(
+            repoUserMock.Object,
+            repoSessionMock.Object,
+            watchMock.Object);
+
+        var request = new LoginRequestDTO
+        {
+            Email = "miguel@gmail.com",
+            Password = "Password@2Ok6Abc"
+        };
+
+        service.Login(request);
+        service.Login(request);
+
+        repoSessionMock.Verify(r => r.RemoveAll(), Times.Exactly(2));
+        repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Exactly(2));
     }
 }
