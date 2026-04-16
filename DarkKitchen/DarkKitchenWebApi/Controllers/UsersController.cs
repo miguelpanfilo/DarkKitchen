@@ -68,6 +68,19 @@ public class UsersController(IUserService userService) : ControllerBase
         return Ok(response);
     }
 
+    [HttpPatch("{id}/password")]
+    public IActionResult UpdateInternalUserPassword([FromRoute] int id, [FromBody] ModificarClaveRequestDTO request)
+    {
+        var loggedUserId = GetLoggedUserId();
+        if(loggedUserId == null)
+        {
+            return Unauthorized();
+        }
+
+        _userService.ModificarClaveUsuario(id, loggedUserId.Value, request);
+        return NoContent();
+    }
+
     private int? GetLoggedUserId()
     {
         var idClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
