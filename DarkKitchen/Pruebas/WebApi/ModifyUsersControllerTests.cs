@@ -38,7 +38,7 @@ public class ModifyUsersControllerTests
             Role = "Preparer"
         };
 
-        var response = new UsuarioResponseDTO
+        var response = new UserResponseDTO
         {
             Id = 10,
             Name = "Juan",
@@ -76,7 +76,7 @@ public class ModifyUsersControllerTests
         var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
 
         var request = new ModificarUsuarioRequestDTO { Name = "Juan" };
-        var response = new UsuarioResponseDTO { Id = 10, Name = "Juan" };
+        var response = new UserResponseDTO { Id = 10, Name = "Juan" };
 
         userServiceMock
             .Setup(x => x.ModificarUsuarioInterno(10, 99, request))
@@ -101,7 +101,7 @@ public class ModifyUsersControllerTests
         var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
 
         var request = new ModificarUsuarioRequestDTO();
-        var response = new UsuarioResponseDTO();
+        var response = new UserResponseDTO();
 
         userServiceMock
             .Setup(x => x.ModificarUsuarioInterno(25, 99, request))
@@ -128,7 +128,7 @@ public class ModifyUsersControllerTests
         var controller = new UsersController(userServiceMock.Object);
 
         var request = new ModificarUsuarioRequestDTO();
-        var response = new UsuarioResponseDTO();
+        var response = new UserResponseDTO();
 
         userServiceMock
             .Setup(x => x.ModificarUsuarioInterno(10, 77, request))

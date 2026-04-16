@@ -14,12 +14,12 @@ public class FilterUserService(
     private readonly IRepositoryUser _repositoryUsers = repositoryUsers;
     private readonly IAdminValidationService _adminValidationService = adminValidationService;
 
-    public List<UsuarioResponseDTO> FindUser(int idUserLogin, FindUserRequestDTO requestDto)
+    public List<UserResponseDTO> FindUser(int idUserLogin, FindUserRequestDTO requestDto)
     {
         _adminValidationService.EnsureUserIsAdmin(idUserLogin);
 
         var users = _repositoryUsers.GetAll();
-        var filteredUsers = new List<UsuarioResponseDTO>();
+        var filteredUsers = new List<UserResponseDTO>();
 
         foreach(var u in users)
         {

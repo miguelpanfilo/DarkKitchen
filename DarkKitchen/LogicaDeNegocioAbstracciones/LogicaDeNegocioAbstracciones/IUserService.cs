@@ -4,9 +4,9 @@ public interface IUserService
 {
     SignUpClientResponseDTO RegistrarCliente(SignUpClientRequestDTO requestDto);
 
-    UsuarioResponseDTO CrearUsuarioInterno(int idUsuarioLogueado, SingUpInternUserRequestDTO requestDto);
+    UserResponseDTO CrearUsuarioInterno(int idUsuarioLogueado, SingUpInternUserRequestDTO requestDto);
 
-    UsuarioResponseDTO ModificarUsuarioInterno(
+    UserResponseDTO ModificarUsuarioInterno(
         int idUsuarioAModificar,
         int idUsuarioLogueado,
         ModificarUsuarioRequestDTO requestDto);
@@ -18,5 +18,5 @@ public interface IUserService
 
     void EliminarUsuarioInterno(int idUsuarioAEliminar, int idUsuarioLogueado);
 
-    List<UsuarioResponseDTO> BuscarUsuarios(int idUsuarioLogueado, FindUserRequestDTO requestDto);
+    List<UserResponseDTO> BuscarUsuarios(int idUsuarioLogueado, FindUserRequestDTO requestDto);
 }

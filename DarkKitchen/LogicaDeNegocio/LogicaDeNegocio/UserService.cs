@@ -19,12 +19,12 @@ public class UserService(
         return _signUpUserService.SignUpClient(requestDto);
     }
 
-    public UsuarioResponseDTO CrearUsuarioInterno(int idUsuarioLogueado, SingUpInternUserRequestDTO requestDto)
+    public UserResponseDTO CrearUsuarioInterno(int idUsuarioLogueado, SingUpInternUserRequestDTO requestDto)
     {
         return _signUpUserService.MakeInterUser(idUsuarioLogueado, requestDto);
     }
 
-    public UsuarioResponseDTO ModificarUsuarioInterno(
+    public UserResponseDTO ModificarUsuarioInterno(
         int idUsuarioAModificar,
         int idUsuarioLogueado,
         ModificarUsuarioRequestDTO requestDto)
@@ -51,7 +51,7 @@ public class UserService(
         _deleteUserService.DeleteInterUser(idUsuarioAEliminar, idUsuarioLogueado);
     }
 
-    public List<UsuarioResponseDTO> BuscarUsuarios(int idUsuarioLogueado, FindUserRequestDTO requestDto)
+    public List<UserResponseDTO> BuscarUsuarios(int idUsuarioLogueado, FindUserRequestDTO requestDto)
     {
         return _filterUserService.FindUser(idUsuarioLogueado, requestDto);
     }

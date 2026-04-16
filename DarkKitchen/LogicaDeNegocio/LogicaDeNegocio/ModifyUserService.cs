@@ -17,7 +17,7 @@ public class ModifyUserService(
     private readonly IPhoneValidator _phoneValidator = phoneValidator;
     private readonly IAdminValidationService _adminValidationService = adminValidationService;
 
-    public UsuarioResponseDTO UpdateInternalUser(
+    public UserResponseDTO UpdateInternalUser(
         int idUserToModify,
         int idUserLogged,
         ModificarUsuarioRequestDTO requestDto)

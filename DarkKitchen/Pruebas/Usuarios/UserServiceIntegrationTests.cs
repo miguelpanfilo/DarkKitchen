@@ -62,7 +62,7 @@ public class UserServiceIntegrationTests
 
         signUpServiceMock
             .Setup(x => x.MakeInterUser(1, request))
-            .Returns(new UsuarioResponseDTO()
+            .Returns(new UserResponseDTO()
             {
                 Id = 10,
                 Name = "Juan",
@@ -96,7 +96,7 @@ public class UserServiceIntegrationTests
 
         modifyUserServiceMock
             .Setup(x => x.UpdateInternalUser(5, 99, request))
-            .Returns(new UsuarioResponseDTO()
+            .Returns(new UserResponseDTO()
             {
                 Id = 5,
                 Name = "Carlos",

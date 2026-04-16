@@ -158,7 +158,7 @@ public class UsersControllerTests
 
         _userServiceMock
             .Setup(x => x.CrearUsuarioInterno(99, request))
-            .Returns((UsuarioResponseDTO)null!);
+            .Returns((UserResponseDTO)null!);
 
         SetUserClaim("99");
 
@@ -188,7 +188,7 @@ public class UsersControllerTests
     {
         var request = CreateValidInternalUserRequest();
 
-        var response = new UsuarioResponseDTO
+        var response = new UserResponseDTO
         {
             Id = 10,
             Name = "Juan",
@@ -248,7 +248,7 @@ public class UsersControllerTests
     public void SearchUsers_CallsFilterServiceOnce()
     {
         var request = CreateFindUserRequest();
-        var response = new List<UsuarioResponseDTO>();
+        var response = new List<UserResponseDTO>();
 
         _userServiceMock
             .Setup(x => x.BuscarUsuarios(99, request))
