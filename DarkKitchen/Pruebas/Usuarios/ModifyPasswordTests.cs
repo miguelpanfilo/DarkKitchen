@@ -69,7 +69,7 @@ public class ModifyPasswordTests
             .Setup(v => v.EnsureUserIsAdmin(99))
             .Throws(new NotFoundException("User does not exist"));
 
-        var request = new ModificarClaveRequestDTO
+        var request = new ModifyPasswordRequestDTO
         {
             OldPassword = "PasswordSeguraee3!",
             NewPassword = "ClaveNuevaSegura4!"
@@ -106,7 +106,7 @@ public class ModifyPasswordTests
             .Setup(r => r.Update(usuario))
             .Returns(usuario);
 
-        var request = new ModificarClaveRequestDTO
+        var request = new ModifyPasswordRequestDTO
         {
             OldPassword = "PasswordSeguraee3!",
             NewPassword = "ClaveNuevaSegura4!"
@@ -125,7 +125,7 @@ public class ModifyPasswordTests
             .Setup(v => v.EnsureUserIsAdmin(99))
             .Throws(new ForbiddenException("Only an administrative user can perform this action"));
 
-        var request = new ModificarClaveRequestDTO
+        var request = new ModifyPasswordRequestDTO
         {
             OldPassword = "PasswordSeguraee3!",
             NewPassword = "ClaveNuevaSegura4!"
@@ -158,7 +158,7 @@ public class ModifyPasswordTests
             .Setup(v => v.GetExistingUser(5))
             .Returns(user);
 
-        var request = new ModificarClaveRequestDTO
+        var request = new ModifyPasswordRequestDTO
         {
             OldPassword = "Incorrecta123!",
             NewPassword = "ClaveNuevaSegura4!"
@@ -191,7 +191,7 @@ public class ModifyPasswordTests
             .Setup(v => v.GetExistingUser(5))
             .Returns(user);
 
-        var request = new ModificarClaveRequestDTO
+        var request = new ModifyPasswordRequestDTO
         {
             OldPassword = "PasswordSeguraee3!",
             NewPassword = "123"
@@ -216,7 +216,7 @@ public class ModifyPasswordTests
             .Setup(v => v.GetExistingUser(5))
             .Throws(new NotFoundException("User does not exist"));
 
-        var request = new ModificarClaveRequestDTO
+        var request = new ModifyPasswordRequestDTO
         {
             OldPassword = "PasswordSeguraee3!",
             NewPassword = "ClaveNuevaSegura4!"
@@ -249,7 +249,7 @@ public class ModifyPasswordTests
             .Setup(v => v.GetExistingUser(5))
             .Returns(usuario);
 
-        var request = new ModificarClaveRequestDTO
+        var request = new ModifyPasswordRequestDTO
         {
             OldPassword = "Incorrecta123!",
             NewPassword = "ClaveNuevaSegura4!"
@@ -271,7 +271,7 @@ public class ModifyPasswordTests
             .Setup(v => v.EnsureIsNotSelfAction(5, 5, It.IsAny<string>()))
             .Throws(new ConflictException("A user cannot modify itself"));
 
-        var request = new ModificarClaveRequestDTO
+        var request = new ModifyPasswordRequestDTO
         {
             OldPassword = "PasswordSeguraee3!",
             NewPassword = "ClaveNuevaSegura4!"
@@ -290,7 +290,7 @@ public class ModifyPasswordTests
             .Setup(v => v.EnsureUserIsAdmin(99))
             .Throws(new ForbiddenException("Only an administrative user can perform this action"));
 
-        var request = new ModificarClaveRequestDTO
+        var request = new ModifyPasswordRequestDTO
         {
             OldPassword = "PasswordSeguraee3!",
             NewPassword = "ClaveNuevaSegura4!"
@@ -312,7 +312,7 @@ public class ModifyPasswordTests
             .Setup(v => v.EnsureIsNotSelfAction(5, 5, It.IsAny<string>()))
             .Throws(new ConflictException("A user cannot modify itself"));
 
-        var request = new ModificarClaveRequestDTO
+        var request = new ModifyPasswordRequestDTO
         {
             OldPassword = "PasswordSeguraee3!",
             NewPassword = "ClaveNuevaSegura4!"
@@ -349,7 +349,7 @@ public class ModifyPasswordTests
             .Setup(r => r.Update(usuario))
             .Returns(usuario);
 
-        var request = new ModificarClaveRequestDTO
+        var request = new ModifyPasswordRequestDTO
         {
             OldPassword = "PasswordSeguraee3!",
             NewPassword = "ClaveNuevaSegura4!"
@@ -385,7 +385,7 @@ public class ModifyPasswordTests
         var user = userResult.Value!;
         user.Id = 3;
 
-        var request = new ModificarClaveRequestDTO
+        var request = new ModifyPasswordRequestDTO
         {
             OldPassword = "PasswordSeguraee3!",
             NewPassword = "ClaveNuevaSegura4!"

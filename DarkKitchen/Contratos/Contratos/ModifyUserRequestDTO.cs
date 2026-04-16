@@ -1,6 +1,6 @@
 namespace Contratos;
 
-public class ModificarUsuarioRequestDTO
+public class ModifyUserRequestDTO
 {
     public string? Name { get; set; }
     public string? LastName { get; set; }

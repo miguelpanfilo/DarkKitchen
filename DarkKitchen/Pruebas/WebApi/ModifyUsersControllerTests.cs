@@ -29,7 +29,7 @@ public class ModifyUsersControllerTests
     {
         var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
 
-        var request = new ModificarUsuarioRequestDTO
+        var request = new ModifyUserRequestDTO
         {
             Name = "Juan",
             LastName = "Perez",
@@ -49,7 +49,7 @@ public class ModifyUsersControllerTests
         };
 
         userServiceMock
-            .Setup(x => x.ModificarUsuarioInterno(10, 99, request))
+            .Setup(x => x.ModifyUserIntern(10, 99, request))
             .Returns(response);
 
         var controller = new UsersController(userServiceMock.Object);
@@ -66,7 +66,7 @@ public class ModifyUsersControllerTests
         Assert.AreEqual(response, result.Value);
 
         userServiceMock.Verify(
-            x => x.ModificarUsuarioInterno(10, 99, request),
+            x => x.ModifyUserIntern(10, 99, request),
             Times.Once);
     }
 
@@ -75,11 +75,11 @@ public class ModifyUsersControllerTests
     {
         var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
 
-        var request = new ModificarUsuarioRequestDTO { Name = "Juan" };
+        var request = new ModifyUserRequestDTO { Name = "Juan" };
         var response = new UserResponseDTO { Id = 10, Name = "Juan" };
 
         userServiceMock
-            .Setup(x => x.ModificarUsuarioInterno(10, 99, request))
+            .Setup(x => x.ModifyUserIntern(10, 99, request))
             .Returns(response);
 
         var controller = new UsersController(userServiceMock.Object);
@@ -100,11 +100,11 @@ public class ModifyUsersControllerTests
     {
         var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
 
-        var request = new ModificarUsuarioRequestDTO();
+        var request = new ModifyUserRequestDTO();
         var response = new UserResponseDTO();
 
         userServiceMock
-            .Setup(x => x.ModificarUsuarioInterno(25, 99, request))
+            .Setup(x => x.ModifyUserIntern(25, 99, request))
             .Returns(response);
 
         var controller = new UsersController(userServiceMock.Object);
@@ -117,7 +117,7 @@ public class ModifyUsersControllerTests
         controller.UpdateInternalUser(25, request);
 
         userServiceMock.Verify(
-            x => x.ModificarUsuarioInterno(25, 99, request),
+            x => x.ModifyUserIntern(25, 99, request),
             Times.Once);
     }
 
@@ -127,11 +127,11 @@ public class ModifyUsersControllerTests
         var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
         var controller = new UsersController(userServiceMock.Object);
 
-        var request = new ModificarUsuarioRequestDTO();
+        var request = new ModifyUserRequestDTO();
         var response = new UserResponseDTO();
 
         userServiceMock
-            .Setup(x => x.ModificarUsuarioInterno(10, 77, request))
+            .Setup(x => x.ModifyUserIntern(10, 77, request))
             .Returns(response);
 
         controller.ControllerContext = new ControllerContext
@@ -142,7 +142,7 @@ public class ModifyUsersControllerTests
         var result = controller.UpdateInternalUser(10, request);
 
         userServiceMock.Verify(
-            x => x.ModificarUsuarioInterno(10, 77, request),
+            x => x.ModifyUserIntern(10, 77, request),
             Times.Once);
     }
 
@@ -176,7 +176,7 @@ public class ModifyUsersControllerTests
             }
         };
 
-        var request = new ModificarUsuarioRequestDTO();
+        var request = new ModifyUserRequestDTO();
 
         var result = controller.UpdateInternalUser(10, request) as UnauthorizedResult;
 
@@ -216,7 +216,7 @@ public class ModifyUsersControllerTests
             HttpContext = httpContext
         };
 
-        var request = new ModificarUsuarioRequestDTO();
+        var request = new ModifyUserRequestDTO();
 
         var result = controller.UpdateInternalUser(10, request) as UnauthorizedResult;
 
@@ -238,7 +238,7 @@ public class ModifyUsersControllerTests
             }
         };
 
-        var request = new ModificarUsuarioRequestDTO();
+        var request = new ModifyUserRequestDTO();
 
         var result = controller.UpdateInternalUser(10, request) as UnauthorizedResult;
 
@@ -246,10 +246,10 @@ public class ModifyUsersControllerTests
         Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
 
         userServiceMock.Verify(
-            x => x.ModificarUsuarioInterno(
+            x => x.ModifyUserIntern(
                 It.IsAny<int>(),
                 It.IsAny<int>(),
-                It.IsAny<ModificarUsuarioRequestDTO>()),
+                It.IsAny<ModifyUserRequestDTO>()),
             Times.Never);
     }
 }

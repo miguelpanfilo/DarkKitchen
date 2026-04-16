@@ -1,22 +1,24 @@
 using Contratos;
 
+namespace LogicaDeNegocioAbstracciones;
+
 public interface IUserService
 {
     SignUpClientResponseDTO RegistrarCliente(SignUpClientRequestDTO requestDto);
 
-    UserResponseDTO CrearUsuarioInterno(int idUsuarioLogueado, SingUpInternUserRequestDTO requestDto);
+    UserResponseDTO MakeUserIntern(int idUserLogged, SingUpInternUserRequestDTO requestDto);
 
-    UserResponseDTO ModificarUsuarioInterno(
-        int idUsuarioAModificar,
-        int idUsuarioLogueado,
-        ModificarUsuarioRequestDTO requestDto);
+    UserResponseDTO ModifyUserIntern(
+        int idUserToModify,
+        int idUserLogged,
+        ModifyUserRequestDTO requestDto);
 
-    void ModificarClaveUsuario(
-        int idUsuarioAModificar,
-        int idUsuarioLogueado,
-        ModificarClaveRequestDTO requestDto);
+    void ModifyPasswordUser(
+        int idUserToModify,
+        int idUserLogged,
+        ModifyPasswordRequestDTO requestDto);
 
-    void EliminarUsuarioInterno(int idUsuarioAEliminar, int idUsuarioLogueado);
+    void DeleteUser(int idUserToDelete, int idUserLogged);
 
-    List<UserResponseDTO> BuscarUsuarios(int idUsuarioLogueado, FindUserRequestDTO requestDto);
+    List<UserResponseDTO> FindUserOnSystem(int idUserLogged, FindUserRequestDTO requestDto);
 }

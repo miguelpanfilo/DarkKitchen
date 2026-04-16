@@ -20,7 +20,7 @@ public class ModifyUserService(
     public UserResponseDTO UpdateInternalUser(
         int idUserToModify,
         int idUserLogged,
-        ModificarUsuarioRequestDTO requestDto)
+        ModifyUserRequestDTO requestDto)
     {
         _adminValidationService.EnsureUserIsAdmin(idUserLogged);
 
@@ -40,7 +40,7 @@ public class ModifyUserService(
     public void UpdateUserPassword(
         int idUserToModify,
         int idUserLogged,
-        ModificarClaveRequestDTO requestDto)
+        ModifyPasswordRequestDTO requestDto)
     {
         _adminValidationService.EnsureUserIsAdmin(idUserLogged);
 
@@ -67,7 +67,7 @@ public class ModifyUserService(
         _repo.Update(usuario);
     }
 
-    private void UpdateUserData(User user, ModificarUsuarioRequestDTO requestDto)
+    private void UpdateUserData(User user, ModifyUserRequestDTO requestDto)
     {
         var nameUpdate = ResolveFinalName(requestDto, user);
         var lastNameUpdate = ResolveFinalLastName(requestDto, user);
@@ -111,7 +111,7 @@ public class ModifyUserService(
         }
     }
 
-   private static string ResolveFinalName(ModificarUsuarioRequestDTO requestDto, User user)
+   private static string ResolveFinalName(ModifyUserRequestDTO requestDto, User user)
     {
         if(requestDto.Name == null)
         {
@@ -126,7 +126,7 @@ public class ModifyUserService(
         return requestDto.Name;
     }
 
-    private static string ResolveFinalLastName(ModificarUsuarioRequestDTO requestDto, User user)
+    private static string ResolveFinalLastName(ModifyUserRequestDTO requestDto, User user)
     {
         if(requestDto.LastName == null)
         {
@@ -141,7 +141,7 @@ public class ModifyUserService(
         return requestDto.LastName;
     }
 
-    private static string ResolveFinalEmail(ModificarUsuarioRequestDTO requestDto, User user)
+    private static string ResolveFinalEmail(ModifyUserRequestDTO requestDto, User user)
     {
         if(requestDto.Email == null)
         {
@@ -156,7 +156,7 @@ public class ModifyUserService(
         return requestDto.Email;
     }
 
-    private static string ResolveFinalPhone(ModificarUsuarioRequestDTO requestDto, User user)
+    private static string ResolveFinalPhone(ModifyUserRequestDTO requestDto, User user)
     {
         if(requestDto.Phone == null)
         {
@@ -190,7 +190,7 @@ public class ModifyUserService(
         return newPhone;
     }
 
-    private UserRoles ResolveFinalRole(ModificarUsuarioRequestDTO requestDto, User user)
+    private UserRoles ResolveFinalRole(ModifyUserRequestDTO requestDto, User user)
     {
         if(requestDto.Role == null)
         {

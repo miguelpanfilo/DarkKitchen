@@ -71,14 +71,14 @@ public class UsersControllerTests
     public void DeleteInternalUser_CallsDeleteServiceOnce()
     {
         _userServiceMock
-            .Setup(x => x.EliminarUsuarioInterno(2, 99));
+            .Setup(x => x.DeleteUser(2, 99));
 
         SetUserClaim("99");
 
         _controller.DeleteInternalUser(2);
 
         _userServiceMock.Verify(
-            x => x.EliminarUsuarioInterno(2, 99),
+            x => x.DeleteUser(2, 99),
             Times.Once);
     }
 
@@ -86,7 +86,7 @@ public class UsersControllerTests
     public void DeleteInternalUser_WhenClaimIsValid_ReturnsNoContent()
     {
         _userServiceMock
-            .Setup(x => x.EliminarUsuarioInterno(2, 99));
+            .Setup(x => x.DeleteUser(2, 99));
 
         SetUserClaim("99");
 
@@ -104,7 +104,7 @@ public class UsersControllerTests
 
         Assert.IsInstanceOfType(result, typeof(UnauthorizedResult));
         _userServiceMock.Verify(
-            x => x.EliminarUsuarioInterno(It.IsAny<int>(), It.IsAny<int>()),
+            x => x.DeleteUser(It.IsAny<int>(), It.IsAny<int>()),
             Times.Never);
     }
 
@@ -157,7 +157,7 @@ public class UsersControllerTests
         var request = CreateValidInternalUserRequest();
 
         _userServiceMock
-            .Setup(x => x.CrearUsuarioInterno(99, request))
+            .Setup(x => x.MakeUserIntern(99, request))
             .Returns((UserResponseDTO)null!);
 
         SetUserClaim("99");
@@ -165,7 +165,7 @@ public class UsersControllerTests
         _controller.CreateInternalUser(request);
 
         _userServiceMock.Verify(
-            x => x.CrearUsuarioInterno(99, request),
+            x => x.MakeUserIntern(99, request),
             Times.Once);
     }
 
@@ -199,7 +199,7 @@ public class UsersControllerTests
         };
 
         _userServiceMock
-            .Setup(x => x.CrearUsuarioInterno(99, request))
+            .Setup(x => x.MakeUserIntern(99, request))
             .Returns(response);
 
         SetUserClaim("99");
@@ -226,7 +226,7 @@ public class UsersControllerTests
         Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
 
         _userServiceMock.Verify(
-            x => x.CrearUsuarioInterno(It.IsAny<int>(), It.IsAny<SingUpInternUserRequestDTO>()),
+            x => x.MakeUserIntern(It.IsAny<int>(), It.IsAny<SingUpInternUserRequestDTO>()),
             Times.Never);
     }
 
@@ -251,7 +251,7 @@ public class UsersControllerTests
         var response = new List<UserResponseDTO>();
 
         _userServiceMock
-            .Setup(x => x.BuscarUsuarios(99, request))
+            .Setup(x => x.FindUserOnSystem(99, request))
             .Returns(response);
 
         SetUserClaim("99");
@@ -263,7 +263,7 @@ public class UsersControllerTests
         Assert.AreEqual(response, result.Value);
 
         _userServiceMock.Verify(
-            x => x.BuscarUsuarios(99, request),
+            x => x.FindUserOnSystem(99, request),
             Times.Once);
     }
 
@@ -280,7 +280,7 @@ public class UsersControllerTests
         Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
 
         _userServiceMock.Verify(
-            x => x.BuscarUsuarios(It.IsAny<int>(), It.IsAny<FindUserRequestDTO>()),
+            x => x.FindUserOnSystem(It.IsAny<int>(), It.IsAny<FindUserRequestDTO>()),
             Times.Never);
     }
 
@@ -297,7 +297,7 @@ public class UsersControllerTests
         Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
 
         _userServiceMock.Verify(
-            x => x.BuscarUsuarios(It.IsAny<int>(), It.IsAny<FindUserRequestDTO>()),
+            x => x.FindUserOnSystem(It.IsAny<int>(), It.IsAny<FindUserRequestDTO>()),
             Times.Never);
     }
 
@@ -320,14 +320,14 @@ public class UsersControllerTests
     {
         var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
 
-        var request = new ModificarClaveRequestDTO
+        var request = new ModifyPasswordRequestDTO
         {
             OldPassword = "PasswordSeguraee3!",
             NewPassword = "ClaveNuevaSegura4!"
         };
 
         userServiceMock
-            .Setup(x => x.ModificarClaveUsuario(3, 99, request));
+            .Setup(x => x.ModifyPasswordUser(3, 99, request));
 
         var controller = new UsersController(userServiceMock.Object);
         controller.ControllerContext = new ControllerContext
@@ -344,7 +344,7 @@ public class UsersControllerTests
         var result = controller.UpdateInternalUserPassword(3, request);
 
         Assert.IsInstanceOfType(result, typeof(NoContentResult));
-        userServiceMock.Verify(x => x.ModificarClaveUsuario(3, 99, request), Times.Once);
+        userServiceMock.Verify(x => x.ModifyPasswordUser(3, 99, request), Times.Once);
     }
 
     [TestMethod]
@@ -352,7 +352,7 @@ public class UsersControllerTests
     {
         var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
 
-        var request = new ModificarClaveRequestDTO
+        var request = new ModifyPasswordRequestDTO
         {
             OldPassword = "PasswordSeguraee3!",
             NewPassword = "ClaveNuevaSegura4!"
@@ -371,10 +371,10 @@ public class UsersControllerTests
 
         Assert.IsInstanceOfType(result, typeof(UnauthorizedResult));
         userServiceMock.Verify(
-            x => x.ModificarClaveUsuario(
+            x => x.ModifyPasswordUser(
                 It.IsAny<int>(),
                 It.IsAny<int>(),
-                It.IsAny<ModificarClaveRequestDTO>()),
+                It.IsAny<ModifyPasswordRequestDTO>()),
             Times.Never);
     }
 
@@ -383,14 +383,14 @@ public class UsersControllerTests
     {
         var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
 
-        var request = new ModificarClaveRequestDTO
+        var request = new ModifyPasswordRequestDTO
         {
             OldPassword = "PasswordSeguraee3!",
             NewPassword = "ClaveNuevaSegura4!"
         };
 
         userServiceMock
-            .Setup(x => x.ModificarClaveUsuario(3, 99, request));
+            .Setup(x => x.ModifyPasswordUser(3, 99, request));
 
         var controller = new UsersController(userServiceMock.Object);
         controller.ControllerContext = new ControllerContext
@@ -407,7 +407,7 @@ public class UsersControllerTests
         var result = controller.UpdateInternalUserPassword(3, request);
 
         Assert.IsInstanceOfType(result, typeof(NoContentResult));
-        userServiceMock.Verify(x => x.ModificarClaveUsuario(3, 99, request), Times.Once);
+        userServiceMock.Verify(x => x.ModifyPasswordUser(3, 99, request), Times.Once);
     }
 
     [TestMethod]
