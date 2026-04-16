@@ -19,4 +19,10 @@ public class RepositorySession(SqlContext context) : IRepositorySession
         return _context.Sessions
             .SingleOrDefault(s => s.SessionId == sessionId);
     }
+
+    public void RemoveAll()
+    {
+        _context.Sessions.RemoveRange(_context.Sessions);
+        _context.SaveChanges();
+    }
 }
