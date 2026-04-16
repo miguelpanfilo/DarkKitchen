@@ -19,6 +19,7 @@
     <ItemGroup>
       <ProjectReference Include="..\AlmacenamientoAbstracciones\AlmacenamientoAbstracciones\AlmacenamientoAbstracciones.csproj" />
       <ProjectReference Include="..\Almacenamiento\Almacenamiento\Almacenamiento.csproj" />
+      <ProjectReference Include="..\FactoryService\FactoryService.csproj" />
       <ProjectReference Include="..\LogicaDeNegocioAbstracciones\LogicaDeNegocioAbstracciones\LogicaDeNegocioAbstracciones.csproj" />
       <ProjectReference Include="..\LogicaDeNegocio\LogicaDeNegocio\LogicaDeNegocio.csproj" />
     </ItemGroup>
