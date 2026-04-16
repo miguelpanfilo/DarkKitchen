@@ -43,4 +43,21 @@ public class RepositorySessionSqlTests
         Assert.AreEqual(5, savedSession.UserId);
         Assert.AreEqual(expireDate, savedSession.ExpireDate);
     }
+
+    [TestMethod]
+    public void FindBySessionId_WhenSessionExists_ReturnsSession()
+    {
+        var expireDate = new DateTime(2026, 4, 16, 12, 0, 0);
+        var session = new Session(5, expireDate);
+
+        _context.Sessions.Add(session);
+        _context.SaveChanges();
+
+        var foundSession = _repository.FindBySessionId(session.SessionId);
+
+        Assert.IsNotNull(foundSession);
+        Assert.AreEqual(session.SessionId, foundSession.SessionId);
+        Assert.AreEqual(5, foundSession.UserId);
+        Assert.AreEqual(expireDate, foundSession.ExpireDate);
+    }
 }
