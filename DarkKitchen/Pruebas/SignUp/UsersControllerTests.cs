@@ -3,9 +3,13 @@ using Contratos;
 using DarkKitchen.Controllers;
 using DarkKitchen.Filters;
 using LogicaDeNegocioAbstracciones;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Moq;
+using RouteData = Microsoft.AspNetCore.Routing.RouteData;
 
 namespace Pruebas.SignUp;
 
@@ -404,5 +408,31 @@ public class UsersControllerTests
 
         Assert.IsInstanceOfType(result, typeof(NoContentResult));
         userServiceMock.Verify(x => x.ModificarClaveUsuario(3, 99, request), Times.Once);
+    }
+
+    [TestMethod]
+    public void OnAuthorization_WhenUserIsClient_ReturnsForbidden()
+    {
+        var attribute = new RoleAuthorizationAttribute(UserRolesDto.Administrative);
+
+        var httpContext = new DefaultHttpContext();
+        httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(
+        [
+            new Claim(ClaimTypes.NameIdentifier, "1"),
+            new Claim(ClaimTypes.Role, "Client")
+        ], "mock"));
+
+        var actionContext = new ActionContext(
+            httpContext,
+            new RouteData(),
+            new ActionDescriptor());
+
+        var filterContext = new AuthorizationFilterContext(
+            actionContext,
+            new List<IFilterMetadata>());
+
+        attribute.OnAuthorization(filterContext);
+
+        Assert.IsInstanceOfType(filterContext.Result, typeof(ForbidResult));
     }
 }
