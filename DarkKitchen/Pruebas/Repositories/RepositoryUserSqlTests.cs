@@ -424,4 +424,40 @@ public class RepositoryUserSqlTests
         Assert.AreEqual("Lucia", users[0].Name);
         Assert.AreEqual("Martinez", users[0].LastName);
     }
+    [TestMethod]
+    public void Find_WhenNameAndLastNameAreNull_ReturnsAllUsers()
+    {
+        var phoneOneResult = Phone.TryMakePhone("099123456");
+        var phoneTwoResult = Phone.TryMakePhone("091222333");
+
+        Assert.IsTrue(phoneOneResult.Success);
+        Assert.IsTrue(phoneTwoResult.Success);
+
+        var firstUserResult = User.MakeClient(
+            "Lucia",
+            "Martinez",
+            "lucia@gmail.com",
+            phoneOneResult.Value!,
+            "PasswordSeguraee3!");
+
+        var secondUserResult = User.MakeClient(
+            "Juan",
+            "Perez",
+            "juan@gmail.com",
+            phoneTwoResult.Value!,
+            "ClaveSeguraLargaa4!");
+
+        Assert.IsTrue(firstUserResult.Success);
+        Assert.IsTrue(secondUserResult.Success);
+
+        var firstUser = firstUserResult.Value!;
+        var secondUser = secondUserResult.Value!;
+
+        _repository.Add(firstUser);
+        _repository.Add(secondUser);
+
+        var users = _repository.Find(null, null);
+
+        Assert.AreEqual(2, users.Count);
+    }
 }
