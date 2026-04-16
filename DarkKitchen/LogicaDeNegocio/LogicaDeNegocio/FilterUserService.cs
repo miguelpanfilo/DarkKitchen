@@ -18,30 +18,10 @@ public class FilterUserService(
     {
         _adminValidationService.EnsureUserIsAdmin(idUserLogin);
 
-        var users = _repositoryUsers.GetAll();
-        var filteredUsers = new List<UserResponseDTO>();
+        var users = _repositoryUsers.Find(requestDto.Name, requestDto.LastName);
 
-        foreach(var u in users)
-        {
-            if(MatchName(u, requestDto.Name) &&
-               MatchLastName(u, requestDto.LastName))
-            {
-                filteredUsers.Add(u.MappingUserToResponseDTO());
-            }
-        }
-
-        return filteredUsers;
-    }
-
-    private static bool MatchName(User user, string? name)
-    {
-        return string.IsNullOrWhiteSpace(name) ||
-               user.Name.Contains(name.Trim(), StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static bool MatchLastName(User user, string? lastname)
-    {
-        return string.IsNullOrWhiteSpace(lastname) ||
-               user.LastName.Contains(lastname.Trim(), StringComparison.OrdinalIgnoreCase);
+        return users
+            .Select(u => u.MappingUserToResponseDTO())
+            .ToList();
     }
 }
