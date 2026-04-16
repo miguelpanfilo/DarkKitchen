@@ -209,4 +209,32 @@ public class RepositoryUserSqlTests
         Assert.IsTrue(users.Any(u => u.Id == 1 && u.Email.Value == "miguel@gmail.com"));
         Assert.IsTrue(users.Any(u => u.Id == 2 && u.Email.Value == "ana@gmail.com"));
     }
+
+    [TestMethod]
+    public void Remove_WhenUserExists_RemovesUserFromDatabase()
+    {
+        var phoneResult = Phone.TryMakePhone("099123456");
+        Assert.IsTrue(phoneResult.Success);
+
+        var userResult = User.MakeClient(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            phoneResult.Value!,
+            "PasswordSeguraee3!");
+
+        Assert.IsTrue(userResult.Success);
+
+        var user = userResult.Value!;
+        user.Id = 1;
+
+        _context.Users.Add(user);
+        _context.SaveChanges();
+
+        _repository.Remove(1);
+
+        var deletedUser = _context.Users.SingleOrDefault(u => u.Id == 1);
+
+        Assert.IsNull(deletedUser);
+    }
 }
