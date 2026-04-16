@@ -233,8 +233,8 @@ public class RepositoryUserSqlTests
 
         _repository.Remove(1);
 
-        var deletedUser = _context.Users.SingleOrDefault(u => u.Id == 1);
+        var users = _context.Users.ToList();
 
-        Assert.IsNull(deletedUser);
+        Assert.AreEqual(0, users.Count);
     }
 }
