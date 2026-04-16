@@ -56,7 +56,6 @@ public class RepositoryUser(SqlContext context) : IRepositoryUser
     public User? FindById(int id)
     {
         return _context.Users
-            .AsNoTracking()
             .SingleOrDefault(u => u.Id == id);
     }
 
