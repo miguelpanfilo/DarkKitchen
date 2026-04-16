@@ -32,6 +32,7 @@ public class ModifyUserService(
         var user = _adminValidationService.GetExistingUser(idUserToModify);
 
         UpdateUserData(user, requestDto);
+        _repo.Update(user);
 
         return user.MappingUserToResponseDTO();
     }

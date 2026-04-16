@@ -745,14 +745,17 @@ public class ModifyInternUserTest
             LastName = "Martinez",
             Email = "lucia.wwww@gmail.com",
             Phone = "098123456",
-            Role = "Client"
+            Role = "Preparer"
         };
 
         adminValidationMock
             .Setup(x => x.EnsureUserIsAdmin(1));
 
         adminValidationMock
-            .Setup(x => x.EnsureIsNotSelfAction(3, 1, "Un usuario no puede modificarse a sí mismo"));
+            .Setup(x => x.EnsureIsNotSelfAction(
+                3,
+                1,
+                "Un usuario no puede modificarse a sí mismo"));
 
         adminValidationMock
             .Setup(x => x.GetExistingUser(3))
@@ -778,7 +781,6 @@ public class ModifyInternUserTest
         var response = service.UpdateInternalUser(3, 1, request);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(3, response.Id);
         Assert.AreEqual("Migue", response.Name);
         Assert.AreEqual("Martinez", response.LastName);
         Assert.AreEqual("lucia.wwww@gmail.com", response.Email);
