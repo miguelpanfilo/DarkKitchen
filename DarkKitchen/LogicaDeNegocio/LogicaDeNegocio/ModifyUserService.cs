@@ -64,6 +64,7 @@ public class ModifyUserService(
         }
 
         usuario.ModifyPassword(passwordResult.Value!);
+        _repo.Update(usuario);
     }
 
     private void UpdateUserData(User user, ModificarUsuarioRequestDTO requestDto)
