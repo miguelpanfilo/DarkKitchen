@@ -1,3 +1,4 @@
+using Almacenamiento;
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
@@ -5,6 +6,7 @@ using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using Moq;
+using Pruebas.Persistence;
 
 namespace Pruebas.InicioSesion;
 
@@ -567,5 +569,42 @@ public class LoginServiceTests
 
         repoSessionMock.Verify(r => r.RemoveAll(), Times.Exactly(2));
         repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Exactly(2));
+    }
+
+    [TestMethod]
+    public void Login_WhenCalledTwice_OnlyLastSessionExistsInDatabase()
+    {
+        var context = SqliteTestContextFactory.CreateContext(out var connection);
+        var repoUser = new RepositoryUser(context);
+        var repoSession = new RepositorySession(context);
+
+        var watchMock = new Mock<IReloj>();
+        watchMock.Setup(x => x.Now()).Returns(DateTime.Now);
+
+        var user = CreateValidClientUser(1);
+        context.Users.Add(user);
+        context.SaveChanges();
+
+        var service = new LoginService(
+            repoUser,
+            repoSession,
+            watchMock.Object);
+
+        var request = new LoginRequestDTO
+        {
+            Email = "miguel@gmail.com",
+            Password = "Password@2Ok6Abc"
+        };
+
+        var firstLogin = service.Login(request);
+        var secondLogin = service.Login(request);
+
+        var sessions = context.Sessions.ToList();
+
+        Assert.AreEqual(1, sessions.Count);
+        Assert.AreEqual(secondLogin.SessionId, sessions[0].SessionId);
+
+        context.Dispose();
+        connection.Dispose();
     }
 }
