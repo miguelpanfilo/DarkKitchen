@@ -264,4 +264,47 @@ public class RepositoryUserSqlTests
         Assert.IsNotNull(foundUser);
         Assert.AreEqual(1, foundUser.Id);
     }
+
+    [TestMethod]
+    public void Update_WhenUserExists_PersistsModifiedDataInDatabase()
+    {
+        var phoneResult = Phone.TryMakePhone("098123456");
+        Assert.IsTrue(phoneResult.Success);
+
+        var userResult = User.MakeClient(
+            "Lucia",
+            "Martinez",
+            "lucia@gmail.com",
+            phoneResult.Value!,
+            "PasswordSeguraee3!");
+
+        Assert.IsTrue(userResult.Success);
+        var user = userResult.Value!;
+
+        _repository.Add(user);
+
+        var savedUser = _context.Users.Single(u => u.Email.Value == "lucia@gmail.com");
+
+        var newPhoneResult = Phone.TryMakePhone("099123456");
+        Assert.IsTrue(newPhoneResult.Success);
+
+        var modifyResult = savedUser.ModifyData(
+            "Migue",
+            "Martinez",
+            newPhoneResult.Value!,
+            "lucia.wwww@gmail.com",
+            UserRoles.Client);
+
+        Assert.IsTrue(modifyResult.Success);
+
+        _repository.Update(savedUser);
+
+        var updatedUser = _context.Users.Single(u => u.Id == savedUser.Id);
+
+        Assert.AreEqual("Migue", updatedUser.Name);
+        Assert.AreEqual("Martinez", updatedUser.LastName);
+        Assert.AreEqual("lucia.wwww@gmail.com", updatedUser.Email.Value);
+        Assert.AreEqual("099123456", updatedUser.Phone.Value);
+        Assert.AreEqual(UserRoles.Client, updatedUser.Role);
+    }
 }
