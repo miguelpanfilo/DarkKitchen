@@ -464,4 +464,45 @@ public class LoginServiceTests
         Assert.IsNotNull(sesionGuardada);
         Assert.AreEqual(sesionGuardada.ExpireDate, response.ExpireDate);
     }
+
+    [TestMethod]
+    public void Login_WhenCredentialsAreValid_RemovesPreviousSessionsAndCreatesNewSession()
+    {
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+
+        var user = CreateValidClientUser(1);
+
+        repoUserMock
+            .Setup(r => r.FindByEmail("miguel@gmail.com"))
+            .Returns(user);
+
+        repoSessionMock
+            .Setup(r => r.RemoveAll());
+
+        repoSessionMock
+            .Setup(r => r.Add(It.IsAny<Session>()))
+            .Returns((Session s) => s);
+
+        watchMock
+            .Setup(r => r.Now())
+            .Returns(DateTime.Now);
+
+        var service = new LoginService(
+            repoUserMock.Object,
+            repoSessionMock.Object,
+            watchMock.Object);
+
+        var request = new LoginRequestDTO
+        {
+            Email = "miguel@gmail.com",
+            Password = "Password@2Ok6Abc"
+        };
+
+        service.Login(request);
+
+        repoSessionMock.Verify(r => r.RemoveAll(), Times.Once);
+        repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Once);
+    }
 }
