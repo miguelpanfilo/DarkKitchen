@@ -70,6 +70,25 @@ public class RepositoryUser(SqlContext context) : IRepositoryUser
         }
     }
 
+    public List<User> Find(string? name, string? lastName)
+    {
+        var query = _context.Users.AsQueryable();
+
+        if(!string.IsNullOrWhiteSpace(name))
+        {
+            var normalizedName = name.Trim();
+            query = query.Where(u => u.Name.Contains(normalizedName));
+        }
+
+        if(!string.IsNullOrWhiteSpace(lastName))
+        {
+            var normalizedLastName = lastName.Trim();
+            query = query.Where(u => u.LastName.Contains(normalizedLastName));
+        }
+
+        return query.ToList();
+    }
+
     public User Update(User user)
     {
         _context.Users.Update(user);
