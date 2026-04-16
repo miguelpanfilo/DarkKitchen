@@ -36,7 +36,7 @@ public class FilterUserService(
     private static bool MatchName(User user, string? name)
     {
         return string.IsNullOrWhiteSpace(name) ||
-               string.Equals(user.Name, name.Trim(), StringComparison.OrdinalIgnoreCase);
+               user.Name.Contains(name.Trim(), StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool MatchLastName(User user, string? lastname)
