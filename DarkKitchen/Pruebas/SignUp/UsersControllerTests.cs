@@ -342,4 +342,35 @@ public class UsersControllerTests
         Assert.IsInstanceOfType(result, typeof(NoContentResult));
         userServiceMock.Verify(x => x.ModificarClaveUsuario(3, 99, request), Times.Once);
     }
+
+    [TestMethod]
+    public void UpdateInternalUserPassword_WhenUserIsNotAuthenticated_ReturnsUnauthorized()
+    {
+        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
+
+        var request = new ModificarClaveRequestDTO
+        {
+            OldPassword = "PasswordSeguraee3!",
+            NewPassword = "ClaveNuevaSegura4!"
+        };
+
+        var controller = new UsersController(userServiceMock.Object);
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity())
+            }
+        };
+
+        var result = controller.UpdateInternalUserPassword(3, request);
+
+        Assert.IsInstanceOfType(result, typeof(UnauthorizedResult));
+        userServiceMock.Verify(
+            x => x.ModificarClaveUsuario(
+                It.IsAny<int>(),
+                It.IsAny<int>(),
+                It.IsAny<ModificarClaveRequestDTO>()),
+            Times.Never);
+    }
 }
