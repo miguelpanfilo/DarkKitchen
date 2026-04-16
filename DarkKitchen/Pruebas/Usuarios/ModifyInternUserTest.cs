@@ -716,4 +716,74 @@ public class ModifyInternUserTest
 
         Assert.AreEqual("El rol no puede estar vacío", ex.Message);
     }
+
+    [TestMethod]
+    public void UpdateInternalUser_WhenRequestIsValid_CallsRepositoryUpdateOnce()
+    {
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
+
+        var phoneResult = Phone.TryMakePhone("099123456");
+        Assert.IsTrue(phoneResult.Success);
+
+        var userResult = User.MakeIntern(
+            "Juan",
+            "Perez",
+            "juan@gmail.com",
+            phoneResult.Value!,
+            "PasswordSeguraee3!",
+            UserRoles.Preparer);
+
+        Assert.IsTrue(userResult.Success);
+        var user = userResult.Value!;
+        user.Id = 3;
+
+        var request = new ModificarUsuarioRequestDTO
+        {
+            Name = "Migue",
+            LastName = "Martinez",
+            Email = "lucia.wwww@gmail.com",
+            Phone = "098123456",
+            Role = "Client"
+        };
+
+        adminValidationMock
+            .Setup(x => x.EnsureUserIsAdmin(1));
+
+        adminValidationMock
+            .Setup(x => x.EnsureIsNotSelfAction(3, 1, "Un usuario no puede modificarse a sí mismo"));
+
+        adminValidationMock
+            .Setup(x => x.GetExistingUser(3))
+            .Returns(user);
+
+        phoneValidatorMock
+            .Setup(x => x.ItsValid("098123456"))
+            .Returns(true);
+
+        repoMock
+            .Setup(x => x.EmailExist("lucia.wwww@gmail.com"))
+            .Returns(false);
+
+        repoMock
+            .Setup(x => x.Update(user))
+            .Returns(user);
+
+        var service = new ModifyUserService(
+            repoMock.Object,
+            phoneValidatorMock.Object,
+            adminValidationMock.Object);
+
+        var response = service.UpdateInternalUser(3, 1, request);
+
+        Assert.IsNotNull(response);
+        Assert.AreEqual(3, response.Id);
+        Assert.AreEqual("Migue", response.Name);
+        Assert.AreEqual("Martinez", response.LastName);
+        Assert.AreEqual("lucia.wwww@gmail.com", response.Email);
+        Assert.AreEqual("098123456", response.Phone);
+
+        repoMock.Verify(x => x.Update(user), Times.Once);
+    }
 }
