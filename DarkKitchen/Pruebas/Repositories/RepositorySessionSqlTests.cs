@@ -68,4 +68,18 @@ public class RepositorySessionSqlTests
 
         Assert.IsNull(foundSession);
     }
+
+    [TestMethod]
+    public void AddSession_WhenTwoSessionsAreAdded_PersistsBothSessions()
+    {
+        var firstSession = new Session(1, new DateTime(2026, 4, 16, 12, 0, 0));
+        var secondSession = new Session(2, new DateTime(2026, 4, 16, 13, 0, 0));
+
+        _repository.Add(firstSession);
+        _repository.Add(secondSession);
+
+        var sessions = _context.Sessions.ToList();
+
+        Assert.AreEqual(2, sessions.Count);
+    }
 }
