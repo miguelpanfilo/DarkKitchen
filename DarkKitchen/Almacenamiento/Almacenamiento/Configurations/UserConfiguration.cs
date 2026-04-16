@@ -11,8 +11,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.ToTable("Users");
 
         builder.HasKey(u => u.Id);
-        builder.Property(u => u.Id).ValueGeneratedNever();
-
+        builder.Property(u => u.Id).ValueGeneratedOnAdd();
         builder.Property(u => u.Name).IsRequired();
         builder.Property(u => u.LastName).IsRequired();
         builder.Property(u => u.Role).IsRequired();

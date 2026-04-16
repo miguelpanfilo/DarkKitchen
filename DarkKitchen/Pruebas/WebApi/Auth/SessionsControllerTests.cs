@@ -217,6 +217,9 @@ public class SessionsControllerTests
             .Returns(user);
 
         repoSessionMock
+            .Setup(r => r.RemoveAll());
+
+        repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
 
@@ -241,6 +244,7 @@ public class SessionsControllerTests
 
         repoUserMock.Verify(r => r.FindByEmail("miguel@gmail.com"), Times.Once);
         watchMock.Verify(r => r.Now(), Times.Once);
+        repoSessionMock.Verify(r => r.RemoveAll(), Times.Once);
         repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Once);
     }
 

@@ -33,7 +33,7 @@ public class InitializationService : IInitializationService
         var phoneResult = Phone.TryMakePhone(AdminPhone);
         if(!phoneResult.Success)
         {
-            return;
+            throw new InvalidOperationException("No se pudo crear el teléfono del admin inicial.");
         }
 
         var userResult = User.MakeIntern(
@@ -46,7 +46,7 @@ public class InitializationService : IInitializationService
 
         if(!userResult.Success)
         {
-            return;
+            throw new InvalidOperationException("No se pudo crear el usuario admin inicial.");
         }
 
         _repositoryUser.Add(userResult.Value!);

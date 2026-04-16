@@ -32,8 +32,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IReloj, WatchSystem>();
 
         services.AddScoped<IRepositoryUser, RepositoryUser>();
-        services.AddSingleton<IRepositorySession, RepositorySession>();
-
+        services.AddScoped<IRepositorySession, RepositorySession>();
         return services;
     }
 }

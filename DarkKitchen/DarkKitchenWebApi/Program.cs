@@ -1,6 +1,8 @@
+using Almacenamiento;
 using DarkKitchen.Filters;
 using FactoryService;
 using LogicaDeNegocioAbstracciones;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +15,6 @@ builder.Services.AddControllers(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 🔥 TODO se configura acá (incluye EF ahora)
 builder.Services.AddDarkKitchenDependencies(builder.Configuration);
 
 builder.Services.AddScoped<AuthenticationFilter>();
@@ -22,6 +23,9 @@ var app = builder.Build();
 
 using(var scope = app.Services.CreateScope())
 {
+    var context = scope.ServiceProvider.GetRequiredService<SqlContext>();
+    context.Database.Migrate();
+
     var initializationService = scope.ServiceProvider.GetRequiredService<IInitializationService>();
     initializationService.EnsureInitialized();
 }
