@@ -310,4 +310,36 @@ public class UsersControllerTests
 
         Assert.IsNotNull(attribute);
     }
+
+    [TestMethod]
+    public void UpdateInternalUserPassword_WhenRequestIsValid_ReturnsNoContent()
+    {
+        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
+
+        var request = new ModificarClaveRequestDTO
+        {
+            OldPassword = "PasswordSeguraee3!",
+            NewPassword = "ClaveNuevaSegura4!"
+        };
+
+        userServiceMock
+            .Setup(x => x.ModificarClaveUsuario(3, 99, request));
+
+        var controller = new UsersController(userServiceMock.Object);
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(
+                [
+                    new Claim(ClaimTypes.NameIdentifier, "99")
+                ], "mock"))
+            }
+        };
+
+        var result = controller.UpdateInternalUserPassword(3, request);
+
+        Assert.IsInstanceOfType(result, typeof(NoContentResult));
+        userServiceMock.Verify(x => x.ModificarClaveUsuario(3, 99, request), Times.Once);
+    }
 }
