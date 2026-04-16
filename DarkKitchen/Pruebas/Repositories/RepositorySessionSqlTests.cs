@@ -60,4 +60,12 @@ public class RepositorySessionSqlTests
         Assert.AreEqual(5, foundSession.UserId);
         Assert.AreEqual(expireDate, foundSession.ExpireDate);
     }
+
+    [TestMethod]
+    public void FindBySessionId_WhenSessionDoesNotExist_ReturnsNull()
+    {
+        var foundSession = _repository.FindBySessionId(Guid.NewGuid());
+
+        Assert.IsNull(foundSession);
+    }
 }
