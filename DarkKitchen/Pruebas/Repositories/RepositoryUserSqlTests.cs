@@ -58,4 +58,33 @@ public class RepositoryUserSqlTests
         Assert.AreEqual(UserRoles.Client, savedUser.Role);
         Assert.IsTrue(savedUser.VerifyPassword("PasswordSeguraee3!"));
     }
+
+    [TestMethod]
+    public void FindById_WhenUserExists_ReturnsUser()
+    {
+        var phoneResult = Phone.TryMakePhone("099123456");
+        Assert.IsTrue(phoneResult.Success);
+
+        var userResult = User.MakeClient(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            phoneResult.Value!,
+            "PasswordSeguraee3!");
+
+        Assert.IsTrue(userResult.Success);
+
+        var user = userResult.Value!;
+        user.Id = 1;
+
+        _context.Users.Add(user);
+        _context.SaveChanges();
+
+        var foundUser = _repository.FindById(1);
+
+        Assert.IsNotNull(foundUser);
+        Assert.AreEqual(1, foundUser.Id);
+        Assert.AreEqual("Miguel", foundUser.Name);
+        Assert.AreEqual("miguel@gmail.com", foundUser.Email.Value);
+    }
 }
