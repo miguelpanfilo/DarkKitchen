@@ -9,6 +9,12 @@ public class User
     public Phone Phone { get; private set; }
     public Password Password { get; private set; }
     public UserRoles Role { get; private set; }
+    private User()
+    {
+        Email = null!;
+        Phone = null!;
+        Password = null!;
+    }
 
     public static Result<User> MakeClient(string name, string lastName, string email, Phone phone, string password)
     {

@@ -1,0 +1,20 @@
+using Almacenamiento.Configurations;
+using Dominio;
+using Microsoft.EntityFrameworkCore;
+
+namespace Almacenamiento;
+
+public class SqlContext : DbContext
+{
+    public DbSet<User> Users { get; set; }
+
+    public SqlContext(DbContextOptions<SqlContext> options)
+        : base(options)
+    {
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfiguration(new UserConfiguration());
+    }
+}

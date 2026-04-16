@@ -26,6 +26,11 @@ public sealed class Email
         return Result<Email>.Ok(new Email(emailNormalized));
     }
 
+    private Email()
+    {
+        Value = null!;
+    }
+
     public override string ToString()
     {
         return Value;

@@ -1,5 +1,7 @@
 using DarkKitchen.Filters;
 using FactoryService;
+using LogicaDeNegocioAbstracciones;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(options =>
@@ -11,6 +13,7 @@ builder.Services.AddControllers(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// 🔥 TODO se configura acá (incluye EF ahora)
 builder.Services.AddDarkKitchenDependencies(builder.Configuration);
 
 builder.Services.AddScoped<AuthenticationFilter>();

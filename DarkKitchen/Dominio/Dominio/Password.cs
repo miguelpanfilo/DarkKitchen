@@ -15,6 +15,11 @@ public sealed class Password
         Hash = hash;
     }
 
+    private Password()
+    {
+        Hash = null!;
+    }
+
     public static bool Validate(string? password)
     {
         if(string.IsNullOrWhiteSpace(password))
