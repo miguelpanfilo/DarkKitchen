@@ -102,6 +102,10 @@ public class ModifyPasswordTests
             .Setup(v => v.GetExistingUser(5))
             .Returns(usuario);
 
+        _repoMock
+            .Setup(r => r.Update(usuario))
+            .Returns(usuario);
+
         var request = new ModificarClaveRequestDTO
         {
             OldPassword = "PasswordSeguraee3!",
@@ -111,6 +115,7 @@ public class ModifyPasswordTests
         _service.UpdateUserPassword(5, 99, request);
 
         Assert.IsTrue(usuario.VerifyPassword("ClaveNuevaSegura4!"));
+        _repoMock.Verify(r => r.Update(usuario), Times.Once);
     }
 
     [TestMethod]
@@ -340,6 +345,10 @@ public class ModifyPasswordTests
             .Setup(v => v.GetExistingUser(5))
             .Returns(usuario);
 
+        _repoMock
+            .Setup(r => r.Update(usuario))
+            .Returns(usuario);
+
         var request = new ModificarClaveRequestDTO
         {
             OldPassword = "PasswordSeguraee3!",
@@ -351,6 +360,7 @@ public class ModifyPasswordTests
         _adminValidationMock.Verify(v => v.EnsureUserIsAdmin(99), Times.Once);
         _adminValidationMock.Verify(v => v.EnsureIsNotSelfAction(5, 99, It.IsAny<string>()), Times.Once);
         _adminValidationMock.Verify(v => v.GetExistingUser(5), Times.Once);
+        _repoMock.Verify(r => r.Update(usuario), Times.Once);
     }
 
     [TestMethod]

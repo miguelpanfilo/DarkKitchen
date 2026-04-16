@@ -68,6 +68,7 @@ public class UsersController(IUserService userService) : ControllerBase
         return Ok(response);
     }
 
+    [RoleAuthorization(UserRolesDto.Administrative)]
     [HttpPatch("{id}/password")]
     public IActionResult UpdateInternalUserPassword([FromRoute] int id, [FromBody] ModificarClaveRequestDTO request)
     {
