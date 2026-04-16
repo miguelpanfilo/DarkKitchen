@@ -411,7 +411,7 @@ public class UsersControllerTests
     }
 
     [TestMethod]
-    public void OnAuthorization_WhenUserIsClient_ReturnsForbidden()
+    public void OnAuthorization_WhenUserIsClient_ReturnsForbiddenStatusCode()
     {
         var attribute = new RoleAuthorizationAttribute(UserRolesDto.Administrative);
 
@@ -433,6 +433,10 @@ public class UsersControllerTests
 
         attribute.OnAuthorization(filterContext);
 
-        Assert.IsInstanceOfType(filterContext.Result, typeof(ForbidResult));
+        Assert.IsNotNull(filterContext.Result);
+        Assert.IsInstanceOfType(filterContext.Result, typeof(ObjectResult));
+
+        var result = (ObjectResult)filterContext.Result;
+        Assert.AreEqual(StatusCodes.Status403Forbidden, result.StatusCode);
     }
 }
