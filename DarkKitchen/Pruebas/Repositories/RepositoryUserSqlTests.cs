@@ -132,4 +132,30 @@ public class RepositoryUserSqlTests
 
         Assert.IsNull(foundUser);
     }
+
+    [TestMethod]
+    public void EmailExist_WhenEmailExists_ReturnsTrue()
+    {
+        var phoneResult = Phone.TryMakePhone("099123456");
+        Assert.IsTrue(phoneResult.Success);
+
+        var userResult = User.MakeClient(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            phoneResult.Value!,
+            "PasswordSeguraee3!");
+
+        Assert.IsTrue(userResult.Success);
+
+        var user = userResult.Value!;
+        user.Id = 1;
+
+        _context.Users.Add(user);
+        _context.SaveChanges();
+
+        var exists = _repository.EmailExist("miguel@gmail.com");
+
+        Assert.IsTrue(exists);
+    }
 }
