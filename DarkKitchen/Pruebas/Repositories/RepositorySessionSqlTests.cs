@@ -82,4 +82,21 @@ public class RepositorySessionSqlTests
 
         Assert.AreEqual(2, sessions.Count);
     }
+
+    [TestMethod]
+    public void RemoveAll_WhenSessionsExist_RemovesAllSessions()
+    {
+        var firstSession = new Session(1, new DateTime(2026, 4, 16, 12, 0, 0));
+        var secondSession = new Session(2, new DateTime(2026, 4, 16, 13, 0, 0));
+
+        _context.Sessions.Add(firstSession);
+        _context.Sessions.Add(secondSession);
+        _context.SaveChanges();
+
+        _repository.RemoveAll();
+
+        var sessions = _context.Sessions.ToList();
+
+        Assert.AreEqual(0, sessions.Count);
+    }
 }
