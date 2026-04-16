@@ -87,4 +87,12 @@ public class RepositoryUserSqlTests
         Assert.AreEqual("Miguel", foundUser.Name);
         Assert.AreEqual("miguel@gmail.com", foundUser.Email.Value);
     }
+
+    [TestMethod]
+    public void FindById_WhenUserDoesNotExist_ReturnsNull()
+    {
+        var foundUser = _repository.FindById(999);
+
+        Assert.IsNull(foundUser);
+    }
 }
