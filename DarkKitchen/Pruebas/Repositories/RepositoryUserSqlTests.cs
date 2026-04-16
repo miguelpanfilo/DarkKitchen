@@ -158,4 +158,12 @@ public class RepositoryUserSqlTests
 
         Assert.IsTrue(exists);
     }
+
+    [TestMethod]
+    public void EmailExist_WhenEmailDoesNotExist_ReturnsFalse()
+    {
+        var exists = _repository.EmailExist("noexiste@gmail.com");
+
+        Assert.IsFalse(exists);
+    }
 }
