@@ -65,7 +65,7 @@ public class RepositoryUser(SqlContext context) : IRepositoryUser
 
         if(user != null)
         {
-            _context.Users.Remove(user);
+            user.Deactivate();
             _context.SaveChanges();
         }
     }
