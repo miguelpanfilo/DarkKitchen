@@ -336,4 +336,49 @@ public class RepositoryUserSqlTests
 
         Assert.IsNull(result);
     }
+
+    [TestMethod]
+    public void GetAll_WhenThereAreInactiveUsers_DoesNotReturnThem()
+    {
+        var phoneOneResult = Phone.TryMakePhone("099123456");
+        var phoneTwoResult = Phone.TryMakePhone("091222333");
+
+        Assert.IsTrue(phoneOneResult.Success);
+        Assert.IsTrue(phoneTwoResult.Success);
+
+        var firstUserResult = User.MakeClient(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            phoneOneResult.Value!,
+            "PasswordSeguraee3!");
+
+        var secondUserResult = User.MakeClient(
+            "Ana",
+            "Perez",
+            "ana@gmail.com",
+            phoneTwoResult.Value!,
+            "ClaveSeguraLargaa4!");
+
+        Assert.IsTrue(firstUserResult.Success);
+        Assert.IsTrue(secondUserResult.Success);
+
+        var firstUser = firstUserResult.Value!;
+        var secondUser = secondUserResult.Value!;
+
+        firstUser.Id = 1;
+        secondUser.Id = 2;
+
+        _context.Users.Add(firstUser);
+        _context.Users.Add(secondUser);
+        _context.SaveChanges();
+
+        _repository.Remove(2);
+
+        var users = _repository.GetAll();
+
+        Assert.AreEqual(1, users.Count);
+        Assert.IsTrue(users.Any(u => u.Id == 1 && u.Email.Value == "miguel@gmail.com"));
+        Assert.IsFalse(users.Any(u => u.Id == 2));
+    }
 }
