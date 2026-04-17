@@ -30,6 +30,7 @@ public class LoginService(
         }
 
         var expireDate = _iWatch.Now().AddHours(2);
+        _repoSesion.RemoveAll();
         var session = new Session(userFromTheRequest.Id, expireDate);
         var savedSession = _repoSesion.Add(session);
 

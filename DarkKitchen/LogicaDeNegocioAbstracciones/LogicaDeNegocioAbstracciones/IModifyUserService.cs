@@ -4,13 +4,13 @@ namespace LogicaDeNegocioAbstracciones;
 
 public interface IModifyUserService
 {
-    UsuarioResponseDTO UpdateInternalUser(
+    UserResponseDTO UpdateInternalUser(
         int idUserToModify,
         int isUserLogged,
-        ModificarUsuarioRequestDTO requestDto);
+        ModifyUserRequestDTO requestDto);
 
     void UpdateUserPassword(
         int idUserToModify,
         int idUserLogged,
-        ModificarClaveRequestDTO requestDto);
+        ModifyPasswordRequestDTO requestDto);
 }

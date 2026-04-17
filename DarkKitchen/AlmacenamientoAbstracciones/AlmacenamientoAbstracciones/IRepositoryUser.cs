@@ -10,4 +10,5 @@ public interface IRepositoryUser
     User? FindByEmail(string email);
     User? FindById(int id);
     void Remove(int id);
+    User Update(User user);
 }

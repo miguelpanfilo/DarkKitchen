@@ -155,7 +155,7 @@ public class DependencyInjectionTests
 
         Assert.IsNotNull(descriptor);
         Assert.AreEqual(typeof(InitializationService), descriptor.ImplementationType);
-        Assert.AreEqual(ServiceLifetime.Singleton, descriptor.Lifetime);
+        Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
     }
 
     [TestMethod]
@@ -200,7 +200,7 @@ public class DependencyInjectionTests
 
         Assert.IsNotNull(descriptor);
         Assert.AreEqual(typeof(RepositoryUser), descriptor.ImplementationType);
-        Assert.AreEqual(ServiceLifetime.Singleton, descriptor.Lifetime);
+        Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
     }
 
     [TestMethod]
@@ -215,6 +215,6 @@ public class DependencyInjectionTests
 
         Assert.IsNotNull(descriptor);
         Assert.AreEqual(typeof(RepositorySession), descriptor.ImplementationType);
-        Assert.AreEqual(ServiceLifetime.Singleton, descriptor.Lifetime);
+        Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
     }
 }

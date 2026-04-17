@@ -9,6 +9,11 @@ public sealed class Phone
         Value = value;
     }
 
+    private Phone()
+    {
+        Value = null!;
+    }
+
     public static Result<Phone> TryMakePhone(string number)
     {
         if(string.IsNullOrWhiteSpace(number))

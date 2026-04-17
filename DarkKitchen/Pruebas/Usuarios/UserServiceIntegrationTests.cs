@@ -62,7 +62,7 @@ public class UserServiceIntegrationTests
 
         signUpServiceMock
             .Setup(x => x.MakeInterUser(1, request))
-            .Returns(new UsuarioResponseDTO()
+            .Returns(new UserResponseDTO()
             {
                 Id = 10,
                 Name = "Juan",
@@ -77,7 +77,7 @@ public class UserServiceIntegrationTests
             deleteUserServiceMock.Object,
             filterUserServiceMock.Object);
 
-        service.CrearUsuarioInterno(1, request);
+        service.MakeUserIntern(1, request);
 
         signUpServiceMock.Verify(
             x => x.MakeInterUser(1, request),
@@ -92,11 +92,11 @@ public class UserServiceIntegrationTests
         var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
         var filterUserServiceMock = new Mock<IFilterUserService>(MockBehavior.Strict);
 
-        var request = new ModificarUsuarioRequestDTO { Name = "Carlos" };
+        var request = new ModifyUserRequestDTO { Name = "Carlos" };
 
         modifyUserServiceMock
             .Setup(x => x.UpdateInternalUser(5, 99, request))
-            .Returns(new UsuarioResponseDTO()
+            .Returns(new UserResponseDTO()
             {
                 Id = 5,
                 Name = "Carlos",
@@ -112,7 +112,7 @@ public class UserServiceIntegrationTests
             deleteUserServiceMock.Object,
             filterUserServiceMock.Object);
 
-        service.ModificarUsuarioInterno(5, 99, request);
+        service.ModifyUserIntern(5, 99, request);
 
         modifyUserServiceMock.Verify(
             x => x.UpdateInternalUser(5, 99, request),
@@ -127,7 +127,7 @@ public class UserServiceIntegrationTests
         var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
         var filterUserServiceMock = new Mock<IFilterUserService>(MockBehavior.Strict);
 
-        var request = new ModificarClaveRequestDTO
+        var request = new ModifyPasswordRequestDTO
         {
             OldPassword = "PasswordSeguraee3!",
             NewPassword = "ClaveNuevaSegura4!"
@@ -142,7 +142,7 @@ public class UserServiceIntegrationTests
             deleteUserServiceMock.Object,
             filterUserServiceMock.Object);
 
-        service.ModificarClaveUsuario(5, 99, request);
+        service.ModifyPasswordUser(5, 99, request);
 
         modifyUserServiceMock.Verify(
             x => x.UpdateUserPassword(5, 99, request),
@@ -166,7 +166,7 @@ public class UserServiceIntegrationTests
             deleteUserServiceMock.Object,
             filterUserServiceMock.Object);
 
-        service.EliminarUsuarioInterno(5, 99);
+        service.DeleteUser(5, 99);
 
         deleteUserServiceMock.Verify(
             x => x.DeleteInterUser(5, 99),
@@ -193,7 +193,7 @@ public class UserServiceIntegrationTests
             deleteUserServiceMock.Object,
             filterUserServiceMock.Object);
 
-        service.BuscarUsuarios(99, request);
+        service.FindUserOnSystem(99, request);
 
         filterUserServiceMock.Verify(
             x => x.FindUser(99, request),

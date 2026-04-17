@@ -85,7 +85,11 @@ public class ModifyInternUserTest
         _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var request = new ModificarUsuarioRequestDTO { Name = "Carlos" };
+        _repoMock
+            .Setup(r => r.Update(existingUser))
+            .Returns(existingUser);
+
+        var request = new ModifyUserRequestDTO { Name = "Carlos" };
 
         var result = _service.UpdateInternalUser(5, 99, request);
 
@@ -94,6 +98,8 @@ public class ModifyInternUserTest
         Assert.AreEqual("Perez", result.LastName);
         Assert.AreEqual("admin@gmail.com", result.Email);
         Assert.AreEqual("Administrative", result.Role);
+
+        _repoMock.Verify(r => r.Update(existingUser), Times.Once);
     }
 
     [TestMethod]
@@ -106,7 +112,7 @@ public class ModifyInternUserTest
             .Setup(v => v.EnsureIsNotSelfAction(5, 5, It.IsAny<string>()))
             .Throws(new ConflictException("A user cannot modify itself"));
 
-        var request = new ModificarUsuarioRequestDTO { Name = "Carlos" };
+        var request = new ModifyUserRequestDTO { Name = "Carlos" };
 
         var ex = Assert.ThrowsException<ConflictException>(() =>
             _service.UpdateInternalUser(5, 5, request));
@@ -136,7 +142,11 @@ public class ModifyInternUserTest
         _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var request = new ModificarUsuarioRequestDTO { Name = "Carlos", LastName = "Gomez" };
+        _repoMock
+            .Setup(r => r.Update(existingUser))
+            .Returns(existingUser);
+
+        var request = new ModifyUserRequestDTO { Name = "Carlos", LastName = "Gomez" };
 
         var result = _service.UpdateInternalUser(5, 99, request);
 
@@ -145,6 +155,8 @@ public class ModifyInternUserTest
         Assert.AreEqual("Gomez", result.LastName);
         Assert.AreEqual("admin@gmail.com", result.Email);
         Assert.AreEqual("Administrative", result.Role);
+
+        _repoMock.Verify(r => r.Update(existingUser), Times.Once);
     }
 
     [TestMethod]
@@ -169,12 +181,18 @@ public class ModifyInternUserTest
         _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var request = new ModificarUsuarioRequestDTO { LastName = "Gomez" };
+        _repoMock
+            .Setup(r => r.Update(existingUser))
+            .Returns(existingUser);
+
+        var request = new ModifyUserRequestDTO { LastName = "Gomez" };
 
         var result = _service.UpdateInternalUser(5, 99, request);
 
         Assert.AreEqual("Juan", result.Name);
         Assert.AreEqual("Gomez", result.LastName);
+
+        _repoMock.Verify(r => r.Update(existingUser), Times.Once);
     }
 
     [TestMethod]
@@ -199,7 +217,11 @@ public class ModifyInternUserTest
         _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var request = new ModificarUsuarioRequestDTO();
+        _repoMock
+            .Setup(r => r.Update(existingUser))
+            .Returns(existingUser);
+
+        var request = new ModifyUserRequestDTO();
 
         var result = _service.UpdateInternalUser(5, 99, request);
 
@@ -207,6 +229,8 @@ public class ModifyInternUserTest
         Assert.AreEqual("Perez", result.LastName);
         Assert.AreEqual("099123456", result.Phone);
         Assert.AreEqual("admin@gmail.com", result.Email);
+
+        _repoMock.Verify(r => r.Update(existingUser), Times.Once);
     }
 
     [TestMethod]
@@ -235,7 +259,11 @@ public class ModifyInternUserTest
             .Setup(v => v.ItsValid("098111222"))
             .Returns(true);
 
-        var request = new ModificarUsuarioRequestDTO { Phone = "098111222" };
+        _repoMock
+            .Setup(r => r.Update(existingUser))
+            .Returns(existingUser);
+
+        var request = new ModifyUserRequestDTO { Phone = "098111222" };
 
         var result = _service.UpdateInternalUser(5, 99, request);
 
@@ -243,6 +271,8 @@ public class ModifyInternUserTest
         Assert.AreEqual("Juan", result.Name);
         Assert.AreEqual("Perez", result.LastName);
         Assert.AreEqual("admin@gmail.com", result.Email);
+
+        _repoMock.Verify(r => r.Update(existingUser), Times.Once);
     }
 
     [TestMethod]
@@ -271,7 +301,7 @@ public class ModifyInternUserTest
             .Setup(v => v.ItsValid("123"))
             .Returns(false);
 
-        var request = new ModificarUsuarioRequestDTO { Phone = "123" };
+        var request = new ModifyUserRequestDTO { Phone = "123" };
 
         var ex = Assert.ThrowsException<ValidationException>(() =>
             _service.UpdateInternalUser(5, 99, request));
@@ -305,7 +335,7 @@ public class ModifyInternUserTest
             .Setup(v => v.ItsValid("123"))
             .Returns(false);
 
-        var request = new ModificarUsuarioRequestDTO { Phone = "123" };
+        var request = new ModifyUserRequestDTO { Phone = "123" };
 
         Assert.ThrowsException<ValidationException>(() =>
             _service.UpdateInternalUser(5, 99, request));
@@ -335,7 +365,7 @@ public class ModifyInternUserTest
         _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var request = new ModificarUsuarioRequestDTO { LastName = "ApellidoDemasiadoDemasiadoLargo" };
+        var request = new ModifyUserRequestDTO { LastName = "ApellidoDemasiadoDemasiadoLargo" };
 
         var ex = Assert.ThrowsException<ValidationException>(() =>
             _service.UpdateInternalUser(5, 99, request));
@@ -347,7 +377,7 @@ public class ModifyInternUserTest
     public void UpdateInternalUser_Phone_UserDoesNotExist_ThrowsExceptionWithCorrectMessage()
     {
         _adminValidationMock
-            .Setup(v => v.GetExistingUser(5))
+            .Setup(v => v.GetExistingUser(It.IsAny<int>()))
             .Throws(new NotFoundException("User does not exist"));
 
         _adminValidationMock
@@ -356,7 +386,7 @@ public class ModifyInternUserTest
         _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var request = new ModificarUsuarioRequestDTO { Phone = "098111222" };
+        var request = new ModifyUserRequestDTO { Phone = "098111222" };
 
         var ex = Assert.ThrowsException<NotFoundException>(() =>
             _service.UpdateInternalUser(5, 99, request));
@@ -386,11 +416,16 @@ public class ModifyInternUserTest
         _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var request = new ModificarUsuarioRequestDTO { Phone = "099123456" };
+        _repoMock
+            .Setup(r => r.Update(existingUser))
+            .Returns(existingUser);
+
+        var request = new ModifyUserRequestDTO { Phone = "099123456" };
 
         _service.UpdateInternalUser(5, 99, request);
 
         _phoneValidatorMock.Verify(v => v.ItsValid(It.IsAny<string>()), Times.Never);
+        _repoMock.Verify(r => r.Update(existingUser), Times.Once);
     }
 
     [TestMethod]
@@ -419,7 +454,11 @@ public class ModifyInternUserTest
             .Setup(r => r.EmailExist("nuevo@gmail.com"))
             .Returns(false);
 
-        var request = new ModificarUsuarioRequestDTO { Email = "nuevo@gmail.com" };
+        _repoMock
+            .Setup(r => r.Update(existingUser))
+            .Returns(existingUser);
+
+        var request = new ModifyUserRequestDTO { Email = "nuevo@gmail.com" };
 
         var result = _service.UpdateInternalUser(5, 99, request);
 
@@ -436,7 +475,7 @@ public class ModifyInternUserTest
             .Setup(v => v.EnsureUserIsAdmin(99))
             .Throws(new ForbiddenException("Only an administrative user can perform this action"));
 
-        var request = new ModificarUsuarioRequestDTO();
+        var request = new ModifyUserRequestDTO();
 
         Assert.ThrowsException<ForbiddenException>(() =>
             _service.UpdateInternalUser(5, 99, request));
@@ -462,7 +501,7 @@ public class ModifyInternUserTest
 
         _repoMock.Setup(r => r.EmailExist("correo-invalido")).Returns(false);
 
-        var request = new ModificarUsuarioRequestDTO { Email = "correo-invalido" };
+        var request = new ModifyUserRequestDTO { Email = "correo-invalido" };
 
         var ex = Assert.ThrowsException<ValidationException>(() =>
             _service.UpdateInternalUser(5, 99, request));
@@ -488,7 +527,7 @@ public class ModifyInternUserTest
 
         _repoMock.Setup(r => r.EmailExist("repetido@gmail.com")).Returns(true);
 
-        var request = new ModificarUsuarioRequestDTO { Email = "repetido@gmail.com" };
+        var request = new ModifyUserRequestDTO { Email = "repetido@gmail.com" };
 
         var ex = Assert.ThrowsException<ConflictException>(() =>
             _service.UpdateInternalUser(5, 99, request));
@@ -512,7 +551,11 @@ public class ModifyInternUserTest
         _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
         _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var request = new ModificarUsuarioRequestDTO { Email = "admin@gmail.com" };
+        _repoMock
+            .Setup(r => r.Update(user))
+            .Returns(user);
+
+        var request = new ModifyUserRequestDTO { Email = "admin@gmail.com" };
 
         _service.UpdateInternalUser(5, 99, request);
 
@@ -535,7 +578,7 @@ public class ModifyInternUserTest
         _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
         _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var request = new ModificarUsuarioRequestDTO { Role = "InvalidRole" };
+        var request = new ModifyUserRequestDTO { Role = "InvalidRole" };
 
         var ex = Assert.ThrowsException<ValidationException>(() =>
             _service.UpdateInternalUser(5, 99, request));
@@ -559,11 +602,17 @@ public class ModifyInternUserTest
         _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
         _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var request = new ModificarUsuarioRequestDTO { Role = "adMinisTrative" };
+        _repoMock
+            .Setup(r => r.Update(user))
+            .Returns(user);
+
+        var request = new ModifyUserRequestDTO { Role = "adMinisTrative" };
 
         var result = _service.UpdateInternalUser(5, 99, request);
 
         Assert.AreEqual("Administrative", result.Role);
+
+        _repoMock.Verify(r => r.Update(user), Times.Once);
     }
 
     [TestMethod]
@@ -582,7 +631,11 @@ public class ModifyInternUserTest
         _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(99));
         _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(5, 99, It.IsAny<string>()));
 
-        _service.UpdateInternalUser(5, 99, new ModificarUsuarioRequestDTO());
+        _repoMock
+            .Setup(r => r.Update(user))
+            .Returns(user);
+
+        _service.UpdateInternalUser(5, 99, new ModifyUserRequestDTO());
 
         _adminValidationMock.Verify(v => v.EnsureUserIsAdmin(99), Times.Once);
         _adminValidationMock.Verify(v => v.EnsureIsNotSelfAction(5, 99, It.IsAny<string>()), Times.Once);
@@ -596,7 +649,7 @@ public class ModifyInternUserTest
             .Setup(v => v.EnsureUserIsAdmin(99))
             .Throws(new ForbiddenException("Only an administrative user can perform this action"));
 
-        var request = new ModificarUsuarioRequestDTO { Name = "Carlos" };
+        var request = new ModifyUserRequestDTO { Name = "Carlos" };
 
         var ex = Assert.ThrowsException<ForbiddenException>(() =>
             _service.UpdateInternalUser(5, 99, request));
@@ -614,7 +667,7 @@ public class ModifyInternUserTest
             .Setup(v => v.EnsureIsNotSelfAction(5, 5, It.IsAny<string>()))
             .Throws(new ConflictException("A user cannot modify itself"));
 
-        var request = new ModificarUsuarioRequestDTO { Name = "Carlos" };
+        var request = new ModifyUserRequestDTO { Name = "Carlos" };
 
         Assert.ThrowsException<ConflictException>(() =>
             _service.UpdateInternalUser(5, 5, request));
@@ -633,7 +686,7 @@ public class ModifyInternUserTest
         _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
         _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var request = new ModificarUsuarioRequestDTO { Name = "   " };
+        var request = new ModifyUserRequestDTO { Name = "   " };
 
         var ex = Assert.ThrowsException<ValidationException>(() =>
             _service.UpdateInternalUser(5, 99, request));
@@ -652,7 +705,7 @@ public class ModifyInternUserTest
         _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
         _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var request = new ModificarUsuarioRequestDTO { LastName = "   " };
+        var request = new ModifyUserRequestDTO { LastName = "   " };
 
         var ex = Assert.ThrowsException<ValidationException>(() =>
             _service.UpdateInternalUser(5, 99, request));
@@ -671,7 +724,7 @@ public class ModifyInternUserTest
         _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
         _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var request = new ModificarUsuarioRequestDTO { Email = "   " };
+        var request = new ModifyUserRequestDTO { Email = "   " };
 
         var ex = Assert.ThrowsException<ValidationException>(() =>
             _service.UpdateInternalUser(5, 99, request));
@@ -690,7 +743,7 @@ public class ModifyInternUserTest
         _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
         _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var request = new ModificarUsuarioRequestDTO { Phone = "   " };
+        var request = new ModifyUserRequestDTO { Phone = "   " };
 
         var ex = Assert.ThrowsException<ValidationException>(() =>
             _service.UpdateInternalUser(5, 99, request));
@@ -709,11 +762,83 @@ public class ModifyInternUserTest
         _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
         _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var request = new ModificarUsuarioRequestDTO { Role = "   " };
+        var request = new ModifyUserRequestDTO { Role = "   " };
 
         var ex = Assert.ThrowsException<ValidationException>(() =>
             _service.UpdateInternalUser(5, 99, request));
 
         Assert.AreEqual("El rol no puede estar vacío", ex.Message);
+    }
+
+    [TestMethod]
+    public void UpdateInternalUser_WhenRequestIsValid_CallsRepositoryUpdateOnce()
+    {
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
+
+        var phoneResult = Phone.TryMakePhone("099123456");
+        Assert.IsTrue(phoneResult.Success);
+
+        var userResult = User.MakeIntern(
+            "Juan",
+            "Perez",
+            "juan@gmail.com",
+            phoneResult.Value!,
+            "PasswordSeguraee3!",
+            UserRoles.Preparer);
+
+        Assert.IsTrue(userResult.Success);
+        var user = userResult.Value!;
+        user.Id = 3;
+
+        var request = new ModifyUserRequestDTO
+        {
+            Name = "Migue",
+            LastName = "Martinez",
+            Email = "lucia.wwww@gmail.com",
+            Phone = "098123456",
+            Role = "Preparer"
+        };
+
+        adminValidationMock
+            .Setup(x => x.EnsureUserIsAdmin(1));
+
+        adminValidationMock
+            .Setup(x => x.EnsureIsNotSelfAction(
+                3,
+                1,
+                "Un usuario no puede modificarse a sí mismo"));
+
+        adminValidationMock
+            .Setup(x => x.GetExistingUser(3))
+            .Returns(user);
+
+        phoneValidatorMock
+            .Setup(x => x.ItsValid("098123456"))
+            .Returns(true);
+
+        repoMock
+            .Setup(x => x.EmailExist("lucia.wwww@gmail.com"))
+            .Returns(false);
+
+        repoMock
+            .Setup(x => x.Update(user))
+            .Returns(user);
+
+        var service = new ModifyUserService(
+            repoMock.Object,
+            phoneValidatorMock.Object,
+            adminValidationMock.Object);
+
+        var response = service.UpdateInternalUser(3, 1, request);
+
+        Assert.IsNotNull(response);
+        Assert.AreEqual("Migue", response.Name);
+        Assert.AreEqual("Martinez", response.LastName);
+        Assert.AreEqual("lucia.wwww@gmail.com", response.Email);
+        Assert.AreEqual("098123456", response.Phone);
+
+        repoMock.Verify(x => x.Update(user), Times.Once);
     }
 }

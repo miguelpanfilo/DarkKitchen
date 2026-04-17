@@ -22,13 +22,13 @@ public class UsersController(IUserService userService) : ControllerBase
             return Unauthorized();
         }
 
-        var response = _userService.CrearUsuarioInterno(loggedUserId.Value, request);
+        var response = _userService.MakeUserIntern(loggedUserId.Value, request);
         return Created("/api/v1/users", response);
     }
 
     [RoleAuthorization(UserRolesDto.Administrative)]
     [HttpPatch("{id}")]
-    public IActionResult UpdateInternalUser([FromRoute] int id, [FromBody] ModificarUsuarioRequestDTO request)
+    public IActionResult UpdateInternalUser([FromRoute] int id, [FromBody] ModifyUserRequestDTO request)
     {
         var loggedUserId = GetLoggedUserId();
         if(loggedUserId == null)
@@ -36,7 +36,7 @@ public class UsersController(IUserService userService) : ControllerBase
             return Unauthorized();
         }
 
-        var response = _userService.ModificarUsuarioInterno(id, loggedUserId.Value, request);
+        var response = _userService.ModifyUserIntern(id, loggedUserId.Value, request);
         return Ok(response);
     }
 
@@ -50,7 +50,7 @@ public class UsersController(IUserService userService) : ControllerBase
             return Unauthorized();
         }
 
-        _userService.EliminarUsuarioInterno(id, loggedUserId.Value);
+        _userService.DeleteUser(id, loggedUserId.Value);
         return NoContent();
     }
 
@@ -64,8 +64,22 @@ public class UsersController(IUserService userService) : ControllerBase
             return Unauthorized();
         }
 
-        var response = _userService.BuscarUsuarios(loggedUserId.Value, request);
+        var response = _userService.FindUserOnSystem(loggedUserId.Value, request);
         return Ok(response);
+    }
+
+    [RoleAuthorization(UserRolesDto.Administrative)]
+    [HttpPatch("{id}/password")]
+    public IActionResult UpdateInternalUserPassword([FromRoute] int id, [FromBody] ModifyPasswordRequestDTO request)
+    {
+        var loggedUserId = GetLoggedUserId();
+        if(loggedUserId == null)
+        {
+            return Unauthorized();
+        }
+
+        _userService.ModifyPasswordUser(id, loggedUserId.Value, request);
+        return NoContent();
     }
 
     private int? GetLoggedUserId()
