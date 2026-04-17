@@ -40,6 +40,18 @@ public class PromotionService
         return PromotionMapper.ToResponseDto(updatePromotion);
     }
 
+    public PromotionResponseDto DisassociateProduct(int promotionId, int productId)
+    {
+        var promotion = _promotionRepository.GetById(promotionId);
+        var product = _productRepository.GetById(productId);
+
+        promotion.DisassociateProduct(product);
+
+        var updatedPromotion = _promotionRepository.Update(promotion);
+
+        return PromotionMapper.ToResponseDto(updatedPromotion);
+    }
+
     private void ValidatePromotionExists(Promotion? promotion)
     {
         if (promotion == null)

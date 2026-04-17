@@ -51,6 +51,11 @@ public class Promotion
         Products.Add(product);
     }
 
+    public void DisassociateProduct(Product product)
+    {
+        Products.Remove(product);
+    }
+
     private void ValidateName(string name)
     {
         if(string.IsNullOrWhiteSpace(name))
