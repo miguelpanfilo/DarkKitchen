@@ -18,6 +18,7 @@ public class RepositoryUser(SqlContext context) : IRepositoryUser
     {
         return _context.Users
             .AsNoTracking()
+            .Where(u => u.Status == UserStatus.Active)
             .ToList();
     }
 
