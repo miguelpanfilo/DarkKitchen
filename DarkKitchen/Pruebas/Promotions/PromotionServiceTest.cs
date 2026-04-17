@@ -20,10 +20,7 @@ public class PromotionServiceTest
             .WithCommercialLine("Línea")
             .WithCategory("Categoría")
             .WithPrice(100)
-            .WithPhotos(new List<ProductPhoto>
-            {
-                new ProductPhoto("photo-1.jpg")
-            })
+            .WithPhotos(new List<ProductPhoto> { new ProductPhoto("photo-1.jpg") })
             .Build();
     }
 
@@ -83,7 +80,8 @@ public class PromotionServiceTest
     [DataRow(0)]
     [DataRow(-1)]
     [DataRow(101)]
-    public void GivenPromotionDtoWithInvalidDiscountPercentage_WhenCreating_ThenThrowsPromotionException(int invalidDiscount)
+    public void GivenPromotionDtoWithInvalidDiscountPercentage_WhenCreating_ThenThrowsPromotionException(
+        int invalidDiscount)
     {
         var promotionDto = new PromotionDto(
             "Black Friday",
@@ -95,7 +93,7 @@ public class PromotionServiceTest
         var repositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
         var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
 
-        var service = new PromotionService(repositoryMock.Object,productRepositoryMock.Object);
+        var service = new PromotionService(repositoryMock.Object, productRepositoryMock.Object);
 
         var ex = Assert.ThrowsException<PromotionException>(() => service.Create(promotionDto));
 
@@ -199,8 +197,7 @@ public class PromotionServiceTest
             productRepositoryMock.Object
         );
 
-        var ex = Assert.ThrowsException<PromotionException>(
-            () => service.AssociateProduct(1, 100)
+        var ex = Assert.ThrowsException<PromotionException>(() => service.AssociateProduct(1, 100)
         );
 
         Assert.AreEqual("El producto ya está asociado a la promoción", ex.Message);
@@ -226,8 +223,7 @@ public class PromotionServiceTest
             productRepositoryMock.Object
         );
 
-        var ex = Assert.ThrowsException<PromotionException>(
-            () => service.AssociateProduct(1, 100)
+        var ex = Assert.ThrowsException<PromotionException>(() => service.AssociateProduct(1, 100)
         );
 
         Assert.AreEqual("La promoción no existe", ex.Message);
@@ -265,13 +261,49 @@ public class PromotionServiceTest
             productRepositoryMock.Object
         );
 
-        var ex = Assert.ThrowsException<PromotionException>(
-            () => service.AssociateProduct(1, 100)
+        var ex = Assert.ThrowsException<PromotionException>(() => service.AssociateProduct(1, 100)
         );
 
         Assert.AreEqual("El producto no existe", ex.Message);
 
         promotionRepositoryMock.Verify(r => r.Update(It.IsAny<Promotion>()), Times.Never);
+
+        promotionRepositoryMock.VerifyAll();
+        productRepositoryMock.VerifyAll();
+    }
+
+    [TestMethod]
+    public void GivenAssociatedProduct_WhenDisassociatingFromPromotion_ThenProductIsRemoved()
+    {
+        var promotion = Promotion.MakePromotion(
+            "Black Friday",
+            10,
+            new DateOnly(2026, 1, 25),
+            new DateOnly(2026, 1, 30));
+        var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        var product = CreateValidProduct();
+
+        promotionRepositoryMock
+            .Setup(r => r.GetById(1))
+            .Returns(promotion);
+
+        productRepositoryMock
+            .Setup(r => r.GetById(100))
+            .Returns(product);
+
+        promotionRepositoryMock
+            .Setup(r => r.Update(promotion))
+            .Returns(promotion);
+
+        var servicePromotion = new PromotionService(promotionRepositoryMock.Object, productRepositoryMock.Object);
+
+        servicePromotion.AssociateProduct(1, 100);
+
+        servicePromotion.DisassociateProduct(1, 100);
+
+        Assert.IsFalse(promotion.Products.Contains(product));
 
         promotionRepositoryMock.VerifyAll();
         productRepositoryMock.VerifyAll();
