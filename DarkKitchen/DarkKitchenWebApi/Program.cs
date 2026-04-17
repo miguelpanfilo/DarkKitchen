@@ -1,6 +1,8 @@
 using Almacenamiento;
+using AlmacenamientoAbstracciones;
 using DarkKitchen.Filters;
 using FactoryService;
+using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,18 +20,10 @@ builder.Services.AddSwaggerGen();
 // Orders
 builder.Services.AddScoped<IOrderFacade, OrderFacade>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IProductService, ProductServiceTemp>();
 builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
 
-// Services
-builder.Services.AddScoped<ILoginService, LoginService>();
-builder.Services.AddScoped<ISignUpUserService, SignUpService>();
-builder.Services.AddScoped<IModifyUserService, ModifyUserService>();
-builder.Services.AddScoped<IDeleteUserService, DeleteUserService>();
-builder.Services.AddScoped<IFilterUserService, FilterUserService>();
-builder.Services.AddScoped<IAdminValidationService, AdminValidationService>();
-builder.Services.AddScoped<ISessionValidationService, SessionValidationService>();
 builder.Services.AddDarkKitchenDependencies(builder.Configuration);
-
 builder.Services.AddScoped<AuthenticationFilter>();
 
 var app = builder.Build();
