@@ -113,6 +113,11 @@ public class User
         Status = UserStatus.Active;
     }
 
+    public void Deactivate()
+    {
+        Status = UserStatus.Inactive;
+    }
+
     private static Result<bool> ValidateName(string name)
     {
         if(string.IsNullOrWhiteSpace(name))
