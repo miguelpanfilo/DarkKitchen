@@ -308,4 +308,32 @@ public class RepositoryUserSqlTests
         Assert.AreEqual("099123456", updatedUser.Phone.Value);
         Assert.AreEqual(UserRoles.Client, updatedUser.Role);
     }
+
+    [TestMethod]
+    public void FindById_WhenUserIsInactive_ReturnsNull()
+    {
+        var phoneResult = Phone.TryMakePhone("099123456");
+        Assert.IsTrue(phoneResult.Success);
+
+        var userResult = User.MakeClient(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            phoneResult.Value!,
+            "PasswordSeguraee3!");
+
+        Assert.IsTrue(userResult.Success);
+
+        var user = userResult.Value!;
+        user.Id = 1;
+
+        _context.Users.Add(user);
+        _context.SaveChanges();
+
+        _repository.Remove(1);
+
+        var result = _repository.FindById(1);
+
+        Assert.IsNull(result);
+    }
 }
