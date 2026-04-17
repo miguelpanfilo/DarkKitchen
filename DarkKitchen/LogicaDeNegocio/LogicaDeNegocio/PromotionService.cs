@@ -43,6 +43,8 @@ public class PromotionService
     public PromotionResponseDto DisassociateProduct(int promotionId, int productId)
     {
         var promotion = _promotionRepository.GetById(promotionId);
+        ValidatePromotionExists(promotion);
+
         var product = _productRepository.GetById(productId);
 
         promotion.DisassociateProduct(product);
