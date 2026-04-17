@@ -16,7 +16,7 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
         (CurrentUserDto)HttpContext.Items["CurrentUser"]!;
 
     [HttpPost]
-    [RoleFilter(UserRolesDto.Client)]
+    [RoleAuthorization(UserRolesDto.Client)]
     public IActionResult CreateOrder([FromBody] CreateOrderRequest request)
     {
         var response = _orderFacade.CreateOrder(CurrentUser.Id, request);
@@ -30,7 +30,7 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
     }
 
     [HttpGet("mine")]
-    [RoleFilter(UserRolesDto.Client)]
+    [RoleAuthorization(UserRolesDto.Client)]
     public IActionResult GetClientOrders(
         [FromQuery] DateTime? dateFrom,
         [FromQuery] DateTime? dateTo,
@@ -40,7 +40,7 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
     }
 
     [HttpGet]
-    [RoleFilter(UserRolesDto.Preparer, UserRolesDto.Administrative)]
+    [RoleAuthorization(UserRolesDto.Preparer, UserRolesDto.Administrative)]
     public IActionResult GetOrdersByFilters(
         [FromQuery] DateTime dateFrom,
         [FromQuery] DateTime dateTo,
@@ -51,7 +51,7 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
     }
 
     [HttpPut("{id:int}/prepare")]
-    [RoleFilter(UserRolesDto.Preparer, UserRolesDto.Administrative)]
+    [RoleAuthorization(UserRolesDto.Preparer, UserRolesDto.Administrative)]
     public IActionResult Prepare(int id)
     {
         _orderFacade.Prepare(id);
@@ -59,7 +59,7 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
     }
 
     [HttpPut("{id:int}/cancel")]
-    [RoleFilter(UserRolesDto.Client, UserRolesDto.Administrative)]
+    [RoleAuthorization(UserRolesDto.Client, UserRolesDto.Administrative)]
     public IActionResult Cancel(int id)
     {
         _orderFacade.Cancel(id);
@@ -67,7 +67,7 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
     }
 
     [HttpPut("{id:int}/dispatch")]
-    [RoleFilter(UserRolesDto.Preparer, UserRolesDto.Administrative)]
+    [RoleAuthorization(UserRolesDto.Preparer, UserRolesDto.Administrative)]
     public IActionResult Dispatch(int id)
     {
         _orderFacade.Dispatch(id);
@@ -75,7 +75,7 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
     }
 
     [HttpPut("{id:int}/deliver")]
-    [RoleFilter(UserRolesDto.Preparer, UserRolesDto.Administrative)]
+    [RoleAuthorization(UserRolesDto.Preparer, UserRolesDto.Administrative)]
     public IActionResult Deliver(int id)
     {
         _orderFacade.Deliver(id);
@@ -83,7 +83,7 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
     }
 
     [HttpPut("{id:int}/not-delivered")]
-    [RoleFilter(UserRolesDto.Preparer, UserRolesDto.Administrative)]
+    [RoleAuthorization(UserRolesDto.Preparer, UserRolesDto.Administrative)]
     public IActionResult MarkNotDelivered(int id)
     {
         _orderFacade.MarkNotDelivered(id);
