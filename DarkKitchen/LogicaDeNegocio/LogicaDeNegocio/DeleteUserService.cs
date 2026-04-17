@@ -18,7 +18,7 @@ public class DeleteUserService(
         _adminValidationService.EnsureIsNotSelfAction(
             idToDelete,
             idUserLogged,
-            "A user cannot delete themselves");
+            "Un usuario no puede eliminarse a sí mismo");
 
         var user = _adminValidationService.GetExistingUser(idToDelete);
 

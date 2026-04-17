@@ -1,3 +1,4 @@
+using Almacenamiento;
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
@@ -5,6 +6,7 @@ using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using Moq;
+using Pruebas.Persistence;
 
 namespace Pruebas.InicioSesion;
 
@@ -52,11 +54,14 @@ public class LoginServiceTests
             .Returns(usuario);
 
         repoSesionMock
+            .Setup(r => r.RemoveAll());
+
+        repoSesionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
 
         relojMock
-            .Setup(r => r.Ahora())
+            .Setup(r => r.Now())
             .Returns(DateTime.Now);
 
         var service = new LoginService(
@@ -102,7 +107,7 @@ public class LoginServiceTests
 
         var ex = Assert.ThrowsException<UserAuthenticationException>(() => service.Login(request));
 
-        Assert.AreEqual("Invalid credentials", ex.Message);
+        Assert.AreEqual("Credenciales inválidas", ex.Message);
 
         repoSesionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Never);
     }
@@ -133,7 +138,7 @@ public class LoginServiceTests
 
         var ex = Assert.ThrowsException<UserAuthenticationException>(() => service.Login(request));
 
-        Assert.AreEqual("Invalid credentials", ex.Message);
+        Assert.AreEqual("Credenciales inválidas", ex.Message);
 
         repoSesionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Never);
     }
@@ -152,11 +157,14 @@ public class LoginServiceTests
             .Returns(user);
 
         repoSessionMock
+            .Setup(r => r.RemoveAll());
+
+        repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
 
         watchMock
-            .Setup(r => r.Ahora())
+            .Setup(r => r.Now())
             .Returns(DateTime.Now);
 
         var service = new LoginService(
@@ -172,6 +180,7 @@ public class LoginServiceTests
 
         service.Login(request);
 
+        repoSessionMock.Verify(r => r.RemoveAll(), Times.Once);
         repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Once);
     }
 
@@ -189,11 +198,14 @@ public class LoginServiceTests
             .Returns(user);
 
         repoSessionMock
+            .Setup(r => r.RemoveAll());
+
+        repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
 
         watchMock
-            .Setup(r => r.Ahora())
+            .Setup(r => r.Now())
             .Returns(DateTime.Now);
 
         var service = new LoginService(
@@ -226,11 +238,14 @@ public class LoginServiceTests
             .Returns(user);
 
         repoSessionMock
+            .Setup(r => r.RemoveAll());
+
+        repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
 
         watchMock
-            .Setup(r => r.Ahora())
+            .Setup(r => r.Now())
             .Returns(DateTime.Now);
 
         var service = new LoginService(
@@ -263,11 +278,14 @@ public class LoginServiceTests
             .Returns(user);
 
         repoSessionMock
+            .Setup(r => r.RemoveAll());
+
+        repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
 
         watchMock
-            .Setup(r => r.Ahora())
+            .Setup(r => r.Now())
             .Returns(DateTime.Now);
 
         var service = new LoginService(
@@ -275,11 +293,7 @@ public class LoginServiceTests
             repoSessionMock.Object,
             watchMock.Object);
 
-        var request = new LoginRequestDTO
-        {
-            Email = "miguel@gmail.com",
-            Password = "Password@2Ok6Abc"
-        };
+        var request = new LoginRequestDTO { Email = "miguel@gmail.com", Password = "Password@2Ok6Abc" };
 
         var response = service.Login(request);
 
@@ -355,6 +369,9 @@ public class LoginServiceTests
             .Returns(user);
 
         repoSessionMock
+            .Setup(r => r.RemoveAll());
+
+        repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
 
@@ -363,7 +380,7 @@ public class LoginServiceTests
         var coordinatedDate = new DateTime(2026, 1, 1, 10, 0, 0);
 
         watch
-            .Setup(r => r.Ahora())
+            .Setup(r => r.Now())
             .Returns(coordinatedDate);
 
         var service = new LoginService(
@@ -398,11 +415,14 @@ public class LoginServiceTests
             .Returns(user);
 
         repoSessionMock
+            .Setup(r => r.RemoveAll());
+
+        repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
 
         watchMock
-            .Setup(r => r.Ahora())
+            .Setup(r => r.Now())
             .Returns(DateTime.Now);
 
         var service = new LoginService(
@@ -432,7 +452,7 @@ public class LoginServiceTests
         var fechaFija = new DateTime(2026, 1, 1, 10, 0, 0);
 
         watchMock
-            .Setup(r => r.Ahora())
+            .Setup(r => r.Now())
             .Returns(fechaFija);
 
         var user = CreateValidClientUser(1);
@@ -442,6 +462,9 @@ public class LoginServiceTests
         repoUserMock
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
             .Returns(user);
+
+        repoSessionMock
+            .Setup(r => r.RemoveAll());
 
         repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
@@ -463,5 +486,125 @@ public class LoginServiceTests
 
         Assert.IsNotNull(sesionGuardada);
         Assert.AreEqual(sesionGuardada.ExpireDate, response.ExpireDate);
+    }
+
+    [TestMethod]
+    public void Login_WhenCredentialsAreValid_RemovesPreviousSessionsAndCreatesNewSession()
+    {
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+
+        var user = CreateValidClientUser(1);
+
+        repoUserMock
+            .Setup(r => r.FindByEmail("miguel@gmail.com"))
+            .Returns(user);
+
+        repoSessionMock
+            .Setup(r => r.RemoveAll());
+
+        repoSessionMock
+            .Setup(r => r.Add(It.IsAny<Session>()))
+            .Returns((Session s) => s);
+
+        watchMock
+            .Setup(r => r.Now())
+            .Returns(DateTime.Now);
+
+        var service = new LoginService(
+            repoUserMock.Object,
+            repoSessionMock.Object,
+            watchMock.Object);
+
+        var request = new LoginRequestDTO
+        {
+            Email = "miguel@gmail.com",
+            Password = "Password@2Ok6Abc"
+        };
+
+        service.Login(request);
+
+        repoSessionMock.Verify(r => r.RemoveAll(), Times.Once);
+        repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Once);
+    }
+
+    [TestMethod]
+    public void Login_WhenCalledTwice_OnlySecondSessionIsValid()
+    {
+        var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
+        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+
+        var user = CreateValidClientUser(1);
+
+        repoUserMock
+            .Setup(r => r.FindByEmail("miguel@gmail.com"))
+            .Returns(user);
+
+        repoSessionMock
+            .Setup(r => r.RemoveAll());
+
+        repoSessionMock
+            .Setup(r => r.Add(It.IsAny<Session>()))
+            .Returns((Session s) => s);
+
+        watchMock
+            .Setup(r => r.Now())
+            .Returns(DateTime.Now);
+
+        var service = new LoginService(
+            repoUserMock.Object,
+            repoSessionMock.Object,
+            watchMock.Object);
+
+        var request = new LoginRequestDTO
+        {
+            Email = "miguel@gmail.com",
+            Password = "Password@2Ok6Abc"
+        };
+
+        service.Login(request);
+        service.Login(request);
+
+        repoSessionMock.Verify(r => r.RemoveAll(), Times.Exactly(2));
+        repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Exactly(2));
+    }
+
+    [TestMethod]
+    public void Login_WhenCalledTwice_OnlyLastSessionExistsInDatabase()
+    {
+        var context = SqliteTestContextFactory.CreateContext(out var connection);
+        var repoUser = new RepositoryUser(context);
+        var repoSession = new RepositorySession(context);
+
+        var watchMock = new Mock<IReloj>();
+        watchMock.Setup(x => x.Now()).Returns(DateTime.Now);
+
+        var user = CreateValidClientUser(1);
+        context.Users.Add(user);
+        context.SaveChanges();
+
+        var service = new LoginService(
+            repoUser,
+            repoSession,
+            watchMock.Object);
+
+        var request = new LoginRequestDTO
+        {
+            Email = "miguel@gmail.com",
+            Password = "Password@2Ok6Abc"
+        };
+
+        var firstLogin = service.Login(request);
+        var secondLogin = service.Login(request);
+
+        var sessions = context.Sessions.ToList();
+
+        Assert.AreEqual(1, sessions.Count);
+        Assert.AreEqual(secondLogin.SessionId, sessions[0].SessionId);
+
+        context.Dispose();
+        connection.Dispose();
     }
 }

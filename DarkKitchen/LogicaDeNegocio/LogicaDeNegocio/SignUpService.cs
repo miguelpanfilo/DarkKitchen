@@ -21,7 +21,7 @@ public class SignUpService(
     {
         if(_repositoryUser.EmailExist(requestDto.Email))
         {
-            throw new ConflictException("Email is already registered");
+            throw new ConflictException("Email ya registrado");
         }
 
         var phone = MakeAndValidatePhone(requestDto.Phone);
@@ -48,23 +48,23 @@ public class SignUpService(
         };
     }
 
-    public UsuarioResponseDTO MakeInterUser(int idUserLogged, SingUpInternUserRequestDTO requestDto)
+    public UserResponseDTO MakeInterUser(int idUserLogged, SingUpInternUserRequestDTO requestDto)
     {
         _adminValidationService.EnsureUserIsAdmin(idUserLogged);
 
         var role = GetInternRoleValid(requestDto.Role);
         var phone = MakeAndValidatePhone(requestDto.Phone);
 
-        if(_repositoryUser.EmailExist(requestDto.Email))
-        {
-            throw new ConflictException("Email is already registered");
-        }
-
         var userResult = requestDto.MappingDTOToInternUser(phone, role);
 
         if(!userResult.Success)
         {
             throw new ValidationException(userResult.ErrorMessage!);
+        }
+
+        if(_repositoryUser.EmailExist(requestDto.Email))
+        {
+            throw new ConflictException("Email ya registrado");
         }
 
         var newUser = _repositoryUser.Add(userResult.Value!);
@@ -76,7 +76,7 @@ public class SignUpService(
     {
         if(!Enum.TryParse<UserRoles>(role, true, out var rolEnum))
         {
-            throw new ValidationException("Internal role is not valid");
+            throw new ValidationException("El rol no es válido");
         }
 
         return rolEnum;
@@ -95,7 +95,7 @@ public class SignUpService(
 
         if(!_validatorPhone.ItsValid(newPhone.Value))
         {
-            throw new ValidationException("Phone is not valid");
+            throw new ValidationException("Telefono no valido");
         }
 
         return newPhone;

@@ -5,6 +5,7 @@ using Dominio;
 using LogicaDeNegocio;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -155,7 +156,7 @@ public class SessionsControllerTests
         var ex = Assert.ThrowsException<UserAuthenticationException>(() =>
             service.Login(request));
 
-        Assert.AreEqual("Invalid credentials", ex.Message);
+        Assert.AreEqual("Credenciales inválidas", ex.Message);
 
         repoUserMock.Verify(r => r.FindByEmail("miguel@gmail.com"), Times.Once);
         repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Never);
@@ -189,7 +190,7 @@ public class SessionsControllerTests
         var ex = Assert.ThrowsException<UserAuthenticationException>(() =>
             service.Login(request));
 
-        Assert.AreEqual("Invalid credentials", ex.Message);
+        Assert.AreEqual("Credenciales inválidas", ex.Message);
 
         repoUserMock.Verify(r => r.FindByEmail("miguel@gmail.com"), Times.Once);
         repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Never);
@@ -205,7 +206,7 @@ public class SessionsControllerTests
         var fixedNow = new DateTime(2026, 1, 1, 10, 0, 0);
 
         watchMock
-            .Setup(r => r.Ahora())
+            .Setup(r => r.Now())
             .Returns(fixedNow);
 
         var user = CreateValidUser("miguel@gmail.com", "Password@2Ok6Abc");
@@ -214,6 +215,9 @@ public class SessionsControllerTests
         repoUserMock
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
             .Returns(user);
+
+        repoSessionMock
+            .Setup(r => r.RemoveAll());
 
         repoSessionMock
             .Setup(r => r.Add(It.IsAny<Session>()))
@@ -239,7 +243,21 @@ public class SessionsControllerTests
         Assert.AreNotEqual(Guid.Empty, result.SessionId);
 
         repoUserMock.Verify(r => r.FindByEmail("miguel@gmail.com"), Times.Once);
-        watchMock.Verify(r => r.Ahora(), Times.Once);
+        watchMock.Verify(r => r.Now(), Times.Once);
+        repoSessionMock.Verify(r => r.RemoveAll(), Times.Once);
         repoSessionMock.Verify(r => r.Add(It.IsAny<Session>()), Times.Once);
+    }
+
+    [TestMethod]
+    public void CreateSession_HasAllowAnonymousAttribute()
+    {
+        var method = typeof(SessionsController)
+            .GetMethod("CreateSession");
+
+        var hasAttribute = method!
+            .GetCustomAttributes(typeof(AllowAnonymousAttribute), false)
+            .Any();
+
+        Assert.IsTrue(hasAttribute);
     }
 }

@@ -4,7 +4,7 @@ namespace LogicaDeNegocio;
 
 public class WatchSystem : IReloj
 {
-    public DateTime Ahora()
+    public DateTime Now()
     {
         return DateTime.Now;
     }

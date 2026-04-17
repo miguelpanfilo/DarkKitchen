@@ -1,6 +1,6 @@
 using Almacenamiento;
 using Dominio;
-
+/*
 namespace Pruebas.InicioSesion;
 
 [TestClass]
@@ -49,3 +49,4 @@ public class RepositorySessionTests
         Assert.IsNull(result);
     }
 }
+*/

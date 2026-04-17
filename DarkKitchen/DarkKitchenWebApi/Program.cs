@@ -1,8 +1,8 @@
 using Almacenamiento;
-using AlmacenamientoAbstracciones;
 using DarkKitchen.Filters;
-using LogicaDeNegocio;
+using FactoryService;
 using LogicaDeNegocioAbstracciones;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,19 +28,20 @@ builder.Services.AddScoped<IDeleteUserService, DeleteUserService>();
 builder.Services.AddScoped<IFilterUserService, FilterUserService>();
 builder.Services.AddScoped<IAdminValidationService, AdminValidationService>();
 builder.Services.AddScoped<ISessionValidationService, SessionValidationService>();
+builder.Services.AddDarkKitchenDependencies(builder.Configuration);
 
-// Filters
 builder.Services.AddScoped<AuthenticationFilter>();
 
-// Helpers / validators
-builder.Services.AddScoped<IPhoneValidator, PhoneValidatorUruguay>();
-builder.Services.AddScoped<IReloj, WatchSystem>();
-
-// Repositories
-builder.Services.AddSingleton<IRepositoryUser, RepositoryUser>();
-builder.Services.AddSingleton<IRepositorySession, RepositorySession>();
-
 var app = builder.Build();
+
+using(var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<SqlContext>();
+    context.Database.Migrate();
+
+    var initializationService = scope.ServiceProvider.GetRequiredService<IInitializationService>();
+    initializationService.EnsureInitialized();
+}
 
 if(app.Environment.IsDevelopment())
 {
@@ -49,7 +50,6 @@ if(app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthorization();
 app.MapControllers();
-
 app.Run();

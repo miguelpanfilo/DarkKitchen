@@ -1,5 +1,6 @@
 using Contratos;
 using LogicaDeNegocioAbstracciones;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DarkKitchen.Controllers;
@@ -10,6 +11,7 @@ public class SessionsController(ILoginService loginService) : ControllerBase
 {
     private readonly ILoginService _loginService = loginService;
 
+    [AllowAnonymous]
     [HttpPost]
     public IActionResult CreateSession([FromBody] LoginRequestDTO request)
     {

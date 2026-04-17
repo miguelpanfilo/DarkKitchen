@@ -11,6 +11,23 @@ namespace Pruebas.Usuarios;
 [TestClass]
 public class ModifyInternUserTest
 {
+    private Mock<IRepositoryUser> _repoMock = null!;
+    private Mock<IPhoneValidator> _phoneValidatorMock = null!;
+    private Mock<IAdminValidationService> _adminValidationMock = null!;
+    private ModifyUserService _service = null!;
+
+    [TestInitialize]
+    public void Initialize()
+    {
+        _repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        _phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
+        _adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
+        _service = new ModifyUserService(
+            _repoMock.Object,
+            _phoneValidatorMock.Object,
+            _adminValidationMock.Object);
+    }
+
     private static Phone CreateValidPhone(string number)
     {
         var phoneResult = Phone.TryMakePhone(number);
@@ -49,10 +66,6 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_OnlyName_ReturnsUserWithUpdatedName()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
         var existingUser = CreateAdministrativeUser(
             "Juan",
             "Perez",
@@ -62,55 +75,47 @@ public class ModifyInternUserTest
             UserRoles.Administrative,
             5);
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.GetExistingUser(5))
             .Returns(existingUser);
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var service = new ModifyUserService(
-            repoMock.Object,
-            phoneValidatorMock.Object,
-            adminValidationMock.Object);
+        _repoMock
+            .Setup(r => r.Update(existingUser))
+            .Returns(existingUser);
 
-        var request = new ModificarUsuarioRequestDTO { Name = "Carlos" };
+        var request = new ModifyUserRequestDTO { Name = "Carlos" };
 
-        var result = service.UpdateInternalUser(5, 99, request);
+        var result = _service.UpdateInternalUser(5, 99, request);
 
         Assert.AreEqual(5, result.Id);
         Assert.AreEqual("Carlos", result.Name);
         Assert.AreEqual("Perez", result.LastName);
         Assert.AreEqual("admin@gmail.com", result.Email);
         Assert.AreEqual("Administrative", result.Role);
+
+        _repoMock.Verify(r => r.Update(existingUser), Times.Once);
     }
 
     [TestMethod]
     public void UpdateInternalUser_WhenUserModifiesItself_ThrowsExceptionWithCorrectMessage()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(5, 5, It.IsAny<string>()))
             .Throws(new ConflictException("A user cannot modify itself"));
 
-        var service = new ModifyUserService(
-            repoMock.Object,
-            phoneValidatorMock.Object,
-            adminValidationMock.Object);
-
-        var request = new ModificarUsuarioRequestDTO { Name = "Carlos" };
+        var request = new ModifyUserRequestDTO { Name = "Carlos" };
 
         var ex = Assert.ThrowsException<ConflictException>(() =>
-            service.UpdateInternalUser(5, 5, request));
+            _service.UpdateInternalUser(5, 5, request));
 
         Assert.AreEqual("A user cannot modify itself", ex.Message);
     }
@@ -118,10 +123,6 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_NameAndLastName_ReturnsUpdatedUser()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
         var existingUser = CreateAdministrativeUser(
             "Juan",
             "Perez",
@@ -131,35 +132,36 @@ public class ModifyInternUserTest
             UserRoles.Administrative,
             5);
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.GetExistingUser(5))
             .Returns(existingUser);
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object, adminValidationMock.Object);
-        var request = new ModificarUsuarioRequestDTO { Name = "Carlos", LastName = "Gomez" };
+        _repoMock
+            .Setup(r => r.Update(existingUser))
+            .Returns(existingUser);
 
-        var result = service.UpdateInternalUser(5, 99, request);
+        var request = new ModifyUserRequestDTO { Name = "Carlos", LastName = "Gomez" };
+
+        var result = _service.UpdateInternalUser(5, 99, request);
 
         Assert.AreEqual(5, result.Id);
         Assert.AreEqual("Carlos", result.Name);
         Assert.AreEqual("Gomez", result.LastName);
         Assert.AreEqual("admin@gmail.com", result.Email);
         Assert.AreEqual("Administrative", result.Role);
+
+        _repoMock.Verify(r => r.Update(existingUser), Times.Once);
     }
 
     [TestMethod]
     public void UpdateInternalUser_OnlyLastName_ReturnsUserWithUpdatedLastName()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
         var existingUser = CreateAdministrativeUser(
             "Juan",
             "Perez",
@@ -169,32 +171,33 @@ public class ModifyInternUserTest
             UserRoles.Administrative,
             5);
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.GetExistingUser(5))
             .Returns(existingUser);
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object, adminValidationMock.Object);
-        var request = new ModificarUsuarioRequestDTO { LastName = "Gomez" };
+        _repoMock
+            .Setup(r => r.Update(existingUser))
+            .Returns(existingUser);
 
-        var result = service.UpdateInternalUser(5, 99, request);
+        var request = new ModifyUserRequestDTO { LastName = "Gomez" };
+
+        var result = _service.UpdateInternalUser(5, 99, request);
 
         Assert.AreEqual("Juan", result.Name);
         Assert.AreEqual("Gomez", result.LastName);
+
+        _repoMock.Verify(r => r.Update(existingUser), Times.Once);
     }
 
     [TestMethod]
     public void UpdateInternalUser_NoChangesProvided_KeepsExistingData()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
         var existingUser = CreateAdministrativeUser(
             "Juan",
             "Perez",
@@ -204,34 +207,35 @@ public class ModifyInternUserTest
             UserRoles.Administrative,
             5);
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.GetExistingUser(5))
             .Returns(existingUser);
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object, adminValidationMock.Object);
-        var request = new ModificarUsuarioRequestDTO();
+        _repoMock
+            .Setup(r => r.Update(existingUser))
+            .Returns(existingUser);
 
-        var result = service.UpdateInternalUser(5, 99, request);
+        var request = new ModifyUserRequestDTO();
+
+        var result = _service.UpdateInternalUser(5, 99, request);
 
         Assert.AreEqual("Juan", result.Name);
         Assert.AreEqual("Perez", result.LastName);
         Assert.AreEqual("099123456", result.Phone);
         Assert.AreEqual("admin@gmail.com", result.Email);
+
+        _repoMock.Verify(r => r.Update(existingUser), Times.Once);
     }
 
     [TestMethod]
     public void UpdateInternalUser_OnlyPhone_ReturnsUserWithUpdatedPhone()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
         var existingUser = CreateAdministrativeUser(
             "Juan",
             "Perez",
@@ -241,38 +245,39 @@ public class ModifyInternUserTest
             UserRoles.Administrative,
             5);
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.GetExistingUser(5))
             .Returns(existingUser);
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        phoneValidatorMock
+        _phoneValidatorMock
             .Setup(v => v.ItsValid("098111222"))
             .Returns(true);
 
-        var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object, adminValidationMock.Object);
-        var request = new ModificarUsuarioRequestDTO { Phone = "098111222" };
+        _repoMock
+            .Setup(r => r.Update(existingUser))
+            .Returns(existingUser);
 
-        var result = service.UpdateInternalUser(5, 99, request);
+        var request = new ModifyUserRequestDTO { Phone = "098111222" };
+
+        var result = _service.UpdateInternalUser(5, 99, request);
 
         Assert.AreEqual("098111222", result.Phone);
         Assert.AreEqual("Juan", result.Name);
         Assert.AreEqual("Perez", result.LastName);
         Assert.AreEqual("admin@gmail.com", result.Email);
+
+        _repoMock.Verify(r => r.Update(existingUser), Times.Once);
     }
 
     [TestMethod]
     public void UpdateInternalUser_InvalidPhone_ThrowsExceptionWithCorrectMessage()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
         var existingUser = CreateAdministrativeUser(
             "Juan",
             "Perez",
@@ -282,36 +287,31 @@ public class ModifyInternUserTest
             UserRoles.Administrative,
             5);
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.GetExistingUser(5))
             .Returns(existingUser);
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        phoneValidatorMock
+        _phoneValidatorMock
             .Setup(v => v.ItsValid("123"))
             .Returns(false);
 
-        var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object, adminValidationMock.Object);
-        var request = new ModificarUsuarioRequestDTO { Phone = "123" };
+        var request = new ModifyUserRequestDTO { Phone = "123" };
 
         var ex = Assert.ThrowsException<ValidationException>(() =>
-            service.UpdateInternalUser(5, 99, request));
+            _service.UpdateInternalUser(5, 99, request));
 
-        Assert.AreEqual("Phone is not valid", ex.Message);
+        Assert.AreEqual("El teléfono no es válido", ex.Message);
     }
 
     [TestMethod]
     public void UpdateInternalUser_PhoneInvalidAccordingToValidator_DoesNotModifyPhone()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
         var existingUser = CreateAdministrativeUser(
             "Juan",
             "Perez",
@@ -321,25 +321,24 @@ public class ModifyInternUserTest
             UserRoles.Administrative,
             5);
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.GetExistingUser(5))
             .Returns(existingUser);
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        phoneValidatorMock
+        _phoneValidatorMock
             .Setup(v => v.ItsValid("123"))
             .Returns(false);
 
-        var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object, adminValidationMock.Object);
-        var request = new ModificarUsuarioRequestDTO { Phone = "123" };
+        var request = new ModifyUserRequestDTO { Phone = "123" };
 
         Assert.ThrowsException<ValidationException>(() =>
-            service.UpdateInternalUser(5, 99, request));
+            _service.UpdateInternalUser(5, 99, request));
 
         Assert.AreEqual("099123456", existingUser.Phone.Value);
     }
@@ -347,10 +346,6 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_LastNameGreaterThanTwentyFiveCharacters_ThrowsExceptionWithCorrectMessage()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
         var existingUser = CreateAdministrativeUser(
             "Juan",
             "Perez",
@@ -360,47 +355,41 @@ public class ModifyInternUserTest
             UserRoles.Administrative,
             5);
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.GetExistingUser(5))
             .Returns(existingUser);
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object, adminValidationMock.Object);
-        var request = new ModificarUsuarioRequestDTO { LastName = "ApellidoDemasiadoDemasiadoLargo" };
+        var request = new ModifyUserRequestDTO { LastName = "ApellidoDemasiadoDemasiadoLargo" };
 
         var ex = Assert.ThrowsException<ValidationException>(() =>
-            service.UpdateInternalUser(5, 99, request));
+            _service.UpdateInternalUser(5, 99, request));
 
-        Assert.AreEqual("Last name must be between 3 and 25 characters", ex.Message);
+        Assert.AreEqual("El apellido tiene que tener entre 3 y 25 caracteres", ex.Message);
     }
 
     [TestMethod]
     public void UpdateInternalUser_Phone_UserDoesNotExist_ThrowsExceptionWithCorrectMessage()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        adminValidationMock
-            .Setup(v => v.GetExistingUser(5))
+        _adminValidationMock
+            .Setup(v => v.GetExistingUser(It.IsAny<int>()))
             .Throws(new NotFoundException("User does not exist"));
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object, adminValidationMock.Object);
-        var request = new ModificarUsuarioRequestDTO { Phone = "098111222" };
+        var request = new ModifyUserRequestDTO { Phone = "098111222" };
 
         var ex = Assert.ThrowsException<NotFoundException>(() =>
-            service.UpdateInternalUser(5, 99, request));
+            _service.UpdateInternalUser(5, 99, request));
 
         Assert.AreEqual("User does not exist", ex.Message);
     }
@@ -408,10 +397,6 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_PhoneDoesNotChange_DoesNotValidatePhone()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
         var existingUser = CreateAdministrativeUser(
             "Juan",
             "Perez",
@@ -421,31 +406,31 @@ public class ModifyInternUserTest
             UserRoles.Administrative,
             5);
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.GetExistingUser(5))
             .Returns(existingUser);
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object, adminValidationMock.Object);
-        var request = new ModificarUsuarioRequestDTO { Phone = "099123456" };
+        _repoMock
+            .Setup(r => r.Update(existingUser))
+            .Returns(existingUser);
 
-        service.UpdateInternalUser(5, 99, request);
+        var request = new ModifyUserRequestDTO { Phone = "099123456" };
 
-        phoneValidatorMock.Verify(v => v.ItsValid(It.IsAny<string>()), Times.Never);
+        _service.UpdateInternalUser(5, 99, request);
+
+        _phoneValidatorMock.Verify(v => v.ItsValid(It.IsAny<string>()), Times.Never);
+        _repoMock.Verify(r => r.Update(existingUser), Times.Once);
     }
 
     [TestMethod]
     public void UpdateInternalUser_OnlyEmail_ReturnsUserWithUpdatedEmail()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
         var existingUser = CreateAdministrativeUser(
             "Juan",
             "Perez",
@@ -455,24 +440,27 @@ public class ModifyInternUserTest
             UserRoles.Administrative,
             5);
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.GetExistingUser(5))
             .Returns(existingUser);
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
 
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        repoMock
+        _repoMock
             .Setup(r => r.EmailExist("nuevo@gmail.com"))
             .Returns(false);
 
-        var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object, adminValidationMock.Object);
-        var request = new ModificarUsuarioRequestDTO { Email = "nuevo@gmail.com" };
+        _repoMock
+            .Setup(r => r.Update(existingUser))
+            .Returns(existingUser);
 
-        var result = service.UpdateInternalUser(5, 99, request);
+        var request = new ModifyUserRequestDTO { Email = "nuevo@gmail.com" };
+
+        var result = _service.UpdateInternalUser(5, 99, request);
 
         Assert.AreEqual("nuevo@gmail.com", result.Email);
         Assert.AreEqual("Juan", result.Name);
@@ -483,34 +471,21 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_WhenLoggedUserIsNotAdmin_DoesNotCallGetExistingUser()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99))
             .Throws(new ForbiddenException("Only an administrative user can perform this action"));
 
-        var service = new ModifyUserService(
-            repoMock.Object,
-            phoneValidatorMock.Object,
-            adminValidationMock.Object);
-
-        var request = new ModificarUsuarioRequestDTO();
+        var request = new ModifyUserRequestDTO();
 
         Assert.ThrowsException<ForbiddenException>(() =>
-            service.UpdateInternalUser(5, 99, request));
+            _service.UpdateInternalUser(5, 99, request));
 
-        adminValidationMock.Verify(v => v.GetExistingUser(It.IsAny<int>()), Times.Never);
+        _adminValidationMock.Verify(v => v.GetExistingUser(It.IsAny<int>()), Times.Never);
     }
 
     [TestMethod]
     public void UpdateInternalUser_InvalidEmailFormat_ThrowsException()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
         var user = CreateAdministrativeUser(
             "Juan",
             "Perez",
@@ -520,29 +495,23 @@ public class ModifyInternUserTest
             UserRoles.Administrative,
             5);
 
-        adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
-        adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
-        adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
+        _adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
+        _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        repoMock.Setup(r => r.EmailExist("correo-invalido")).Returns(false);
+        _repoMock.Setup(r => r.EmailExist("correo-invalido")).Returns(false);
 
-        var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object, adminValidationMock.Object);
-
-        var request = new ModificarUsuarioRequestDTO { Email = "correo-invalido" };
+        var request = new ModifyUserRequestDTO { Email = "correo-invalido" };
 
         var ex = Assert.ThrowsException<ValidationException>(() =>
-            service.UpdateInternalUser(5, 99, request));
+            _service.UpdateInternalUser(5, 99, request));
 
-        Assert.AreEqual("Email format is not valid", ex.Message);
+        Assert.AreEqual("Formato de Email inválido", ex.Message);
     }
 
     [TestMethod]
     public void UpdateInternalUser_EmailAlreadyExists_ThrowsException()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
         var user = CreateAdministrativeUser(
             "Juan",
             "Perez",
@@ -552,29 +521,23 @@ public class ModifyInternUserTest
             UserRoles.Administrative,
             5);
 
-        adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
-        adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
-        adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
+        _adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
+        _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        repoMock.Setup(r => r.EmailExist("repetido@gmail.com")).Returns(true);
+        _repoMock.Setup(r => r.EmailExist("repetido@gmail.com")).Returns(true);
 
-        var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object, adminValidationMock.Object);
-
-        var request = new ModificarUsuarioRequestDTO { Email = "repetido@gmail.com" };
+        var request = new ModifyUserRequestDTO { Email = "repetido@gmail.com" };
 
         var ex = Assert.ThrowsException<ConflictException>(() =>
-            service.UpdateInternalUser(5, 99, request));
+            _service.UpdateInternalUser(5, 99, request));
 
-        Assert.AreEqual("Email is already registered", ex.Message);
+        Assert.AreEqual("El email ya está registrado", ex.Message);
     }
 
     [TestMethod]
     public void UpdateInternalUser_EmailSame_DoesNotCallRepository()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
         var user = CreateAdministrativeUser(
             "Juan",
             "Perez",
@@ -584,26 +547,24 @@ public class ModifyInternUserTest
             UserRoles.Administrative,
             5);
 
-        adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
-        adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
-        adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
+        _adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
+        _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object, adminValidationMock.Object);
+        _repoMock
+            .Setup(r => r.Update(user))
+            .Returns(user);
 
-        var request = new ModificarUsuarioRequestDTO { Email = "admin@gmail.com" };
+        var request = new ModifyUserRequestDTO { Email = "admin@gmail.com" };
 
-        service.UpdateInternalUser(5, 99, request);
+        _service.UpdateInternalUser(5, 99, request);
 
-        repoMock.Verify(r => r.EmailExist(It.IsAny<string>()), Times.Never);
+        _repoMock.Verify(r => r.EmailExist(It.IsAny<string>()), Times.Never);
     }
 
     [TestMethod]
     public void UpdateInternalUser_InvalidRole_ThrowsException()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
         var user = CreateAdministrativeUser(
             "Juan",
             "Perez",
@@ -613,27 +574,21 @@ public class ModifyInternUserTest
             UserRoles.Preparer,
             5);
 
-        adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
-        adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
-        adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
+        _adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
+        _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object, adminValidationMock.Object);
-
-        var request = new ModificarUsuarioRequestDTO { Role = "InvalidRole" };
+        var request = new ModifyUserRequestDTO { Role = "InvalidRole" };
 
         var ex = Assert.ThrowsException<ValidationException>(() =>
-            service.UpdateInternalUser(5, 99, request));
+            _service.UpdateInternalUser(5, 99, request));
 
-        Assert.AreEqual("Internal role is not valid", ex.Message);
+        Assert.AreEqual("El rol interno no es válido", ex.Message);
     }
 
     [TestMethod]
     public void UpdateInternalUser_RoleDifferentCase_UpdatesCorrectly()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
         var user = CreateAdministrativeUser(
             "Juan",
             "Perez",
@@ -643,26 +598,26 @@ public class ModifyInternUserTest
             UserRoles.Preparer,
             5);
 
-        adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
-        adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
-        adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
+        _adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
+        _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-        var service = new ModifyUserService(repoMock.Object, phoneValidatorMock.Object, adminValidationMock.Object);
+        _repoMock
+            .Setup(r => r.Update(user))
+            .Returns(user);
 
-        var request = new ModificarUsuarioRequestDTO { Role = "adMinisTrative" };
+        var request = new ModifyUserRequestDTO { Role = "adMinisTrative" };
 
-        var result = service.UpdateInternalUser(5, 99, request);
+        var result = _service.UpdateInternalUser(5, 99, request);
 
         Assert.AreEqual("Administrative", result.Role);
+
+        _repoMock.Verify(r => r.Update(user), Times.Once);
     }
 
     [TestMethod]
     public void UpdateInternalUser_CallsAdminValidationMethods()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
         var user = CreateAdministrativeUser(
             "Juan",
             "Perez",
@@ -672,42 +627,32 @@ public class ModifyInternUserTest
             UserRoles.Administrative,
             5);
 
-        adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
-        adminValidationMock.Setup(v => v.EnsureUserIsAdmin(99));
-        adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(5, 99, It.IsAny<string>()));
+        _adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(99));
+        _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(5, 99, It.IsAny<string>()));
 
-        var service = new ModifyUserService(
-            repoMock.Object,
-            phoneValidatorMock.Object,
-            adminValidationMock.Object);
+        _repoMock
+            .Setup(r => r.Update(user))
+            .Returns(user);
 
-        service.UpdateInternalUser(5, 99, new ModificarUsuarioRequestDTO());
+        _service.UpdateInternalUser(5, 99, new ModifyUserRequestDTO());
 
-        adminValidationMock.Verify(v => v.EnsureUserIsAdmin(99), Times.Once);
-        adminValidationMock.Verify(v => v.EnsureIsNotSelfAction(5, 99, It.IsAny<string>()), Times.Once);
-        adminValidationMock.Verify(v => v.GetExistingUser(5), Times.Once);
+        _adminValidationMock.Verify(v => v.EnsureUserIsAdmin(99), Times.Once);
+        _adminValidationMock.Verify(v => v.EnsureIsNotSelfAction(5, 99, It.IsAny<string>()), Times.Once);
+        _adminValidationMock.Verify(v => v.GetExistingUser(5), Times.Once);
     }
 
     [TestMethod]
     public void UpdateInternalUser_WhenLoggedUserIsNotAdmin_ThrowsException()
     {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        adminValidationMock
+        _adminValidationMock
             .Setup(v => v.EnsureUserIsAdmin(99))
             .Throws(new ForbiddenException("Only an administrative user can perform this action"));
 
-        var service = new ModifyUserService(
-            repoMock.Object,
-            phoneValidatorMock.Object,
-            adminValidationMock.Object);
-
-        var request = new ModificarUsuarioRequestDTO { Name = "Carlos" };
+        var request = new ModifyUserRequestDTO { Name = "Carlos" };
 
         var ex = Assert.ThrowsException<ForbiddenException>(() =>
-            service.UpdateInternalUser(5, 99, request));
+            _service.UpdateInternalUser(5, 99, request));
 
         Assert.AreEqual("Only an administrative user can perform this action", ex.Message);
     }
@@ -715,27 +660,185 @@ public class ModifyInternUserTest
     [TestMethod]
     public void UpdateInternalUser_WhenUserModifiesItself_DoesNotCallGetExistingUser()
     {
+        _adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
+
+        _adminValidationMock
+            .Setup(v => v.EnsureIsNotSelfAction(5, 5, It.IsAny<string>()))
+            .Throws(new ConflictException("A user cannot modify itself"));
+
+        var request = new ModifyUserRequestDTO { Name = "Carlos" };
+
+        Assert.ThrowsException<ConflictException>(() =>
+            _service.UpdateInternalUser(5, 5, request));
+
+        _adminValidationMock.Verify(v => v.GetExistingUser(It.IsAny<int>()), Times.Never);
+    }
+
+    [TestMethod]
+    public void UpdateInternalUser_EmptyName_ThrowsException()
+    {
+        var user = CreateAdministrativeUser(
+            "Juan", "Perez", "admin@gmail.com", "099123456",
+            "PasswordSeguraee3!", UserRoles.Administrative, 5);
+
+        _adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
+        _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
+
+        var request = new ModifyUserRequestDTO { Name = "   " };
+
+        var ex = Assert.ThrowsException<ValidationException>(() =>
+            _service.UpdateInternalUser(5, 99, request));
+
+        Assert.AreEqual("El nombre no puede estar vacío", ex.Message);
+    }
+
+    [TestMethod]
+    public void UpdateInternalUser_EmptyLastName_ThrowsException()
+    {
+        var user = CreateAdministrativeUser(
+            "Juan", "Perez", "admin@gmail.com", "099123456",
+            "PasswordSeguraee3!", UserRoles.Administrative, 5);
+
+        _adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
+        _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
+
+        var request = new ModifyUserRequestDTO { LastName = "   " };
+
+        var ex = Assert.ThrowsException<ValidationException>(() =>
+            _service.UpdateInternalUser(5, 99, request));
+
+        Assert.AreEqual("El apellido no puede estar vacío", ex.Message);
+    }
+
+    [TestMethod]
+    public void UpdateInternalUser_EmptyEmail_ThrowsException()
+    {
+        var user = CreateAdministrativeUser(
+            "Juan", "Perez", "admin@gmail.com", "099123456",
+            "PasswordSeguraee3!", UserRoles.Administrative, 5);
+
+        _adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
+        _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
+
+        var request = new ModifyUserRequestDTO { Email = "   " };
+
+        var ex = Assert.ThrowsException<ValidationException>(() =>
+            _service.UpdateInternalUser(5, 99, request));
+
+        Assert.AreEqual("El email no puede estar vacío", ex.Message);
+    }
+
+    [TestMethod]
+    public void UpdateInternalUser_EmptyPhone_ThrowsException()
+    {
+        var user = CreateAdministrativeUser(
+            "Juan", "Perez", "admin@gmail.com", "099123456",
+            "PasswordSeguraee3!", UserRoles.Administrative, 5);
+
+        _adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
+        _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
+
+        var request = new ModifyUserRequestDTO { Phone = "   " };
+
+        var ex = Assert.ThrowsException<ValidationException>(() =>
+            _service.UpdateInternalUser(5, 99, request));
+
+        Assert.AreEqual("El teléfono no puede estar vacío", ex.Message);
+    }
+
+    [TestMethod]
+    public void UpdateInternalUser_EmptyRole_ThrowsException()
+    {
+        var user = CreateAdministrativeUser(
+            "Juan", "Perez", "admin@gmail.com", "099123456",
+            "PasswordSeguraee3!", UserRoles.Administrative, 5);
+
+        _adminValidationMock.Setup(v => v.GetExistingUser(5)).Returns(user);
+        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
+        _adminValidationMock.Setup(v => v.EnsureIsNotSelfAction(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
+
+        var request = new ModifyUserRequestDTO { Role = "   " };
+
+        var ex = Assert.ThrowsException<ValidationException>(() =>
+            _service.UpdateInternalUser(5, 99, request));
+
+        Assert.AreEqual("El rol no puede estar vacío", ex.Message);
+    }
+
+    [TestMethod]
+    public void UpdateInternalUser_WhenRequestIsValid_CallsRepositoryUpdateOnce()
+    {
         var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var phoneValidatorMock = new Mock<IPhoneValidator>(MockBehavior.Strict);
         var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
 
-        adminValidationMock
-            .Setup(v => v.EnsureUserIsAdmin(It.IsAny<int>()));
+        var phoneResult = Phone.TryMakePhone("099123456");
+        Assert.IsTrue(phoneResult.Success);
+
+        var userResult = User.MakeIntern(
+            "Juan",
+            "Perez",
+            "juan@gmail.com",
+            phoneResult.Value!,
+            "PasswordSeguraee3!",
+            UserRoles.Preparer);
+
+        Assert.IsTrue(userResult.Success);
+        var user = userResult.Value!;
+        user.Id = 3;
+
+        var request = new ModifyUserRequestDTO
+        {
+            Name = "Migue",
+            LastName = "Martinez",
+            Email = "lucia.wwww@gmail.com",
+            Phone = "098123456",
+            Role = "Preparer"
+        };
 
         adminValidationMock
-            .Setup(v => v.EnsureIsNotSelfAction(5, 5, It.IsAny<string>()))
-            .Throws(new ConflictException("A user cannot modify itself"));
+            .Setup(x => x.EnsureUserIsAdmin(1));
+
+        adminValidationMock
+            .Setup(x => x.EnsureIsNotSelfAction(
+                3,
+                1,
+                "Un usuario no puede modificarse a sí mismo"));
+
+        adminValidationMock
+            .Setup(x => x.GetExistingUser(3))
+            .Returns(user);
+
+        phoneValidatorMock
+            .Setup(x => x.ItsValid("098123456"))
+            .Returns(true);
+
+        repoMock
+            .Setup(x => x.EmailExist("lucia.wwww@gmail.com"))
+            .Returns(false);
+
+        repoMock
+            .Setup(x => x.Update(user))
+            .Returns(user);
 
         var service = new ModifyUserService(
             repoMock.Object,
             phoneValidatorMock.Object,
             adminValidationMock.Object);
 
-        var request = new ModificarUsuarioRequestDTO { Name = "Carlos" };
+        var response = service.UpdateInternalUser(3, 1, request);
 
-        Assert.ThrowsException<ConflictException>(() =>
-            service.UpdateInternalUser(5, 5, request));
+        Assert.IsNotNull(response);
+        Assert.AreEqual("Migue", response.Name);
+        Assert.AreEqual("Martinez", response.LastName);
+        Assert.AreEqual("lucia.wwww@gmail.com", response.Email);
+        Assert.AreEqual("098123456", response.Phone);
 
-        adminValidationMock.Verify(v => v.GetExistingUser(It.IsAny<int>()), Times.Never);
+        repoMock.Verify(x => x.Update(user), Times.Once);
     }
 }

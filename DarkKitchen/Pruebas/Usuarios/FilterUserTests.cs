@@ -109,7 +109,7 @@ public class FilterUserTests
             Name = "Juan"
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(2, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Name);
@@ -145,7 +145,7 @@ public class FilterUserTests
             Name = "Juan"
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(0, resultado.Count);
     }
@@ -188,7 +188,7 @@ public class FilterUserTests
             Name = "Juan"
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Name);
@@ -224,7 +224,7 @@ public class FilterUserTests
             Name = "juAn"
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Name);
@@ -250,7 +250,7 @@ public class FilterUserTests
             Name = "Juan"
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(0, resultado.Count);
     }
@@ -283,7 +283,7 @@ public class FilterUserTests
             Name = "Juan"
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual(100, resultado[0].Id);
@@ -332,7 +332,7 @@ public class FilterUserTests
             LastName = "Perez"
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(2, resultado.Count);
         Assert.AreEqual("Perez", resultado[0].LastName);
@@ -377,7 +377,7 @@ public class FilterUserTests
             LastName = "PeReZ"
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(2, resultado.Count);
         Assert.AreEqual("Perez", resultado[0].LastName);
@@ -413,7 +413,7 @@ public class FilterUserTests
             LastName = "Perez"
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(0, resultado.Count);
     }
@@ -456,7 +456,7 @@ public class FilterUserTests
             LastName = "Perez"
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Name);
@@ -486,7 +486,7 @@ public class FilterUserTests
             LastName = "Perez"
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(0, resultado.Count);
     }
@@ -520,7 +520,7 @@ public class FilterUserTests
             LastName = "  Perez   "
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(1, resultado.Count);
     }
@@ -554,7 +554,7 @@ public class FilterUserTests
             Name = "   Juan  "
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Name);
@@ -590,7 +590,7 @@ public class FilterUserTests
             LastName = " pErEz "
         };
 
-        var resultado = service.BuscarUsuarios(99, request);
+        var resultado = service.FindUser(99, request);
 
         Assert.AreEqual(1, resultado.Count);
         Assert.AreEqual("Juan", resultado[0].Name);
@@ -615,7 +615,7 @@ public class FilterUserTests
         };
 
         var ex = Assert.ThrowsException<ForbiddenException>(() =>
-            service.BuscarUsuarios(5, request));
+            service.FindUser(5, request));
 
         Assert.AreEqual("Only an administrative user can perform this action", ex.Message);
     }
@@ -638,10 +638,186 @@ public class FilterUserTests
         };
 
         var ex = Assert.ThrowsException<ForbiddenException>(() =>
-            service.BuscarUsuarios(5, request));
+            service.FindUser(5, request));
 
         Assert.AreEqual("Only an administrative user can perform this action", ex.Message);
 
         repoMock.Verify(r => r.GetAll(), Times.Never);
+    }
+
+    [TestMethod]
+    public void SearchUsers_WithoutNameAndLastName_ReturnsAllUsers()
+    {
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
+
+        var user1 = CreateInternalUser(
+            "Juan",
+            "Perez",
+            "juan@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            UserRoles.Administrative,
+            1);
+
+        var user2 = CreateInternalUser(
+            "Pedro",
+            "Gomez",
+            "pedro@gmail.com",
+            "099111222",
+            "PasswordSeguraaa4!",
+            UserRoles.Preparer,
+            2);
+
+        adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(99));
+
+        repoMock
+            .Setup(r => r.GetAll())
+            .Returns([user1, user2]);
+
+        var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
+
+        var request = new FindUserRequestDTO();
+
+        var result = service.FindUser(99, request);
+
+        Assert.AreEqual(2, result.Count);
+    }
+
+    [TestMethod]
+    public void SearchUsers_ByNameAndLastName_ReturnsUsersMatchingBoth()
+    {
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
+
+        var user1 = CreateInternalUser(
+            "Juan",
+            "Perez",
+            "juan1@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            UserRoles.Administrative,
+            1);
+
+        var user2 = CreateInternalUser(
+            "Juan",
+            "Gomez",
+            "juan2@gmail.com",
+            "099111222",
+            "PasswordSeguraaa4!",
+            UserRoles.Preparer,
+            2);
+
+        adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(99));
+
+        repoMock
+            .Setup(r => r.GetAll())
+            .Returns([user1, user2]);
+
+        var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
+
+        var request = new FindUserRequestDTO
+        {
+            Name = "Juan",
+            LastName = "Perez"
+        };
+
+        var result = service.FindUser(99, request);
+
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual("Juan", result[0].Name);
+        Assert.AreEqual("Perez", result[0].LastName);
+    }
+
+    [TestMethod]
+    public void BuscarUsuariosPorNombre_Parcial_RetornaUsuariosCoincidentes()
+    {
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
+
+        var usuario1 = CreateInternalUser(
+            "Lucia",
+            "Martinez",
+            "lucia@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            UserRoles.Administrative,
+            1);
+
+        var usuario2 = CreateInternalUser(
+            "Juan",
+            "Perez",
+            "juan@gmail.com",
+            "099111222",
+            "PasswordSeguraaa4!",
+            UserRoles.Preparer,
+            2);
+
+        adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(99));
+
+        repoMock
+            .Setup(r => r.GetAll())
+            .Returns([usuario1, usuario2]);
+
+        var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
+
+        var request = new FindUserRequestDTO
+        {
+            Name = "Lu"
+        };
+
+        var resultado = service.FindUser(99, request);
+
+        Assert.AreEqual(1, resultado.Count);
+        Assert.AreEqual("Lucia", resultado[0].Name);
+        Assert.AreEqual("Martinez", resultado[0].LastName);
+    }
+
+    [TestMethod]
+    public void BuscarUsuariosPorApellido_Parcial_RetornaUsuariosCoincidentes()
+    {
+        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
+
+        var usuario1 = CreateInternalUser(
+            "Lucia",
+            "Martinez",
+            "lucia@gmail.com",
+            "099123456",
+            "PasswordSeguraee3!",
+            UserRoles.Administrative,
+            1);
+
+        var usuario2 = CreateInternalUser(
+            "Juan",
+            "Perez",
+            "juan@gmail.com",
+            "099111222",
+            "PasswordSeguraaa4!",
+            UserRoles.Preparer,
+            2);
+
+        adminValidationMock
+            .Setup(v => v.EnsureUserIsAdmin(99));
+
+        repoMock
+            .Setup(r => r.GetAll())
+            .Returns([usuario1, usuario2]);
+
+        var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
+
+        var request = new FindUserRequestDTO
+        {
+            LastName = "Mart"
+        };
+
+        var resultado = service.FindUser(99, request);
+
+        Assert.AreEqual(1, resultado.Count);
+        Assert.AreEqual("Lucia", resultado[0].Name);
+        Assert.AreEqual("Martinez", resultado[0].LastName);
     }
 }

@@ -17,21 +17,22 @@ public class ModifyUserService(
     private readonly IPhoneValidator _phoneValidator = phoneValidator;
     private readonly IAdminValidationService _adminValidationService = adminValidationService;
 
-    public UsuarioResponseDTO UpdateInternalUser(
+    public UserResponseDTO UpdateInternalUser(
         int idUserToModify,
-        int isUserLogged,
-        ModificarUsuarioRequestDTO requestDto)
+        int idUserLogged,
+        ModifyUserRequestDTO requestDto)
     {
-        _adminValidationService.EnsureUserIsAdmin(isUserLogged);
+        _adminValidationService.EnsureUserIsAdmin(idUserLogged);
 
         _adminValidationService.EnsureIsNotSelfAction(
             idUserToModify,
-            isUserLogged,
-            "A user cannot modify itself");
+            idUserLogged,
+            "Un usuario no puede modificarse a sí mismo");
 
         var user = _adminValidationService.GetExistingUser(idUserToModify);
 
         UpdateUserData(user, requestDto);
+        _repo.Update(user);
 
         return user.MappingUserToResponseDTO();
     }
@@ -39,20 +40,20 @@ public class ModifyUserService(
     public void UpdateUserPassword(
         int idUserToModify,
         int idUserLogged,
-        ModificarClaveRequestDTO requestDto)
+        ModifyPasswordRequestDTO requestDto)
     {
         _adminValidationService.EnsureUserIsAdmin(idUserLogged);
 
         _adminValidationService.EnsureIsNotSelfAction(
             idUserToModify,
             idUserLogged,
-            "A user cannot modify itself");
+            "Un usuario no puede modificarse a sí mismo");
 
         var usuario = _adminValidationService.GetExistingUser(idUserToModify);
 
         if(!usuario.VerifyPassword(requestDto.OldPassword))
         {
-            throw new ValidationException("Current password is incorrect");
+            throw new ValidationException("La contraseña actual es incorrecta");
         }
 
         var passwordResult = Password.TryMakePassword(requestDto.NewPassword);
@@ -63,9 +64,10 @@ public class ModifyUserService(
         }
 
         usuario.ModifyPassword(passwordResult.Value!);
+        _repo.Update(usuario);
     }
 
-    private void UpdateUserData(User user, ModificarUsuarioRequestDTO requestDto)
+    private void UpdateUserData(User user, ModifyUserRequestDTO requestDto)
     {
         var nameUpdate = ResolveFinalName(requestDto, user);
         var lastNameUpdate = ResolveFinalLastName(requestDto, user);
@@ -74,6 +76,7 @@ public class ModifyUserService(
 
         var phoneFinal = BuildFinalPhone(user, phoneUpdate);
         var roleFinal = ResolveFinalRole(requestDto, user);
+
         ValidateEmailIfChanged(user, emailUpdate);
 
         var modifyResult = user.ModifyData(
@@ -104,36 +107,68 @@ public class ModifyUserService(
         if(!string.Equals(updatedMail, user.Email.ToString(), StringComparison.OrdinalIgnoreCase) &&
             _repo.EmailExist(updatedMail))
         {
-            throw new ConflictException("Email is already registered");
+            throw new ConflictException("El email ya está registrado");
         }
     }
 
-    private static string ResolveFinalEmail(ModificarUsuarioRequestDTO requestDto, User user)
+   private static string ResolveFinalName(ModifyUserRequestDTO requestDto, User user)
     {
-        return string.IsNullOrWhiteSpace(requestDto.Email)
-            ? user.Email.ToString()
-            : requestDto.Email;
+        if(requestDto.Name == null)
+        {
+            return user.Name;
+        }
+
+        if(string.IsNullOrWhiteSpace(requestDto.Name))
+        {
+            throw new ValidationException("El nombre no puede estar vacío");
+        }
+
+        return requestDto.Name;
     }
 
-    private static string ResolveFinalLastName(ModificarUsuarioRequestDTO requestDto, User user)
+    private static string ResolveFinalLastName(ModifyUserRequestDTO requestDto, User user)
     {
-        return string.IsNullOrWhiteSpace(requestDto.LastName)
-            ? user.LastName
-            : requestDto.LastName;
+        if(requestDto.LastName == null)
+        {
+            return user.LastName;
+        }
+
+        if(string.IsNullOrWhiteSpace(requestDto.LastName))
+        {
+            throw new ValidationException("El apellido no puede estar vacío");
+        }
+
+        return requestDto.LastName;
     }
 
-    private static string ResolveFinalName(ModificarUsuarioRequestDTO requestDto, User user)
+    private static string ResolveFinalEmail(ModifyUserRequestDTO requestDto, User user)
     {
-        return string.IsNullOrWhiteSpace(requestDto.Name)
-            ? user.Name
-            : requestDto.Name;
+        if(requestDto.Email == null)
+        {
+            return user.Email.ToString();
+        }
+
+        if(string.IsNullOrWhiteSpace(requestDto.Email))
+        {
+            throw new ValidationException("El email no puede estar vacío");
+        }
+
+        return requestDto.Email;
     }
 
-    private static string ResolveFinalPhone(ModificarUsuarioRequestDTO requestDto, User user)
+    private static string ResolveFinalPhone(ModifyUserRequestDTO requestDto, User user)
     {
-        return string.IsNullOrWhiteSpace(requestDto.Phone)
-            ? user.Phone.Value
-            : requestDto.Phone;
+        if(requestDto.Phone == null)
+        {
+            return user.Phone.Value;
+        }
+
+        if(string.IsNullOrWhiteSpace(requestDto.Phone))
+        {
+            throw new ValidationException("El teléfono no puede estar vacío");
+        }
+
+        return requestDto.Phone;
     }
 
     private Phone CreateAndValidatePhone(string phone)
@@ -149,17 +184,22 @@ public class ModifyUserService(
 
         if(!_phoneValidator.ItsValid(newPhone.Value))
         {
-            throw new ValidationException("Phone is not valid");
+            throw new ValidationException("El teléfono no es válido");
         }
 
         return newPhone;
     }
 
-    private UserRoles ResolveFinalRole(ModificarUsuarioRequestDTO requestDto, User user)
+    private UserRoles ResolveFinalRole(ModifyUserRequestDTO requestDto, User user)
     {
-        if(string.IsNullOrWhiteSpace(requestDto.Role))
+        if(requestDto.Role == null)
         {
             return user.Role;
+        }
+
+        if(string.IsNullOrWhiteSpace(requestDto.Role))
+        {
+            throw new ValidationException("El rol no puede estar vacío");
         }
 
         return GetValidInternalRole(requestDto.Role);
@@ -169,7 +209,7 @@ public class ModifyUserService(
     {
         if(!Enum.TryParse<UserRoles>(rol, true, out var rolEnum))
         {
-            throw new ValidationException("Internal role is not valid");
+            throw new ValidationException("El rol interno no es válido");
         }
 
         return rolEnum;

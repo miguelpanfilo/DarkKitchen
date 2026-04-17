@@ -9,6 +9,12 @@ public class User
     public Phone Phone { get; private set; }
     public Password Password { get; private set; }
     public UserRoles Role { get; private set; }
+    private User()
+    {
+        Email = null!;
+        Phone = null!;
+        Password = null!;
+    }
 
     public static Result<User> MakeClient(string name, string lastName, string email, Phone phone, string password)
     {
@@ -109,12 +115,12 @@ public class User
     {
         if(string.IsNullOrWhiteSpace(name))
         {
-            return Result<bool>.Fail("Name cannot be empty");
+            return Result<bool>.Fail("Nombre no puede estar vacío");
         }
 
         if(name.Any(char.IsDigit))
         {
-            return Result<bool>.Fail("Name cannot contain numbers");
+            return Result<bool>.Fail("Nombre no puede contener números");
         }
 
         return Result<bool>.Ok(true);
@@ -124,12 +130,12 @@ public class User
     {
         if(string.IsNullOrWhiteSpace(lastName))
         {
-            return Result<bool>.Fail("Last name cannot be empty");
+            return Result<bool>.Fail("El apellido no puede estar vacio");
         }
 
         if(lastName.Trim().Length < 3 || lastName.Trim().Length > 25)
         {
-            return Result<bool>.Fail("Last name must be between 3 and 25 characters");
+            return Result<bool>.Fail("El apellido tiene que tener entre 3 y 25 caracteres");
         }
 
         return Result<bool>.Ok(true);

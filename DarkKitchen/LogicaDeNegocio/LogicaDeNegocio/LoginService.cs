@@ -21,15 +21,16 @@ public class LoginService(
 
         if(userFromTheRequest == null)
         {
-            throw new UserAuthenticationException("Invalid credentials");
+            throw new UserAuthenticationException("Credenciales inválidas");
         }
 
         if(!userFromTheRequest.Password.VerifyHash(requestDto.Password))
         {
-            throw new UserAuthenticationException("Invalid credentials");
+            throw new UserAuthenticationException("Credenciales inválidas");
         }
 
-        var expireDate = _iWatch.Ahora().AddHours(2);
+        var expireDate = _iWatch.Now().AddHours(2);
+        _repoSesion.RemoveAll();
         var session = new Session(userFromTheRequest.Id, expireDate);
         var savedSession = _repoSesion.Add(session);
 

@@ -31,7 +31,7 @@ public class EmailTests
         var result = Email.TryMakeEmail(string.Empty);
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Email cannot be empty", result.ErrorMessage);
+        Assert.AreEqual("Email no puede estar vacío", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -42,7 +42,7 @@ public class EmailTests
         var result = Email.TryMakeEmail(email);
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Email cannot be empty", result.ErrorMessage);
+        Assert.AreEqual("Email no puede estar vacío", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -51,7 +51,7 @@ public class EmailTests
         var result = Email.TryMakeEmail("miguelgmail.com");
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Email format is not valid", result.ErrorMessage);
+        Assert.AreEqual("Formato de Email inválido", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -60,7 +60,7 @@ public class EmailTests
         var result = Email.TryMakeEmail("miguel@@gmail.com");
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Email format is not valid", result.ErrorMessage);
+        Assert.AreEqual("Formato de Email inválido", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -69,7 +69,7 @@ public class EmailTests
         var result = Email.TryMakeEmail("@gmail.com");
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Email format is not valid", result.ErrorMessage);
+        Assert.AreEqual("Formato de Email inválido", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -78,7 +78,7 @@ public class EmailTests
         var result = Email.TryMakeEmail("miguel@");
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Email format is not valid", result.ErrorMessage);
+        Assert.AreEqual("Formato de Email inválido", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -87,7 +87,7 @@ public class EmailTests
         var result = Email.TryMakeEmail("miguel@gmail");
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Email format is not valid", result.ErrorMessage);
+        Assert.AreEqual("Formato de Email inválido", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -96,7 +96,7 @@ public class EmailTests
         var result = Email.TryMakeEmail("miguel@.gmail.com");
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Email format is not valid", result.ErrorMessage);
+        Assert.AreEqual("Formato de Email inválido", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -105,7 +105,7 @@ public class EmailTests
         var result = Email.TryMakeEmail("miguel@gmail.com.");
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Email format is not valid", result.ErrorMessage);
+        Assert.AreEqual("Formato de Email inválido", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -114,7 +114,7 @@ public class EmailTests
         var result = Email.TryMakeEmail("miguel@gmail..com");
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Email format is not valid", result.ErrorMessage);
+        Assert.AreEqual("Formato de Email inválido", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -123,7 +123,7 @@ public class EmailTests
         var result = Email.TryMakeEmail("mi..guel@gmail.com");
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Email format is not valid", result.ErrorMessage);
+        Assert.AreEqual("Formato de Email inválido", result.ErrorMessage);
     }
 
     [TestMethod]

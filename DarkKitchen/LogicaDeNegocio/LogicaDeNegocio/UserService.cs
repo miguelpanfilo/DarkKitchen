@@ -7,7 +7,7 @@ public class UserService(
     ISignUpUserService signUpUserService,
     IModifyUserService modifyUserService,
     IDeleteUserService deleteUserService,
-    IFilterUserService filterUserService)
+    IFilterUserService filterUserService) : IUserService
 {
     private readonly ISignUpUserService _signUpUserService = signUpUserService;
     private readonly IModifyUserService _modifyUserService = modifyUserService;
@@ -19,40 +19,40 @@ public class UserService(
         return _signUpUserService.SignUpClient(requestDto);
     }
 
-    public UsuarioResponseDTO CrearUsuarioInterno(int idUsuarioLogueado, SingUpInternUserRequestDTO requestDto)
+    public UserResponseDTO MakeUserIntern(int idUserLogged, SingUpInternUserRequestDTO requestDto)
     {
-        return _signUpUserService.MakeInterUser(idUsuarioLogueado, requestDto);
+        return _signUpUserService.MakeInterUser(idUserLogged, requestDto);
     }
 
-    public UsuarioResponseDTO ModificarUsuarioInterno(
-        int idUsuarioAModificar,
-        int idUsuarioLogueado,
-        ModificarUsuarioRequestDTO requestDto)
+    public UserResponseDTO ModifyUserIntern(
+        int idUserToModify,
+        int idUserLogged,
+        ModifyUserRequestDTO requestDto)
     {
         return _modifyUserService.UpdateInternalUser(
-            idUsuarioAModificar,
-            idUsuarioLogueado,
+            idUserToModify,
+            idUserLogged,
             requestDto);
     }
 
-    public void ModificarClaveUsuario(
-        int idUsuarioAModificar,
-        int idUsuarioLogueado,
-        ModificarClaveRequestDTO requestDto)
+    public void ModifyPasswordUser(
+        int idUserToModify,
+        int idUserLogged,
+        ModifyPasswordRequestDTO requestDto)
     {
         _modifyUserService.UpdateUserPassword(
-            idUsuarioAModificar,
-            idUsuarioLogueado,
+            idUserToModify,
+            idUserLogged,
             requestDto);
     }
 
-    public void EliminarUsuarioInterno(int idUsuarioAEliminar, int idUsuarioLogueado)
+    public void DeleteUser(int idUserToDelete, int idUserLogged)
     {
-        _deleteUserService.DeleteInterUser(idUsuarioAEliminar, idUsuarioLogueado);
+        _deleteUserService.DeleteInterUser(idUserToDelete, idUserLogged);
     }
 
-    public List<UsuarioResponseDTO> BuscarUsuarios(int idUsuarioLogueado, FindUserRequestDTO requestDto)
+    public List<UserResponseDTO> FindUserOnSystem(int idUserLogged, FindUserRequestDTO requestDto)
     {
-        return _filterUserService.BuscarUsuarios(idUsuarioLogueado, requestDto);
+        return _filterUserService.FindUser(idUserLogged, requestDto);
     }
 }

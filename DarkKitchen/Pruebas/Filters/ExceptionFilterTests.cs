@@ -35,7 +35,7 @@ public class ExceptionFilterTests
     {
         var filter = new ExceptionFilter();
         var exceptionContext = CreateExceptionContext(
-            new ValidationException("Invalid data"));
+            new ValidationException("Los datos ingresados no son válidos."));
 
         filter.OnException(exceptionContext);
 
@@ -48,7 +48,7 @@ public class ExceptionFilterTests
 
         Assert.IsNotNull(response);
         Assert.IsFalse(response.ExecutionSuccessful);
-        Assert.AreEqual("Invalid data", response.Message);
+        Assert.AreEqual("Los datos ingresados no son válidos.", response.Message);
     }
 
     [TestMethod]
@@ -56,7 +56,7 @@ public class ExceptionFilterTests
     {
         var filter = new ExceptionFilter();
         var exceptionContext = CreateExceptionContext(
-            new UserAuthenticationException("Invalid credentials"));
+            new UserAuthenticationException("No fue posible autenticar al usuario."));
 
         filter.OnException(exceptionContext);
 
@@ -69,7 +69,7 @@ public class ExceptionFilterTests
 
         Assert.IsNotNull(response);
         Assert.IsFalse(response.ExecutionSuccessful);
-        Assert.AreEqual("Invalid credentials", response.Message);
+        Assert.AreEqual("No fue posible autenticar al usuario.", response.Message);
     }
 
     [TestMethod]
@@ -77,7 +77,7 @@ public class ExceptionFilterTests
     {
         var filter = new ExceptionFilter();
         var exceptionContext = CreateExceptionContext(
-            new ForbiddenException("Only an administrative user can perform this action"));
+            new ForbiddenException("No tienes permisos para realizar esta acción."));
 
         filter.OnException(exceptionContext);
 
@@ -90,7 +90,7 @@ public class ExceptionFilterTests
 
         Assert.IsNotNull(response);
         Assert.IsFalse(response.ExecutionSuccessful);
-        Assert.AreEqual("Only an administrative user can perform this action", response.Message);
+        Assert.AreEqual("No tienes permisos para realizar esta acción.", response.Message);
     }
 
     [TestMethod]
@@ -98,7 +98,7 @@ public class ExceptionFilterTests
     {
         var filter = new ExceptionFilter();
         var exceptionContext = CreateExceptionContext(
-            new NotFoundException("User does not exist"));
+            new NotFoundException("No se encontró el recurso solicitado."));
 
         filter.OnException(exceptionContext);
 
@@ -111,7 +111,7 @@ public class ExceptionFilterTests
 
         Assert.IsNotNull(response);
         Assert.IsFalse(response.ExecutionSuccessful);
-        Assert.AreEqual("User does not exist", response.Message);
+        Assert.AreEqual("No se encontró el recurso solicitado.", response.Message);
     }
 
     [TestMethod]
@@ -119,7 +119,7 @@ public class ExceptionFilterTests
     {
         var filter = new ExceptionFilter();
         var exceptionContext = CreateExceptionContext(
-            new ConflictException("Email is already registered"));
+            new ConflictException("No fue posible completar la operación por un conflicto de datos."));
 
         filter.OnException(exceptionContext);
 
@@ -132,7 +132,7 @@ public class ExceptionFilterTests
 
         Assert.IsNotNull(response);
         Assert.IsFalse(response.ExecutionSuccessful);
-        Assert.AreEqual("Email is already registered", response.Message);
+        Assert.AreEqual("No fue posible completar la operación por un conflicto de datos.", response.Message);
     }
 
     [TestMethod]
@@ -140,7 +140,7 @@ public class ExceptionFilterTests
     {
         var filter = new ExceptionFilter();
         var exceptionContext = CreateExceptionContext(
-            new Exception("Unexpected error"));
+            new Exception("Ocurrió un error interno."));
 
         filter.OnException(exceptionContext);
 
@@ -153,6 +153,6 @@ public class ExceptionFilterTests
 
         Assert.IsNotNull(response);
         Assert.IsFalse(response.ExecutionSuccessful);
-        Assert.AreEqual("Internal server error", response.Message);
+        Assert.AreEqual("Ocurrió un error interno.", response.Message);
     }
 }
