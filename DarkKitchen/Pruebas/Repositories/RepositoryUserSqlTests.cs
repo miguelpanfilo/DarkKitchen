@@ -211,7 +211,7 @@ public class RepositoryUserSqlTests
     }
 
     [TestMethod]
-    public void Remove_WhenUserExists_RemovesUserFromDatabase()
+    public void Remove_WhenUserExists_DeactivatesUserInsteadOfDeletingIt()
     {
         var phoneResult = Phone.TryMakePhone("099123456");
         Assert.IsTrue(phoneResult.Success);
@@ -233,12 +233,13 @@ public class RepositoryUserSqlTests
 
         _repository.Remove(1);
 
-        var users = _context.Users.ToList();
+        var savedUser = _context.Users.SingleOrDefault(u => u.Id == 1);
 
-        Assert.AreEqual(0, users.Count);
+        Assert.IsNotNull(savedUser);
+        Assert.AreEqual(UserStatus.Inactive, savedUser!.Status);
     }
 
-    [TestMethod]
+   [TestMethod]
     public void FindByEmail_WhenEmailHasUppercaseAndSpaces_ReturnsUser()
     {
         var phoneResult = Phone.TryMakePhone("099123456");
