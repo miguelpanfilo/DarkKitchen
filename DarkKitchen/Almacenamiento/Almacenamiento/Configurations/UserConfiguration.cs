@@ -12,9 +12,20 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.HasKey(u => u.Id);
         builder.Property(u => u.Id).ValueGeneratedOnAdd();
-        builder.Property(u => u.Name).IsRequired();
-        builder.Property(u => u.LastName).IsRequired();
-        builder.Property(u => u.Role).IsRequired();
+
+        builder.Property(u => u.Name)
+            .IsRequired();
+
+        builder.Property(u => u.LastName)
+            .IsRequired();
+
+        builder.Property(u => u.Role)
+            .HasConversion<string>()
+            .IsRequired();
+
+        builder.Property(u => u.Status)
+            .HasConversion<string>()
+            .IsRequired();
 
         builder.OwnsOne(u => u.Email, email =>
         {
