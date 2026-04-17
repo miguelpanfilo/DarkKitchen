@@ -56,7 +56,9 @@ public class RepositoryUser(SqlContext context) : IRepositoryUser
     public User? FindById(int id)
     {
         return _context.Users
-            .SingleOrDefault(u => u.Id == id);
+            .SingleOrDefault(u =>
+                u.Id == id &&
+                u.Status == UserStatus.Active);
     }
 
     public void Remove(int id)
