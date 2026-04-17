@@ -51,7 +51,9 @@ public class RepositoryUser(SqlContext context) : IRepositoryUser
 
         return _context.Users
             .AsNoTracking()
-            .SingleOrDefault(u => u.Email.Value == searchingEmail.Value);
+            .SingleOrDefault(u =>
+                u.Email.Value == searchingEmail.Value &&
+                u.Status == UserStatus.Active);
     }
 
     public User? FindById(int id)
