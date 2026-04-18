@@ -53,6 +53,11 @@ public class Promotion
 
     public void DisassociateProduct(Product product)
     {
+        if(!Products.Contains(product))
+        {
+            throw new PromotionException("El producto no está asociado a la promoción");
+        }
+
         Products.Remove(product);
     }
 
