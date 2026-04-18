@@ -4,5 +4,5 @@ namespace LogicaDeNegocioAbstracciones;
 
 public interface IFilterUserService
 {
-    List<UsuarioResponseDTO> FindUser(int idUserLogin, FindUserRequestDTO requestDto);
+    List<UserResponseDTO> FindUser(int idUserLogin, FindUserRequestDTO requestDto);
 }

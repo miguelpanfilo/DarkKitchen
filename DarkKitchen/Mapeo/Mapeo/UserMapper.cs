@@ -19,14 +19,14 @@ public static class UserMapper
             role);
     }
 
-    public static UsuarioResponseDTO MappingUserToResponseDTO(this User user)
+    public static UserResponseDTO MappingUserToResponseDTO(this User user)
     {
         if(user == null)
         {
             throw new ArgumentNullException(nameof(user), "User cannot be null");
         }
 
-        return new UsuarioResponseDTO
+        return new UserResponseDTO
         {
             Id = user.Id,
             Name = user.Name,

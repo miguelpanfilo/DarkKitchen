@@ -14,12 +14,12 @@ public class FilterUserService(
     private readonly IRepositoryUser _repositoryUsers = repositoryUsers;
     private readonly IAdminValidationService _adminValidationService = adminValidationService;
 
-    public List<UsuarioResponseDTO> FindUser(int idUserLogin, FindUserRequestDTO requestDto)
+    public List<UserResponseDTO> FindUser(int idUserLogin, FindUserRequestDTO requestDto)
     {
         _adminValidationService.EnsureUserIsAdmin(idUserLogin);
 
         var users = _repositoryUsers.GetAll();
-        var filteredUsers = new List<UsuarioResponseDTO>();
+        var filteredUsers = new List<UserResponseDTO>();
 
         foreach(var u in users)
         {
@@ -36,12 +36,12 @@ public class FilterUserService(
     private static bool MatchName(User user, string? name)
     {
         return string.IsNullOrWhiteSpace(name) ||
-               string.Equals(user.Name, name.Trim(), StringComparison.OrdinalIgnoreCase);
+               user.Name.Contains(name.Trim(), StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool MatchLastName(User user, string? lastname)
     {
         return string.IsNullOrWhiteSpace(lastname) ||
-               string.Equals(user.LastName, lastname.Trim(), StringComparison.OrdinalIgnoreCase);
+               user.LastName.Contains(lastname.Trim(), StringComparison.OrdinalIgnoreCase);
     }
 }

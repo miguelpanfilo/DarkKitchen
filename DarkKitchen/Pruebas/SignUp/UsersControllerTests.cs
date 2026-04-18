@@ -3,9 +3,13 @@ using Contratos;
 using DarkKitchen.Controllers;
 using DarkKitchen.Filters;
 using LogicaDeNegocioAbstracciones;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Moq;
+using RouteData = Microsoft.AspNetCore.Routing.RouteData;
 
 namespace Pruebas.SignUp;
 
@@ -67,14 +71,14 @@ public class UsersControllerTests
     public void DeleteInternalUser_CallsDeleteServiceOnce()
     {
         _userServiceMock
-            .Setup(x => x.EliminarUsuarioInterno(2, 99));
+            .Setup(x => x.DeleteUser(2, 99));
 
         SetUserClaim("99");
 
         _controller.DeleteInternalUser(2);
 
         _userServiceMock.Verify(
-            x => x.EliminarUsuarioInterno(2, 99),
+            x => x.DeleteUser(2, 99),
             Times.Once);
     }
 
@@ -82,7 +86,7 @@ public class UsersControllerTests
     public void DeleteInternalUser_WhenClaimIsValid_ReturnsNoContent()
     {
         _userServiceMock
-            .Setup(x => x.EliminarUsuarioInterno(2, 99));
+            .Setup(x => x.DeleteUser(2, 99));
 
         SetUserClaim("99");
 
@@ -100,7 +104,7 @@ public class UsersControllerTests
 
         Assert.IsInstanceOfType(result, typeof(UnauthorizedResult));
         _userServiceMock.Verify(
-            x => x.EliminarUsuarioInterno(It.IsAny<int>(), It.IsAny<int>()),
+            x => x.DeleteUser(It.IsAny<int>(), It.IsAny<int>()),
             Times.Never);
     }
 
@@ -153,15 +157,15 @@ public class UsersControllerTests
         var request = CreateValidInternalUserRequest();
 
         _userServiceMock
-            .Setup(x => x.CrearUsuarioInterno(99, request))
-            .Returns((UsuarioResponseDTO)null!);
+            .Setup(x => x.MakeUserIntern(99, request))
+            .Returns((UserResponseDTO)null!);
 
         SetUserClaim("99");
 
         _controller.CreateInternalUser(request);
 
         _userServiceMock.Verify(
-            x => x.CrearUsuarioInterno(99, request),
+            x => x.MakeUserIntern(99, request),
             Times.Once);
     }
 
@@ -184,7 +188,7 @@ public class UsersControllerTests
     {
         var request = CreateValidInternalUserRequest();
 
-        var response = new UsuarioResponseDTO
+        var response = new UserResponseDTO
         {
             Id = 10,
             Name = "Juan",
@@ -195,7 +199,7 @@ public class UsersControllerTests
         };
 
         _userServiceMock
-            .Setup(x => x.CrearUsuarioInterno(99, request))
+            .Setup(x => x.MakeUserIntern(99, request))
             .Returns(response);
 
         SetUserClaim("99");
@@ -222,7 +226,7 @@ public class UsersControllerTests
         Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
 
         _userServiceMock.Verify(
-            x => x.CrearUsuarioInterno(It.IsAny<int>(), It.IsAny<SingUpInternUserRequestDTO>()),
+            x => x.MakeUserIntern(It.IsAny<int>(), It.IsAny<SingUpInternUserRequestDTO>()),
             Times.Never);
     }
 
@@ -244,10 +248,10 @@ public class UsersControllerTests
     public void SearchUsers_CallsFilterServiceOnce()
     {
         var request = CreateFindUserRequest();
-        var response = new List<UsuarioResponseDTO>();
+        var response = new List<UserResponseDTO>();
 
         _userServiceMock
-            .Setup(x => x.BuscarUsuarios(99, request))
+            .Setup(x => x.FindUserOnSystem(99, request))
             .Returns(response);
 
         SetUserClaim("99");
@@ -259,7 +263,7 @@ public class UsersControllerTests
         Assert.AreEqual(response, result.Value);
 
         _userServiceMock.Verify(
-            x => x.BuscarUsuarios(99, request),
+            x => x.FindUserOnSystem(99, request),
             Times.Once);
     }
 
@@ -276,7 +280,7 @@ public class UsersControllerTests
         Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
 
         _userServiceMock.Verify(
-            x => x.BuscarUsuarios(It.IsAny<int>(), It.IsAny<FindUserRequestDTO>()),
+            x => x.FindUserOnSystem(It.IsAny<int>(), It.IsAny<FindUserRequestDTO>()),
             Times.Never);
     }
 
@@ -293,7 +297,7 @@ public class UsersControllerTests
         Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
 
         _userServiceMock.Verify(
-            x => x.BuscarUsuarios(It.IsAny<int>(), It.IsAny<FindUserRequestDTO>()),
+            x => x.FindUserOnSystem(It.IsAny<int>(), It.IsAny<FindUserRequestDTO>()),
             Times.Never);
     }
 
@@ -309,5 +313,130 @@ public class UsersControllerTests
             .SingleOrDefault();
 
         Assert.IsNotNull(attribute);
+    }
+
+    [TestMethod]
+    public void UpdateInternalUserPassword_WhenRequestIsValid_ReturnsNoContent()
+    {
+        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
+
+        var request = new ModifyPasswordRequestDTO
+        {
+            OldPassword = "PasswordSeguraee3!",
+            NewPassword = "ClaveNuevaSegura4!"
+        };
+
+        userServiceMock
+            .Setup(x => x.ModifyPasswordUser(3, 99, request));
+
+        var controller = new UsersController(userServiceMock.Object);
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(
+                [
+                    new Claim(ClaimTypes.NameIdentifier, "99")
+                ], "mock"))
+            }
+        };
+
+        var result = controller.UpdateInternalUserPassword(3, request);
+
+        Assert.IsInstanceOfType(result, typeof(NoContentResult));
+        userServiceMock.Verify(x => x.ModifyPasswordUser(3, 99, request), Times.Once);
+    }
+
+    [TestMethod]
+    public void UpdateInternalUserPassword_WhenUserIsNotAuthenticated_ReturnsUnauthorized()
+    {
+        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
+
+        var request = new ModifyPasswordRequestDTO
+        {
+            OldPassword = "PasswordSeguraee3!",
+            NewPassword = "ClaveNuevaSegura4!"
+        };
+
+        var controller = new UsersController(userServiceMock.Object);
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity())
+            }
+        };
+
+        var result = controller.UpdateInternalUserPassword(3, request);
+
+        Assert.IsInstanceOfType(result, typeof(UnauthorizedResult));
+        userServiceMock.Verify(
+            x => x.ModifyPasswordUser(
+                It.IsAny<int>(),
+                It.IsAny<int>(),
+                It.IsAny<ModifyPasswordRequestDTO>()),
+            Times.Never);
+    }
+
+    [TestMethod]
+    public void UpdateInternalUserPassword_WhenUserIsAuthenticated_CallsService()
+    {
+        var userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
+
+        var request = new ModifyPasswordRequestDTO
+        {
+            OldPassword = "PasswordSeguraee3!",
+            NewPassword = "ClaveNuevaSegura4!"
+        };
+
+        userServiceMock
+            .Setup(x => x.ModifyPasswordUser(3, 99, request));
+
+        var controller = new UsersController(userServiceMock.Object);
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(
+                [
+                    new Claim(ClaimTypes.NameIdentifier, "99")
+                ], "mock"))
+            }
+        };
+
+        var result = controller.UpdateInternalUserPassword(3, request);
+
+        Assert.IsInstanceOfType(result, typeof(NoContentResult));
+        userServiceMock.Verify(x => x.ModifyPasswordUser(3, 99, request), Times.Once);
+    }
+
+    [TestMethod]
+    public void OnAuthorization_WhenUserIsClient_ReturnsForbiddenStatusCode()
+    {
+        var attribute = new RoleAuthorizationAttribute(UserRolesDto.Administrative);
+
+        var httpContext = new DefaultHttpContext();
+        httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(
+        [
+            new Claim(ClaimTypes.NameIdentifier, "1"),
+            new Claim(ClaimTypes.Role, "Client")
+        ], "mock"));
+
+        var actionContext = new ActionContext(
+            httpContext,
+            new RouteData(),
+            new ActionDescriptor());
+
+        var filterContext = new AuthorizationFilterContext(
+            actionContext,
+            new List<IFilterMetadata>());
+
+        attribute.OnAuthorization(filterContext);
+
+        Assert.IsNotNull(filterContext.Result);
+        Assert.IsInstanceOfType(filterContext.Result, typeof(ObjectResult));
+
+        var result = (ObjectResult)filterContext.Result;
+        Assert.AreEqual(StatusCodes.Status403Forbidden, result.StatusCode);
     }
 }
