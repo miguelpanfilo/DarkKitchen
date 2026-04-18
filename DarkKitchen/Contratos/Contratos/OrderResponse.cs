@@ -8,6 +8,7 @@ public class OrderResponse
     public string DeliveryType { get; set; } = string.Empty;
     public AddressResponse Address { get; set; } = new();
     public List<OrderItemResponse> Items { get; set; } = [];
+    public int ItemsCount { get; set; }
     public string Status { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public DateTime StatusUpdatedAt { get; set; }

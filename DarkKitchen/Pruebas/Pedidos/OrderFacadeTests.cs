@@ -30,31 +30,23 @@ public sealed class OrderFacadeTests
         {
             (1, 2, 100m, 0m)
         };
+
         return Order.MakeOrder(1, DeliveryType.Express, address, items, 200m);
     }
 
-    private static Product MakeActiveProduct(decimal price = 100m)
+    private static ProductResponseDto MakeActiveProduct(decimal price = 100m)
     {
-        return Product.MakeProduct(
-            "COD123",
-            "Test Product",
-            "Descripción de prueba válida",
-            "Línea",
-            "Categoría",
-            price,
-            ValidPhotos(1));
-    }
-
-    private static List<ProductPhoto> ValidPhotos(int count = 1)
-    {
-        var photos = new List<ProductPhoto>();
-
-        for (var i = 0; i < count; i++)
+        return new ProductResponseDto
         {
-            photos.Add(new ProductPhoto($"foto{i}.jpg"));
-        }
-
-        return photos;
+            Code = "COD123",
+            Name = "Test Product",
+            Description = "Descripción de prueba válida",
+            CommercialLine = "Línea",
+            Category = "Categoría",
+            Price = price,
+            IsActive = true,
+            Photos = [new PhotoResponseDto { Path = "foto0.jpg" }]
+        };
     }
 
     #region CreateOrder
@@ -93,16 +85,17 @@ public sealed class OrderFacadeTests
     [TestMethod]
     public void CreateOrder_WhenProductIsInactive_ShouldThrowOrderException()
     {
-        var product = Product.MakeProduct(
-            "COD123",
-            "Producto Test",
-            "Descripción de prueba válida",
-            "Línea",
-            "Categoría",
-            100m,
-            ValidPhotos(1));
-
-        product.Deactivate();
+        var product = new ProductResponseDto
+        {
+            Code = "COD123",
+            Name = "Producto Test",
+            Description = "Descripción de prueba válida",
+            CommercialLine = "Línea",
+            Category = "Categoría",
+            Price = 100m,
+            IsActive = false,
+            Photos = [new PhotoResponseDto { Path = "foto0.jpg" }]
+        };
 
         _productServiceMock
             .Setup(p => p.GetById(1))
@@ -169,6 +162,42 @@ public sealed class OrderFacadeTests
         _orderServiceMock.VerifyAll();
         result.Should().NotBeNull();
         result.Should().BeOfType<OrderResponse>();
+    }
+    #endregion
+    #endregion
+
+    #region GetOrdersByFilters
+    #region Success
+    [TestMethod]
+    public void GetOrdersByFilters_WhenOrdersMatch_ShouldReturnOrderResponseList()
+    {
+        var dateFrom = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        var dateTo = new DateTime(2026, 1, 31, 0, 0, 0, DateTimeKind.Utc);
+
+        _orderServiceMock
+            .Setup(s => s.GetOrdersByFilters(dateFrom, dateTo, null, null))
+            .Returns([MakeTestOrder(), MakeTestOrder()]);
+
+        var result = _orderFacade.GetOrdersByFilters(dateFrom, dateTo, null, null);
+
+        _orderServiceMock.VerifyAll();
+        result.Should().HaveCount(2);
+    }
+
+    [TestMethod]
+    public void GetOrdersByFilters_WhenNoMatch_ShouldReturnEmptyList()
+    {
+        var dateFrom = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        var dateTo = new DateTime(2026, 1, 31, 0, 0, 0, DateTimeKind.Utc);
+
+        _orderServiceMock
+            .Setup(s => s.GetOrdersByFilters(dateFrom, dateTo, null, null))
+            .Returns([]);
+
+        var result = _orderFacade.GetOrdersByFilters(dateFrom, dateTo, null, null);
+
+        _orderServiceMock.VerifyAll();
+        result.Should().BeEmpty();
     }
     #endregion
     #endregion

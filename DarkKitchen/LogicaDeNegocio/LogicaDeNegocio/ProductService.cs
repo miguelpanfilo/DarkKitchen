@@ -2,11 +2,12 @@ using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
 using Dominio.Exceptions;
+using LogicaDeNegocioAbstracciones;
 using Mapeo;
 
 namespace LogicaDeNegocio;
 
-public class ProductService
+public class ProductService : IProductService
 {
     private readonly IProductRepository _repository;
     private readonly ProductPhotoService _productPhotoService;
