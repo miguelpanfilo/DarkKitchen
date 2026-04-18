@@ -330,4 +330,44 @@ public class PromotionServiceTest
         promotionRepositoryMock.VerifyAll();
         productRepositoryMock.VerifyAll();
     }
+
+    [TestMethod]
+    public void GivenExistingPromotion_WhenPatchingName_ThenPromotionNameIsUpdated()
+    {
+        var promotion = Promotion.MakePromotion(
+            "Black Friday",
+            10,
+            new DateOnly(2026, 1, 25),
+            new DateOnly(2026, 1, 30)
+        );
+
+        var patchDto = new PromotionPatchDto
+        {
+            Name = "Cyber Monday"
+        };
+
+        var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        promotionRepositoryMock
+            .Setup(r => r.GetById(1))
+            .Returns(promotion);
+
+        promotionRepositoryMock
+            .Setup(r => r.Update(promotion))
+            .Returns(promotion);
+
+        var service = new PromotionService(
+            promotionRepositoryMock.Object,
+            productRepositoryMock.Object
+        );
+
+        var result = service.update(1, patchDto);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual("Cyber Monday", result.Name);
+
+        promotionRepositoryMock.VerifyAll();
+        productRepositoryMock.VerifyAll();
+    }
 }
