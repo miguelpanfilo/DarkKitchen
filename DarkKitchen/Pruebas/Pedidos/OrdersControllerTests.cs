@@ -178,6 +178,53 @@ public sealed class OrdersControllerTests
     #endregion
     #endregion
 
+    #region ChangeStatus
+    #region Success
+    [TestMethod]
+    public void ChangeStatus_WhenClientCancels_ShouldReturn200()
+    {
+        _orderFacadeMock.Setup(f => f.Cancel(1));
+        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(MakeOrderResponse());
+
+        var result = _controller.ChangeStatus(1, new UpdateOrderStatusRequest { Estado = "Cancelado" });
+
+        _orderFacadeMock.VerifyAll();
+        result.Should().BeOfType<OkObjectResult>();
+    }
+
+    [TestMethod]
+    public void ChangeStatus_WhenPreparerPrepares_ShouldReturn200()
+    {
+        SetCurrentUser(MakePreparer());
+        _orderFacadeMock.Setup(f => f.Prepare(1));
+        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(MakeOrderResponse());
+
+        var result = _controller.ChangeStatus(1, new UpdateOrderStatusRequest { Estado = "Preparado" });
+
+        _orderFacadeMock.VerifyAll();
+        result.Should().BeOfType<OkObjectResult>();
+    }
+    #endregion
+
+    #region Error
+    [TestMethod]
+    public void ChangeStatus_WhenClientTriesToPrepare_ShouldReturn403()
+    {
+        var result = _controller.ChangeStatus(1, new UpdateOrderStatusRequest { Estado = "Preparado" });
+
+        result.Should().BeOfType<ForbidResult>();
+    }
+
+    [TestMethod]
+    public void ChangeStatus_WhenInvalidEstado_ShouldReturn400()
+    {
+        var result = _controller.ChangeStatus(1, new UpdateOrderStatusRequest { Estado = "Invalido" });
+
+        result.Should().BeOfType<BadRequestObjectResult>();
+    }
+    #endregion
+    #endregion
+
     #region Prepare
     #region Success
     [TestMethod]
