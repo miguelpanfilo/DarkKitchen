@@ -65,28 +65,43 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
         switch (request.Estado)
         {
             case "Preparado":
-                if (CurrentUser.Role is not (UserRolesDto.Preparer or UserRolesDto.Administrative))
+                if (CurrentUser.Role != UserRolesDto.Preparer && CurrentUser.Role != UserRolesDto.Administrative)
+                {
                     return Forbid();
+                }
+
                 _orderFacade.Prepare(id);
                 break;
             case "Cancelado":
-                if (CurrentUser.Role is not (UserRolesDto.Client or UserRolesDto.Administrative))
+                if (CurrentUser.Role != UserRolesDto.Client && CurrentUser.Role != UserRolesDto.Administrative)
+                {
                     return Forbid();
+                }
+
                 _orderFacade.Cancel(id);
                 break;
             case "EnCamino":
-                if (CurrentUser.Role is not (UserRolesDto.Preparer or UserRolesDto.Administrative))
+                if (CurrentUser.Role != UserRolesDto.Preparer && CurrentUser.Role != UserRolesDto.Administrative)
+                {
                     return Forbid();
+                }
+
                 _orderFacade.Dispatch(id);
                 break;
             case "Entregado":
-                if (CurrentUser.Role is not (UserRolesDto.Preparer or UserRolesDto.Administrative))
+                if (CurrentUser.Role != UserRolesDto.Preparer && CurrentUser.Role != UserRolesDto.Administrative)
+                {
                     return Forbid();
+                }
+
                 _orderFacade.Deliver(id);
                 break;
             case "NoEntregado":
-                if (CurrentUser.Role is not (UserRolesDto.Preparer or UserRolesDto.Administrative))
+                if (CurrentUser.Role != UserRolesDto.Preparer && CurrentUser.Role != UserRolesDto.Administrative)
+                {
                     return Forbid();
+                }
+
                 _orderFacade.MarkNotDelivered(id);
                 break;
             default:
