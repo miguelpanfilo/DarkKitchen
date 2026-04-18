@@ -10,6 +10,7 @@ public class Promotion
     public DateOnly StartDate { get; private set; }
     public DateOnly EndDate { get; private set; }
     public List<Product> Products { get; private set; } = new();
+    public bool IsDeleted { get; private set; }
 
     private const decimal MinPercentage = 1;
     private const decimal MaxPercentage = 100;
@@ -39,6 +40,11 @@ public class Promotion
         DateOnly endDate)
     {
         return new Promotion(name, discountPercentage, startDate, endDate);
+    }
+
+    public void Deleted()
+    {
+        IsDeleted = true;
     }
 
     public void UpdateName(string name)

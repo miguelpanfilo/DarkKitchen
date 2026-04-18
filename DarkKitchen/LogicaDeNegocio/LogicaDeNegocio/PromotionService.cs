@@ -25,6 +25,15 @@ public class PromotionService
         return PromotionMapper.ToResponseDto(createdPromotion);
     }
 
+    public void Delete(int promotionId)
+    {
+        var promotion = GetExistingPromotion(promotionId);
+
+        promotion.Deleted();
+
+        _promotionRepository.Update(promotion);
+    }
+
     public PromotionResponseDto Update(int promotionId, PromotionPatchDto promotionPatchDto)
     {
         var promotion = GetExistingPromotion(promotionId);
