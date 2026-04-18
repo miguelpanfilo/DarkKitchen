@@ -36,7 +36,7 @@ public class PromotionService
 
         if(promotionPatchDto.DiscountPercentage != null)
         {
-            promotion.UpdateDiscountPercentage(promotionPatchDto.DiscountPercentage);
+            promotion.UpdateDiscountPercentage(promotionPatchDto.DiscountPercentage.Value);
         }
 
         var updatePromotion = _promotionRepository.Update(promotion);
