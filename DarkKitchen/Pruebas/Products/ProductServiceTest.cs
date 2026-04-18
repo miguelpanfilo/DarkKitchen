@@ -883,7 +883,7 @@ public class ProductServiceTest
     }
 
     [TestMethod]
-    public void GivenExistingProduct_WhenDeleting_ThenDeletesPhotosAndProduct()
+    public void GivenExistingProduct_WhenDeleting_ThenMarksItAsDeletedAndUpdatesRepository()
     {
         var productId = 1;
         var product = CreateValidProduct();
@@ -892,24 +892,21 @@ public class ProductServiceTest
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
         repoMock.Setup(r => r.GetById(productId)).Returns(product);
-        repoMock.Setup(r => r.Delete(productId));
 
-        foreach (var photo in product.Photos)
-        {
-            storageMock.Setup(s => s.Delete(photo.Path));
-        }
+        repoMock
+            .Setup(r => r.Update(It.Is<Product>(p => p.IsDeleted)))
+            .Returns((Product p) => p);
 
         var service = CreateService(repoMock, storageMock);
 
         service.Delete(productId);
 
-        repoMock.Verify(r => r.GetById(productId), Times.Once);
-        repoMock.Verify(r => r.Delete(productId), Times.Once);
+        Assert.IsTrue(product.IsDeleted);
 
-        foreach (var photo in product.Photos)
-        {
-            storageMock.Verify(s => s.Delete(photo.Path), Times.Once);
-        }
+        repoMock.Verify(r => r.GetById(productId), Times.Once);
+        repoMock.Verify(r => r.Update(It.Is<Product>(p => p.IsDeleted)), Times.Once);
+
+        storageMock.Verify(s => s.Delete(It.IsAny<string>()), Times.Never);
     }
 
     [TestMethod]
