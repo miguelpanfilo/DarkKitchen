@@ -582,4 +582,27 @@ public class ProductTest
 
         Assert.AreEqual("La categoría no puede estar vacío.", exception.Message);
     }
+
+    [TestMethod]
+    public void GivenNonDeletedProduct_WhenDeleting_ThenMarksItAsDeleted()
+    {
+        var photos = new List<ProductPhoto>
+        {
+            new ProductPhoto("photo1.jpg")
+        };
+
+        var product = Product.MakeProduct(
+            "COD123",
+            "Producto válido",
+            "Descripción válida del producto",
+            "Línea comercial",
+            "Categoría",
+            100,
+            photos
+        );
+
+        product.Delete();
+
+        Assert.IsTrue(product.IsDeleted);
+    }
 }
