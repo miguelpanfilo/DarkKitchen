@@ -61,6 +61,7 @@ public class Promotion
 
     public void UpdateEndDate(DateOnly endDate)
     {
+        ValidateDateRange(StartDate, endDate);
         EndDate = endDate;
     }
 
