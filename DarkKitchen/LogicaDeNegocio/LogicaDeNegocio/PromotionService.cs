@@ -20,61 +20,42 @@ public class PromotionService
     public PromotionResponseDto Create(PromotionDto promotionDto)
     {
         var promotion = PromotionMapper.ToEntity(promotionDto);
-        var createPromotion = _promotionRepository.Create(promotion);
+        var createdPromotion = _promotionRepository.Create(promotion);
 
-        return PromotionMapper.ToResponseDto(createPromotion);
+        return PromotionMapper.ToResponseDto(createdPromotion);
     }
 
     public PromotionResponseDto Update(int promotionId, PromotionPatchDto promotionPatchDto)
     {
-        var promotion = _promotionRepository.GetById(promotionId);
-        ValidatePromotionExists(promotion);
+        var promotion = GetExistingPromotion(promotionId);
 
-        if (promotionPatchDto.Name != null)
-        {
-            promotion.UpdateName(promotionPatchDto.Name);
-        }
+        UpdateNameIfProvided(promotion, promotionPatchDto.Name);
+        UpdateDiscountIfProvided(promotion, promotionPatchDto.DiscountPercentage);
+        UpdateDatesIfProvided(promotion, promotionPatchDto.StartDate, promotionPatchDto.EndDate);
 
-        if(promotionPatchDto.DiscountPercentage != null)
-        {
-            promotion.UpdateDiscountPercentage(promotionPatchDto.DiscountPercentage.Value);
-        }
+        var updatedPromotion = _promotionRepository.Update(promotion);
 
-        if (promotionPatchDto.StartDate != null || promotionPatchDto.EndDate != null)
-        {
-            var newStartDate = promotionPatchDto.StartDate ?? promotion.StartDate;
-            var newEndDate = promotionPatchDto.EndDate ?? promotion.EndDate;
-
-            promotion.UpdateDates(newStartDate, newEndDate);
-        }
-
-        var updatePromotion = _promotionRepository.Update(promotion);
-
-        return PromotionMapper.ToResponseDto(updatePromotion);
+        return PromotionMapper.ToResponseDto(updatedPromotion);
     }
 
     public PromotionResponseDto AssociateProduct(int promotionId, int productId)
     {
-        var promotion = _promotionRepository.GetById(promotionId);
-        ValidatePromotionExists(promotion);
+        var promotion = GetExistingPromotion(promotionId);
 
-        var product = _productRepository.GetById(productId);
-        ValidateProductExists(product);
+        var product = GetExistingProduct(productId);
 
         promotion.AssociateProduct(product);
 
-        var updatePromotion = _promotionRepository.Update(promotion);
+        var updatedPromotion = _promotionRepository.Update(promotion);
 
-        return PromotionMapper.ToResponseDto(updatePromotion);
+        return PromotionMapper.ToResponseDto(updatedPromotion);
     }
 
     public PromotionResponseDto DisassociateProduct(int promotionId, int productId)
     {
-        var promotion = _promotionRepository.GetById(promotionId);
-        ValidatePromotionExists(promotion);
+        var promotion = GetExistingPromotion(promotionId);
 
-        var product = _productRepository.GetById(productId);
-        ValidateProductExists(product);
+        var product = GetExistingProduct(productId);
 
         promotion.DisassociateProduct(product);
 
@@ -83,7 +64,48 @@ public class PromotionService
         return PromotionMapper.ToResponseDto(updatedPromotion);
     }
 
-    private void ValidatePromotionExists(Promotion? promotion)
+    private Promotion GetExistingPromotion(int promotionId)
+    {
+        var promotion = _promotionRepository.GetById(promotionId);
+        ValidatePromotionExists(promotion);
+        return promotion;
+    }
+
+    private Product GetExistingProduct(int productId)
+    {
+        var product = _productRepository.GetById(productId);
+        ValidateProductExists(product);
+        return product;
+    }
+
+    private static void UpdateNameIfProvided(Promotion promotion, string? name)
+    {
+        if (name != null)
+        {
+            promotion.UpdateName(name);
+        }
+    }
+
+    private static void UpdateDiscountIfProvided(Promotion promotion, decimal? discountPercentage)
+    {
+        if (discountPercentage != null)
+        {
+            promotion.UpdateDiscountPercentage(discountPercentage.Value);
+        }
+    }
+
+    private static void UpdateDatesIfProvided(Promotion promotion, DateOnly? startDate, DateOnly? endDate)
+    {
+        if (startDate != null || endDate != null)
+        {
+            var newStartDate = startDate ?? promotion.StartDate;
+            var newEndDate = endDate ?? promotion.EndDate;
+
+            promotion.UpdateDates(newStartDate, newEndDate);
+        }
+    }
+
+    private static void ValidatePromotionExists(Promotion? promotion)
     {
         if (promotion == null)
         {
@@ -91,7 +113,7 @@ public class PromotionService
         }
     }
 
-    private void ValidateProductExists(Product? product)
+    private static void ValidateProductExists(Product? product)
     {
         if (product == null)
         {
