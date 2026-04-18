@@ -604,4 +604,28 @@ public class ProductTest
 
         Assert.IsTrue(product.IsDeleted);
     }
+
+    [TestMethod]
+    public void GivenDeletedProduct_WhenDeleting_ThenThrowsProductException()
+    {
+        var photos = new List<ProductPhoto>
+        {
+            new ProductPhoto("photo1.jpg")
+        };
+
+        var product = Product.MakeProduct(
+            "COD123",
+            "Producto válido",
+            "Descripción válida del producto",
+            "Línea comercial",
+            "Categoría",
+            100,
+            photos);
+
+        product.Delete();
+
+        var ex = Assert.ThrowsException<ProductException>(() => product.Delete());
+
+        Assert.AreEqual("El producto ya está eliminado", ex.Message);
+    }
 }
