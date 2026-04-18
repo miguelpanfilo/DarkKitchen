@@ -28,6 +28,7 @@ public class PromotionService
     public PromotionResponseDto Update(int promotionId, PromotionPatchDto promotionPatchDto)
     {
         var promotion = _promotionRepository.GetById(promotionId);
+        ValidatePromotionExists(promotion);
 
         if (promotionPatchDto.Name != null)
         {
