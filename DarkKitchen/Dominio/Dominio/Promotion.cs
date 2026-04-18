@@ -44,6 +44,11 @@ public class Promotion
 
     public void Deleted()
     {
+        if(IsDeleted)
+        {
+            throw new PromotionException("La promoción ya está eliminada");
+        }
+
         IsDeleted = true;
     }
 
