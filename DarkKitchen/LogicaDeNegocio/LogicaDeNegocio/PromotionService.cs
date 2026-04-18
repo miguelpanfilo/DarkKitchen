@@ -46,6 +46,7 @@ public class PromotionService
         ValidatePromotionExists(promotion);
 
         var product = _productRepository.GetById(productId);
+        ValidateProductExists(product);
 
         promotion.DisassociateProduct(product);
 
