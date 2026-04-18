@@ -85,7 +85,7 @@ public sealed class OrdersControllerTests
     #region GetById
     #region Success
     [TestMethod]
-    public void GetById_WhenOrderExists_ShouldReturn200()
+    public void GetById_WhenClientOwnsOrder_ShouldReturn200()
     {
         _orderFacadeMock.Setup(f => f.GetById(1)).Returns(MakeOrderResponse());
 
@@ -93,6 +93,32 @@ public sealed class OrdersControllerTests
 
         _orderFacadeMock.VerifyAll();
         result.Should().BeOfType<OkObjectResult>();
+    }
+
+    [TestMethod]
+    public void GetById_WhenPreparer_ShouldReturn200()
+    {
+        SetCurrentUser(MakePreparer());
+        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(MakeOrderResponse());
+
+        var result = _controller.GetById(1);
+
+        _orderFacadeMock.VerifyAll();
+        result.Should().BeOfType<OkObjectResult>();
+    }
+    #endregion
+
+    #region Error
+    [TestMethod]
+    public void GetById_WhenClientDoesNotOwnOrder_ShouldReturn403()
+    {
+        SetCurrentUser(MakeClient(id: 99));
+        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(MakeOrderResponse());
+
+        var result = _controller.GetById(1);
+
+        _orderFacadeMock.VerifyAll();
+        result.Should().BeOfType<ForbidResult>();
     }
     #endregion
     #endregion
