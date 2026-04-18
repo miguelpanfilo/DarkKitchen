@@ -56,8 +56,8 @@ public class ProductService : IProductService
     {
         var product = GetExistingProduct(productId);
 
-        _productPhotoService.DeletePhotos(product.Photos);
-        _repository.Delete(productId);
+        product.Delete();
+        _repository.Update(product);
     }
 
     private void ApplyPatch(Product product, ProductPatchDto patchDto)
