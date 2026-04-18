@@ -29,25 +29,25 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
         return Ok(_orderFacade.GetById(id));
     }
 
-    [HttpGet("mine")]
-    [RoleAuthorization(UserRolesDto.Client)]
-    public IActionResult GetClientOrders(
+    [HttpGet]
+    [RoleAuthorization(UserRolesDto.Client, UserRolesDto.Preparer, UserRolesDto.Administrative)]
+    public IActionResult GetOrders(
         [FromQuery] DateTime? dateFrom,
         [FromQuery] DateTime? dateTo,
-        [FromQuery] OrderStatus? status)
-    {
-        return Ok(_orderFacade.GetClientOrders(CurrentUser.Id, dateFrom, dateTo, status));
-    }
-
-    [HttpGet]
-    [RoleAuthorization(UserRolesDto.Preparer, UserRolesDto.Administrative)]
-    public IActionResult GetOrdersByFilters(
-        [FromQuery] DateTime dateFrom,
-        [FromQuery] DateTime dateTo,
         [FromQuery] string? street,
         [FromQuery] OrderStatus? status)
     {
-        return Ok(_orderFacade.GetOrdersByFilters(dateFrom, dateTo, street, status));
+        if (CurrentUser.Role == UserRolesDto.Client)
+        {
+            return Ok(_orderFacade.GetClientOrders(CurrentUser.Id, dateFrom, dateTo, status));
+        }
+
+        if (!dateFrom.HasValue || !dateTo.HasValue)
+        {
+            return BadRequest("El rango de fechas es obligatorio");
+        }
+
+        return Ok(_orderFacade.GetOrdersByFilters(dateFrom.Value, dateTo.Value, street, status));
     }
 
     [HttpPut("{id:int}/prepare")]

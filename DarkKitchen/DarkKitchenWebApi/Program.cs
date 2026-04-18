@@ -23,6 +23,11 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
 
+// Products (in-memory implementations)
+builder.Services.AddSingleton<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductPhotoStorage, InMemoryProductPhotoStorage>();
+builder.Services.AddScoped<ProductPhotoService>();
+
 builder.Services.AddDarkKitchenDependencies(builder.Configuration);
 builder.Services.AddScoped<AuthenticationFilter>();
 
