@@ -148,7 +148,7 @@ public class ProductService : IProductService
 
     private Product GetExistingProduct(int productId)
     {
-        var product = _repository.FindById(productId);
+        var product = _repository.GetById(productId);
 
         if (product == null)
         {

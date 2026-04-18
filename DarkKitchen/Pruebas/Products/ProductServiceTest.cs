@@ -361,7 +361,7 @@ public class ProductServiceTest
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
         repoMock
-            .Setup(r => r.FindById(It.IsAny<int>()))
+            .Setup(r => r.GetById(It.IsAny<int>()))
             .Returns(product);
 
         repoMock
@@ -375,7 +375,7 @@ public class ProductServiceTest
         Assert.IsNotNull(result);
         Assert.AreEqual("Chivito al pan", result.Name);
 
-        repoMock.Verify(r => r.FindById(1), Times.Once);
+        repoMock.Verify(r => r.GetById(1), Times.Once);
         repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Once);
     }
 
@@ -404,7 +404,7 @@ public class ProductServiceTest
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
         repoMock
-            .Setup(r => r.FindById(It.IsAny<int>()))
+            .Setup(r => r.GetById(It.IsAny<int>()))
             .Returns(product);
 
         repoMock
@@ -418,7 +418,7 @@ public class ProductServiceTest
         Assert.IsNotNull(result);
         Assert.AreEqual("COD1234", result.Code);
 
-        repoMock.Verify(r => r.FindById(1), Times.Once);
+        repoMock.Verify(r => r.GetById(1), Times.Once);
         repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Once);
     }
 
@@ -447,7 +447,7 @@ public class ProductServiceTest
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
         repoMock
-            .Setup(r => r.FindById(It.IsAny<int>()))
+            .Setup(r => r.GetById(It.IsAny<int>()))
             .Returns(product);
 
         repoMock
@@ -461,7 +461,7 @@ public class ProductServiceTest
         Assert.IsNotNull(result);
         Assert.AreEqual("Milanesa al plato completa con fritas", result.Description);
 
-        repoMock.Verify(r => r.FindById(1), Times.Once);
+        repoMock.Verify(r => r.GetById(1), Times.Once);
         repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Once);
     }
 
@@ -490,7 +490,7 @@ public class ProductServiceTest
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
         repoMock
-            .Setup(r => r.FindById(It.IsAny<int>()))
+            .Setup(r => r.GetById(It.IsAny<int>()))
             .Returns(product);
 
         repoMock
@@ -504,7 +504,7 @@ public class ProductServiceTest
         Assert.IsNotNull(result);
         Assert.AreEqual("Comida Rapida", result.CommercialLine);
 
-        repoMock.Verify(r => r.FindById(1), Times.Once);
+        repoMock.Verify(r => r.GetById(1), Times.Once);
         repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Once);
     }
 
@@ -533,7 +533,7 @@ public class ProductServiceTest
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
         repoMock
-            .Setup(r => r.FindById(It.IsAny<int>()))
+            .Setup(r => r.GetById(It.IsAny<int>()))
             .Returns(product);
 
         repoMock
@@ -547,7 +547,7 @@ public class ProductServiceTest
         Assert.IsNotNull(result);
         Assert.AreEqual("Milanesas al pan", result.Category);
 
-        repoMock.Verify(r => r.FindById(1), Times.Once);
+        repoMock.Verify(r => r.GetById(1), Times.Once);
         repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Once);
     }
 
@@ -576,7 +576,7 @@ public class ProductServiceTest
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
         repoMock
-            .Setup(r => r.FindById(It.IsAny<int>()))
+            .Setup(r => r.GetById(It.IsAny<int>()))
             .Returns(product);
 
         repoMock
@@ -590,7 +590,7 @@ public class ProductServiceTest
         Assert.IsNotNull(result);
         Assert.AreEqual(1000, result.Price);
 
-        repoMock.Verify(r => r.FindById(1), Times.Once);
+        repoMock.Verify(r => r.GetById(1), Times.Once);
         repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Once);
     }
 
@@ -633,7 +633,7 @@ public class ProductServiceTest
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
         repoMock
-            .Setup(r => r.FindById(1))
+            .Setup(r => r.GetById(1))
             .Returns(product);
 
         storageMock
@@ -655,7 +655,7 @@ public class ProductServiceTest
         Assert.IsFalse(result.Photos.Any(p => p.Path == "/images/products/1/b.jpg"));
 
         storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Once);
-        repoMock.Verify(r => r.FindById(1), Times.Once);
+        repoMock.Verify(r => r.GetById(1), Times.Once);
         repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Once);
     }
 
@@ -671,7 +671,7 @@ public class ProductServiceTest
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
         repoMock
-            .Setup(r => r.FindById(It.IsAny<int>()))
+            .Setup(r => r.GetById(It.IsAny<int>()))
             .Returns((Product)null!);
 
         repoMock
@@ -684,7 +684,7 @@ public class ProductServiceTest
 
         Assert.AreEqual("El producto no existe", exception.Message);
 
-        repoMock.Verify(r => r.FindById(1), Times.Once);
+        repoMock.Verify(r => r.GetById(1), Times.Once);
         repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Never);
     }
 
@@ -719,7 +719,7 @@ public class ProductServiceTest
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
         repoMock
-            .Setup(r => r.FindById(1))
+            .Setup(r => r.GetById(1))
             .Returns(product);
 
         var service = CreateService(repoMock, storageMock);
@@ -728,7 +728,7 @@ public class ProductServiceTest
 
         Assert.AreEqual("La foto no pertenece al producto", exception.Message);
 
-        repoMock.Verify(r => r.FindById(1), Times.Once);
+        repoMock.Verify(r => r.GetById(1), Times.Once);
         repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Never);
         storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Never);
     }
@@ -767,7 +767,7 @@ public class ProductServiceTest
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
         repoMock
-            .Setup(r => r.FindById(1))
+            .Setup(r => r.GetById(1))
             .Returns(product);
 
         var service = CreateService(repoMock, storageMock);
@@ -776,7 +776,7 @@ public class ProductServiceTest
 
         Assert.AreEqual("Datos de foto inválidos", exception.Message);
 
-        repoMock.Verify(r => r.FindById(1), Times.Once);
+        repoMock.Verify(r => r.GetById(1), Times.Once);
         repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Never);
         storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Never);
     }
@@ -835,7 +835,7 @@ public class ProductServiceTest
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
-        repoMock.Setup(r => r.FindById(product.Id)).Returns(product);
+        repoMock.Setup(r => r.GetById(product.Id)).Returns(product);
         repoMock.Setup(r => r.Update(product)).Returns(product);
 
         var service = CreateService(repoMock, storageMock);
@@ -843,7 +843,7 @@ public class ProductServiceTest
         var result = service.Update(product.Id, patchDto);
 
         Assert.IsTrue(result.IsActive);
-        repoMock.Verify(r => r.FindById(product.Id), Times.Once);
+        repoMock.Verify(r => r.GetById(product.Id), Times.Once);
         repoMock.Verify(r => r.Update(product), Times.Once);
     }
 
@@ -870,7 +870,7 @@ public class ProductServiceTest
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
-        repoMock.Setup(r => r.FindById(product.Id)).Returns(product);
+        repoMock.Setup(r => r.GetById(product.Id)).Returns(product);
         repoMock.Setup(r => r.Update(product)).Returns(product);
 
         var service = CreateService(repoMock, storageMock);
@@ -878,7 +878,7 @@ public class ProductServiceTest
         var result = service.Update(product.Id, patchDto);
 
         Assert.IsFalse(result.IsActive);
-        repoMock.Verify(r => r.FindById(product.Id), Times.Once);
+        repoMock.Verify(r => r.GetById(product.Id), Times.Once);
         repoMock.Verify(r => r.Update(product), Times.Once);
     }
 
@@ -891,7 +891,7 @@ public class ProductServiceTest
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
-        repoMock.Setup(r => r.FindById(productId)).Returns(product);
+        repoMock.Setup(r => r.GetById(productId)).Returns(product);
         repoMock.Setup(r => r.Delete(productId));
 
         foreach (var photo in product.Photos)
@@ -903,7 +903,7 @@ public class ProductServiceTest
 
         service.Delete(productId);
 
-        repoMock.Verify(r => r.FindById(productId), Times.Once);
+        repoMock.Verify(r => r.GetById(productId), Times.Once);
         repoMock.Verify(r => r.Delete(productId), Times.Once);
 
         foreach (var photo in product.Photos)
@@ -920,7 +920,7 @@ public class ProductServiceTest
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
-        repoMock.Setup(r => r.FindById(productId)).Returns((Product)null!);
+        repoMock.Setup(r => r.GetById(productId)).Returns((Product)null!);
 
         var service = CreateService(repoMock, storageMock);
 
@@ -1034,7 +1034,7 @@ public class ProductServiceTest
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
-        repoMock.Setup(r => r.FindById(productId)).Returns(product);
+        repoMock.Setup(r => r.GetById(productId)).Returns(product);
 
         var service = CreateService(repoMock, storageMock);
 
@@ -1050,7 +1050,7 @@ public class ProductServiceTest
         Assert.AreEqual(product.IsActive, result.IsActive);
         Assert.AreEqual(product.Photos.Count, result.Photos.Count);
 
-        repoMock.Verify(r => r.FindById(productId), Times.Once);
+        repoMock.Verify(r => r.GetById(productId), Times.Once);
     }
 
     [TestMethod]
@@ -1061,7 +1061,7 @@ public class ProductServiceTest
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
-        repoMock.Setup(r => r.FindById(productId)).Returns((Product)null!);
+        repoMock.Setup(r => r.GetById(productId)).Returns((Product)null!);
 
         var service = CreateService(repoMock, storageMock);
 

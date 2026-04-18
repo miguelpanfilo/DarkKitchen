@@ -6,8 +6,7 @@ namespace Almacenamiento;
 public class ProductRepository : IProductRepository
 {
     public Product Create(Product product) => throw new NotImplementedException();
-
-    public Product FindById(int productId) => throw new NotImplementedException();
+    public Product GetById(int productId) => throw new NotImplementedException();
 
     public Product Update(Product product) => throw new NotImplementedException();
 
