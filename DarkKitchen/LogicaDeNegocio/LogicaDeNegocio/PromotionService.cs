@@ -39,14 +39,12 @@ public class PromotionService
             promotion.UpdateDiscountPercentage(promotionPatchDto.DiscountPercentage.Value);
         }
 
-        if(promotionPatchDto.StartDate != null)
+        if (promotionPatchDto.StartDate != null || promotionPatchDto.EndDate != null)
         {
-            promotion.UpdateStartDate(promotionPatchDto.StartDate.Value);
-        }
+            var newStartDate = promotionPatchDto.StartDate ?? promotion.StartDate;
+            var newEndDate = promotionPatchDto.EndDate ?? promotion.EndDate;
 
-        if(promotionPatchDto.EndDate != null)
-        {
-            promotion.UpdateEndDate(promotionPatchDto.EndDate.Value);
+            promotion.UpdateDates(newStartDate, newEndDate);
         }
 
         var updatePromotion = _promotionRepository.Update(promotion);

@@ -53,15 +53,10 @@ public class Promotion
         DiscountPercentage = discountPercentage;
     }
 
-    public void UpdateStartDate(DateOnly startDate)
+    public void UpdateDates(DateOnly startDate, DateOnly endDate)
     {
-        ValidateDateRange(startDate, EndDate);
+        ValidateDateRange(startDate, endDate);
         StartDate = startDate;
-    }
-
-    public void UpdateEndDate(DateOnly endDate)
-    {
-        ValidateDateRange(StartDate, endDate);
         EndDate = endDate;
     }
 
