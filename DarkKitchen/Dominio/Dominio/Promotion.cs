@@ -58,6 +58,11 @@ public class Promotion
         StartDate = startDate;
     }
 
+    public void UpdateEndDate(DateOnly endDate)
+    {
+        EndDate = endDate;
+    }
+
     public void AssociateProduct(Product product)
     {
         if(Products.Contains(product))

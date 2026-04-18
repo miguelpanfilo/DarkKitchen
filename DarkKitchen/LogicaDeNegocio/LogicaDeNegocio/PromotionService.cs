@@ -44,6 +44,11 @@ public class PromotionService
             promotion.UpdateStartDate(promotionPatchDto.StartDate.Value);
         }
 
+        if(promotionPatchDto.EndDate != null)
+        {
+            promotion.UpdateEndDate(promotionPatchDto.EndDate.Value);
+        }
+
         var updatePromotion = _promotionRepository.Update(promotion);
 
         return PromotionMapper.ToResponseDto(updatePromotion);
