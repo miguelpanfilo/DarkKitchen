@@ -53,6 +53,11 @@ public class Promotion
         DiscountPercentage = discountPercentage;
     }
 
+    public void UpdateStartDate(DateOnly startDate)
+    {
+        StartDate = startDate;
+    }
+
     public void AssociateProduct(Product product)
     {
         if(Products.Contains(product))
