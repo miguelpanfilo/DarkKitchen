@@ -140,6 +140,11 @@ public class Product
 
     public void Delete()
     {
+        if (IsDeleted)
+        {
+            throw new ProductException("El producto ya está eliminado");
+        }
+
         IsDeleted = true;
     }
 
