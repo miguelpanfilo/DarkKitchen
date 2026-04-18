@@ -24,9 +24,17 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
     }
 
     [HttpGet("{id:int}")]
+    [RoleAuthorization(UserRolesDto.Client, UserRolesDto.Preparer, UserRolesDto.Administrative)]
     public IActionResult GetById(int id)
     {
-        return Ok(_orderFacade.GetById(id));
+        var order = _orderFacade.GetById(id);
+
+        if (CurrentUser.Role == UserRolesDto.Client && order.ClientId != CurrentUser.Id)
+        {
+            return Forbid();
+        }
+
+        return Ok(order);
     }
 
     [HttpGet]
