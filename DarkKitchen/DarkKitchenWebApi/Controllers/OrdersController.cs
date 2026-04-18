@@ -58,7 +58,7 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
         return Ok(_orderFacade.GetOrdersByFilters(dateFrom.Value, dateTo.Value, street, status));
     }
 
-    [HttpPut("{id:int}/estado")]
+    [HttpPut("{id:int}/status")]
     [RoleAuthorization(UserRolesDto.Client, UserRolesDto.Preparer, UserRolesDto.Administrative)]
     public IActionResult ChangeStatus(int id, [FromBody] UpdateOrderStatusRequest request)
     {
