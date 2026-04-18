@@ -29,7 +29,7 @@ public class PromotionService
     {
         var promotion = GetExistingPromotion(promotionId);
 
-        promotion.Deleted();
+        promotion.Delete();
 
         _promotionRepository.Update(promotion);
     }

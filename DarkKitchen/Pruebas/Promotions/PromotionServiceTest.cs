@@ -838,7 +838,7 @@ public class PromotionServiceTest
             new DateOnly(2026, 1, 30)
         );
 
-        promotion.Deleted();
+        promotion.Delete();
 
         promotionRepositoryMock
             .Setup(r => r.GetById(1))
@@ -852,6 +852,47 @@ public class PromotionServiceTest
         var exception = Assert.ThrowsException<PromotionException>(() => service.Delete(1));
 
         Assert.AreEqual("La promoción ya está eliminada", exception.Message);
+
+        promotionRepositoryMock.Verify(r => r.GetById(1), Times.Once);
+        promotionRepositoryMock.Verify(r => r.Update(It.IsAny<Promotion>()), Times.Never);
+
+        promotionRepositoryMock.VerifyAll();
+        productRepositoryMock.VerifyAll();
+    }
+
+    [TestMethod]
+    public void GivenDeletedPromotion_WhenUpdating_ThenThrowsPromotionException()
+    {
+        var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        var promotion = Promotion.MakePromotion(
+            "Black Friday",
+            10,
+            new DateOnly(2026, 1, 25),
+            new DateOnly(2026, 1, 30)
+        );
+        promotion.Delete();
+
+        var patchDto = new PromotionPatchDto
+        {
+            Name = "Cyber Monday"
+        };
+
+        promotionRepositoryMock
+            .Setup(r => r.GetById(1))
+            .Returns(promotion);
+
+        var service = new PromotionService(
+            promotionRepositoryMock.Object,
+            productRepositoryMock.Object
+        );
+
+        var ex = Assert.ThrowsException<PromotionException>(() =>
+            service.Update(1, patchDto)
+        );
+
+        Assert.AreEqual("La promoción ya está eliminada", ex.Message);
 
         promotionRepositoryMock.Verify(r => r.GetById(1), Times.Once);
         promotionRepositoryMock.Verify(r => r.Update(It.IsAny<Promotion>()), Times.Never);

@@ -42,7 +42,7 @@ public class Promotion
         return new Promotion(name, discountPercentage, startDate, endDate);
     }
 
-    public void Deleted()
+    public void Delete()
     {
         if(IsDeleted)
         {
