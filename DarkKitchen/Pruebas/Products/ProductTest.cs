@@ -598,8 +598,7 @@ public class ProductTest
             "Línea comercial",
             "Categoría",
             100,
-            photos
-        );
+            photos);
 
         product.Delete();
 
