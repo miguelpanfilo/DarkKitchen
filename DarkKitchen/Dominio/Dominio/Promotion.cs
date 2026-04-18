@@ -41,6 +41,11 @@ public class Promotion
         return new Promotion(name, discountPercentage, startDate, endDate);
     }
 
+    public void UpdateName(string name)
+    {
+        Name = name;
+    }
+
     public void AssociateProduct(Product product)
     {
         if(Products.Contains(product))

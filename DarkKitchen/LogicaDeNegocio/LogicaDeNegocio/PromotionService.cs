@@ -25,6 +25,19 @@ public class PromotionService
         return PromotionMapper.ToResponseDto(createPromotion);
     }
 
+    public PromotionResponseDto Update(int promotionId, PromotionPatchDto promotionPatchDto)
+    {
+        var promotion = _promotionRepository.GetById(promotionId);
+        var updatePromotion = _promotionRepository.Update(promotion);
+
+        if (promotionPatchDto.Name != null)
+        {
+            promotion.UpdateName(promotionPatchDto.Name);
+        }
+
+        return PromotionMapper.ToResponseDto(updatePromotion);
+    }
+
     public PromotionResponseDto AssociateProduct(int promotionId, int productId)
     {
         var promotion = _promotionRepository.GetById(promotionId);

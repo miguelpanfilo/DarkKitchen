@@ -362,7 +362,7 @@ public class PromotionServiceTest
             productRepositoryMock.Object
         );
 
-        var result = service.update(1, patchDto);
+        var result = service.Update(1, patchDto);
 
         Assert.IsNotNull(result);
         Assert.AreEqual("Cyber Monday", result.Name);
