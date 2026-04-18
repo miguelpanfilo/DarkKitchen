@@ -731,4 +731,35 @@ public class PromotionServiceTest
         promotionRepositoryMock.VerifyAll();
         productRepositoryMock.VerifyAll();
     }
+
+    [TestMethod]
+    public void GivenNonExistingPromotion_WhenUpdating_ThenThrowsPromotionException()
+    {
+        var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        var patchDto = new PromotionPatchDto
+        {
+            Name = "Cyber Monday"
+        };
+
+        promotionRepositoryMock
+            .Setup(r => r.GetById(1))
+            .Returns((Promotion)null!);
+
+        var service = new PromotionService(
+            promotionRepositoryMock.Object,
+            productRepositoryMock.Object
+        );
+
+        var ex = Assert.ThrowsException<PromotionException>(() => service.Update(1, patchDto)
+        );
+
+        Assert.AreEqual("La promoción no existe", ex.Message);
+
+        promotionRepositoryMock.Verify(r => r.Update(It.IsAny<Promotion>()), Times.Never);
+
+        promotionRepositoryMock.VerifyAll();
+        productRepositoryMock.VerifyAll();
+    }
 }
