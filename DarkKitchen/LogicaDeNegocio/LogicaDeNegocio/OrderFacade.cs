@@ -6,7 +6,7 @@ using Mapeo;
 
 namespace LogicaDeNegocio;
 
-public class OrderFacade(IOrderService orderService, IProductService productService)
+public class OrderFacade(IOrderService orderService, IProductService productService) : IOrderFacade
 {
     private readonly IOrderService _orderService = orderService;
     private readonly IProductService _productService = productService;
@@ -45,6 +45,13 @@ public class OrderFacade(IOrderService orderService, IProductService productServ
     public OrderResponse GetById(int orderId)
     {
         return _orderService.GetById(orderId).ToOrderResponse();
+    }
+
+    public List<OrderResponse> GetOrdersByFilters(DateTime dateFrom, DateTime dateTo, string? street, OrderStatus? status)
+    {
+        return _orderService.GetOrdersByFilters(dateFrom, dateTo, street, status)
+            .Select(o => o.ToOrderResponse())
+            .ToList();
     }
 
     public void Prepare(int orderId) => _orderService.Prepare(orderId);
