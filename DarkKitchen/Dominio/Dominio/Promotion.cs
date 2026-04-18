@@ -43,6 +43,7 @@ public class Promotion
 
     public void UpdateName(string name)
     {
+        ValidateName(name);
         Name = name;
     }
 

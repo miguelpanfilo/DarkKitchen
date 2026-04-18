@@ -407,4 +407,44 @@ public class PromotionServiceTest
         promotionRepositoryMock.VerifyAll();
         productRepositoryMock.VerifyAll();
     }
+    
+    [TestMethod]
+    public void GivenExistingPromotion_WhenUpdatingWithValidDiscountPercentage_ThenPromotionDiscountPercentageIsUpdated()
+    {
+        var promotion = Promotion.MakePromotion(
+            "Black Friday",
+            10,
+            new DateOnly(2026, 1, 25),
+            new DateOnly(2026, 1, 30)
+        );
+
+        var patchDto = new PromotionPatchDto
+        {
+            DiscountPercentage = 25
+        };
+
+        var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        promotionRepositoryMock
+            .Setup(r => r.GetById(1))
+            .Returns(promotion);
+
+        promotionRepositoryMock
+            .Setup(r => r.Update(promotion))
+            .Returns(promotion);
+
+        var service = new PromotionService(
+            promotionRepositoryMock.Object,
+            productRepositoryMock.Object
+        );
+
+        var result = service.Update(1, patchDto);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(25, result.DiscountPercentage);
+
+        promotionRepositoryMock.VerifyAll();
+        productRepositoryMock.VerifyAll();
+    }
 }

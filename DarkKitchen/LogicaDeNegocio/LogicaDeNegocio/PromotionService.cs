@@ -28,12 +28,13 @@ public class PromotionService
     public PromotionResponseDto Update(int promotionId, PromotionPatchDto promotionPatchDto)
     {
         var promotion = _promotionRepository.GetById(promotionId);
-        var updatePromotion = _promotionRepository.Update(promotion);
 
         if (promotionPatchDto.Name != null)
         {
             promotion.UpdateName(promotionPatchDto.Name);
         }
+
+        var updatePromotion = _promotionRepository.Update(promotion);
 
         return PromotionMapper.ToResponseDto(updatePromotion);
     }
