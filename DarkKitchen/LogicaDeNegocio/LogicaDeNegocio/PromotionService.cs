@@ -76,12 +76,9 @@ public class PromotionService
     private Promotion GetExistingPromotion(int promotionId)
     {
         var promotion = _promotionRepository.GetById(promotionId);
-        ValidatePromotionExists(promotion);
 
-        if (promotion.IsDeleted)
-        {
-            throw new PromotionException("La promoción ya está eliminada");
-        }
+        ValidatePromotionExists(promotion);
+        ValidatePromotionNotDeleted(promotion);
 
         return promotion;
     }
@@ -125,6 +122,14 @@ public class PromotionService
         if (promotion == null)
         {
             throw new PromotionException("La promoción no existe");
+        }
+    }
+
+    private static void ValidatePromotionNotDeleted(Promotion promotion)
+    {
+        if (promotion.IsDeleted)
+        {
+            throw new PromotionException("La promoción ya está eliminada");
         }
     }
 
