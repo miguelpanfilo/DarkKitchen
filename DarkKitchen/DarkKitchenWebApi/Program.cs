@@ -20,7 +20,7 @@ builder.Services.AddSwaggerGen();
 // Orders
 builder.Services.AddScoped<IOrderFacade, OrderFacade>();
 builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddScoped<IProductService, ProductServiceTemp>();
+builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
 
 builder.Services.AddDarkKitchenDependencies(builder.Configuration);
