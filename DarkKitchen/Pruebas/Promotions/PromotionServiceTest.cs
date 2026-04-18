@@ -798,4 +798,30 @@ public class PromotionServiceTest
         promotionRepositoryMock.VerifyAll();
         productRepositoryMock.VerifyAll();
     }
+
+    [TestMethod]
+    public void GivenNonExistingPromotion_WhenDeleting_ThenThrowsPromotionException()
+    {
+        var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        promotionRepositoryMock
+            .Setup(r => r.GetById(1))
+            .Returns((Promotion)null!);
+
+        var service = new PromotionService(
+            promotionRepositoryMock.Object,
+            productRepositoryMock.Object
+        );
+
+        var ex = Assert.ThrowsException<PromotionException>(() => service.Delete(1));
+
+        Assert.AreEqual("La promoción no existe", ex.Message);
+
+        promotionRepositoryMock.Verify(r => r.GetById(1), Times.Once);
+        promotionRepositoryMock.Verify(r => r.Update(It.IsAny<Promotion>()), Times.Never);
+
+        promotionRepositoryMock.VerifyAll();
+        productRepositoryMock.VerifyAll();
+    }
 }
