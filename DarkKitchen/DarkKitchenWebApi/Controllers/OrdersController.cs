@@ -58,6 +58,50 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
         return Ok(_orderFacade.GetOrdersByFilters(dateFrom.Value, dateTo.Value, street, status));
     }
 
+    [HttpPut("{id:int}/estado")]
+    [RoleAuthorization(UserRolesDto.Client, UserRolesDto.Preparer, UserRolesDto.Administrative)]
+    public IActionResult ChangeStatus(int id, [FromBody] UpdateOrderStatusRequest request)
+    {
+        switch (request.Estado)
+        {
+            case "Preparado":
+                if (CurrentUser.Role is not (UserRolesDto.Preparer or UserRolesDto.Administrative))
+                    return Forbid();
+                _orderFacade.Prepare(id);
+                break;
+            case "Cancelado":
+                if (CurrentUser.Role is not (UserRolesDto.Client or UserRolesDto.Administrative))
+                    return Forbid();
+                _orderFacade.Cancel(id);
+                break;
+            case "EnCamino":
+                if (CurrentUser.Role is not (UserRolesDto.Preparer or UserRolesDto.Administrative))
+                    return Forbid();
+                _orderFacade.Dispatch(id);
+                break;
+            case "Entregado":
+                if (CurrentUser.Role is not (UserRolesDto.Preparer or UserRolesDto.Administrative))
+                    return Forbid();
+                _orderFacade.Deliver(id);
+                break;
+            case "NoEntregado":
+                if (CurrentUser.Role is not (UserRolesDto.Preparer or UserRolesDto.Administrative))
+                    return Forbid();
+                _orderFacade.MarkNotDelivered(id);
+                break;
+            default:
+                return BadRequest($"Estado '{request.Estado}' no válido");
+        }
+
+        var order = _orderFacade.GetById(id);
+        return Ok(new OrderStatusResponse
+        {
+            PedidoId = order.Id,
+            Estado = order.Status,
+            FechaCambioEstado = order.StatusUpdatedAt
+        });
+    }
+
     [HttpPut("{id:int}/prepare")]
     [RoleAuthorization(UserRolesDto.Preparer, UserRolesDto.Administrative)]
     public IActionResult Prepare(int id)
