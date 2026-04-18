@@ -4,14 +4,14 @@ namespace Dominio;
 
 public class Promotion
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public decimal DiscountPercentage { get; set; }
-    public DateOnly StartDate { get; set; }
-    public DateOnly EndDate { get; set; }
+    public int Id { get; private set; }
+    public string Name { get; private set; }
+    public decimal DiscountPercentage { get; private set; }
+    public DateOnly StartDate { get; private set; }
+    public DateOnly EndDate { get; private set; }
     public List<Product> Products { get; private set; } = new();
 
-    private const decimal MinPercentage = 0;
+    private const decimal MinPercentage = 1;
     private const decimal MaxPercentage = 100;
 
     private Promotion(
@@ -71,7 +71,7 @@ public class Promotion
 
     private void ValidatePercentage(decimal discountPercentage)
     {
-        if(discountPercentage is <= MinPercentage or > MaxPercentage)
+        if(discountPercentage is < MinPercentage or > MaxPercentage)
         {
             throw new PromotionException("El porcentaje de descuento debe estar entre 1 y 100");
         }

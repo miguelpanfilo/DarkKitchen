@@ -20,6 +20,16 @@ public class PromotionTest
             .Build();
     }
 
+    private Promotion CreateValidPromotion()
+    {
+        return Promotion.MakePromotion(
+            "Black Friday",
+            10,
+            new DateOnly(2026, 1, 25),
+            new DateOnly(2026, 1, 30)
+        );
+    }
+
     [TestMethod]
     public void GivenProductNotAssociated_WhenDisassociating_ThenThrowsPromotionException()
     {
@@ -33,5 +43,18 @@ public class PromotionTest
         var ex = Assert.ThrowsException<PromotionException>(() => promotion.DisassociateProduct(product));
 
         Assert.AreEqual("El producto no está asociado a la promoción", ex.Message);
+    }
+
+    [TestMethod]
+    public void GivenProductAlreadyAssociatedToPromotion_WhenAssociatingProduct_ThenThrowsPromotionException()
+    {
+        var promotion = CreateValidPromotion();
+        var product = CreateValidProduct();
+
+        promotion.AssociateProduct(product);
+
+        var ex = Assert.ThrowsException<PromotionException>(() => promotion.AssociateProduct(product));
+
+        Assert.AreEqual("El producto ya está asociado a la promoción", ex.Message);
     }
 }
