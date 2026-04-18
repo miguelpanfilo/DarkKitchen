@@ -34,6 +34,11 @@ public class PromotionService
             promotion.UpdateName(promotionPatchDto.Name);
         }
 
+        if(promotionPatchDto.DiscountPercentage != null)
+        {
+            promotion.UpdateDiscountPercentage(promotionPatchDto.DiscountPercentage);
+        }
+
         var updatePromotion = _promotionRepository.Update(promotion);
 
         return PromotionMapper.ToResponseDto(updatePromotion);

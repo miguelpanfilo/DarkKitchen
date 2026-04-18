@@ -47,6 +47,11 @@ public class Promotion
         Name = name;
     }
 
+    public void UpdateDiscountPercentage(decimal discountPercentage)
+    {
+        DiscountPercentage = discountPercentage;
+    }
+
     public void AssociateProduct(Product product)
     {
         if(Products.Contains(product))
