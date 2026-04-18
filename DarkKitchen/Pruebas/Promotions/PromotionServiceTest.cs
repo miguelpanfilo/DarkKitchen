@@ -531,4 +531,47 @@ public class PromotionServiceTest
         promotionRepositoryMock.VerifyAll();
         productRepositoryMock.VerifyAll();
     }
+    
+    [TestMethod]
+    public void GivenExistingPromotion_WhenUpdatingWithValidEndDate_ThenPromotionEndDateIsUpdated()
+    {
+        var promotion = Promotion.MakePromotion(
+            "Black Friday",
+            10,
+            new DateOnly(2026, 1, 25),
+            new DateOnly(2026, 1, 30)
+        );
+
+        var newEndDate = new DateOnly(2026, 1, 31);
+
+        var patchDto = new PromotionPatchDto
+        {
+            EndDate = newEndDate
+        };
+
+        var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        promotionRepositoryMock
+            .Setup(r => r.GetById(1))
+            .Returns(promotion);
+
+        promotionRepositoryMock
+            .Setup(r => r.Update(promotion))
+            .Returns(promotion);
+
+        var service = new PromotionService(
+            promotionRepositoryMock.Object,
+            productRepositoryMock.Object
+        );
+
+        var result = service.Update(1, patchDto);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(new DateOnly(2026, 1, 25), result.StartDate);
+        Assert.AreEqual(newEndDate, result.EndDate);
+
+        promotionRepositoryMock.VerifyAll();
+        productRepositoryMock.VerifyAll();
+    }
 }
