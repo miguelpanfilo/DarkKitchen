@@ -25,7 +25,7 @@ builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
 
 // Products (in-memory implementations)
 builder.Services.AddSingleton<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IProductPhotoStorage, InMemoryProductPhotoStorage>();
+builder.Services.AddScoped<IProductPhotoStorage, ProductPhotoStorage>();
 builder.Services.AddScoped<ProductPhotoService>();
 
 builder.Services.AddDarkKitchenDependencies(builder.Configuration);
