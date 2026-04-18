@@ -77,6 +77,12 @@ public class PromotionService
     {
         var promotion = _promotionRepository.GetById(promotionId);
         ValidatePromotionExists(promotion);
+
+        if (promotion.IsDeleted)
+        {
+            throw new PromotionException("La promoción ya está eliminada");
+        }
+
         return promotion;
     }
 
