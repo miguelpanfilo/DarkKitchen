@@ -97,49 +97,57 @@ public sealed class OrdersControllerTests
     #endregion
     #endregion
 
-    #region GetClientOrders
+    #region GetOrders
     #region Success
     [TestMethod]
-    public void GetClientOrders_WhenClient_ShouldReturn200()
+    public void GetOrders_WhenClient_ShouldReturn200()
     {
         _orderFacadeMock.Setup(f => f.GetClientOrders(1, null, null, null)).Returns([MakeOrderResponse()]);
 
-        var result = _controller.GetClientOrders(null, null, null);
+        var result = _controller.GetOrders(null, null, null, null);
 
         _orderFacadeMock.VerifyAll();
         result.Should().BeOfType<OkObjectResult>();
     }
-    #endregion
-    #endregion
 
-    #region GetOrdersByFilters
-    #region Success
     [TestMethod]
-    public void GetOrdersByFilters_WhenPreparer_ShouldReturn200()
+    public void GetOrders_WhenPreparer_ShouldReturn200()
     {
         SetCurrentUser(MakePreparer());
         var dateFrom = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         var dateTo = new DateTime(2026, 1, 31, 0, 0, 0, DateTimeKind.Utc);
         _orderFacadeMock.Setup(f => f.GetOrdersByFilters(dateFrom, dateTo, null, null)).Returns([]);
 
-        var result = _controller.GetOrdersByFilters(dateFrom, dateTo, null, null);
+        var result = _controller.GetOrders(dateFrom, dateTo, null, null);
 
         _orderFacadeMock.VerifyAll();
         result.Should().BeOfType<OkObjectResult>();
     }
 
     [TestMethod]
-    public void GetOrdersByFilters_WhenAdmin_ShouldReturn200()
+    public void GetOrders_WhenAdmin_ShouldReturn200()
     {
         SetCurrentUser(MakeAdmin());
         var dateFrom = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         var dateTo = new DateTime(2026, 1, 31, 0, 0, 0, DateTimeKind.Utc);
         _orderFacadeMock.Setup(f => f.GetOrdersByFilters(dateFrom, dateTo, null, null)).Returns([]);
 
-        var result = _controller.GetOrdersByFilters(dateFrom, dateTo, null, null);
+        var result = _controller.GetOrders(dateFrom, dateTo, null, null);
 
         _orderFacadeMock.VerifyAll();
         result.Should().BeOfType<OkObjectResult>();
+    }
+    #endregion
+
+    #region Error
+    [TestMethod]
+    public void GetOrders_WhenPreparerWithoutDates_ShouldReturn400()
+    {
+        SetCurrentUser(MakePreparer());
+
+        var result = _controller.GetOrders(null, null, null, null);
+
+        result.Should().BeOfType<BadRequestObjectResult>();
     }
     #endregion
     #endregion
