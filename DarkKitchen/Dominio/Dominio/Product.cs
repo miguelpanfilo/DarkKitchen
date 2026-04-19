@@ -14,6 +14,7 @@ public class Product
     public List<ProductPhoto> Photos { get; private set; } = new();
 
     public bool IsActive { get; private set; }
+    public bool IsDeleted { get; private set; }
     public decimal Price { get; private set; }
 
     private const int CodeMinLength = 5;
@@ -135,6 +136,16 @@ public class Product
     public void Deactivate()
     {
         IsActive = false;
+    }
+
+    public void Delete()
+    {
+        if (IsDeleted)
+        {
+            throw new ProductException("El producto ya está eliminado");
+        }
+
+        IsDeleted = true;
     }
 
     private static void ValidateRequired(string value, string fieldName)

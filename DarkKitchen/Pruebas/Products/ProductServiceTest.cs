@@ -883,7 +883,7 @@ public class ProductServiceTest
     }
 
     [TestMethod]
-    public void GivenExistingProduct_WhenDeleting_ThenDeletesPhotosAndProduct()
+    public void GivenExistingProduct_WhenDeleting_ThenMarksItAsDeletedAndUpdatesRepository()
     {
         var productId = 1;
         var product = CreateValidProduct();
@@ -892,24 +892,21 @@ public class ProductServiceTest
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
         repoMock.Setup(r => r.GetById(productId)).Returns(product);
-        repoMock.Setup(r => r.Delete(productId));
 
-        foreach (var photo in product.Photos)
-        {
-            storageMock.Setup(s => s.Delete(photo.Path));
-        }
+        repoMock
+            .Setup(r => r.Update(It.Is<Product>(p => p.IsDeleted)))
+            .Returns((Product p) => p);
 
         var service = CreateService(repoMock, storageMock);
 
         service.Delete(productId);
 
-        repoMock.Verify(r => r.GetById(productId), Times.Once);
-        repoMock.Verify(r => r.Delete(productId), Times.Once);
+        Assert.IsTrue(product.IsDeleted);
 
-        foreach (var photo in product.Photos)
-        {
-            storageMock.Verify(s => s.Delete(photo.Path), Times.Once);
-        }
+        repoMock.Verify(r => r.GetById(productId), Times.Once);
+        repoMock.Verify(r => r.Update(It.Is<Product>(p => p.IsDeleted)), Times.Once);
+
+        storageMock.Verify(s => s.Delete(It.IsAny<string>()), Times.Never);
     }
 
     [TestMethod]
@@ -1069,5 +1066,33 @@ public class ProductServiceTest
             () => service.GetById(productId));
 
         Assert.AreEqual("El producto no existe", exception.Message);
+    }
+
+    [TestMethod]
+    public void GivenDeletedProduct_WhenUpdating_ThenThrowsProductException()
+    {
+        var product = CreateValidProduct();
+        product.Delete();
+
+        var patchDto = new ProductPatchDto
+        {
+            Name = "Nuevo nombre"
+        };
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        repoMock
+            .Setup(r => r.GetById(1))
+            .Returns(product);
+
+        var service = CreateService(repoMock, storageMock);
+
+        var exception = Assert.ThrowsException<ProductException>(() => service.Update(1, patchDto));
+
+        Assert.AreEqual("El producto no existe", exception.Message);
+
+        repoMock.Verify(r => r.GetById(1), Times.Once);
+        repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Never);
     }
 }

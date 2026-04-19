@@ -78,7 +78,6 @@ public class PromotionService
         var promotion = _promotionRepository.GetById(promotionId);
 
         ValidatePromotionExists(promotion);
-        ValidatePromotionNotDeleted(promotion);
 
         return promotion;
     }
@@ -119,23 +118,15 @@ public class PromotionService
 
     private static void ValidatePromotionExists(Promotion? promotion)
     {
-        if (promotion == null)
+        if (promotion == null || promotion.IsDeleted)
         {
             throw new PromotionException("La promoción no existe");
         }
     }
 
-    private static void ValidatePromotionNotDeleted(Promotion promotion)
-    {
-        if (promotion.IsDeleted)
-        {
-            throw new PromotionException("La promoción ya está eliminada");
-        }
-    }
-
     private static void ValidateProductExists(Product? product)
     {
-        if (product == null)
+        if (product == null || product.IsDeleted)
         {
             throw new PromotionException("El producto no existe");
         }

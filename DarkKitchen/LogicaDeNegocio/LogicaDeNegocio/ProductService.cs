@@ -56,8 +56,8 @@ public class ProductService : IProductService
     {
         var product = GetExistingProduct(productId);
 
-        _productPhotoService.DeletePhotos(product.Photos);
-        _repository.Delete(productId);
+        product.Delete();
+        _repository.Update(product);
     }
 
     private void ApplyPatch(Product product, ProductPatchDto patchDto)
@@ -150,7 +150,7 @@ public class ProductService : IProductService
     {
         var product = _repository.GetById(productId);
 
-        if (product == null)
+        if (product == null || product.IsDeleted)
         {
             throw new ProductException("El producto no existe");
         }
