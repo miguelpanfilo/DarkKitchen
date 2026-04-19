@@ -112,6 +112,11 @@ public class ProductPhotoService
 
     private void ValidateFormatPhoto(PhotoDTO photoDto)
     {
+        if (string.IsNullOrWhiteSpace(photoDto.Base64))
+        {
+            throw new ProductException("La foto debe tener contenido en base64");
+        }
+
         var ext = photoDto.Extension.Trim().ToLower().Replace(".", string.Empty);
 
         if (ext != "jpg")
