@@ -21,7 +21,7 @@ public class PromotionRepository : IPromotionRepository
 
     public Promotion GetById(int id)
     {
-        throw new NotImplementedException();
+        return _context.Promotions.FirstOrDefault(p => p.Id == id)!;
     }
 
     public Promotion Update(Promotion promotion)
