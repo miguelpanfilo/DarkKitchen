@@ -54,4 +54,29 @@ public class RepositoryPromotionSqlTest
         Assert.AreEqual(new DateOnly(2026, 11, 10), stored.StartDate);
         Assert.AreEqual(new DateOnly(2026, 11, 20), stored.EndDate);
     }
+
+    [TestMethod]
+    public void GivenExistingPromotion_WhenGettingById_ThenReturnsPromotion()
+    {
+        using var context = SqliteTestContextFactory.CreateContext(out var connection);
+        using var _ = connection;
+
+        var repository = new PromotionRepository(context);
+
+        var promotion = Promotion.MakePromotion(
+            "Black Friday",
+            20,
+            new DateOnly(2026, 11, 1),
+            new DateOnly(2026, 11, 30)
+        );
+
+        context.Promotions.Add(promotion);
+        context.SaveChanges();
+
+        var result = repository.GetById(promotion.Id);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(promotion.Id, result.Id);
+        Assert.AreEqual("Black Friday", result.Name);
+    }
 }
