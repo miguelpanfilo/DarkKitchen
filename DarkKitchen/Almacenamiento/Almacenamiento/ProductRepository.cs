@@ -19,7 +19,10 @@ public class ProductRepository : IProductRepository
         return product;
     }
 
-    public Product GetById(int productId) => throw new NotImplementedException();
+    public Product GetById(int productId)
+    {
+        return _context.Products.FirstOrDefault(p => p.Id == productId)!;
+    }
 
     public Product Update(Product product) => throw new NotImplementedException();
 

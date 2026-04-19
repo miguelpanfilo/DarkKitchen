@@ -26,7 +26,7 @@ public class PromotionRepository : IPromotionRepository
 
     public Promotion? GetById(int id)
     {
-        return _context.Promotions.FirstOrDefault(p => p.Id == id)!;
+        return _context.Promotions.FirstOrDefault(p => p.Id == id);
     }
 
     public Promotion Update(Promotion promotion)
