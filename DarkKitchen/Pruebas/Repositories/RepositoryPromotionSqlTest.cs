@@ -79,4 +79,17 @@ public class RepositoryPromotionSqlTest
         Assert.AreEqual(promotion.Id, result.Id);
         Assert.AreEqual("Black Friday", result.Name);
     }
+
+    [TestMethod]
+    public void GivenNonExistingPromotion_WhenGettingById_ThenReturnsNull()
+    {
+        using var context = SqliteTestContextFactory.CreateContext(out var connection);
+        using var _ = connection;
+
+        var repository = new PromotionRepository(context);
+
+        var result = repository.GetById(999);
+
+        Assert.IsNull(result);
+    }
 }

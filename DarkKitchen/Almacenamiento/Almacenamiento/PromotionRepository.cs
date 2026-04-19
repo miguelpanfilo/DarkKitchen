@@ -19,7 +19,7 @@ public class PromotionRepository : IPromotionRepository
         return promotion;
     }
 
-    public Promotion GetById(int id)
+    public Promotion? GetById(int id)
     {
         return _context.Promotions.FirstOrDefault(p => p.Id == id)!;
     }
