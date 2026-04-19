@@ -1,5 +1,6 @@
 using AlmacenamientoAbstracciones;
 using Dominio;
+using Microsoft.EntityFrameworkCore;
 
 namespace Almacenamiento;
 
@@ -21,7 +22,8 @@ public class ProductRepository : IProductRepository
 
     public Product? GetById(int productId)
     {
-        return _context.Products.FirstOrDefault(p => p.Id == productId);
+        return _context.Products.Include(p => p.Photos)
+            .FirstOrDefault(p => p.Id == productId);
     }
 
     public Product Update(Product product)
@@ -33,6 +35,6 @@ public class ProductRepository : IProductRepository
 
     public List<Product> GetAll()
     {
-        return _context.Products.ToList();
+        return _context.Products.Include(p => p.Photos).ToList();
     }
 }

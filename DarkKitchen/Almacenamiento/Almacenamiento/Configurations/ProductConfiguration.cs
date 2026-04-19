@@ -19,6 +19,9 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(p => p.IsActive).IsRequired();
         builder.Property(p => p.IsDeleted).IsRequired();
 
-        builder.Ignore(p => p.Photos);
+        builder.HasMany(p => p.Photos)
+            .WithOne()
+            .HasForeignKey(p => p.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

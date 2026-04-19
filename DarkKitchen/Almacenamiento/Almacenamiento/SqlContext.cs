@@ -11,6 +11,7 @@ public class SqlContext : DbContext
     public DbSet<Promotion> Promotions { get; set; } = null!;
     public DbSet<Product> Products { get; set; } = null!;
     public DbSet<PromotionProduct> PromotionProducts { get; set; } = null!;
+    public DbSet<ProductPhoto> ProductPhotos { get; set; }
 
     public SqlContext(DbContextOptions<SqlContext> options)
         : base(options)
