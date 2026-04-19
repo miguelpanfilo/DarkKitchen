@@ -26,6 +26,8 @@ public class PromotionRepository : IPromotionRepository
 
     public Promotion Update(Promotion promotion)
     {
-        throw new NotImplementedException();
+        _context.Promotions.Update(promotion);
+        _context.SaveChanges();
+        return promotion;
     }
 }
