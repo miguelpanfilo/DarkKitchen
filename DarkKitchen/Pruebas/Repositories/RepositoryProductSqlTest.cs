@@ -105,4 +105,45 @@ public class RepositoryProductSqlTest
 
         Assert.IsNull(result);
     }
+
+    [TestMethod]
+    public void GivenExistingProduct_WhenUpdating_ThenStoredProductIsUpdated()
+    {
+        using var context = SqliteTestContextFactory.CreateContext(out var connection);
+        using var _ = connection;
+
+        var repository = new ProductRepository(context);
+
+        var product = Product.MakeProduct(
+            "COD123",
+            "Nombre válido producto",
+            "Descripción válida con más de veinte caracteres",
+            "Línea",
+            "Categoría",
+            100,
+            new List<ProductPhoto> { new ProductPhoto("photo-1.jpg") }
+        );
+
+        context.Products.Add(product);
+        context.SaveChanges();
+
+        product.UpdateCode("COD456");
+        product.UpdateName("Nombre actualizado");
+        product.UpdateDescription("Descripción actualizada con más de veinte caracteres");
+        product.UpdateCommercialLine("Nueva línea");
+        product.UpdateCategory("Nueva categoría");
+        product.UpdatePrice(200);
+
+        var result = repository.Update(product);
+        var storedProduct = context.Products.FirstOrDefault(p => p.Id == product.Id);
+
+        Assert.IsNotNull(result);
+        Assert.IsNotNull(storedProduct);
+        Assert.AreEqual("COD456", storedProduct.Code);
+        Assert.AreEqual("Nombre actualizado", storedProduct.Name);
+        Assert.AreEqual("Descripción actualizada con más de veinte caracteres", storedProduct.Description);
+        Assert.AreEqual("Nueva línea", storedProduct.CommercialLine);
+        Assert.AreEqual("Nueva categoría", storedProduct.Category);
+        Assert.AreEqual(200, storedProduct.Price);
+    }
 }
