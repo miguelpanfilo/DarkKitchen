@@ -14,6 +14,8 @@ public class ProductPhotoStorage : IProductPhotoStorage
 
     public string Save(PhotoDTO photo)
     {
+        Directory.CreateDirectory(_basePath);
+
         var bytes = Convert.FromBase64String(photo.Base64);
         var fileName = $"{Guid.NewGuid()}{photo.Extension}";
         var fullPath = Path.Combine(_basePath, fileName);
