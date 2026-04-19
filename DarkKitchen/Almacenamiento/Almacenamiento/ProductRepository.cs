@@ -31,5 +31,8 @@ public class ProductRepository : IProductRepository
         return product;
     }
 
-    public List<Product> GetAll() => throw new NotImplementedException();
+    public List<Product> GetAll()
+    {
+        return _context.Products.ToList();
+    }
 }
