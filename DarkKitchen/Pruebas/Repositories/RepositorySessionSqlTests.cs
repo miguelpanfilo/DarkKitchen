@@ -2,6 +2,7 @@ using System;
 using System.Data.Common;
 using System.Linq;
 using Almacenamiento;
+using Almacenamiento.Repositories;
 using Dominio;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Pruebas.Persistence;

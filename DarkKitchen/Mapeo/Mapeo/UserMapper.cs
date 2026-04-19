@@ -1,4 +1,5 @@
 using Contratos;
+using Contratos.Users;
 using Dominio;
 
 namespace Mapeo;

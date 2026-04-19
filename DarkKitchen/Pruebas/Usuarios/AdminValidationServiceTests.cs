@@ -1,6 +1,7 @@
 using AlmacenamientoAbstracciones;
 using Dominio;
 using LogicaDeNegocio;
+using LogicaDeNegocio.Users;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using Moq;
 using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert;

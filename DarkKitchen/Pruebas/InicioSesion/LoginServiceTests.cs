@@ -1,10 +1,14 @@
 using Almacenamiento;
+using Almacenamiento.Repositories;
 using AlmacenamientoAbstracciones;
 using Contratos;
+using Contratos.Users;
 using Dominio;
 using LogicaDeNegocio;
+using LogicaDeNegocio.Users;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
+using LogicaDeNegocioAbstracciones.Users;
 using Moq;
 using Pruebas.Persistence;
 
@@ -45,7 +49,7 @@ public class LoginServiceTests
     {
         var repoUsuarioMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var repoSesionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
-        var relojMock = new Mock<IReloj>(MockBehavior.Strict);
+        var relojMock = new Mock<IWatch>(MockBehavior.Strict);
 
         var usuario = CreateValidClientUser(1);
 
@@ -88,7 +92,7 @@ public class LoginServiceTests
     {
         var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var repoSesionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
-        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+        var watchMock = new Mock<IWatch>(MockBehavior.Strict);
 
         repoUserMock
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
@@ -117,7 +121,7 @@ public class LoginServiceTests
     {
         var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var repoSesionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
-        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+        var watchMock = new Mock<IWatch>(MockBehavior.Strict);
 
         var user = CreateValidClientUser(1);
 
@@ -148,7 +152,7 @@ public class LoginServiceTests
     {
         var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
-        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+        var watchMock = new Mock<IWatch>(MockBehavior.Strict);
 
         var user = CreateValidClientUser(1);
 
@@ -189,7 +193,7 @@ public class LoginServiceTests
     {
         var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
-        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+        var watchMock = new Mock<IWatch>(MockBehavior.Strict);
 
         var user = CreateValidClientUser(1);
 
@@ -229,7 +233,7 @@ public class LoginServiceTests
     {
         var repoUserMcok = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
-        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+        var watchMock = new Mock<IWatch>(MockBehavior.Strict);
 
         var user = CreateValidClientUser(25);
 
@@ -269,7 +273,7 @@ public class LoginServiceTests
     {
         var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
-        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+        var watchMock = new Mock<IWatch>(MockBehavior.Strict);
 
         var user = CreateValidClientUser(1);
 
@@ -305,7 +309,7 @@ public class LoginServiceTests
     {
         var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
-        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+        var watchMock = new Mock<IWatch>(MockBehavior.Strict);
 
         var user = CreateValidClientUser(1);
 
@@ -334,7 +338,7 @@ public class LoginServiceTests
     {
         var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
-        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+        var watchMock = new Mock<IWatch>(MockBehavior.Strict);
 
         repoUserMock
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
@@ -375,7 +379,7 @@ public class LoginServiceTests
             .Setup(r => r.Add(It.IsAny<Session>()))
             .Returns((Session s) => s);
 
-        var watch = new Mock<IReloj>(MockBehavior.Strict);
+        var watch = new Mock<IWatch>(MockBehavior.Strict);
 
         var coordinatedDate = new DateTime(2026, 1, 1, 10, 0, 0);
 
@@ -406,7 +410,7 @@ public class LoginServiceTests
     {
         var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
-        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+        var watchMock = new Mock<IWatch>(MockBehavior.Strict);
 
         var user = CreateValidClientUser(1);
 
@@ -447,7 +451,7 @@ public class LoginServiceTests
     {
         var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
-        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+        var watchMock = new Mock<IWatch>(MockBehavior.Strict);
 
         var fechaFija = new DateTime(2026, 1, 1, 10, 0, 0);
 
@@ -493,7 +497,7 @@ public class LoginServiceTests
     {
         var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
-        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+        var watchMock = new Mock<IWatch>(MockBehavior.Strict);
 
         var user = CreateValidClientUser(1);
 
@@ -534,7 +538,7 @@ public class LoginServiceTests
     {
         var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
-        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+        var watchMock = new Mock<IWatch>(MockBehavior.Strict);
 
         var user = CreateValidClientUser(1);
 
@@ -578,7 +582,7 @@ public class LoginServiceTests
         var repoUser = new RepositoryUser(context);
         var repoSession = new RepositorySession(context);
 
-        var watchMock = new Mock<IReloj>();
+        var watchMock = new Mock<IWatch>();
         watchMock.Setup(x => x.Now()).Returns(DateTime.Now);
 
         var user = CreateValidClientUser(1);

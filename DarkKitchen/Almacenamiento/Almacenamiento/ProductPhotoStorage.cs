@@ -1,5 +1,6 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
+using Contratos.Products;
 
 namespace Almacenamiento;
 
