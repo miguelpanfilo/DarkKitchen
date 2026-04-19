@@ -15,6 +15,6 @@ public class PromotionConfiguration : IEntityTypeConfiguration<Promotion>
         builder.Property(p => p.EndDate).IsRequired();
         builder.Property(p => p.IsDeleted).IsRequired();
 
-        builder.Ignore(p => p.Products);
+        builder.Ignore(p => p.PromotionProducts);
     }
 }
