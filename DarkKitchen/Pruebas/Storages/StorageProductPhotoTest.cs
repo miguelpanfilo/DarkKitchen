@@ -51,4 +51,30 @@ public class StorageProductPhotoTest
             Directory.Delete(tempDir, true);
         }
     }
+
+    [TestMethod]
+    public void GivenNonExistingDirectory_WhenSavingPhoto_ThenCreatesDirectoryAndSavesFile()
+    {
+        var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+
+        try
+        {
+            var storage = new ProductPhotoStorage(tempDir);
+            var base64 = Convert.ToBase64String(new byte[] { 1, 2, 3 });
+
+            var photo = new PhotoDTO("foto", ".jpg", 3, base64);
+
+            var path = storage.Save(photo);
+
+            Assert.IsTrue(Directory.Exists(tempDir));
+            Assert.IsTrue(File.Exists(path));
+        }
+        finally
+        {
+            if (Directory.Exists(tempDir))
+            {
+                Directory.Delete(tempDir, true);
+            }
+        }
+    }
 }
