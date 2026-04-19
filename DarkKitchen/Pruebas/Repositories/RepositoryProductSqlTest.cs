@@ -1,5 +1,7 @@
 using Almacenamiento;
 using Dominio;
+using Dominio.Builders;
+using Microsoft.EntityFrameworkCore;
 using Pruebas.Persistence;
 
 namespace Pruebas.Repositories;
@@ -181,5 +183,39 @@ public class RepositoryProductSqlTest
         var result = repository.GetAll();
 
         Assert.AreEqual(2, result.Count);
+    }
+
+    [TestMethod]
+    public void GivenValidProductWithPhotos_WhenCreating_ThenStoresProductWithPhotos()
+    {
+        using var context = SqliteTestContextFactory.CreateContext(out var connection);
+        using var _ = connection;
+
+        var repository = new ProductRepository(context);
+
+        var product = new ProductBuilder()
+            .WithCode("COD123")
+            .WithName("Nombre válido producto")
+            .WithDescription("Descripción válida con más de veinte caracteres")
+            .WithCommercialLine("Línea")
+            .WithCategory("Categoría")
+            .WithPrice(100)
+            .WithPhotos(new List<ProductPhoto>
+            {
+                new ProductPhoto("photo-1.jpg"),
+                new ProductPhoto("photo-2.jpg")
+            })
+            .Build();
+
+        var createdProduct = repository.Create(product);
+
+        var storedProduct = context.Products
+            .Include(p => p.Photos)
+            .FirstOrDefault(p => p.Id == createdProduct.Id);
+
+        Assert.IsNotNull(storedProduct);
+        Assert.AreEqual(2, storedProduct.Photos.Count);
+        Assert.IsTrue(storedProduct.Photos.Any(p => p.Path == "photo-1.jpg"));
+        Assert.IsTrue(storedProduct.Photos.Any(p => p.Path == "photo-2.jpg"));
     }
 }
