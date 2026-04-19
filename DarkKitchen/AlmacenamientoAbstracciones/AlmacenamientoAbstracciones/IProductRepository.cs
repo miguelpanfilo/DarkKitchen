@@ -8,5 +8,4 @@ public interface IProductRepository
     public Product GetById(int productId);
     public Product Update(Product product);
     public List<Product> GetAll();
-    public void Delete(int productId);
 }

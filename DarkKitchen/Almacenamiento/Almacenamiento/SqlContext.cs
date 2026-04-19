@@ -8,6 +8,7 @@ public class SqlContext : DbContext
 {
     public DbSet<User> Users { get; set; }
     public DbSet<Session> Sessions { get; set; } = null!;
+    public DbSet<Promotion> Promotions { get; set; } = null!;
 
     public SqlContext(DbContextOptions<SqlContext> options)
         : base(options)
@@ -18,5 +19,6 @@ public class SqlContext : DbContext
     {
         modelBuilder.ApplyConfiguration(new UserConfiguration());
         modelBuilder.ApplyConfiguration(new SessionConfiguration());
+        modelBuilder.ApplyConfiguration(new PromotionConfiguration());
     }
 }

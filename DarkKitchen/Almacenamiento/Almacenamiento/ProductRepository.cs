@@ -11,6 +11,4 @@ public class ProductRepository : IProductRepository
     public Product Update(Product product) => throw new NotImplementedException();
 
     public List<Product> GetAll() => throw new NotImplementedException();
-
-    public void Delete(int productId) => throw new NotImplementedException();
 }
