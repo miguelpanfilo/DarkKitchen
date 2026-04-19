@@ -119,6 +119,15 @@ public class ProductPhotoService
             throw new ProductException("Las fotos deben estar en formato JPG");
         }
 
+        try
+        {
+            _ = Convert.FromBase64String(photoDto.Base64);
+        }
+        catch (FormatException)
+        {
+            throw new ProductException("La foto debe tener un base64 válido");
+        }
+
         ValidatePhotoSize(photoDto.SizeInBytes);
     }
 
