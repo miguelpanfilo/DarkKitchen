@@ -194,4 +194,39 @@ public class RepositoryPromotionSqlTest
         Assert.IsNotNull(storedPromotion);
         Assert.IsTrue(storedPromotion.PromotionProducts.Any(pp => pp.ProductId == product.Id));
     }
+
+    [TestMethod]
+    public void GivenAssociatedProduct_WhenUpdatingAfterDisassociating_ThenRelationIsRemoved()
+    {
+        using var context = SqliteTestContextFactory.CreateContext(out var connection);
+        using var _ = connection;
+
+        var repository = new PromotionRepository(context);
+
+        var product = CreateValidProduct();
+        context.Products.Add(product);
+
+        var promotion = Promotion.MakePromotion(
+            "Black Friday",
+            20,
+            new DateOnly(2026, 11, 1),
+            new DateOnly(2026, 11, 30)
+        );
+
+        context.Promotions.Add(promotion);
+        context.SaveChanges();
+
+        promotion.AssociateProduct(product.Id);
+        repository.Update(promotion);
+
+        promotion.DisassociateProduct(product.Id);
+        repository.Update(promotion);
+
+        var storedPromotion = context.Promotions
+            .Include(p => p.PromotionProducts)
+            .FirstOrDefault(p => p.Id == promotion.Id);
+
+        Assert.IsNotNull(storedPromotion);
+        Assert.IsFalse(storedPromotion.PromotionProducts.Any(pp => pp.ProductId == product.Id));
+    }
 }
