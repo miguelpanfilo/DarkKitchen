@@ -23,5 +23,11 @@ public class ProductPhotoStorage : IProductPhotoStorage
         return fullPath;
     }
 
-    public void Delete(string path) => throw new NotImplementedException();
+    public void Delete(string path)
+    {
+        if (File.Exists(path))
+        {
+            File.Delete(path);
+        }
+    }
 }
