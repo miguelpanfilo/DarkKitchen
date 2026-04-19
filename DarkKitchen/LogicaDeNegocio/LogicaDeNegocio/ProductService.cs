@@ -150,7 +150,7 @@ public class ProductService : IProductService
     {
         var product = _repository.GetById(productId);
 
-        if (product == null)
+        if (product == null || product.IsDeleted)
         {
             throw new ProductException("El producto no existe");
         }
