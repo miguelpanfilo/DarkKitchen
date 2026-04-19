@@ -218,4 +218,33 @@ public class RepositoryProductSqlTest
         Assert.IsTrue(storedProduct.Photos.Any(p => p.Path == "photo-1.jpg"));
         Assert.IsTrue(storedProduct.Photos.Any(p => p.Path == "photo-2.jpg"));
     }
+
+    [TestMethod]
+    public void GivenExistingProductWithPhotos_WhenGettingById_ThenReturnsProductWithPhotos()
+    {
+        using var context = SqliteTestContextFactory.CreateContext(out var connection);
+        using var _ = connection;
+
+        var repository = new ProductRepository(context);
+
+        var product = new ProductBuilder()
+            .WithCode("COD123")
+            .WithName("Nombre válido producto")
+            .WithDescription("Descripción válida con más de veinte caracteres")
+            .WithCommercialLine("Línea")
+            .WithCategory("Categoría")
+            .WithPrice(100)
+            .WithPhotos(new List<ProductPhoto>
+            {
+                new ProductPhoto("photo-1.jpg")
+            })
+            .Build();
+
+        var created = repository.Create(product);
+
+        var result = repository.GetById(created.Id);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(1, result.Photos.Count);
+    }
 }
