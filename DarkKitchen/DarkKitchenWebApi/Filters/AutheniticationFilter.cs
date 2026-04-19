@@ -1,7 +1,9 @@
 using System.Security.Claims;
 using Contratos;
+using Contratos.Users;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
+using LogicaDeNegocioAbstracciones.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;

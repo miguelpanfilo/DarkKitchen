@@ -1,9 +1,15 @@
 using Almacenamiento;
+using Almacenamiento.Repositories;
 using AlmacenamientoAbstracciones;
 using DarkKitchen.Filters;
 using FactoryService;
 using LogicaDeNegocio;
+using LogicaDeNegocio.Initialization;
+using LogicaDeNegocio.Sessions;
+using LogicaDeNegocio.Shared;
+using LogicaDeNegocio.Users;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Users;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -181,7 +187,7 @@ public class DependencyInjectionTests
 
         services.AddDarkKitchenDependencies(configuration);
 
-        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(IReloj));
+        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(IWatch));
 
         Assert.IsNotNull(descriptor);
         Assert.AreEqual(typeof(WatchSystem), descriptor.ImplementationType);

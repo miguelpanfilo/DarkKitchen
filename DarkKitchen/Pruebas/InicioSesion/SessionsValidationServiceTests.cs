@@ -1,9 +1,12 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
+using Contratos.Users;
 using Dominio;
 using LogicaDeNegocio;
+using LogicaDeNegocio.Sessions;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
+using LogicaDeNegocioAbstracciones.Users;
 using Moq;
 
 namespace Pruebas.InicioSesion;
@@ -18,7 +21,7 @@ public class SessionsValidationServiceTests
 
         var sessionRepositoryMock = new Mock<IRepositorySession>(MockBehavior.Strict);
         var userRepositoryMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+        var watchMock = new Mock<IWatch>(MockBehavior.Strict);
 
         sessionRepositoryMock
             .Setup(x => x.FindBySessionId(sessionId))
@@ -46,7 +49,7 @@ public class SessionsValidationServiceTests
 
         var sessionRepositoryMock = new Mock<IRepositorySession>(MockBehavior.Strict);
         var userRepositoryMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+        var watchMock = new Mock<IWatch>(MockBehavior.Strict);
 
         sessionRepositoryMock
             .Setup(x => x.FindBySessionId(sessionId))
@@ -79,7 +82,7 @@ public class SessionsValidationServiceTests
 
         var sessionRepositoryMock = new Mock<IRepositorySession>(MockBehavior.Strict);
         var userRepositoryMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+        var watchMock = new Mock<IWatch>(MockBehavior.Strict);
 
         sessionRepositoryMock
             .Setup(x => x.FindBySessionId(sessionId))
@@ -128,7 +131,7 @@ public class SessionsValidationServiceTests
 
         var sessionRepo = new Mock<IRepositorySession>(MockBehavior.Strict);
         var userRepo = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var watch = new Mock<IReloj>(MockBehavior.Strict);
+        var watch = new Mock<IWatch>(MockBehavior.Strict);
 
         sessionRepo.Setup(r => r.FindBySessionId(sessionId)).Returns(session);
         watch.Setup(w => w.Now()).Returns(now);
@@ -162,7 +165,7 @@ public class SessionsValidationServiceTests
         var session = new Session(5, now);
         var sessionRepo = new Mock<IRepositorySession>(MockBehavior.Strict);
         var userRepo = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var watch = new Mock<IReloj>(MockBehavior.Strict);
+        var watch = new Mock<IWatch>(MockBehavior.Strict);
 
         sessionRepo.Setup(r => r.FindBySessionId(sessionId)).Returns(session);
         watch.Setup(w => w.Now()).Returns(now);
@@ -205,7 +208,7 @@ public class SessionsValidationServiceTests
 
         var sessionRepo = new Mock<IRepositorySession>(MockBehavior.Strict);
         var userRepo = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var watch = new Mock<IReloj>(MockBehavior.Strict);
+        var watch = new Mock<IWatch>(MockBehavior.Strict);
 
         sessionRepo.Setup(r => r.FindBySessionId(sessionId)).Returns(session);
         watch.Setup(w => w.Now()).Returns(now);
@@ -248,7 +251,7 @@ public class SessionsValidationServiceTests
 
         var sessionRepo = new Mock<IRepositorySession>(MockBehavior.Strict);
         var userRepo = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var watch = new Mock<IReloj>(MockBehavior.Strict);
+        var watch = new Mock<IWatch>(MockBehavior.Strict);
 
         sessionRepo.Setup(r => r.FindBySessionId(sessionId)).Returns(session);
         watch.Setup(w => w.Now()).Returns(now);

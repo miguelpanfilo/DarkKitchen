@@ -1,5 +1,6 @@
 using FluentAssertions;
 using LogicaDeNegocio;
+using LogicaDeNegocio.Shipping;
 
 namespace Pruebas.Pedidos;
 

@@ -1,7 +1,13 @@
 using Almacenamiento;
+using Almacenamiento.Repositories;
 using AlmacenamientoAbstracciones;
 using LogicaDeNegocio;
+using LogicaDeNegocio.Initialization;
+using LogicaDeNegocio.Sessions;
+using LogicaDeNegocio.Shared;
+using LogicaDeNegocio.Users;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +35,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IInitializationService, InitializationService>();
 
         services.AddScoped<IPhoneValidator, PhoneValidatorUruguay>();
-        services.AddScoped<IReloj, WatchSystem>();
+        services.AddScoped<IWatch, WatchSystem>();
 
         services.AddScoped<IRepositoryUser, RepositoryUser>();
         services.AddScoped<IRepositorySession, RepositorySession>();

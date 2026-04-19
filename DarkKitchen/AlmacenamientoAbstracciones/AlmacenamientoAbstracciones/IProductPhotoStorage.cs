@@ -1,4 +1,5 @@
 using Contratos;
+using Contratos.Products;
 
 namespace AlmacenamientoAbstracciones;
 
