@@ -1067,4 +1067,32 @@ public class ProductServiceTest
 
         Assert.AreEqual("El producto no existe", exception.Message);
     }
+
+    [TestMethod]
+    public void GivenDeletedProduct_WhenUpdating_ThenThrowsProductException()
+    {
+        var product = CreateValidProduct();
+        product.Delete();
+
+        var patchDto = new ProductPatchDto
+        {
+            Name = "Nuevo nombre"
+        };
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        repoMock
+            .Setup(r => r.GetById(1))
+            .Returns(product);
+
+        var service = CreateService(repoMock, storageMock);
+
+        var exception = Assert.ThrowsException<ProductException>(() => service.Update(1, patchDto));
+
+        Assert.AreEqual("El producto no existe", exception.Message);
+
+        repoMock.Verify(r => r.GetById(1), Times.Once);
+        repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Never);
+    }
 }
