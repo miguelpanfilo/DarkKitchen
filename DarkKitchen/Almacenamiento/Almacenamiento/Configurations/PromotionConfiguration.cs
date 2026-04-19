@@ -15,6 +15,10 @@ public class PromotionConfiguration : IEntityTypeConfiguration<Promotion>
         builder.Property(p => p.EndDate).IsRequired();
         builder.Property(p => p.IsDeleted).IsRequired();
 
-        builder.Ignore(p => p.PromotionProducts);
+        builder
+            .HasMany(p => p.PromotionProducts)
+            .WithOne()
+            .HasForeignKey(pp => pp.PromotionId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
