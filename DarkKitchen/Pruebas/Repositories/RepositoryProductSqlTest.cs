@@ -92,4 +92,17 @@ public class RepositoryProductSqlTest
         Assert.AreEqual(product.Id, result.Id);
         Assert.AreEqual("COD123", result.Code);
     }
+
+    [TestMethod]
+    public void GivenNonExistingProduct_WhenGettingById_ThenReturnsNull()
+    {
+        using var context = SqliteTestContextFactory.CreateContext(out var connection);
+        using var _ = connection;
+
+        var repository = new ProductRepository(context);
+
+        var result = repository.GetById(999);
+
+        Assert.IsNull(result);
+    }
 }
