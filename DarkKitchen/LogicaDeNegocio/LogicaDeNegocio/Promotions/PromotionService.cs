@@ -51,9 +51,9 @@ public class PromotionService
     {
         var promotion = GetExistingPromotion(promotionId);
 
-        var product = GetExistingProduct(productId);
+        GetExistingProduct(productId);
 
-        promotion.AssociateProduct(product);
+        promotion.AssociateProduct(productId);
 
         var updatedPromotion = _promotionRepository.Update(promotion);
 
@@ -64,9 +64,9 @@ public class PromotionService
     {
         var promotion = GetExistingPromotion(promotionId);
 
-        var product = GetExistingProduct(productId);
+        GetExistingProduct(productId);
 
-        promotion.DisassociateProduct(product);
+        promotion.DisassociateProduct(productId);
 
         var updatedPromotion = _promotionRepository.Update(promotion);
 

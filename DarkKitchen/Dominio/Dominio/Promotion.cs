@@ -9,7 +9,8 @@ public class Promotion
     public decimal DiscountPercentage { get; private set; }
     public DateOnly StartDate { get; private set; }
     public DateOnly EndDate { get; private set; }
-    public List<Product> Products { get; private set; } = new();
+
+    public List<PromotionProduct> PromotionProducts { get; private set; } = new();
     public bool IsDeleted { get; private set; }
 
     private const decimal MinPercentage = 1;
@@ -71,24 +72,26 @@ public class Promotion
         EndDate = endDate;
     }
 
-    public void AssociateProduct(Product product)
+    public void AssociateProduct(int productId)
     {
-        if(Products.Contains(product))
+        if(PromotionProducts.Any(pp => pp.ProductId == productId))
         {
             throw new PromotionException("El producto ya está asociado a la promoción");
         }
 
-        Products.Add(product);
+        PromotionProducts.Add(new PromotionProduct(productId));
     }
 
-    public void DisassociateProduct(Product product)
+    public void DisassociateProduct(int productId)
     {
-        if(!Products.Contains(product))
+        var promotionProduct = PromotionProducts.FirstOrDefault(pp => pp.ProductId == productId);
+
+        if(promotionProduct == null)
         {
             throw new PromotionException("El producto no está asociado a la promoción");
         }
 
-        Products.Remove(product);
+        PromotionProducts.Remove(promotionProduct);
     }
 
     private void ValidateName(string name)

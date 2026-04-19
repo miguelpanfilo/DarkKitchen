@@ -27,11 +27,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IOrderFacade, OrderFacade>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
-// Products (in-memory implementations)
-builder.Services.AddSingleton<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IProductPhotoStorage, ProductPhotoStorage>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductPhotoStorage>(
+    _ => new ProductPhotoStorage("C:\\temp\\photos")
+);
 builder.Services.AddScoped<ProductPhotoService>();
 
 builder.Services.AddDarkKitchenDependencies(builder.Configuration);

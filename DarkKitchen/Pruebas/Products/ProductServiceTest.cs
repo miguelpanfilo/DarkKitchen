@@ -41,9 +41,10 @@ public class ProductServiceTest
     [TestMethod]
     public void GivenValidProductDto_WhenCreating_ThenRepositoryIsCalledAndProductIsReturned()
     {
+        var validBase64 = Convert.ToBase64String(new byte[] { 1, 2, 3 });
         var photos = new List<PhotoDTO>
         {
-            new ("foto1", ".jpg", 1000, "base64-falso")
+            new ("foto1", ".jpg", 1000, validBase64)
         };
         var productDto = new ProductDTO(
             "COD123",
@@ -100,9 +101,10 @@ public class ProductServiceTest
     [TestMethod]
     public void GivenValidProductDtoWithPhotos_WhenCreating_ThenPhotosAreSavedAndRepositoryIsCalled()
     {
+        var validBase64 = Convert.ToBase64String(new byte[] { 1, 2, 3 });
         var photos = new List<PhotoDTO>
         {
-            new ("foto1", ".jpg", 1000, "base64-falso")
+            new ("foto1", ".jpg", 1000, validBase64)
         };
 
         var productDto = new ProductDTO(
@@ -138,9 +140,10 @@ public class ProductServiceTest
     [TestMethod]
     public void GivenValidProductDtoWithPhotos_WhenCreating_ThenProductContainsSavedPhotos()
     {
+        var validBase64 = Convert.ToBase64String(new byte[] { 1, 2, 3 });
         var photos = new List<PhotoDTO>
         {
-            new PhotoDTO("foto1", ".jpg", 1000, "base64-falso")
+            new PhotoDTO("foto1", ".jpg", 1000, validBase64)
         };
 
         var productDto = new ProductDTO(
@@ -180,14 +183,14 @@ public class ProductServiceTest
     public void GivenValidProductDtoWithPhotos_WhenCreating_ThenPhotosAreSavedWithPath(int cantidadFotos)
     {
         var photoDtos = new List<PhotoDTO>();
-
+        var validBase64 = Convert.ToBase64String(new byte[] { 1, 2, 3 });
         for (var i = 1; i <= cantidadFotos; i++)
         {
             photoDtos.Add(new PhotoDTO(
                 $"photo{i}",
                 ".jpg",
                 100,
-                "base64fake"));
+                validBase64));
         }
 
         var productDto = new ProductDTO(
@@ -271,12 +274,13 @@ public class ProductServiceTest
     [DataRow(".webp")]
     public void GivenNonJpgPhotos_WhenCreatingProduct_ThenThrowsProductException(string extension)
     {
+        var validBase64 = Convert.ToBase64String(new byte[] { 1, 2, 3 });
         var photos = new List<PhotoDTO>
         {
             new PhotoDTO("photo1",
                 extension,
                 100,
-                "base64fake")
+                validBase64)
         };
 
         var productDto = new ProductDTO(
@@ -309,10 +313,11 @@ public class ProductServiceTest
     public void GivenPhotosWithAtLeastOneNonJpgFormat_WhenCreatingProduct_ThenThrowsProductExceptionAndDoesNotSavePhotos(
         string firstExtension, string secondExtension)
     {
+        var validBase64 = Convert.ToBase64String(new byte[] { 1, 2, 3 });
         var photos = new List<PhotoDTO>
         {
-            new PhotoDTO("photo1", firstExtension, 100, "base64fake"),
-            new PhotoDTO("photo2", secondExtension, 100, "base64fake")
+            new PhotoDTO("photo1", firstExtension, 100, validBase64),
+            new PhotoDTO("photo2", secondExtension, 100, validBase64)
         };
 
         var productDto = new ProductDTO(
@@ -626,7 +631,7 @@ public class ProductServiceTest
                     FileName = "nueva",
                     Extension = "jpg",
                     SizeInBytes = 100,
-                    Base64 = "base64fake"
+                    Base64 = Convert.ToBase64String(new byte[] { 1, 2, 3 })
                 }
             }
         };
@@ -641,6 +646,9 @@ public class ProductServiceTest
         storageMock
             .Setup(s => s.Save(It.IsAny<PhotoDTO>()))
             .Returns("/images/products/1/nueva.jpg");
+
+        storageMock
+            .Setup(s => s.Delete("/images/products/1/b.jpg"));
 
         repoMock
             .Setup(r => r.Update(It.IsAny<Product>()))
@@ -657,6 +665,7 @@ public class ProductServiceTest
         Assert.IsFalse(result.Photos.Any(p => p.Path == "/images/products/1/b.jpg"));
 
         storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Once);
+        storageMock.Verify(s => s.Delete("/images/products/1/b.jpg"), Times.Once);
         repoMock.Verify(r => r.GetById(1), Times.Once);
         repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Once);
     }
@@ -786,9 +795,10 @@ public class ProductServiceTest
     [TestMethod]
     public void GivenPhotoWithSizeGreaterThan500KB_WhenCreatingProduct_ThenThrowsProductException()
     {
+        var validBase64 = Convert.ToBase64String(new byte[] { 1, 2, 3 });
         var photos = new List<PhotoDTO>
         {
-            new PhotoDTO("foto.jpg", "jpg", 512001, "base64")
+            new PhotoDTO("foto.jpg", "jpg", 512001, validBase64)
         };
 
        var productDto = new ProductDTO(

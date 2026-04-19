@@ -162,7 +162,7 @@ public class PromotionServiceTest
 
         service.AssociateProduct(1, 100);
 
-        Assert.IsTrue(promotion.Products.Contains(product));
+        Assert.IsTrue(promotion.PromotionProducts.Any(pp => pp.ProductId == 100));
 
         promotionRepositoryMock.VerifyAll();
         productRepositoryMock.VerifyAll();
@@ -263,7 +263,7 @@ public class PromotionServiceTest
 
         servicePromotion.DisassociateProduct(1, 100);
 
-        Assert.IsFalse(promotion.Products.Contains(product));
+        Assert.IsFalse(promotion.PromotionProducts.Any(pp => pp.ProductId == 100));
 
         promotionRepositoryMock.VerifyAll();
         productRepositoryMock.VerifyAll();
