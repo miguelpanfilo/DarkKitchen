@@ -128,4 +128,23 @@ public class RepositoryPromotionSqlTest
         Assert.AreEqual(new DateOnly(2026, 11, 10), storedPromotion.StartDate);
         Assert.AreEqual(new DateOnly(2026, 11, 20), storedPromotion.EndDate);
     }
+
+    [TestMethod]
+    public void GivenExistingPromotions_WhenGettingAll_ThenReturnsAllPromotions()
+    {
+        using var context = SqliteTestContextFactory.CreateContext(out var connection);
+        using var _ = connection;
+
+        var repository = new PromotionRepository(context);
+
+        var p1 = Promotion.MakePromotion("Promo1", 10, new DateOnly(2026,1,1), new DateOnly(2026,1,10));
+        var p2 = Promotion.MakePromotion("Promo2", 20, new DateOnly(2026,2,1), new DateOnly(2026,2,10));
+
+        context.Promotions.AddRange(p1, p2);
+        context.SaveChanges();
+
+        var result = repository.GetAll();
+
+        Assert.AreEqual(2, result.Count);
+    }
 }
