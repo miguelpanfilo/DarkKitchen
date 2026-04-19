@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Almacenamiento.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20260416155212_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260417034224_ChangeRoleAndStatusToString")]
+    partial class ChangeRoleAndStatusToString
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,8 +57,13 @@ namespace Almacenamiento.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

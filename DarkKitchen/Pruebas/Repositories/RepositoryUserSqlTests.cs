@@ -211,7 +211,7 @@ public class RepositoryUserSqlTests
     }
 
     [TestMethod]
-    public void Remove_WhenUserExists_RemovesUserFromDatabase()
+    public void Remove_WhenUserExists_DeactivatesUserInsteadOfDeletingIt()
     {
         var phoneResult = Phone.TryMakePhone("099123456");
         Assert.IsTrue(phoneResult.Success);
@@ -233,12 +233,13 @@ public class RepositoryUserSqlTests
 
         _repository.Remove(1);
 
-        var users = _context.Users.ToList();
+        var savedUser = _context.Users.SingleOrDefault(u => u.Id == 1);
 
-        Assert.AreEqual(0, users.Count);
+        Assert.IsNotNull(savedUser);
+        Assert.AreEqual(UserStatus.Inactive, savedUser!.Status);
     }
 
-    [TestMethod]
+   [TestMethod]
     public void FindByEmail_WhenEmailHasUppercaseAndSpaces_ReturnsUser()
     {
         var phoneResult = Phone.TryMakePhone("099123456");
@@ -306,5 +307,106 @@ public class RepositoryUserSqlTests
         Assert.AreEqual("lucia.wwww@gmail.com", updatedUser.Email.Value);
         Assert.AreEqual("099123456", updatedUser.Phone.Value);
         Assert.AreEqual(UserRoles.Client, updatedUser.Role);
+    }
+
+    [TestMethod]
+    public void FindById_WhenUserIsInactive_ReturnsNull()
+    {
+        var phoneResult = Phone.TryMakePhone("099123456");
+        Assert.IsTrue(phoneResult.Success);
+
+        var userResult = User.MakeClient(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            phoneResult.Value!,
+            "PasswordSeguraee3!");
+
+        Assert.IsTrue(userResult.Success);
+
+        var user = userResult.Value!;
+        user.Id = 1;
+
+        _context.Users.Add(user);
+        _context.SaveChanges();
+
+        _repository.Remove(1);
+
+        var result = _repository.FindById(1);
+
+        Assert.IsNull(result);
+    }
+
+    [TestMethod]
+    public void GetAll_WhenThereAreInactiveUsers_DoesNotReturnThem()
+    {
+        var phoneOneResult = Phone.TryMakePhone("099123456");
+        var phoneTwoResult = Phone.TryMakePhone("091222333");
+
+        Assert.IsTrue(phoneOneResult.Success);
+        Assert.IsTrue(phoneTwoResult.Success);
+
+        var firstUserResult = User.MakeClient(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            phoneOneResult.Value!,
+            "PasswordSeguraee3!");
+
+        var secondUserResult = User.MakeClient(
+            "Ana",
+            "Perez",
+            "ana@gmail.com",
+            phoneTwoResult.Value!,
+            "ClaveSeguraLargaa4!");
+
+        Assert.IsTrue(firstUserResult.Success);
+        Assert.IsTrue(secondUserResult.Success);
+
+        var firstUser = firstUserResult.Value!;
+        var secondUser = secondUserResult.Value!;
+
+        firstUser.Id = 1;
+        secondUser.Id = 2;
+
+        _context.Users.Add(firstUser);
+        _context.Users.Add(secondUser);
+        _context.SaveChanges();
+
+        _repository.Remove(2);
+
+        var users = _repository.GetAll();
+
+        Assert.AreEqual(1, users.Count);
+        Assert.IsTrue(users.Any(u => u.Id == 1 && u.Email.Value == "miguel@gmail.com"));
+        Assert.IsFalse(users.Any(u => u.Id == 2));
+    }
+
+    [TestMethod]
+    public void FindByEmail_WhenUserIsInactive_ReturnsNull()
+    {
+        var phoneResult = Phone.TryMakePhone("099123456");
+        Assert.IsTrue(phoneResult.Success);
+
+        var userResult = User.MakeClient(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            phoneResult.Value!,
+            "PasswordSeguraee3!");
+
+        Assert.IsTrue(userResult.Success);
+
+        var user = userResult.Value!;
+        user.Id = 1;
+
+        _context.Users.Add(user);
+        _context.SaveChanges();
+
+        _repository.Remove(1);
+
+        var foundUser = _repository.FindByEmail("miguel@gmail.com");
+
+        Assert.IsNull(foundUser);
     }
 }
