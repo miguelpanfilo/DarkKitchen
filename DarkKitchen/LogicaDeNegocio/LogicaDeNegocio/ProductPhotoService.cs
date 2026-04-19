@@ -21,7 +21,7 @@ public class ProductPhotoService
     public List<ProductPhoto> SavePhotos(List<PhotoDTO> photos)
     {
         ValidatePhotosCollection(photos);
-        ValidateFormatPhotos(photos);
+        ValidatePhotos(photos);
 
         var savedPhotos = new List<ProductPhoto>();
 
@@ -44,7 +44,20 @@ public class ProductPhotoService
             finalPhotos.Add(ResolvePhoto(product, requestedPhoto));
         }
 
+        var removedPhotos = GetRemovedPhotos(product, finalPhotos);
+
+        DeletePhotos(removedPhotos);
+
         return finalPhotos;
+    }
+
+    private List<ProductPhoto> GetRemovedPhotos(Product product, List<ProductPhoto> finalPhotos)
+    {
+        var finalPaths = finalPhotos.Select(photo => photo.Path).ToHashSet();
+
+        return product.Photos
+            .Where(photo => !finalPaths.Contains(photo.Path))
+            .ToList();
     }
 
     public void DeletePhotos(List<ProductPhoto> photos)
@@ -71,7 +84,7 @@ public class ProductPhotoService
             requestedPhoto.Base64!
         );
 
-        ValidateFormatPhoto(photoDto);
+        ValidatePhoto(photoDto);
 
         return SavePhoto(photoDto);
     }
@@ -102,54 +115,64 @@ public class ProductPhotoService
         }
     }
 
-    private void ValidateFormatPhotos(List<PhotoDTO> photos)
+    private void ValidatePhotos(List<PhotoDTO> photos)
     {
         foreach (var photo in photos)
         {
-            ValidateFormatPhoto(photo);
+            ValidatePhoto(photo);
         }
     }
 
-    private void ValidateFormatPhoto(PhotoDTO photoDto)
+    private void ValidatePhoto(PhotoDTO photoDto)
     {
-        if (string.IsNullOrWhiteSpace(photoDto.Base64))
+        ValidateBase64Content(photoDto.Base64);
+        ValidateJpgExtension(photoDto.Extension);
+
+        ValidatePhotoSize(photoDto.SizeInBytes);
+    }
+
+    private static void ValidateBase64Content(string base64)
+    {
+        if (string.IsNullOrWhiteSpace(base64))
         {
-            throw new ProductException("La foto debe tener contenido en base64");
+            throw new ProductException("La foto debe tener un base64 válido");
         }
 
-        var ext = photoDto.Extension.Trim().ToLower().Replace(".", string.Empty);
+        DecodeBase64(base64);
+    }
 
-        if (ext != "jpg")
+    private static void ValidateJpgExtension(string extension)
+    {
+        if (string.IsNullOrWhiteSpace(extension))
         {
             throw new ProductException("Las fotos deben estar en formato JPG");
         }
 
-        try
-        {
-            _ = Convert.FromBase64String(photoDto.Base64);
-        }
-        catch (FormatException)
-        {
-            throw new ProductException("La foto debe tener un base64 válido");
-        }
+        var normalizedExtension = extension.Trim().ToLower().Replace(".", string.Empty);
 
-        ValidatePhotoSizeFromBase64(photoDto.Base64);
+        if (normalizedExtension != "jpg")
+        {
+            throw new ProductException("Las fotos deben estar en formato JPG");
+        }
     }
 
-    private void ValidatePhotoSizeFromBase64(string base64)
+    private static byte[] DecodeBase64(string base64)
     {
         try
         {
-            var bytes = Convert.FromBase64String(base64);
-
-            if (bytes.Length > MaxPhotoSizeInBytes)
-            {
-                throw new ProductException("La foto no puede superar los 500 KB");
-            }
+            return Convert.FromBase64String(base64);
         }
         catch (FormatException)
         {
             throw new ProductException("La foto debe tener un base64 válido");
+        }
+    }
+
+    private void ValidatePhotoSize(int sizeInBytes)
+    {
+        if (sizeInBytes > MaxPhotoSizeInBytes)
+        {
+            throw new ProductException("La foto no puede superar los 500 KB");
         }
     }
 

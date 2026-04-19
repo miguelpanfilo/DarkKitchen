@@ -42,7 +42,7 @@ public class ProductPhotoServiceTest
         var exception = Assert.ThrowsException<ProductException>(() =>
             service.SavePhotos(photos));
 
-        Assert.AreEqual("La foto debe tener contenido en base64", exception.Message);
+        Assert.AreEqual("La foto debe tener un base64 válido", exception.Message);
 
         storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Never);
     }
@@ -55,7 +55,7 @@ public class ProductPhotoServiceTest
 
         var photos = new List<PhotoDTO>
         {
-            new PhotoDTO("photo1", ".jpg", 100, base64)
+            new PhotoDTO("photo1", ".jpg", 512001, base64)
         };
 
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
