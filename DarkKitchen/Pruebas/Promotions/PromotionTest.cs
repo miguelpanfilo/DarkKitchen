@@ -57,4 +57,16 @@ public class PromotionTest
 
         Assert.AreEqual("El producto ya está asociado a la promoción", ex.Message);
     }
+
+    [TestMethod]
+    public void GivenDeletedPromotion_WhenDeleting_ThenThrowsPromotionException()
+    {
+        var promotion = CreateValidPromotion();
+
+        promotion.Delete();
+
+        var ex = Assert.ThrowsException<PromotionException>(() => promotion.Delete());
+
+        Assert.AreEqual("La promoción ya está eliminada", ex.Message);
+    }
 }

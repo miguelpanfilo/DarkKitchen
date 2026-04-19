@@ -851,7 +851,7 @@ public class PromotionServiceTest
 
         var exception = Assert.ThrowsException<PromotionException>(() => service.Delete(1));
 
-        Assert.AreEqual("La promoción ya está eliminada", exception.Message);
+        Assert.AreEqual("La promoción no existe", exception.Message);
 
         promotionRepositoryMock.Verify(r => r.GetById(1), Times.Once);
         promotionRepositoryMock.Verify(r => r.Update(It.IsAny<Promotion>()), Times.Never);
@@ -892,7 +892,7 @@ public class PromotionServiceTest
             service.Update(1, patchDto)
         );
 
-        Assert.AreEqual("La promoción ya está eliminada", ex.Message);
+        Assert.AreEqual("La promoción no existe", ex.Message);
 
         promotionRepositoryMock.Verify(r => r.GetById(1), Times.Once);
         promotionRepositoryMock.Verify(r => r.Update(It.IsAny<Promotion>()), Times.Never);
