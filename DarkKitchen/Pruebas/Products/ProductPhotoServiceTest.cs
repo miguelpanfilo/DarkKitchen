@@ -27,4 +27,23 @@ public class ProductPhotoServiceTest
 
         storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Never);
     }
+
+    [TestMethod]
+    public void GivenPhotoWithEmptyBase64_WhenSavingPhotos_ThenThrowsProductException()
+    {
+        var photos = new List<PhotoDTO>
+        {
+            new PhotoDTO("photo1", ".jpg", 100, string.Empty)
+        };
+
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+        var service = new ProductPhotoService(storageMock.Object);
+
+        var exception = Assert.ThrowsException<ProductException>(() =>
+            service.SavePhotos(photos));
+
+        Assert.AreEqual("La foto debe tener contenido en base64", exception.Message);
+
+        storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Never);
+    }
 }
