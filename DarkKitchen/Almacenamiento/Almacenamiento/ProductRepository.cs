@@ -24,7 +24,12 @@ public class ProductRepository : IProductRepository
         return _context.Products.FirstOrDefault(p => p.Id == productId);
     }
 
-    public Product Update(Product product) => throw new NotImplementedException();
+    public Product Update(Product product)
+    {
+        _context.Products.Update(product);
+        _context.SaveChanges();
+        return product;
+    }
 
     public List<Product> GetAll() => throw new NotImplementedException();
 }
