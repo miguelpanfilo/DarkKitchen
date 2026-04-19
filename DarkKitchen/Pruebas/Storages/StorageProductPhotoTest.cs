@@ -28,4 +28,27 @@ public class StorageProductPhotoTest
             Directory.Delete(tempDir, true);
         }
     }
+
+    [TestMethod]
+    public void GivenExistingFile_WhenDeleting_ThenRemovesFile()
+    {
+        var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        Directory.CreateDirectory(tempDir);
+
+        try
+        {
+            var filePath = Path.Combine(tempDir, "foto.jpg");
+            File.WriteAllBytes(filePath, new byte[] { 1, 2, 3 });
+
+            var storage = new ProductPhotoStorage(tempDir);
+
+            storage.Delete(filePath);
+
+            Assert.IsFalse(File.Exists(filePath));
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
+    }
 }
