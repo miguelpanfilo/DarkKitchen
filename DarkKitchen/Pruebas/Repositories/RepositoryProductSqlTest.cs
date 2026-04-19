@@ -64,4 +64,32 @@ public class RepositoryProductSqlTest
         Assert.IsTrue(storedProduct.IsActive);
         Assert.IsFalse(storedProduct.IsDeleted);
     }
+
+    [TestMethod]
+    public void GivenExistingProduct_WhenGettingById_ThenReturnsProduct()
+    {
+        using var context = SqliteTestContextFactory.CreateContext(out var connection);
+        using var _ = connection;
+
+        var repository = new ProductRepository(context);
+
+        var product = Product.MakeProduct(
+            "COD123",
+            "Nombre válido producto",
+            "Descripción válida con más de veinte caracteres",
+            "Línea",
+            "Categoría",
+            100,
+            new List<ProductPhoto> { new ProductPhoto("photo-1.jpg") }
+        );
+
+        context.Products.Add(product);
+        context.SaveChanges();
+
+        var result = repository.GetById(product.Id);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(product.Id, result.Id);
+        Assert.AreEqual("COD123", result.Code);
+    }
 }
