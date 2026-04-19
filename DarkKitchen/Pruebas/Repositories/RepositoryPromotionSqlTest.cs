@@ -92,4 +92,40 @@ public class RepositoryPromotionSqlTest
 
         Assert.IsNull(result);
     }
+
+    [TestMethod]
+    public void GivenExistingPromotion_WhenUpdating_ThenStoredPromotionIsUpdated()
+    {
+        using var context = SqliteTestContextFactory.CreateContext(out var connection);
+        using var _ = connection;
+
+        var repository = new PromotionRepository(context);
+
+        var promotion = Promotion.MakePromotion(
+            "Black Friday",
+            20,
+            new DateOnly(2026, 11, 1),
+            new DateOnly(2026, 11, 30)
+        );
+
+        context.Promotions.Add(promotion);
+        context.SaveChanges();
+
+        promotion.UpdateName("Cyber Monday");
+        promotion.UpdateDiscountPercentage(30);
+        promotion.UpdateDates(
+            new DateOnly(2026, 11, 10),
+            new DateOnly(2026, 11, 20)
+        );
+
+        var result = repository.Update(promotion);
+        var storedPromotion = context.Promotions.FirstOrDefault(p => p.Id == promotion.Id);
+
+        Assert.IsNotNull(result);
+        Assert.IsNotNull(storedPromotion);
+        Assert.AreEqual("Cyber Monday", storedPromotion.Name);
+        Assert.AreEqual(30, storedPromotion.DiscountPercentage);
+        Assert.AreEqual(new DateOnly(2026, 11, 10), storedPromotion.StartDate);
+        Assert.AreEqual(new DateOnly(2026, 11, 20), storedPromotion.EndDate);
+    }
 }
