@@ -1,4 +1,5 @@
 using Contratos;
+using Contratos.Users;
 using DarkKitchen.Filters;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using Microsoft.AspNetCore.Http;

@@ -1,9 +1,11 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
+using Contratos.Promotions;
 using Dominio;
 using Dominio.Builders;
 using Dominio.Exceptions;
 using LogicaDeNegocio;
+using LogicaDeNegocio.Promotions;
 using Moq;
 
 namespace Pruebas.Promotions;

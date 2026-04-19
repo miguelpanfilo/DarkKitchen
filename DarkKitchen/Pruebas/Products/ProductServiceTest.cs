@@ -1,9 +1,11 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
+using Contratos.Products;
 using Dominio;
 using Dominio.Builders;
 using Dominio.Exceptions;
 using LogicaDeNegocio;
+using LogicaDeNegocio.Products;
 using Mapeo;
 using Moq;
 

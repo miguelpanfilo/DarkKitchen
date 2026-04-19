@@ -1,6 +1,7 @@
 using AlmacenamientoAbstracciones;
 using Dominio;
 using LogicaDeNegocio;
+using LogicaDeNegocio.Initialization;
 using Moq;
 
 namespace Pruebas.InicioSesion;

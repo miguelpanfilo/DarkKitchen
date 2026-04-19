@@ -1,4 +1,5 @@
 using Contratos;
+using Contratos.Users;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;

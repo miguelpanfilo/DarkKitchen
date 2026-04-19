@@ -1,9 +1,15 @@
 using Almacenamiento;
+using Almacenamiento.Repositories;
 using AlmacenamientoAbstracciones;
 using DarkKitchen.Filters;
 using FactoryService;
 using LogicaDeNegocio;
+using LogicaDeNegocio.Orders;
+using LogicaDeNegocio.Products;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Orders;
+using LogicaDeNegocioAbstracciones.Products;
+using LogicaDeNegocioAbstracciones.Users;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

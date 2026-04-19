@@ -1,4 +1,5 @@
 using Almacenamiento;
+using Almacenamiento.Repositories;
 using Dominio;
 using FluentAssertions;
 

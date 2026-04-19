@@ -1,4 +1,5 @@
 using Contratos;
+using Contratos.Promotions;
 using Dominio;
 
 namespace Mapeo;

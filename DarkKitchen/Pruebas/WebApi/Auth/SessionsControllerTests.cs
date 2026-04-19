@@ -1,10 +1,13 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
+using Contratos.Users;
 using DarkKitchen.Controllers;
 using Dominio;
 using LogicaDeNegocio;
+using LogicaDeNegocio.Users;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
+using LogicaDeNegocioAbstracciones.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -136,7 +139,7 @@ public class SessionsControllerTests
     {
         var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
-        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+        var watchMock = new Mock<IWatch>(MockBehavior.Strict);
 
         repoUserMock
             .Setup(r => r.FindByEmail("miguel@gmail.com"))
@@ -167,7 +170,7 @@ public class SessionsControllerTests
     {
         var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
-        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+        var watchMock = new Mock<IWatch>(MockBehavior.Strict);
 
         var user = CreateValidUser("miguel@gmail.com", "Password@2Ok6Abc");
         user.Id = 1;
@@ -201,7 +204,7 @@ public class SessionsControllerTests
     {
         var repoUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         var repoSessionMock = new Mock<IRepositorySession>(MockBehavior.Strict);
-        var watchMock = new Mock<IReloj>(MockBehavior.Strict);
+        var watchMock = new Mock<IWatch>(MockBehavior.Strict);
 
         var fixedNow = new DateTime(2026, 1, 1, 10, 0, 0);
 

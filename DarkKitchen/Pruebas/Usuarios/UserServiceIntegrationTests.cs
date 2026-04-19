@@ -1,6 +1,9 @@
 using Contratos;
+using Contratos.Users;
 using LogicaDeNegocio;
+using LogicaDeNegocio.Users;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Users;
 using Moq;
 
 namespace Pruebas.Usuarios;
