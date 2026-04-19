@@ -15,6 +15,7 @@ public static class OrderMapper
             DeliveryType = order.DeliveryType.ToString(),
             Address = order.Address.ToAddressResponse(),
             Items = order.Items.Select(i => i.ToOrderItemResponse()).ToList(),
+            ItemsCount = order.Items.Count,
             Status = order.Status.ToString(),
             CreatedAt = order.CreatedAt,
             StatusUpdatedAt = order.StatusUpdatedAt,

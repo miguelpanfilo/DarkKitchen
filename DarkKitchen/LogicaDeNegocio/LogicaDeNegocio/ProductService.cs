@@ -2,11 +2,12 @@ using AlmacenamientoAbstracciones;
 using Contratos;
 using Dominio;
 using Dominio.Exceptions;
+using LogicaDeNegocioAbstracciones;
 using Mapeo;
 
 namespace LogicaDeNegocio;
 
-public class ProductService
+public class ProductService : IProductService
 {
     private readonly IProductRepository _repository;
     private readonly ProductPhotoService _productPhotoService;
@@ -147,7 +148,7 @@ public class ProductService
 
     private Product GetExistingProduct(int productId)
     {
-        var product = _repository.FindById(productId);
+        var product = _repository.GetById(productId);
 
         if (product == null)
         {

@@ -1,8 +1,8 @@
-using Dominio;
+using Contratos;
 
 namespace LogicaDeNegocioAbstracciones;
 
 public interface IProductService
 {
-    Product GetById(int id);
+    ProductResponseDto GetById(int id);
 }
