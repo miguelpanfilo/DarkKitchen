@@ -667,4 +667,43 @@ public class UserServiceTests
 
         Assert.AreEqual("user", ex.ParamName);
     }
+
+    [TestMethod]
+    public void CreateUser_WhenUserIsCreated_StatusIsActive()
+    {
+        var phone = CreateValidPhone("099123456");
+
+        var result = User.MakeClient(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            phone,
+            "Password@2Ok6Abc");
+
+        Assert.IsTrue(result.Success);
+        Assert.IsNotNull(result.Value);
+        Assert.AreEqual(UserStatus.Active, result.Value!.Status);
+    }
+
+    [TestMethod]
+    public void DeactivateUser_WhenCalled_StatusChangesToInactive()
+    {
+        var phone = CreateValidPhone("099123456");
+
+        var result = User.MakeClient(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            phone,
+            "Password@2Ok6Abc");
+
+        Assert.IsTrue(result.Success);
+        Assert.IsNotNull(result.Value);
+
+        var user = result.Value!;
+
+        user.Deactivate();
+
+        Assert.AreEqual(UserStatus.Inactive, user.Status);
+    }
 }

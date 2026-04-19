@@ -18,6 +18,7 @@ public class RepositoryUser(SqlContext context) : IRepositoryUser
     {
         return _context.Users
             .AsNoTracking()
+            .Where(u => u.Status == UserStatus.Active)
             .ToList();
     }
 
@@ -50,13 +51,17 @@ public class RepositoryUser(SqlContext context) : IRepositoryUser
 
         return _context.Users
             .AsNoTracking()
-            .SingleOrDefault(u => u.Email.Value == searchingEmail.Value);
+            .SingleOrDefault(u =>
+                u.Email.Value == searchingEmail.Value &&
+                u.Status == UserStatus.Active);
     }
 
     public User? FindById(int id)
     {
         return _context.Users
-            .SingleOrDefault(u => u.Id == id);
+            .SingleOrDefault(u =>
+                u.Id == id &&
+                u.Status == UserStatus.Active);
     }
 
     public void Remove(int id)
@@ -65,7 +70,7 @@ public class RepositoryUser(SqlContext context) : IRepositoryUser
 
         if(user != null)
         {
-            _context.Users.Remove(user);
+            user.Deactivate();
             _context.SaveChanges();
         }
     }

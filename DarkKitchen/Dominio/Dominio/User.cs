@@ -9,6 +9,7 @@ public class User
     public Phone Phone { get; private set; }
     public Password Password { get; private set; }
     public UserRoles Role { get; private set; }
+    public UserStatus Status { get; private set; }
     private User()
     {
         Email = null!;
@@ -109,6 +110,12 @@ public class User
         Phone = phone;
         Password = password;
         Role = role;
+        Status = UserStatus.Active;
+    }
+
+    public void Deactivate()
+    {
+        Status = UserStatus.Inactive;
     }
 
     private static Result<bool> ValidateName(string name)
