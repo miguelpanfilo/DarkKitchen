@@ -146,4 +146,40 @@ public class RepositoryProductSqlTest
         Assert.AreEqual("Nueva categoría", storedProduct.Category);
         Assert.AreEqual(200, storedProduct.Price);
     }
+
+    [TestMethod]
+    public void GivenExistingProducts_WhenGettingAll_ThenReturnsAllProducts()
+    {
+        using var context = SqliteTestContextFactory.CreateContext(out var connection);
+        using var _ = connection;
+
+        var repository = new ProductRepository(context);
+
+        var p1 = Product.MakeProduct(
+            "COD123",
+            "Nombre válido producto 1",
+            "Descripción válida con más de veinte caracteres 1",
+            "Línea 1",
+            "Categoría 1",
+            100,
+            new List<ProductPhoto> { new ProductPhoto("photo-1.jpg") }
+        );
+
+        var p2 = Product.MakeProduct(
+            "COD456",
+            "Nombre válido producto 2",
+            "Descripción válida con más de veinte caracteres 2",
+            "Línea 2",
+            "Categoría 2",
+            200,
+            new List<ProductPhoto> { new ProductPhoto("photo-2.jpg") }
+        );
+
+        context.Products.AddRange(p1, p2);
+        context.SaveChanges();
+
+        var result = repository.GetAll();
+
+        Assert.AreEqual(2, result.Count);
+    }
 }
