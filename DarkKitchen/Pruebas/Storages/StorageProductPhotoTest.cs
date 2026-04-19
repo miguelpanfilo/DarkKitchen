@@ -1,5 +1,5 @@
 using Almacenamiento;
-using Contratos;
+using Contratos.Products;
 
 namespace Pruebas.Storages;
 

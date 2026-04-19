@@ -1,7 +1,7 @@
 using AlmacenamientoAbstracciones;
-using Contratos;
+using Contratos.Products;
 using Dominio.Exceptions;
-using LogicaDeNegocio;
+using LogicaDeNegocio.Products;
 using Moq;
 
 namespace Pruebas.Products;
