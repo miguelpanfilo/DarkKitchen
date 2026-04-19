@@ -133,14 +133,23 @@ public class ProductPhotoService
             throw new ProductException("La foto debe tener un base64 válido");
         }
 
-        ValidatePhotoSize(photoDto.SizeInBytes);
+        ValidatePhotoSizeFromBase64(photoDto.Base64);
     }
 
-    private void ValidatePhotoSize(long sizeInBytes)
+    private void ValidatePhotoSizeFromBase64(string base64)
     {
-        if (sizeInBytes > MaxPhotoSizeInBytes)
+        try
         {
-            throw new ProductException("La foto no puede superar los 500 KB");
+            var bytes = Convert.FromBase64String(base64);
+
+            if (bytes.Length > MaxPhotoSizeInBytes)
+            {
+                throw new ProductException("La foto no puede superar los 500 KB");
+            }
+        }
+        catch (FormatException)
+        {
+            throw new ProductException("La foto debe tener un base64 válido");
         }
     }
 
