@@ -28,4 +28,30 @@ public class RepositoryPromotionSqlTest
         Assert.AreNotEqual(0, result.Id);
         Assert.IsNotNull(context.Promotions.FirstOrDefault(p => p.Id == result.Id));
     }
+
+    [TestMethod]
+    public void GivenValidPromotion_WhenCreating_ThenStoredPromotionHasCorrectData()
+    {
+        using var context = SqliteTestContextFactory.CreateContext(out var connection);
+        using var _ = connection;
+
+        var repository = new PromotionRepository(context);
+
+        var promotion = Promotion.MakePromotion(
+            "Cyber Monday",
+            30,
+            new DateOnly(2026, 11, 10),
+            new DateOnly(2026, 11, 20)
+        );
+
+        var result = repository.Create(promotion);
+
+        var stored = context.Promotions.FirstOrDefault(p => p.Id == result.Id);
+
+        Assert.IsNotNull(stored);
+        Assert.AreEqual("Cyber Monday", stored.Name);
+        Assert.AreEqual(30, stored.DiscountPercentage);
+        Assert.AreEqual(new DateOnly(2026, 11, 10), stored.StartDate);
+        Assert.AreEqual(new DateOnly(2026, 11, 20), stored.EndDate);
+    }
 }
