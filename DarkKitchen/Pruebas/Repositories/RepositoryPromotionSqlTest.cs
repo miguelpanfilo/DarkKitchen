@@ -1,5 +1,6 @@
 using Almacenamiento;
 using Dominio;
+using Microsoft.EntityFrameworkCore;
 using Pruebas.Persistence;
 
 namespace Pruebas.Repositories;
@@ -7,6 +8,19 @@ namespace Pruebas.Repositories;
 [TestClass]
 public class RepositoryPromotionSqlTest
 {
+    private Product CreateValidProduct()
+    {
+        return Product.MakeProduct(
+            "COD123",
+            "Nombre válido",
+            "Descripción válida con más de veinte caracteres",
+            "Línea comercial",
+            "Categoría",
+            100,
+            new List<ProductPhoto> { new ProductPhoto("photo-1.jpg") }
+        );
+    }
+
     [TestMethod]
     public void GivenValidPromotion_WhenCreating_ThenPromotionIsStored()
     {
@@ -146,5 +160,38 @@ public class RepositoryPromotionSqlTest
         var result = repository.GetAll();
 
         Assert.AreEqual(2, result.Count);
+    }
+
+    [TestMethod]
+    public void GivenPromotionAndProduct_WhenUpdatingWithAssociatedProduct_ThenRelationIsStored()
+    {
+        using var context = SqliteTestContextFactory.CreateContext(out var connection);
+        using var _ = connection;
+
+        var repository = new PromotionRepository(context);
+
+        var product = CreateValidProduct();
+        context.Products.Add(product);
+
+        var promotion = Promotion.MakePromotion(
+            "Black Friday",
+            20,
+            new DateOnly(2026, 11, 1),
+            new DateOnly(2026, 11, 30)
+        );
+
+        context.Promotions.Add(promotion);
+        context.SaveChanges();
+
+        promotion.AssociateProduct(product.Id);
+
+        repository.Update(promotion);
+
+        var storedPromotion = context.Promotions
+            .Include(p => p.PromotionProducts)
+            .FirstOrDefault(p => p.Id == promotion.Id);
+
+        Assert.IsNotNull(storedPromotion);
+        Assert.IsTrue(storedPromotion.PromotionProducts.Any(pp => pp.ProductId == product.Id));
     }
 }
