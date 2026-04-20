@@ -1,9 +1,8 @@
-using Almacenamiento;
 using Almacenamiento.Repositories;
 using Dominio;
 using FluentAssertions;
 
-namespace Pruebas;
+namespace Pruebas.Repositories;
 
 [TestClass]
 public sealed class OrderRepositoryTests

@@ -1,11 +1,8 @@
 using System.Security.Claims;
-using Contratos;
 using Contratos.Users;
 using DarkKitchen.Controllers;
 using DarkKitchen.Filters;
-using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Users;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -13,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Moq;
 using RouteData = Microsoft.AspNetCore.Routing.RouteData;
 
-namespace Pruebas.SignUp;
+namespace Pruebas.WebApi;
 
 [TestClass]
 public class UsersControllerTests
