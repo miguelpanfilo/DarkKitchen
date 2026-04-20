@@ -6,13 +6,13 @@ namespace Mapeo;
 
 public class PromotionMapper
 {
-    public static Promotion ToEntity(PromotionDto dto)
+    public static Promotion ToEntity(PromotionRequestDto requestDto)
     {
         return Promotion.MakePromotion(
-            dto.Name,
-            dto.DiscountPercentage,
-            dto.StartDate,
-            dto.EndDate
+            requestDto.Name,
+            requestDto.DiscountPercentage,
+            requestDto.StartDate,
+            requestDto.EndDate
         );
     }
 

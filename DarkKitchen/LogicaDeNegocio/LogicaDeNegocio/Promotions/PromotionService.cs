@@ -2,11 +2,12 @@ using AlmacenamientoAbstracciones;
 using Contratos.Promotions;
 using Dominio;
 using Dominio.Exceptions;
+using LogicaDeNegocioAbstracciones.Promotions;
 using Mapeo;
 
 namespace LogicaDeNegocio.Promotions;
 
-public class PromotionService
+public class PromotionService : IPromotionService
 {
     private readonly IPromotionRepository _promotionRepository;
     private readonly IProductRepository _productRepository;
@@ -17,9 +18,9 @@ public class PromotionService
         _productRepository = productRepository;
     }
 
-    public PromotionResponseDto Create(PromotionDto promotionDto)
+    public PromotionResponseDto Create(PromotionRequestDto promotionRequestDto)
     {
-        var promotion = PromotionMapper.ToEntity(promotionDto);
+        var promotion = PromotionMapper.ToEntity(promotionRequestDto);
         var createdPromotion = _promotionRepository.Create(promotion);
 
         return PromotionMapper.ToResponseDto(createdPromotion);

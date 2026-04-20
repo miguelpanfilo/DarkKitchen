@@ -1,6 +1,8 @@
+using Contratos.Promotions;
+
 namespace LogicaDeNegocioAbstracciones.Promotions;
 
-public class IPromotionService
+public interface IPromotionService
 {
-    
+    PromotionResponseDto Create(PromotionRequestDto request);
 }

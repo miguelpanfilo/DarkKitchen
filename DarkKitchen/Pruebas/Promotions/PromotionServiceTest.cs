@@ -29,7 +29,7 @@ public class PromotionServiceTest
     [TestMethod]
     public void GivenValidPromotionDto_WhenCreating_ThenRepositoryIsCalledAndPromotionIsReturned()
     {
-        var promotionDto = new PromotionDto(
+        var promotionDto = new PromotionRequestDto(
             "Black Friday",
             10,
             new DateOnly(2026, 1, 25),
@@ -61,7 +61,7 @@ public class PromotionServiceTest
     [DataRow(" ")]
     public void GivenPromotionDtoWithInvalidName_WhenCreating_ThenThrowsPromotionException(string invalidName)
     {
-        var promotionDto = new PromotionDto(
+        var promotionDto = new PromotionRequestDto(
             invalidName,
             10,
             new DateOnly(2026, 1, 25),
@@ -85,7 +85,7 @@ public class PromotionServiceTest
     public void GivenPromotionDtoWithInvalidDiscountPercentage_WhenCreating_ThenThrowsPromotionException(
         int invalidDiscount)
     {
-        var promotionDto = new PromotionDto(
+        var promotionDto = new PromotionRequestDto(
             "Black Friday",
             (decimal)invalidDiscount,
             new DateOnly(2026, 1, 25),
@@ -112,7 +112,7 @@ public class PromotionServiceTest
         int endMonth,
         int endDay)
     {
-        var promotionDto = new PromotionDto(
+        var promotionDto = new PromotionRequestDto(
             "Black Friday",
             10,
             new DateOnly(startYear, startMonth, startDay),
