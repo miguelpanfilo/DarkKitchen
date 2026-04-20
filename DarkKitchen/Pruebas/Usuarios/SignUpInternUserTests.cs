@@ -154,7 +154,7 @@ public class SignUpInternUserTests
             Role = "AdmiNistrAtIve"
         };
 
-        var ex = Assert.ThrowsException<ConflictException>(() =>
+        var ex = Assert.ThrowsException<IConflictException>(() =>
             _service.MakeInterUser(1, request));
 
         Assert.AreEqual("Email ya registrado", ex.Message);

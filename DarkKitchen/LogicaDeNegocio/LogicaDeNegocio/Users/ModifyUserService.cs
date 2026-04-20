@@ -107,7 +107,7 @@ public class ModifyUserService(
         if(!string.Equals(updatedMail, user.Email.ToString(), StringComparison.OrdinalIgnoreCase) &&
             _repo.EmailExist(updatedMail))
         {
-            throw new ConflictException("El email ya está registrado");
+            throw new IConflictException("El email ya está registrado");
         }
     }
 

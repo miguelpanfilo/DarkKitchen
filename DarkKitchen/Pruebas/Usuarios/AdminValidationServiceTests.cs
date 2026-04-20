@@ -139,7 +139,7 @@ public class AdminValidationServiceTests
     [TestMethod]
     public void EnsureIsNotSelfAction_SameUser_ThrowsException()
     {
-        var ex = ThrowsException<ConflictException>(() =>
+        var ex = ThrowsException<IConflictException>(() =>
             _service.EnsureIsNotSelfAction(5, 5, "A user cannot modify itself"));
 
         AreEqual("A user cannot modify itself", ex.Message);

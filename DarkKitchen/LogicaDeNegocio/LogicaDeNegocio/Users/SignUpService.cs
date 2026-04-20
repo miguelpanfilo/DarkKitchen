@@ -21,7 +21,7 @@ public class SignUpService(
     {
         if(_repositoryUser.EmailExist(requestDto.Email))
         {
-            throw new ConflictException("Email ya registrado");
+            throw new IConflictException("Email ya registrado");
         }
 
         var phone = MakeAndValidatePhone(requestDto.Phone);
@@ -64,7 +64,7 @@ public class SignUpService(
 
         if(_repositoryUser.EmailExist(requestDto.Email))
         {
-            throw new ConflictException("Email ya registrado");
+            throw new IConflictException("Email ya registrado");
         }
 
         var newUser = _repositoryUser.Add(userResult.Value!);

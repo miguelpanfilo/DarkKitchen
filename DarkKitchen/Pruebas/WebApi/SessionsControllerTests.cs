@@ -1,18 +1,15 @@
 using AlmacenamientoAbstracciones;
-using Contratos;
 using Contratos.Users;
 using DarkKitchen.Controllers;
 using Dominio;
-using LogicaDeNegocio;
 using LogicaDeNegocio.Users;
-using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace Pruebas.WebApi.Auth;
+namespace Pruebas.WebApi;
 
 [TestClass]
 public class SessionsControllerTests

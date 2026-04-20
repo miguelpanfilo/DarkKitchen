@@ -1,15 +1,13 @@
-using Contratos;
 using Contratos.Users;
 using DarkKitchen.Controllers;
 using DarkKitchen.Filters;
-using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace Pruebas.SignUp;
+namespace Pruebas.WebApi;
 
 [TestClass]
 public class ClientsControllerTests
@@ -71,11 +69,11 @@ public class ClientsControllerTests
 
         signUpServiceMock
             .Setup(s => s.SignUpClient(request))
-            .Throws(new ConflictException("Email is already registered"));
+            .Throws(new IConflictException("Email is already registered"));
 
         var controller = new ClientsController(signUpServiceMock.Object);
 
-        var ex = Assert.ThrowsException<ConflictException>(() =>
+        var ex = Assert.ThrowsException<IConflictException>(() =>
             controller.CreateClient(request));
 
         Assert.AreEqual("Email is already registered", ex.Message);

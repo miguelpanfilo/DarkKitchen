@@ -40,7 +40,7 @@ public class ExceptionFilter : Attribute, IExceptionFilter
             statusCode = StatusCodes.Status404NotFound;
             message = NotFoundErrorMessage;
         }
-        else if(context.Exception is ConflictException)
+        else if(context.Exception is IConflictException)
         {
             statusCode = StatusCodes.Status409Conflict;
             message = ConflictErrorMessage;

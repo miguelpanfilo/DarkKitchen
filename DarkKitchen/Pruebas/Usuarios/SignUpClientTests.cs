@@ -91,7 +91,7 @@ public class UserServiceTests
 
         var request = CreateValidSignUpRequest();
 
-        var ex = Assert.ThrowsException<ConflictException>(() =>
+        var ex = Assert.ThrowsException<IConflictException>(() =>
             _service.SignUpClient(request));
 
         Assert.AreEqual("Email ya registrado", ex.Message);
