@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 
 namespace Pruebas.WebApi;
-
+[TestClass]
 public class DeletePromotionsControllerTest
 {
     private Mock<IPromotionService> _promotionServiceMock = null!;

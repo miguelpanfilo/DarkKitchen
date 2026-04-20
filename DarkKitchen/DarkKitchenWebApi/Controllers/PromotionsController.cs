@@ -30,4 +30,11 @@ public class PromotionsController(IPromotionService promotionService) : Controll
         var response = _promotionService.Update(id, request);
         return Ok(response);
     }
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete([FromRoute] int id)
+    {
+        _promotionService.Delete(id);
+        return NoContent();
+    }
 }
