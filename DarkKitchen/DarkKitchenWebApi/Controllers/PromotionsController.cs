@@ -32,6 +32,7 @@ public class PromotionsController(IPromotionService promotionService) : Controll
     }
 
     [HttpDelete("{id}")]
+    [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult Delete([FromRoute] int id)
     {
         _promotionService.Delete(id);
