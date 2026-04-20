@@ -1,16 +1,40 @@
 using AlmacenamientoAbstracciones;
 using Dominio;
+using Microsoft.EntityFrameworkCore;
 
 namespace Almacenamiento.Repositories;
 
 public class ProductRepository : IProductRepository
 {
-    public Product Create(Product product) => throw new NotImplementedException();
-    public Product GetById(int productId) => throw new NotImplementedException();
+    private readonly SqlContext _context;
 
-    public Product Update(Product product) => throw new NotImplementedException();
+    public ProductRepository(SqlContext context)
+    {
+        _context = context;
+    }
 
-    public List<Product> GetAll() => throw new NotImplementedException();
+    public Product Create(Product product)
+    {
+        _context.Products.Add(product);
+        _context.SaveChanges();
+        return product;
+    }
 
-    public void Delete(int productId) => throw new NotImplementedException();
+    public Product? GetById(int productId)
+    {
+        return _context.Products.Include(p => p.Photos)
+            .FirstOrDefault(p => p.Id == productId);
+    }
+
+    public Product Update(Product product)
+    {
+        _context.Products.Update(product);
+        _context.SaveChanges();
+        return product;
+    }
+
+    public List<Product> GetAll()
+    {
+        return _context.Products.Include(p => p.Photos).ToList();
+    }
 }

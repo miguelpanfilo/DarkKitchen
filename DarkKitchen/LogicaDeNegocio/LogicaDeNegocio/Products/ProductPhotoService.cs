@@ -21,7 +21,7 @@ public class ProductPhotoService
     public List<ProductPhoto> SavePhotos(List<PhotoDTO> photos)
     {
         ValidatePhotosCollection(photos);
-        ValidateFormatPhotos(photos);
+        ValidatePhotos(photos);
 
         var savedPhotos = new List<ProductPhoto>();
 
@@ -44,7 +44,20 @@ public class ProductPhotoService
             finalPhotos.Add(ResolvePhoto(product, requestedPhoto));
         }
 
+        var removedPhotos = GetRemovedPhotos(product, finalPhotos);
+
+        DeletePhotos(removedPhotos);
+
         return finalPhotos;
+    }
+
+    private List<ProductPhoto> GetRemovedPhotos(Product product, List<ProductPhoto> finalPhotos)
+    {
+        var finalPaths = finalPhotos.Select(photo => photo.Path).ToHashSet();
+
+        return product.Photos
+            .Where(photo => !finalPaths.Contains(photo.Path))
+            .ToList();
     }
 
     public void DeletePhotos(List<ProductPhoto> photos)
@@ -71,7 +84,7 @@ public class ProductPhotoService
             requestedPhoto.Base64!
         );
 
-        ValidateFormatPhoto(photoDto);
+        ValidatePhoto(photoDto);
 
         return SavePhoto(photoDto);
     }
@@ -102,27 +115,60 @@ public class ProductPhotoService
         }
     }
 
-    private void ValidateFormatPhotos(List<PhotoDTO> photos)
+    private void ValidatePhotos(List<PhotoDTO> photos)
     {
         foreach (var photo in photos)
         {
-            ValidateFormatPhoto(photo);
+            ValidatePhoto(photo);
         }
     }
 
-    private void ValidateFormatPhoto(PhotoDTO photoDto)
+    private void ValidatePhoto(PhotoDTO photoDto)
     {
-        var ext = photoDto.Extension.Trim().ToLower().Replace(".", string.Empty);
-
-        if (ext != "jpg")
-        {
-            throw new ProductException("Las fotos deben estar en formato JPG");
-        }
+        ValidateBase64Content(photoDto.Base64);
+        ValidateJpgExtension(photoDto.Extension);
 
         ValidatePhotoSize(photoDto.SizeInBytes);
     }
 
-    private void ValidatePhotoSize(long sizeInBytes)
+    private static void ValidateBase64Content(string base64)
+    {
+        if (string.IsNullOrWhiteSpace(base64))
+        {
+            throw new ProductException("La foto debe tener un base64 válido");
+        }
+
+        DecodeBase64(base64);
+    }
+
+    private static void ValidateJpgExtension(string extension)
+    {
+        if (string.IsNullOrWhiteSpace(extension))
+        {
+            throw new ProductException("Las fotos deben estar en formato JPG");
+        }
+
+        var normalizedExtension = extension.Trim().ToLower().Replace(".", string.Empty);
+
+        if (normalizedExtension != "jpg")
+        {
+            throw new ProductException("Las fotos deben estar en formato JPG");
+        }
+    }
+
+    private static byte[] DecodeBase64(string base64)
+    {
+        try
+        {
+            return Convert.FromBase64String(base64);
+        }
+        catch (FormatException)
+        {
+            throw new ProductException("La foto debe tener un base64 válido");
+        }
+    }
+
+    private void ValidatePhotoSize(int sizeInBytes)
     {
         if (sizeInBytes > MaxPhotoSizeInBytes)
         {
