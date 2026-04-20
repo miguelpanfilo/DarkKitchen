@@ -55,4 +55,19 @@ public class DeletePromotionsControllerTest
 
         _promotionServiceMock.Verify(x => x.Delete(1), Times.Once);
     }
+
+    [TestMethod]
+    public void Delete_HasHttpDeleteAttributeWithIdTemplate()
+    {
+        var method = typeof(PromotionsController).GetMethod(nameof(PromotionsController.Delete));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(HttpDeleteAttribute), false)
+            .Cast<HttpDeleteAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
+        Assert.AreEqual("{id}", attribute.Template);
+    }
 }
