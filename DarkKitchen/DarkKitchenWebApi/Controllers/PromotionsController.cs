@@ -22,4 +22,12 @@ public class PromotionsController(IPromotionService promotionService) : Controll
         var response = _promotionService.Create(request);
         return Created(string.Empty, response);
     }
+
+    [HttpPatch("{id}")]
+    [RoleAuthorization(UserRolesDto.Administrative)]
+    public IActionResult Update([FromRoute] int id, [FromBody] PromotionPatchDto request)
+    {
+        var response = _promotionService.Update(id, request);
+        return Ok(response);
+    }
 }
