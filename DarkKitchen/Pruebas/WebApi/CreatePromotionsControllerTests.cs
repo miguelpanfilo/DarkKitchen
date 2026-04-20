@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Contratos.Promotions;
 using Contratos.Users;
 using DarkKitchen.Controllers;
@@ -80,7 +79,7 @@ public class CreatePromotionsControllerTests
     [TestMethod]
     public void Create_HasHttpPostAttribute()
     {
-        var method = typeof(PromotionsController).GetMethod(nameof(PromotionsController.Create));
+        var method = typeof(DarkKitchen.Controllers.PromotionsController).GetMethod(nameof(DarkKitchen.Controllers.PromotionsController.Create));
 
         Assert.IsNotNull(method);
 
@@ -94,7 +93,7 @@ public class CreatePromotionsControllerTests
     [TestMethod]
     public void Create_HasRoleAuthorizationAttribute()
     {
-        var method = typeof(PromotionsController).GetMethod(nameof(PromotionsController.Create));
+        var method = typeof(DarkKitchen.Controllers.PromotionsController).GetMethod(nameof(DarkKitchen.Controllers.PromotionsController.Create));
 
         Assert.IsNotNull(method);
 
