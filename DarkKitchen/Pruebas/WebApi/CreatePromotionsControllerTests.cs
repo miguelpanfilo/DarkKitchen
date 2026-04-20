@@ -75,4 +75,18 @@ public class CreatePromotionsControllerTests
 
         _promotionServiceMock.Verify(x => x.Create(request), Times.Once);
     }
+
+    [TestMethod]
+    public void Create_HasHttpPostAttribute()
+    {
+        var method = typeof(PromotionsController).GetMethod(nameof(PromotionsController.Create));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(HttpPostAttribute), false)
+            .Cast<HttpPostAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
+    }
 }
