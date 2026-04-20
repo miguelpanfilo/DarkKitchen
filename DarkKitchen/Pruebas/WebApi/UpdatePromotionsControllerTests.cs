@@ -75,4 +75,19 @@ public class UpdatePromotionsControllerTests
 
         _promotionServiceMock.Verify(x => x.Update(1, request), Times.Once);
     }
+
+    [TestMethod]
+    public void Update_HasHttpPatchAttributeWithIdTemplate()
+    {
+        var method = typeof(PromotionsController).GetMethod(nameof(PromotionsController.Update));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(HttpPatchAttribute), false)
+            .Cast<HttpPatchAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
+        Assert.AreEqual("{id}", attribute.Template);
+    }
 }
