@@ -38,4 +38,11 @@ public class PromotionsController(IPromotionService promotionService) : Controll
         _promotionService.Delete(id);
         return NoContent();
     }
+
+    [HttpPost("{promotionId}/products/{productId}")]
+    public IActionResult AssociateProduct([FromRoute] int promotionId, [FromRoute] int productId)
+    {
+        var response = _promotionService.AssociateProduct(promotionId, productId);
+        return Ok(response);
+    }
 }

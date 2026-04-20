@@ -1,3 +1,4 @@
+using Contratos.Promotions;
 using Contratos.Users;
 using DarkKitchen.Controllers;
 using LogicaDeNegocioAbstracciones.Promotions;
@@ -37,17 +38,27 @@ public class AssociateDisassociatePromotionsControllerTests
     }
 
     [TestMethod]
-    public void AssociateProduct_WhenAdmin_ShouldReturn204()
+    public void AssociateProduct_WhenAdmin_ShouldReturn200()
     {
+        var response = new PromotionResponseDto(
+            1,
+            "Black Friday",
+            20,
+            new DateOnly(2026, 11, 1),
+            new DateOnly(2026, 11, 30)
+        );
+
         _promotionServiceMock
-            .Setup(x => x.AssociateProduct(1, 5));
+            .Setup(x => x.AssociateProduct(1, 5))
+            .Returns(response);
 
         SetCurrentUser(MakeAdmin());
 
-        var result = _controller.AssociateProduct(1, 5) as NoContentResult;
+        var result = _controller.AssociateProduct(1, 5) as OkObjectResult;
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(StatusCodes.Status204NoContent, result.StatusCode);
+        Assert.AreEqual(StatusCodes.Status200OK, result.StatusCode);
+        Assert.AreEqual(response, result.Value);
 
         _promotionServiceMock.Verify(x => x.AssociateProduct(1, 5), Times.Once);
     }
