@@ -113,11 +113,11 @@ public class ModifyInternUserTest
 
         _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(5, 5, It.IsAny<string>()))
-            .Throws(new IConflictException("A user cannot modify itself"));
+            .Throws(new ConflictException("A user cannot modify itself"));
 
         var request = new ModifyUserRequestDTO { Name = "Carlos" };
 
-        var ex = Assert.ThrowsException<IConflictException>(() =>
+        var ex = Assert.ThrowsException<ConflictException>(() =>
             _service.UpdateInternalUser(5, 5, request));
 
         Assert.AreEqual("A user cannot modify itself", ex.Message);
@@ -532,7 +532,7 @@ public class ModifyInternUserTest
 
         var request = new ModifyUserRequestDTO { Email = "repetido@gmail.com" };
 
-        var ex = Assert.ThrowsException<IConflictException>(() =>
+        var ex = Assert.ThrowsException<ConflictException>(() =>
             _service.UpdateInternalUser(5, 99, request));
 
         Assert.AreEqual("El email ya está registrado", ex.Message);
@@ -668,11 +668,11 @@ public class ModifyInternUserTest
 
         _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(5, 5, It.IsAny<string>()))
-            .Throws(new IConflictException("A user cannot modify itself"));
+            .Throws(new ConflictException("A user cannot modify itself"));
 
         var request = new ModifyUserRequestDTO { Name = "Carlos" };
 
-        Assert.ThrowsException<IConflictException>(() =>
+        Assert.ThrowsException<ConflictException>(() =>
             _service.UpdateInternalUser(5, 5, request));
 
         _adminValidationMock.Verify(v => v.GetExistingUser(It.IsAny<int>()), Times.Never);

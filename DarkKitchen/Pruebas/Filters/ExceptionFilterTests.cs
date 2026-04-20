@@ -120,7 +120,7 @@ public class ExceptionFilterTests
     {
         var filter = new ExceptionFilter();
         var exceptionContext = CreateExceptionContext(
-            new IConflictException("No fue posible completar la operación por un conflicto de datos."));
+            new ConflictException("No fue posible completar la operación por un conflicto de datos."));
 
         filter.OnException(exceptionContext);
 

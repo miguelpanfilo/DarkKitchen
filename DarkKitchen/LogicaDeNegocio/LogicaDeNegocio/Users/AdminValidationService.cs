@@ -37,7 +37,7 @@ public class AdminValidationService(IRepositoryUser repositoryUser) : IAdminVali
     {
         if(targetUserId == loggedUserId)
         {
-            throw new IConflictException(message);
+            throw new ConflictException(message);
         }
     }
 }

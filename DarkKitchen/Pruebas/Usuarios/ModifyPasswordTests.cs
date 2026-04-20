@@ -272,7 +272,7 @@ public class ModifyPasswordTests
 
         _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(5, 5, It.IsAny<string>()))
-            .Throws(new IConflictException("A user cannot modify itself"));
+            .Throws(new ConflictException("A user cannot modify itself"));
 
         var request = new ModifyPasswordRequestDTO
         {
@@ -280,7 +280,7 @@ public class ModifyPasswordTests
             NewPassword = "ClaveNuevaSegura4!"
         };
 
-        var ex = Assert.ThrowsException<IConflictException>(() =>
+        var ex = Assert.ThrowsException<ConflictException>(() =>
             _service.UpdateUserPassword(5, 5, request));
 
         Assert.AreEqual("A user cannot modify itself", ex.Message);
@@ -313,7 +313,7 @@ public class ModifyPasswordTests
 
         _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(5, 5, It.IsAny<string>()))
-            .Throws(new IConflictException("A user cannot modify itself"));
+            .Throws(new ConflictException("A user cannot modify itself"));
 
         var request = new ModifyPasswordRequestDTO
         {
@@ -321,7 +321,7 @@ public class ModifyPasswordTests
             NewPassword = "ClaveNuevaSegura4!"
         };
 
-        Assert.ThrowsException<IConflictException>(() =>
+        Assert.ThrowsException<ConflictException>(() =>
             _service.UpdateUserPassword(5, 5, request));
 
         _adminValidationMock.Verify(v => v.GetExistingUser(It.IsAny<int>()), Times.Never);

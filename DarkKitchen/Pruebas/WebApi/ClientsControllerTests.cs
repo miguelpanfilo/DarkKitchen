@@ -69,11 +69,11 @@ public class ClientsControllerTests
 
         signUpServiceMock
             .Setup(s => s.SignUpClient(request))
-            .Throws(new IConflictException("Email is already registered"));
+            .Throws(new ConflictException("Email is already registered"));
 
         var controller = new ClientsController(signUpServiceMock.Object);
 
-        var ex = Assert.ThrowsException<IConflictException>(() =>
+        var ex = Assert.ThrowsException<ConflictException>(() =>
             controller.CreateClient(request));
 
         Assert.AreEqual("Email is already registered", ex.Message);

@@ -72,9 +72,9 @@ public class DeleteUserTests
         _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(5));
         _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(5, 5, "Un usuario no puede eliminarse a sí mismo"))
-            .Throws(new IConflictException("Un usuario no puede eliminarse a sí mismo"));
+            .Throws(new ConflictException("Un usuario no puede eliminarse a sí mismo"));
 
-        var ex = Assert.ThrowsException<IConflictException>(() =>
+        var ex = Assert.ThrowsException<ConflictException>(() =>
             _service.DeleteInterUser(5, 5));
 
         Assert.AreEqual("Un usuario no puede eliminarse a sí mismo", ex.Message);
@@ -86,9 +86,9 @@ public class DeleteUserTests
         _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(5));
         _adminValidationMock
             .Setup(v => v.EnsureIsNotSelfAction(5, 5, "Un usuario no puede eliminarse a sí mismo"))
-            .Throws(new IConflictException("Un usuario no puede eliminarse a sí mismo"));
+            .Throws(new ConflictException("Un usuario no puede eliminarse a sí mismo"));
 
-        var ex = Assert.ThrowsException<IConflictException>(() =>
+        var ex = Assert.ThrowsException<ConflictException>(() =>
             _service.DeleteInterUser(5, 5));
 
         Assert.AreEqual("Un usuario no puede eliminarse a sí mismo", ex.Message);
