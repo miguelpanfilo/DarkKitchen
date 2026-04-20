@@ -1,5 +1,6 @@
 using Contratos.Users;
 using DarkKitchen.Controllers;
+using DarkKitchen.Filters;
 using LogicaDeNegocioAbstracciones.Promotions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -69,5 +70,19 @@ public class DeletePromotionsControllerTest
 
         Assert.IsNotNull(attribute);
         Assert.AreEqual("{id}", attribute.Template);
+    }
+
+    [TestMethod]
+    public void Delete_HasRoleAuthorizationAttribute()
+    {
+        var method = typeof(PromotionsController).GetMethod(nameof(PromotionsController.Delete));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
+            .Cast<RoleAuthorizationAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
     }
 }
