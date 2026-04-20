@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Contratos.Promotions;
 using Contratos.Users;
 using DarkKitchen.Controllers;
+using DarkKitchen.Filters;
 using LogicaDeNegocioAbstracciones.Promotions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -85,6 +86,20 @@ public class CreatePromotionsControllerTests
 
         var attribute = method.GetCustomAttributes(typeof(HttpPostAttribute), false)
             .Cast<HttpPostAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
+    }
+
+    [TestMethod]
+    public void Create_HasRoleAuthorizationAttribute()
+    {
+        var method = typeof(PromotionsController).GetMethod(nameof(PromotionsController.Create));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
+            .Cast<RoleAuthorizationAttribute>()
             .SingleOrDefault();
 
         Assert.IsNotNull(attribute);
