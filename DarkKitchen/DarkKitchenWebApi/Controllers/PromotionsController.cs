@@ -48,6 +48,7 @@ public class PromotionsController(IPromotionService promotionService) : Controll
     }
 
     [HttpDelete("{promotionId}/products/{productId}")]
+    [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult DisassociateProduct([FromRoute] int promotionId, [FromRoute] int productId)
     {
         var response = _promotionService.DisassociateProduct(promotionId, productId);
