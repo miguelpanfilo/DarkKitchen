@@ -62,6 +62,7 @@ public class Promotion
 
     public void UpdateDiscountPercentage(decimal discountPercentage)
     {
+        ValidateNotExpired();
         ValidatePercentage(discountPercentage);
         DiscountPercentage = discountPercentage;
     }
