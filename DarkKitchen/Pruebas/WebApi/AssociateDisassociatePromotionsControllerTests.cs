@@ -133,4 +133,18 @@ public class AssociateDisassociatePromotionsControllerTests
         Assert.IsNotNull(attribute);
         Assert.AreEqual("{promotionId}/products/{productId}", attribute.Template);
     }
+
+    [TestMethod]
+    public void DisassociateProduct_HasRoleAuthorizationAttribute()
+    {
+        var method = typeof(PromotionsController).GetMethod(nameof(PromotionsController.DisassociateProduct));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
+            .Cast<RoleAuthorizationAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
+    }
 }
