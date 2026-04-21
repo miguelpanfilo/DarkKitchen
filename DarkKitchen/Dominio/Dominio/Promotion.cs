@@ -55,6 +55,7 @@ public class Promotion
 
     public void UpdateName(string name)
     {
+        ValidateNotExpired();
         ValidateName(name);
         Name = name;
     }
@@ -115,6 +116,16 @@ public class Promotion
         if (startDate > endDate)
         {
             throw new PromotionException("La fecha de inicio no puede ser mayor a la fecha de fin");
+        }
+    }
+
+    private void ValidateNotExpired()
+    {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+        if (EndDate < today)
+        {
+            throw new PromotionException("La promoción expiró, no se puede modificar");
         }
     }
 }
