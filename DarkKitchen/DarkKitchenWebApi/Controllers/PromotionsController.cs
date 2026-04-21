@@ -46,4 +46,11 @@ public class PromotionsController(IPromotionService promotionService) : Controll
         var response = _promotionService.AssociateProduct(promotionId, productId);
         return Ok(response);
     }
+
+    [HttpDelete("{promotionId}/products/{productId}")]
+    public IActionResult DisassociateProduct([FromRoute] int promotionId, [FromRoute] int productId)
+    {
+        var response = _promotionService.DisassociateProduct(promotionId, productId);
+        return Ok(response);
+    }
 }
