@@ -40,6 +40,7 @@ public class PromotionsController(IPromotionService promotionService) : Controll
     }
 
     [HttpPost("{promotionId}/products/{productId}")]
+    [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult AssociateProduct([FromRoute] int promotionId, [FromRoute] int productId)
     {
         var response = _promotionService.AssociateProduct(promotionId, productId);
