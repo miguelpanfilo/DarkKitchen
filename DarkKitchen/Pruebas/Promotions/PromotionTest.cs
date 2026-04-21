@@ -67,4 +67,20 @@ public class PromotionTest
 
         Assert.AreEqual("La promoción ya está eliminada", ex.Message);
     }
+
+    [TestMethod]
+    public void GivenExpiredPromotion_WhenUpdatingName_ThenThrowsConflictException()
+    {
+        var promotion = Promotion.MakePromotion(
+            "Black Friday",
+            20,
+            new DateOnly(2025, 11, 1),
+            new DateOnly(2025, 11, 30)
+        );
+
+        var ex = Assert.ThrowsException<PromotionException>(() =>
+            promotion.UpdateName("Cyber Monday"));
+
+        Assert.AreEqual("La promoción expiró, no se puede modificar", ex.Message);
+    }
 }
