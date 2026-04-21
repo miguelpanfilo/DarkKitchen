@@ -62,4 +62,19 @@ public class AssociateDisassociatePromotionsControllerTests
 
         _promotionServiceMock.Verify(x => x.AssociateProduct(1, 5), Times.Once);
     }
+
+    [TestMethod]
+    public void AssociateProduct_HasHttpPostAttributeWithRouteTemplate()
+    {
+        var method = typeof(PromotionsController).GetMethod(nameof(PromotionsController.AssociateProduct));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(HttpPostAttribute), false)
+            .Cast<HttpPostAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
+        Assert.AreEqual("{promotionId}/products/{productId}", attribute.Template);
+    }
 }
