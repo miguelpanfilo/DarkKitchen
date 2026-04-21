@@ -419,11 +419,12 @@ public class PromotionServiceTest
     [TestMethod]
     public void GivenExistingPromotion_WhenUpdatingWithValidDiscountPercentage_ThenPromotionDiscountPercentageIsUpdated()
     {
+        var (start, end) = FutureDates();
         var promotion = Promotion.MakePromotion(
             "Black Friday",
             10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
+            start,
+            end
         );
 
         var patchDto = new PromotionPatchDto
@@ -463,11 +464,12 @@ public class PromotionServiceTest
     public void GivenExistingPromotion_WhenUpdatingWithInvalidDiscountPercentage_ThenThrowsPromotionException(
         int invalidDiscount)
     {
+        var (start, end) = FutureDates();
         var promotion = Promotion.MakePromotion(
             "Black Friday",
             10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
+            start,
+            end
         );
 
         var patchDto = new PromotionPatchDto
