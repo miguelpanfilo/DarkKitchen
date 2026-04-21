@@ -13,6 +13,12 @@ namespace Pruebas.Promotions;
 [TestClass]
 public class PromotionServiceTest
 {
+    private DateOnly Today() =>
+        DateOnly.FromDateTime(DateTime.UtcNow);
+
+    private (DateOnly start, DateOnly end) FutureDates() =>
+        (Today().AddDays(5), Today().AddDays(10));
+
     private Product CreateValidProduct()
     {
         return new ProductBuilder()
@@ -336,12 +342,12 @@ public class PromotionServiceTest
     [TestMethod]
     public void GivenExistingPromotion_WhenPatchingName_ThenPromotionNameIsUpdated()
     {
+        var (start, end) = FutureDates();
         var promotion = Promotion.MakePromotion(
             "Black Friday",
             10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
-        );
+            start,
+            end);
 
         var patchDto = new PromotionPatchDto
         {
@@ -376,12 +382,12 @@ public class PromotionServiceTest
     [TestMethod]
     public void GivenExistingPromotion_WhenUpdatingWithEmptyName_ThenThrowsPromotionException()
     {
+        var (start, end) = FutureDates();
         var promotion = Promotion.MakePromotion(
             "Black Friday",
             10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
-        );
+            start,
+            end);
 
         var patchDto = new PromotionPatchDto
         {
