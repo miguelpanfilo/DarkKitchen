@@ -83,11 +83,10 @@ public class PromotionService : IPromotionService
         return promotion;
     }
 
-    private Product GetExistingProduct(int productId)
+    private void GetExistingProduct(int productId)
     {
         var product = _productRepository.GetById(productId);
         ValidateProductExists(product);
-        return product;
     }
 
     private static void UpdateNameIfProvided(Promotion promotion, string? name)
