@@ -1,6 +1,7 @@
 using Contratos.Promotions;
 using Contratos.Users;
 using DarkKitchen.Controllers;
+using DarkKitchen.Filters;
 using LogicaDeNegocioAbstracciones.Promotions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -76,5 +77,19 @@ public class AssociateDisassociatePromotionsControllerTests
 
         Assert.IsNotNull(attribute);
         Assert.AreEqual("{promotionId}/products/{productId}", attribute.Template);
+    }
+
+    [TestMethod]
+    public void AssociateProduct_HasRoleAuthorizationAttribute()
+    {
+        var method = typeof(PromotionsController).GetMethod(nameof(PromotionsController.AssociateProduct));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
+            .Cast<RoleAuthorizationAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
     }
 }
