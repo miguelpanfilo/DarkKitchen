@@ -1,15 +1,13 @@
-using Contratos;
 using Contratos.Users;
 using DarkKitchen.Controllers;
 using DarkKitchen.Filters;
-using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace Pruebas.SignUp;
+namespace Pruebas.WebApi;
 
 [TestClass]
 public class ClientsControllerTests

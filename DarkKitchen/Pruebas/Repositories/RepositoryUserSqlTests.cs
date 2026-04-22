@@ -410,4 +410,20 @@ public class RepositoryUserSqlTests
 
         Assert.IsNull(foundUser);
     }
+
+    [TestMethod]
+    public void EmailExist_WhenEmailIsInvalid_ReturnsFalse()
+    {
+        var exists = _repository.EmailExist("correo-invalido");
+
+        Assert.IsFalse(exists);
+    }
+
+    [TestMethod]
+    public void FindByEmail_WhenEmailIsInvalid_ReturnsNull()
+    {
+        var foundUser = _repository.FindByEmail("correo-invalido");
+
+        Assert.IsNull(foundUser);
+    }
 }

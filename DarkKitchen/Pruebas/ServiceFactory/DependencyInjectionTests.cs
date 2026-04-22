@@ -1,19 +1,15 @@
-using Almacenamiento;
 using Almacenamiento.Repositories;
 using AlmacenamientoAbstracciones;
-using DarkKitchen.Filters;
 using FactoryService;
-using LogicaDeNegocio;
 using LogicaDeNegocio.Initialization;
 using LogicaDeNegocio.Sessions;
 using LogicaDeNegocio.Shared;
 using LogicaDeNegocio.Users;
-using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Users;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Pruebas;
+namespace Pruebas.ServiceFactory;
 
 [TestClass]
 public class DependencyInjectionTests
