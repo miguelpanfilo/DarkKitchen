@@ -12,6 +12,8 @@ public class SqlContext : DbContext
     public DbSet<Product> Products { get; set; } = null!;
     public DbSet<PromotionProduct> PromotionProducts { get; set; } = null!;
     public DbSet<ProductPhoto> ProductPhotos { get; set; }
+    public DbSet<Order> Orders { get; set; } = null!;
+    public DbSet<OrderItem> OrderItems { get; set; } = null!;
 
     public SqlContext(DbContextOptions<SqlContext> options)
         : base(options)
@@ -25,5 +27,7 @@ public class SqlContext : DbContext
         modelBuilder.ApplyConfiguration(new PromotionConfiguration());
         modelBuilder.ApplyConfiguration(new ProductConfiguration());
         modelBuilder.ApplyConfiguration(new PromotionProductConfiguration());
+        modelBuilder.ApplyConfiguration(new OrderConfiguration());
+        modelBuilder.ApplyConfiguration(new OrderItemConfiguration());
     }
 }
