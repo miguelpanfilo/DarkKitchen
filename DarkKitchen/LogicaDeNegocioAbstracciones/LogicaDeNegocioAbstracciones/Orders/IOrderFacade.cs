@@ -1,5 +1,4 @@
 using Contratos.Orders;
-using Dominio;
 
 namespace LogicaDeNegocioAbstracciones.Orders;
 
@@ -9,9 +8,9 @@ public interface IOrderFacade
 
     OrderResponse GetById(int orderId);
 
-    List<OrderResponse> GetClientOrders(int clientId, DateTime? dateFrom, DateTime? dateTo, OrderStatus? status);
+    List<OrderResponse> GetClientOrders(int clientId, DateTime? dateFrom, DateTime? dateTo, OrderStatusDto? status);
 
-    List<OrderResponse> GetOrdersByFilters(DateTime dateFrom, DateTime dateTo, string? street, OrderStatus? status);
+    List<OrderResponse> GetOrdersByFilters(DateTime dateFrom, DateTime dateTo, string? street, OrderStatusDto? status);
 
     void Prepare(int orderId);
 

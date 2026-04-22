@@ -2,7 +2,6 @@ using Contratos;
 using Contratos.Orders;
 using Contratos.Users;
 using DarkKitchen.Filters;
-using Dominio;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Orders;
 using Microsoft.AspNetCore.Mvc;
@@ -46,7 +45,7 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
         [FromQuery] DateTime? dateFrom,
         [FromQuery] DateTime? dateTo,
         [FromQuery] string? street,
-        [FromQuery] OrderStatus? status)
+        [FromQuery] OrderStatusDto? status)
     {
         if (CurrentUser.Role == UserRolesDto.Client)
         {
