@@ -1,8 +1,6 @@
 using System.Security.Claims;
-using Contratos;
 using Contratos.Users;
 using DarkKitchen.Filters;
-using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Users;
 using Microsoft.AspNetCore.Mvc;
 
@@ -61,7 +59,7 @@ public class UsersController(IUserService userService) : ControllerBase
     public IActionResult SearchUsers([FromQuery] FindUserRequestDTO request)
     {
         var loggedUserId = GetLoggedUserId();
-        if (loggedUserId == null)
+        if(loggedUserId == null)
         {
             return Unauthorized();
         }

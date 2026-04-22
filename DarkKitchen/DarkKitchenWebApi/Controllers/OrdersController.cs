@@ -1,8 +1,6 @@
-using Contratos;
 using Contratos.Orders;
 using Contratos.Users;
 using DarkKitchen.Filters;
-using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Orders;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,7 +29,7 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
     {
         var order = _orderFacade.GetById(id);
 
-        if (CurrentUser.Role == UserRolesDto.Client && order.ClientId != CurrentUser.Id)
+        if(CurrentUser.Role == UserRolesDto.Client && order.ClientId != CurrentUser.Id)
         {
             return Forbid();
         }
@@ -47,12 +45,12 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
         [FromQuery] string? street,
         [FromQuery] OrderStatusDto? status)
     {
-        if (CurrentUser.Role == UserRolesDto.Client)
+        if(CurrentUser.Role == UserRolesDto.Client)
         {
             return Ok(_orderFacade.GetClientOrders(CurrentUser.Id, dateFrom, dateTo, status));
         }
 
-        if (!dateFrom.HasValue || !dateTo.HasValue)
+        if(!dateFrom.HasValue || !dateTo.HasValue)
         {
             return BadRequest("El rango de fechas es obligatorio");
         }
@@ -64,10 +62,10 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
     [RoleAuthorization(UserRolesDto.Client, UserRolesDto.Preparer, UserRolesDto.Administrative)]
     public IActionResult ChangeStatus(int id, [FromBody] UpdateOrderStatusRequest request)
     {
-        switch (request.Estado)
+        switch(request.Estado)
         {
             case "Preparado":
-                if (CurrentUser.Role != UserRolesDto.Preparer && CurrentUser.Role != UserRolesDto.Administrative)
+                if(CurrentUser.Role != UserRolesDto.Preparer && CurrentUser.Role != UserRolesDto.Administrative)
                 {
                     return Forbid();
                 }
@@ -75,7 +73,7 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
                 _orderFacade.Prepare(id);
                 break;
             case "Cancelado":
-                if (CurrentUser.Role != UserRolesDto.Client && CurrentUser.Role != UserRolesDto.Administrative)
+                if(CurrentUser.Role != UserRolesDto.Client && CurrentUser.Role != UserRolesDto.Administrative)
                 {
                     return Forbid();
                 }
@@ -83,7 +81,7 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
                 _orderFacade.Cancel(id);
                 break;
             case "EnCamino":
-                if (CurrentUser.Role != UserRolesDto.Preparer && CurrentUser.Role != UserRolesDto.Administrative)
+                if(CurrentUser.Role != UserRolesDto.Preparer && CurrentUser.Role != UserRolesDto.Administrative)
                 {
                     return Forbid();
                 }
@@ -91,7 +89,7 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
                 _orderFacade.Dispatch(id);
                 break;
             case "Entregado":
-                if (CurrentUser.Role != UserRolesDto.Preparer && CurrentUser.Role != UserRolesDto.Administrative)
+                if(CurrentUser.Role != UserRolesDto.Preparer && CurrentUser.Role != UserRolesDto.Administrative)
                 {
                     return Forbid();
                 }
@@ -99,7 +97,7 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
                 _orderFacade.Deliver(id);
                 break;
             case "NoEntregado":
-                if (CurrentUser.Role != UserRolesDto.Preparer && CurrentUser.Role != UserRolesDto.Administrative)
+                if(CurrentUser.Role != UserRolesDto.Preparer && CurrentUser.Role != UserRolesDto.Administrative)
                 {
                     return Forbid();
                 }
