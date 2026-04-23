@@ -1224,4 +1224,33 @@ public class ProductServiceTest
 
         repositoryMock.Verify(r => r.GetAll(), Times.Once);
     }
+
+    [TestMethod]
+    public void GivenProducts_WhenFilteringByName_ThenReturnsMatchingProducts()
+    {
+        var products = new List<Product>
+        {
+            CreateValidProduct("CODE12345", "Producto valido 1"),
+            CreateValidProduct("CODE12346", "Otro producto distinto")
+        };
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        repoMock.Setup(r => r.GetAll()).Returns(products);
+
+        var service = CreateService(repoMock, storageMock);
+
+        var request = new ProductSearchRequestDto
+        {
+            Name = "valido"
+        };
+
+        var result = service.GetProducts(request);
+
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual("Producto valido 1", result[0].Name);
+
+        repoMock.Verify(r => r.GetAll(), Times.Once);
+    }
 }
