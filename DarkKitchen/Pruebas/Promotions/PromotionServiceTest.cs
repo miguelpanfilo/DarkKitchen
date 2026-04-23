@@ -1033,4 +1033,81 @@ public class PromotionServiceTest
         promotionRepositoryMock.VerifyAll();
         productRepositoryMock.VerifyAll();
     }
+
+    [TestMethod]
+    public void GivenValidDateAndCommercialLine_WhenGettingPromotions_ThenReturnsOnlyPromotionsForThatCommercialLine()
+    {
+        var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        var date = new DateOnly(2026, 1, 26);
+
+        var matchingPromotion = Promotion.MakePromotion(
+            "Promo Línea Matching",
+            10,
+            new DateOnly(2026, 1, 25),
+            new DateOnly(2026, 1, 30)
+        );
+        matchingPromotion.AssociateProduct(100);
+
+        var otherPromotion = Promotion.MakePromotion(
+            "Promo Línea Otra",
+            15,
+            new DateOnly(2026, 1, 25),
+            new DateOnly(2026, 1, 30)
+        );
+        otherPromotion.AssociateProduct(200);
+
+        var productMatchingLine = new ProductBuilder()
+            .WithCode("COD100")
+            .WithName("Producto Línea A")
+            .WithDescription("Descripción válida con más de veinte caracteres")
+            .WithCommercialLine("Línea A")
+            .WithCategory("Categoría")
+            .WithPrice(100)
+            .WithPhotos(new List<ProductPhoto> { new ProductPhoto("photo-1.jpg") })
+            .Build();
+
+        var productOtherLine = new ProductBuilder()
+            .WithCode("COD200")
+            .WithName("Producto Línea B")
+            .WithDescription("Descripción válida con más de veinte caracteres")
+            .WithCommercialLine("Línea B")
+            .WithCategory("Categoría")
+            .WithPrice(100)
+            .WithPhotos(new List<ProductPhoto> { new ProductPhoto("photo-2.jpg") })
+            .Build();
+
+        promotionRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns(new List<Promotion> { matchingPromotion, otherPromotion });
+
+        productRepositoryMock
+            .Setup(r => r.GetById(100))
+            .Returns(productMatchingLine);
+
+        productRepositoryMock
+            .Setup(r => r.GetById(200))
+            .Returns(productOtherLine);
+
+        var request = new PromotionSearchRequestDto
+        {
+            Date = date,
+            CommercialLine = "Línea A"
+        };
+
+        var service = new PromotionService(
+            promotionRepositoryMock.Object,
+            productRepositoryMock.Object
+        );
+
+        var result = service.GetPromotions(request);
+
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual("Promo Línea Matching", result[0].Name);
+        Assert.IsFalse(result.Any(r => r.Name == "Promo Línea Otra"));
+
+        promotionRepositoryMock.VerifyAll();
+        productRepositoryMock.VerifyAll();
+    }
 }
