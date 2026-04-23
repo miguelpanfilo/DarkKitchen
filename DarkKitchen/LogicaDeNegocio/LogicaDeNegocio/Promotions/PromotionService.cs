@@ -49,6 +49,13 @@ public class PromotionService : IPromotionService
             .Where(p => p.StartDate <= request.Date && p.EndDate >= request.Date)
             .ToList();
 
+        if (request.ProductId is not null)
+        {
+            filtered = filtered
+                .Where(p => p.PromotionProducts.Any(pp => pp.ProductId == request.ProductId.Value))
+                .ToList();
+        }
+
         return filtered
             .Select(MapPromotionWithProducts)
             .ToList();

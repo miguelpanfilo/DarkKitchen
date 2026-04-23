@@ -988,7 +988,6 @@ public class PromotionServiceTest
         var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
 
         var date = new DateOnly(2026, 1, 26);
-        var product = CreateValidProduct();
 
         var matchingPromotion = Promotion.MakePromotion(
             "Promo Producto 100",
@@ -1011,8 +1010,8 @@ public class PromotionServiceTest
             .Returns(new List<Promotion> { matchingPromotion, otherPromotion });
 
         productRepositoryMock
-            .Setup(r => r.GetById(100))
-            .Returns(product);
+            .Setup(r => r.GetById(It.IsAny<int>()))
+            .Returns(CreateValidProduct());
 
         var request = new PromotionSearchRequestDto
         {
@@ -1029,6 +1028,7 @@ public class PromotionServiceTest
 
         Assert.AreEqual(1, result.Count);
         Assert.AreEqual("Promo Producto 100", result[0].Name);
+        Assert.IsFalse(result.Any(r => r.Name == "Promo Otro Producto"));
 
         promotionRepositoryMock.VerifyAll();
         productRepositoryMock.VerifyAll();
