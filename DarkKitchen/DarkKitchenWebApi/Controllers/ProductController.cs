@@ -35,6 +35,7 @@ public class ProductController(IProductService productService) : ControllerBase
     }
 
     [HttpDelete("{productId}")]
+    [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult Delete(int productId)
     {
         productService.Delete(productId);
