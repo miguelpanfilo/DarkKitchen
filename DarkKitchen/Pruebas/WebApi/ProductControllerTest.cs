@@ -196,4 +196,14 @@ public class ProductControllerTest
         serviceMock.Verify(s => s.Update(productId, request), Times.Once);
         serviceMock.VerifyAll();
     }
+
+    [TestMethod]
+    public void GivenUpdateEndpoint_WhenCheckingHttpAttribute_ThenHasHttpPatch()
+    {
+        var method = typeof(ProductController).GetMethod("Update");
+
+        var attribute = method.GetCustomAttributes(typeof(HttpPatchAttribute), false);
+
+        Assert.AreEqual(1, attribute.Length);
+    }
 }
