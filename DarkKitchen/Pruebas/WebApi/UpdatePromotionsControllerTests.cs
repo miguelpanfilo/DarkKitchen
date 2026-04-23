@@ -1,3 +1,4 @@
+using Contratos.Products;
 using Contratos.Promotions;
 using Contratos.Users;
 using DarkKitchen.Controllers;
@@ -59,7 +60,11 @@ public class UpdatePromotionsControllerTests
             "Cyber Monday",
             25,
             new DateOnly(2026, 11, 10),
-            new DateOnly(2026, 11, 30)
+            new DateOnly(2026, 11, 30),
+            new List<ProductSummaryDto>
+            {
+                new (5, "Hamburguesa Clásica")
+            }
         );
 
         _promotionServiceMock

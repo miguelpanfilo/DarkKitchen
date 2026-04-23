@@ -47,7 +47,11 @@ public class AssociateDisassociatePromotionsControllerTests
             "Black Friday",
             20,
             new DateOnly(2026, 11, 1),
-            new DateOnly(2026, 11, 30)
+            new DateOnly(2026, 11, 30),
+            new List<ProductSummaryDto>
+            {
+                new (5, "Hamburguesa Clásica")
+            }
         );
 
         _promotionServiceMock
@@ -169,7 +173,11 @@ public class AssociateDisassociatePromotionsControllerTests
             "Black Friday",
             20,
             new DateOnly(2026, 11, 1),
-            new DateOnly(2026, 11, 30)
+            new DateOnly(2026, 11, 30),
+            new List<ProductSummaryDto>
+            {
+                new (5, "Hamburguesa Clásica")
+            }
         );
 
         _promotionServiceMock

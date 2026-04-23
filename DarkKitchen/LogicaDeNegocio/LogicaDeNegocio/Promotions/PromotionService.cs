@@ -23,7 +23,7 @@ public class PromotionService : IPromotionService
         var promotion = PromotionMapper.ToEntity(promotionRequestDto);
         var createdPromotion = _promotionRepository.Create(promotion);
 
-        return PromotionMapper.ToResponseDto(createdPromotion);
+        return MapPromotionWithProducts(createdPromotion);
     }
 
     public void Delete(int promotionId)
@@ -45,7 +45,7 @@ public class PromotionService : IPromotionService
 
         var updatedPromotion = _promotionRepository.Update(promotion);
 
-        return PromotionMapper.ToResponseDto(updatedPromotion);
+        return MapPromotionWithProducts(updatedPromotion);
     }
 
     public PromotionResponseDto AssociateProduct(int promotionId, int productId)
@@ -53,12 +53,11 @@ public class PromotionService : IPromotionService
         var promotion = GetExistingPromotion(promotionId);
 
         GetExistingProduct(productId);
-
         promotion.AssociateProduct(productId);
 
         var updatedPromotion = _promotionRepository.Update(promotion);
 
-        return PromotionMapper.ToResponseDto(updatedPromotion);
+        return MapPromotionWithProducts(updatedPromotion);
     }
 
     public PromotionResponseDto DisassociateProduct(int promotionId, int productId)
@@ -71,7 +70,7 @@ public class PromotionService : IPromotionService
 
         var updatedPromotion = _promotionRepository.Update(promotion);
 
-        return PromotionMapper.ToResponseDto(updatedPromotion);
+        return MapPromotionWithProducts(updatedPromotion);
     }
 
     private Promotion GetExistingPromotion(int promotionId)
@@ -83,10 +82,11 @@ public class PromotionService : IPromotionService
         return promotion;
     }
 
-    private void GetExistingProduct(int productId)
+    private Product GetExistingProduct(int productId)
     {
         var product = _productRepository.GetById(productId);
         ValidateProductExists(product);
+        return product!;
     }
 
     private static void UpdateNameIfProvided(Promotion promotion, string? name)
@@ -130,5 +130,14 @@ public class PromotionService : IPromotionService
         {
             throw new PromotionException("El producto no existe");
         }
+    }
+
+    private PromotionResponseDto MapPromotionWithProducts(Promotion promotion)
+    {
+        var products = promotion.PromotionProducts
+            .Select(pp => GetExistingProduct(pp.ProductId))
+            .ToList();
+
+        return PromotionMapper.ToResponseDto(promotion, products);
     }
 }

@@ -1,3 +1,4 @@
+using Contratos.Products;
 using Contratos.Promotions;
 using Contratos.Users;
 using DarkKitchen.Controllers;
@@ -58,7 +59,11 @@ public class CreatePromotionsControllerTests
             "Black Friday",
             20,
             new DateOnly(2026, 11, 1),
-            new DateOnly(2026, 11, 30)
+            new DateOnly(2026, 11, 30),
+            new List<ProductSummaryDto>
+            {
+                new (5, "Hamburguesa Clásica")
+            }
         );
 
         _promotionServiceMock
