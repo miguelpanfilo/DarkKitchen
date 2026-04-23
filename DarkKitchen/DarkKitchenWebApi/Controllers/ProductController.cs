@@ -27,6 +27,7 @@ public class ProductController(IProductService productService) : ControllerBase
     }
 
     [HttpPatch]
+    [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult Update(int productId, ProductPatchDto request)
     {
         var result = productService.Update(productId, request);
