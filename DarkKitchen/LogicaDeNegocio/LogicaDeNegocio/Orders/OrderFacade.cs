@@ -37,9 +37,9 @@ public class OrderFacade(IOrderService orderService, IProductService productServ
         }).ToList();
     }
 
-    public List<OrderResponse> GetClientOrders(int clientId, DateTime? dateFrom, DateTime? dateTo, OrderStatus? status)
+    public List<OrderResponse> GetClientOrders(int clientId, DateTime? dateFrom, DateTime? dateTo, OrderStatusDto? status)
     {
-        return _orderService.GetClientOrders(clientId, dateFrom, dateTo, status)
+        return _orderService.GetClientOrders(clientId, dateFrom, dateTo, ToOrderStatus(status))
             .Select(o => o.ToOrderResponse())
             .ToList();
     }
@@ -49,12 +49,15 @@ public class OrderFacade(IOrderService orderService, IProductService productServ
         return _orderService.GetById(orderId).ToOrderResponse();
     }
 
-    public List<OrderResponse> GetOrdersByFilters(DateTime dateFrom, DateTime dateTo, string? street, OrderStatus? status)
+    public List<OrderResponse> GetOrdersByFilters(DateTime dateFrom, DateTime dateTo, string? street, OrderStatusDto? status)
     {
-        return _orderService.GetOrdersByFilters(dateFrom, dateTo, street, status)
+        return _orderService.GetOrdersByFilters(dateFrom, dateTo, street, ToOrderStatus(status))
             .Select(o => o.ToOrderResponse())
             .ToList();
     }
+
+    private static OrderStatus? ToOrderStatus(OrderStatusDto? dto) =>
+        dto.HasValue ? Enum.Parse<OrderStatus>(dto.Value.ToString()) : null;
 
     public void Prepare(int orderId) => _orderService.Prepare(orderId);
 

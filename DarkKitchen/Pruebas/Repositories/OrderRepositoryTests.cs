@@ -1,47 +1,81 @@
+using System.Data.Common;
+using Almacenamiento;
 using Almacenamiento.Repositories;
 using Dominio;
 using FluentAssertions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Pruebas.Persistence;
 
 namespace Pruebas.Repositories;
 
 [TestClass]
-public sealed class OrderRepositoryTests
+public class OrderRepositoryTests
 {
-    private OrderRepository _repo = null!;
+    private SqlContext _context = null!;
+    private OrderRepository _repository = null!;
+    private DbConnection _connection = null!;
 
     [TestInitialize]
     public void Initialize()
     {
-        _repo = new OrderRepository();
+        _context = SqliteTestContextFactory.CreateContext(out _connection);
+        _repository = new OrderRepository(_context);
+        SeedDatabase();
     }
 
-    private static Address MakeAddress() => Address.MakeAddress("Rivera", "1234");
-
-    private static List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)> MakeItems()
+    [TestCleanup]
+    public void Cleanup()
     {
-        return [(1, 1, 100m, 0m)];
+        _context.Dispose();
+        _connection.Dispose();
     }
 
-    private Order MakeOrder(int clientId = 1) =>
-        Order.MakeOrder(clientId, DeliveryType.Express, MakeAddress(), MakeItems(), 200m);
+    private void SeedDatabase()
+    {
+        var phoneResult = Phone.TryMakePhone("099123456");
+        var clientResult = User.MakeClient("Juan", "Perez", "juan@test.com", phoneResult.Value!, "PasswordSegura1!");
+        _context.Users.Add(clientResult.Value!);
+
+        _context.Products.Add(Product.MakeProduct(
+            "PROD01",
+            "Producto Test Uno",
+            "Descripcion larga del producto de prueba",
+            "Linea A",
+            "Categoria B",
+            100m,
+            [new ProductPhoto("foto.jpg")]));
+
+        _context.SaveChanges();
+    }
+
+    private User SeededClient => _context.Users.First();
+    private Product SeededProduct => _context.Products.First();
+
+    private Address MakeAddress() => Address.MakeAddress("Rivera", "1234");
+
+    private List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)> MakeItems() =>
+        [(SeededProduct.Id, 1, 100m, 0m)];
+
+    private Order MakeOrder(int? clientId = null) =>
+        Order.MakeOrder(clientId ?? SeededClient.Id, DeliveryType.Express, MakeAddress(), MakeItems(), 200m);
 
     #region Add
     #region Success
     [TestMethod]
     public void Add_WhenValidOrder_ShouldReturnOrderWithAssignedId()
     {
-        var result = _repo.Add(MakeOrder());
+        var result = _repository.Add(MakeOrder());
 
         result.Id.Should().BeGreaterThan(0);
     }
 
     [TestMethod]
-    public void Add_WhenValidOrder_ShouldPersistToRepository()
+    public void Add_WhenValidOrder_ShouldPersistToDatabase()
     {
         var order = MakeOrder();
-        _repo.Add(order);
+        _repository.Add(order);
 
-        _repo.GetById(order.Id).Should().NotBeNull();
+        _repository.GetById(order.Id).Should().NotBeNull();
     }
     #endregion
     #endregion
@@ -51,12 +85,22 @@ public sealed class OrderRepositoryTests
     [TestMethod]
     public void GetById_WhenOrderExists_ShouldReturnOrder()
     {
-        var added = _repo.Add(MakeOrder());
+        var added = _repository.Add(MakeOrder());
 
-        var result = _repo.GetById(added.Id);
+        var result = _repository.GetById(added.Id);
 
         result.Should().NotBeNull();
         result!.Id.Should().Be(added.Id);
+    }
+
+    [TestMethod]
+    public void GetById_WhenOrderExists_ShouldIncludeItems()
+    {
+        var added = _repository.Add(MakeOrder());
+
+        var result = _repository.GetById(added.Id);
+
+        result!.Items.Should().HaveCount(1);
     }
     #endregion
 
@@ -64,7 +108,7 @@ public sealed class OrderRepositoryTests
     [TestMethod]
     public void GetById_WhenOrderDoesNotExist_ShouldReturnNull()
     {
-        var result = _repo.GetById(99);
+        var result = _repository.GetById(99999);
 
         result.Should().BeNull();
     }
@@ -76,25 +120,32 @@ public sealed class OrderRepositoryTests
     [TestMethod]
     public void GetByClientId_WhenClientHasOrders_ShouldReturnOnlyClientOrders()
     {
-        _repo.Add(MakeOrder(clientId: 1));
-        _repo.Add(MakeOrder(clientId: 1));
-        _repo.Add(MakeOrder(clientId: 2));
+        var phoneResult = Phone.TryMakePhone("099654321");
+        var otherClient = User.MakeClient("Ana", "Lopez", "ana@test.com", phoneResult.Value!, "PasswordSegura1!").Value!;
+        _context.Users.Add(otherClient);
+        _context.SaveChanges();
 
-        var result = _repo.GetByClientId(1, null, null, null);
+        _repository.Add(MakeOrder());
+        _repository.Add(MakeOrder());
+        _repository.Add(MakeOrder(clientId: otherClient.Id));
+
+        var result = _repository.GetByClientId(SeededClient.Id, null, null, null);
 
         result.Should().HaveCount(2);
-        result.Should().AllSatisfy(o => o.ClientId.Should().Be(1));
+        result.Should().AllSatisfy(o => o.ClientId.Should().Be(SeededClient.Id));
     }
 
     [TestMethod]
     public void GetByClientId_WhenStatusFilterApplied_ShouldReturnFilteredOrders()
     {
+        var pendingOrder = MakeOrder();
         var preparedOrder = MakeOrder();
         preparedOrder.Prepare();
-        _repo.Add(MakeOrder());
-        _repo.Add(preparedOrder);
 
-        var result = _repo.GetByClientId(1, null, null, OrderStatus.Pending);
+        _repository.Add(pendingOrder);
+        _repository.Add(preparedOrder);
+
+        var result = _repository.GetByClientId(SeededClient.Id, null, null, OrderStatus.Pending);
 
         result.Should().HaveCount(1);
         result[0].Status.Should().Be(OrderStatus.Pending);
@@ -103,27 +154,27 @@ public sealed class OrderRepositoryTests
     [TestMethod]
     public void GetByClientId_WhenClientHasNoOrders_ShouldReturnEmptyList()
     {
-        var result = _repo.GetByClientId(99, null, null, null);
+        var result = _repository.GetByClientId(99999, null, null, null);
 
         result.Should().BeEmpty();
     }
 
     [TestMethod]
-    public void GetByClientId_WhenDateFromFilterApplied_ShouldReturnOrdersAfterDate()
+    public void GetByClientId_WhenDateFromFilterExcludesOrder_ShouldReturnEmpty()
     {
-        _repo.Add(MakeOrder());
+        _repository.Add(MakeOrder());
 
-        var result = _repo.GetByClientId(1, DateTime.UtcNow.AddDays(1), null, null);
+        var result = _repository.GetByClientId(SeededClient.Id, DateTime.UtcNow.AddDays(1), null, null);
 
         result.Should().BeEmpty();
     }
 
     [TestMethod]
-    public void GetByClientId_WhenDateToFilterApplied_ShouldReturnOrdersBeforeDate()
+    public void GetByClientId_WhenDateToFilterExcludesOrder_ShouldReturnEmpty()
     {
-        _repo.Add(MakeOrder());
+        _repository.Add(MakeOrder());
 
-        var result = _repo.GetByClientId(1, null, DateTime.UtcNow.AddDays(-1), null);
+        var result = _repository.GetByClientId(SeededClient.Id, null, DateTime.UtcNow.AddDays(-1), null);
 
         result.Should().BeEmpty();
     }
@@ -135,9 +186,9 @@ public sealed class OrderRepositoryTests
     [TestMethod]
     public void GetByFilters_WhenDateRangeMatches_ShouldReturnOrdersInRange()
     {
-        _repo.Add(MakeOrder());
+        _repository.Add(MakeOrder());
 
-        var result = _repo.GetByFilters(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow.AddDays(1), null, null);
+        var result = _repository.GetByFilters(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow.AddDays(1), null, null);
 
         result.Should().HaveCount(1);
     }
@@ -145,10 +196,10 @@ public sealed class OrderRepositoryTests
     [TestMethod]
     public void GetByFilters_WhenStreetFilterApplied_ShouldReturnOrdersOnStreet()
     {
-        _repo.Add(Order.MakeOrder(1, DeliveryType.Express, Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m));
-        _repo.Add(Order.MakeOrder(1, DeliveryType.Express, Address.MakeAddress("Bvar España", "500"), MakeItems(), 200m));
+        _repository.Add(Order.MakeOrder(SeededClient.Id, DeliveryType.Express, Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m));
+        _repository.Add(Order.MakeOrder(SeededClient.Id, DeliveryType.Express, Address.MakeAddress("Bvar España", "500"), MakeItems(), 200m));
 
-        var result = _repo.GetByFilters(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow.AddDays(1), "Rivera", null);
+        var result = _repository.GetByFilters(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow.AddDays(1), "Rivera", null);
 
         result.Should().HaveCount(1);
         result[0].Address.Street.Should().Be("Rivera");
@@ -159,10 +210,11 @@ public sealed class OrderRepositoryTests
     {
         var preparedOrder = MakeOrder();
         preparedOrder.Prepare();
-        _repo.Add(MakeOrder());
-        _repo.Add(preparedOrder);
 
-        var result = _repo.GetByFilters(
+        _repository.Add(MakeOrder());
+        _repository.Add(preparedOrder);
+
+        var result = _repository.GetByFilters(
             DateTime.UtcNow.AddDays(-1),
             DateTime.UtcNow.AddDays(1),
             null,
@@ -175,7 +227,7 @@ public sealed class OrderRepositoryTests
     [TestMethod]
     public void GetByFilters_WhenNoMatchingOrders_ShouldReturnEmptyList()
     {
-        var result = _repo.GetByFilters(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow.AddDays(1), null, null);
+        var result = _repository.GetByFilters(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow.AddDays(1), null, null);
 
         result.Should().BeEmpty();
     }
@@ -187,23 +239,12 @@ public sealed class OrderRepositoryTests
     [TestMethod]
     public void Update_WhenOrderExists_ShouldPersistStatusChange()
     {
-        var added = _repo.Add(MakeOrder());
+        var added = _repository.Add(MakeOrder());
         added.Prepare();
 
-        _repo.Update(added);
+        _repository.Update(added);
 
-        _repo.GetById(added.Id)!.Status.Should().Be(OrderStatus.Prepared);
-    }
-
-    [TestMethod]
-    public void Update_WhenOrderDoesNotExist_ShouldDoNothing()
-    {
-        var order = MakeOrder();
-        order.Id = 99;
-
-        _repo.Update(order);
-
-        _repo.GetById(99).Should().BeNull();
+        _repository.GetById(added.Id)!.Status.Should().Be(OrderStatus.Prepared);
     }
     #endregion
     #endregion

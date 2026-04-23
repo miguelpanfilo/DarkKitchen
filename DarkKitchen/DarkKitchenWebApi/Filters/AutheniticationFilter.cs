@@ -1,7 +1,5 @@
 using System.Security.Claims;
-using Contratos;
 using Contratos.Users;
-using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Users;
 using Microsoft.AspNetCore.Authorization;
@@ -28,7 +26,7 @@ public class AuthenticationFilter(ISessionsValidationService sessionsValidationS
             return;
         }
 
-        if (!context.HttpContext.Request.Headers.TryGetValue(SessionHeaderName, out var values) || !values.Any() || string.IsNullOrWhiteSpace(values.FirstOrDefault()))
+        if(!context.HttpContext.Request.Headers.TryGetValue(SessionHeaderName, out var values) || !values.Any() || string.IsNullOrWhiteSpace(values.FirstOrDefault()))
         {
             context.Result = BuildUnauthorizedResult("El header de sesión es obligatorio");
             return;

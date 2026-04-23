@@ -3,10 +3,8 @@ using Almacenamiento.Repositories;
 using AlmacenamientoAbstracciones;
 using DarkKitchen.Filters;
 using FactoryService;
-using LogicaDeNegocio;
 using LogicaDeNegocio.Orders;
 using LogicaDeNegocio.Products;
-using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Orders;
 using LogicaDeNegocioAbstracciones.Products;
 using LogicaDeNegocioAbstracciones.Users;
@@ -31,8 +29,7 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductPhotoStorage>(
-    _ => new ProductPhotoStorage("C:\\temp\\photos")
-);
+    _ => new ProductPhotoStorage("C:\\temp\\photos"));
 builder.Services.AddScoped<ProductPhotoService>();
 
 builder.Services.AddDarkKitchenDependencies(builder.Configuration);
