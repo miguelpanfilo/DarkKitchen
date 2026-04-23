@@ -210,6 +210,30 @@ public sealed class OrderFacadeTests
     }
 
     [TestMethod]
+    public void CreateOrder_WhenItemsAreNull_ShouldThrowValidationException()
+    {
+        var request = new CreateOrderRequest
+        {
+            DeliveryType = DeliveryTypeDto.Express,
+            Address = new CreateAddressRequest
+            {
+                Street = "Rivera",
+                DoorNumber = "1234"
+            },
+            Items = null!
+        };
+
+        var act = () => _orderFacade.CreateOrder(1, request);
+
+        act.Should()
+            .Throw<ValidationException>()
+            .WithMessage("El pedido debe contener al menos un producto");
+
+        _productServiceMock.VerifyNoOtherCalls();
+        _orderServiceMock.VerifyNoOtherCalls();
+    }
+
+    [TestMethod]
     public void CreateOrder_WhenItemQuantityIsZero_ShouldThrowValidationException()
     {
         var request = new CreateOrderRequest
