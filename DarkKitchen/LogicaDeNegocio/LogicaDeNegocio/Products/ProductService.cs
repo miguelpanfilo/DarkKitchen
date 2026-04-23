@@ -23,15 +23,27 @@ public class ProductService : IProductService
     {
         var products = _repository.GetAll();
 
-        if (!string.IsNullOrWhiteSpace(request.Name))
+        products = FilterByName(products, request.Name);
+
+        return MapProducts(products);
+    }
+
+    private static List<ProductResponseDto> MapProducts(List<Product> products)
+    {
+        return products
+            .Select(ProductMapper.ToResponseDto)
+            .ToList();
+    }
+
+    private static List<Product> FilterByName(List<Product> products, string? name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
         {
-            products = products
-                .Where(p => p.Name.Contains(request.Name, StringComparison.OrdinalIgnoreCase))
-                .ToList();
+            return products;
         }
 
         return products
-            .Select(ProductMapper.ToResponseDto)
+            .Where(p => p.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
             .ToList();
     }
 
