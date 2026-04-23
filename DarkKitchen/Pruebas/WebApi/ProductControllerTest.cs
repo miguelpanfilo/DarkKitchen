@@ -248,4 +248,17 @@ public class ProductControllerTest
 
         Assert.AreEqual(1, attribute.Length);
     }
+
+    [TestMethod]
+    public void GivenDeleteEndpoint_WhenCheckingRoleAuthorization_ThenAllowsAdministrative()
+    {
+        var method = typeof(ProductController).GetMethod("Delete");
+
+        var attribute = method
+            .GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
+            .Cast<RoleAuthorizationAttribute>()
+            .FirstOrDefault();
+
+        Assert.IsNotNull(attribute);
+    }
 }
