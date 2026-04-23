@@ -1286,4 +1286,35 @@ public class ProductServiceTest
 
         repoMock.Verify(r => r.GetAll(), Times.Once);
     }
+
+    [TestMethod]
+    public void GivenProducts_WhenFilteringByCategories_ThenReturnsMatchingProducts()
+    {
+        var products = new List<Product>
+        {
+            CreateValidProduct("1", "Producto 1", "Linea", "Bebidas"),
+            CreateValidProduct("2", "Producto 2", "Linea", "Comida"),
+            CreateValidProduct("3", "Producto 3", "Linea", "Postres")
+        };
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        repoMock.Setup(r => r.GetAll()).Returns(products);
+
+        var service = CreateService(repoMock, storageMock);
+
+        var request = new ProductSearchRequestDto
+        {
+            Categories = new List<string> { "Comida", "Postres" }
+        };
+
+        var result = service.GetProducts(request);
+
+        Assert.AreEqual(2, result.Count);
+        Assert.IsTrue(result.Any(p => p.Category == "Comida"));
+        Assert.IsTrue(result.Any(p => p.Category == "Postres"));
+
+        repoMock.Verify(r => r.GetAll(), Times.Once);
+    }
 }
