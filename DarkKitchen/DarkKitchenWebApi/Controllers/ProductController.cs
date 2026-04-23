@@ -1,4 +1,6 @@
 using Contratos.Products;
+using Contratos.Users;
+using DarkKitchen.Filters;
 using LogicaDeNegocioAbstracciones.Products;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +9,7 @@ namespace DarkKitchen.Controllers;
 public class ProductController(IProductService productService) : ControllerBase
 {
     [HttpPost]
+    [RoleAuthorization(UserRolesDto.Administrative)]
     public CreatedResult Create([FromBody] ProductDTO request)
     {
         var response = productService.Create(request);
