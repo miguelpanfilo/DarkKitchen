@@ -13,14 +13,36 @@ public class OrderFacade(IOrderService orderService, IProductService productServ
 {
     private readonly IOrderService _orderService = orderService;
     private readonly IProductService _productService = productService;
-
     public OrderResponse CreateOrder(int clientId, CreateOrderRequest request)
     {
-        var address = Address.MakeAddress(request.Address.Street, request.Address.DoorNumber, request.Address.Apartment);
+        var deliveryType = GetValidDeliveryType(request.DeliveryType);
+
+        var address = Address.MakeAddress(
+            request.Address.Street,
+            request.Address.DoorNumber,
+            request.Address.Apartment);
+
         var items = ResolveItems(request.Items);
-        var shippingCost = ShippingStrategyFactory.Create(request.DeliveryType).Calculate(0m);
-        var order = _orderService.CreateOrder(clientId, request.DeliveryType, address, items, shippingCost);
+        var shippingCost = ShippingStrategyFactory.Create(deliveryType).Calculate(0m);
+
+        var order = _orderService.CreateOrder(
+            clientId,
+            deliveryType,
+            address,
+            items,
+            shippingCost);
+
         return order.ToOrderResponse();
+    }
+
+    private static DeliveryType GetValidDeliveryType(DeliveryTypeDto deliveryTypeDto)
+    {
+        return deliveryTypeDto switch
+        {
+            DeliveryTypeDto.Express => DeliveryType.Express,
+            DeliveryTypeDto.TwentyFourHours => DeliveryType.TwentyFourHours,
+            _ => throw new ValidationException("El tipo de entrega no es válido")
+        };
     }
 
     private List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)> ResolveItems(

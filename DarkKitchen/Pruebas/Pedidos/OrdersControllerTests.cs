@@ -2,7 +2,6 @@ using Contratos;
 using Contratos.Orders;
 using Contratos.Users;
 using DarkKitchen.Controllers;
-using Dominio;
 using FluentAssertions;
 using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Orders;
@@ -64,7 +63,7 @@ public sealed class OrdersControllerTests
 
     private static CreateOrderRequest MakeCreateOrderRequest() => new()
     {
-        DeliveryType = DeliveryType.Express,
+        DeliveryType = DeliveryTypeDto.Express,
         Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
         Items = [new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }]
     };
