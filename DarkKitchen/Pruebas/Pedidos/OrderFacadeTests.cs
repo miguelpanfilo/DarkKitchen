@@ -178,6 +178,38 @@ public sealed class OrderFacadeTests
     }
 
     [TestMethod]
+    public void CreateOrder_WhenDeliveryTypeIsInvalid_ShouldThrowValidationException()
+    {
+        var request = new CreateOrderRequest
+        {
+            DeliveryType = (DeliveryTypeDto)99,
+            Address = new CreateAddressRequest
+            {
+                Street = "Rivera",
+                DoorNumber = "1234"
+            },
+            Items =
+            [
+                new CreateOrderItemRequest
+                {
+                    ProductId = 1,
+                    Quantity = 2
+                }
+
+            ]
+        };
+
+        var act = () => _orderFacade.CreateOrder(1, request);
+
+        act.Should()
+            .Throw<ValidationException>()
+            .WithMessage("El tipo de entrega no es válido");
+
+        _productServiceMock.VerifyNoOtherCalls();
+        _orderServiceMock.VerifyNoOtherCalls();
+    }
+
+    [TestMethod]
     public void CreateOrder_WhenItemQuantityIsZero_ShouldThrowValidationException()
     {
         var request = new CreateOrderRequest
