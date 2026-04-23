@@ -980,4 +980,57 @@ public class PromotionServiceTest
         promotionRepositoryMock.VerifyAll();
         productRepositoryMock.VerifyAll();
     }
+
+    [TestMethod]
+    public void GivenValidDateAndProductId_WhenGettingPromotions_ThenReturnsOnlyPromotionsForThatProduct()
+    {
+        var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        var date = new DateOnly(2026, 1, 26);
+        var product = CreateValidProduct();
+
+        var matchingPromotion = Promotion.MakePromotion(
+            "Promo Producto 100",
+            10,
+            new DateOnly(2026, 1, 25),
+            new DateOnly(2026, 1, 30)
+        );
+        matchingPromotion.AssociateProduct(100);
+
+        var otherPromotion = Promotion.MakePromotion(
+            "Promo Otro Producto",
+            15,
+            new DateOnly(2026, 1, 25),
+            new DateOnly(2026, 1, 30)
+        );
+        otherPromotion.AssociateProduct(200);
+
+        promotionRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns(new List<Promotion> { matchingPromotion, otherPromotion });
+
+        productRepositoryMock
+            .Setup(r => r.GetById(100))
+            .Returns(product);
+
+        var request = new PromotionSearchRequestDto
+        {
+            Date = date,
+            ProductId = 100
+        };
+
+        var service = new PromotionService(
+            promotionRepositoryMock.Object,
+            productRepositoryMock.Object
+        );
+
+        var result = service.GetPromotions(request);
+
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual("Promo Producto 100", result[0].Name);
+
+        promotionRepositoryMock.VerifyAll();
+        productRepositoryMock.VerifyAll();
+    }
 }
