@@ -25,4 +25,11 @@ public class ProductController(IProductService productService) : ControllerBase
         var result = productService.GetProducts(request);
         return Ok(result);
     }
+
+    [HttpPatch]
+    public IActionResult Update(int productId, ProductPatchDto request)
+    {
+        var result = productService.Update(productId, request);
+        return Ok(result);
+    }
 }
