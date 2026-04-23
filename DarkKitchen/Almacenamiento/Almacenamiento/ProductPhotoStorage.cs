@@ -1,6 +1,4 @@
 using AlmacenamientoAbstracciones;
-using Contratos;
-using Contratos.Products;
 
 namespace Almacenamiento;
 
@@ -13,12 +11,12 @@ public class ProductPhotoStorage : IProductPhotoStorage
         _basePath = basePath;
     }
 
-    public string Save(PhotoDTO photo)
+    public string Save(string base64, string extension)
     {
         Directory.CreateDirectory(_basePath);
 
-        var bytes = Convert.FromBase64String(photo.Base64);
-        var fileName = $"{Guid.NewGuid()}{photo.Extension}";
+        var bytes = Convert.FromBase64String(base64);
+        var fileName = $"{Guid.NewGuid()}{extension}";
         var fullPath = Path.Combine(_basePath, fileName);
 
         File.WriteAllBytes(fullPath, bytes);

@@ -62,7 +62,7 @@ public class ProductServiceTest
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
         storageMock
-            .Setup(s => s.Save(It.IsAny<PhotoDTO>()))
+            .Setup(s => s.Save(It.IsAny<string>(), It.IsAny<string>()))
             .Returns("uploads/photo1.jpg");
 
         repoMock
@@ -123,7 +123,7 @@ public class ProductServiceTest
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
         storageMock
-            .Setup(storage => storage.Save(It.IsAny<PhotoDTO>()))
+            .Setup(storage => storage.Save(It.IsAny<string>(), It.IsAny<string>()))
             .Returns("uploads/foto1.jpg");
 
         repoMock
@@ -136,7 +136,7 @@ public class ProductServiceTest
 
         Assert.IsNotNull(result);
 
-        storageMock.Verify(storage => storage.Save(It.IsAny<PhotoDTO>()), Times.Once);
+        storageMock.Verify(storage => storage.Save(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         repoMock.Verify(repository => repository.Create(It.IsAny<Product>()), Times.Once);
     }
 
@@ -162,7 +162,7 @@ public class ProductServiceTest
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
         storageMock
-            .Setup(s => s.Save(It.IsAny<PhotoDTO>()))
+            .Setup(s => s.Save(It.IsAny<string>(), It.IsAny<string>()))
             .Returns("uploads/foto1.jpg");
 
         repoMock
@@ -208,9 +208,14 @@ public class ProductServiceTest
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
+        var counter = 0;
         storageMock
-            .Setup(s => s.Save(It.IsAny<PhotoDTO>()))
-            .Returns((PhotoDTO photo) => $"uploads/{photo.FileName}{photo.Extension}");
+            .Setup(s => s.Save(It.IsAny<string>(), It.IsAny<string>()))
+            .Returns((string base64, string extension) =>
+            {
+                counter++;
+                return $"uploads/photo{counter}{extension}";
+            });
 
         repoMock
             .Setup(r => r.Create(It.IsAny<Product>()))
@@ -228,7 +233,7 @@ public class ProductServiceTest
             Assert.AreEqual($"uploads/photo{i + 1}.jpg", result.Photos[i].Path);
         }
 
-        storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Exactly(cantidadFotos));
+        storageMock.Verify(s => s.Save(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(cantidadFotos));
         repoMock.Verify(r => r.Create(It.IsAny<Product>()), Times.Once);
     }
 
@@ -265,7 +270,7 @@ public class ProductServiceTest
         var exception = Assert.ThrowsException<ProductException>(() => service.Create(productDto));
 
         Assert.AreEqual("El producto debe tener entre 1 y 3 fotos", exception.Message);
-        storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Never);
+        storageMock.Verify(s => s.Save(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         repoMock.Verify(r => r.Create(It.IsAny<Product>()), Times.Never);
     }
 
@@ -307,7 +312,7 @@ public class ProductServiceTest
 
         Assert.AreEqual("Las fotos deben estar en formato JPG", exception.Message);
 
-        storageMock.Verify(x => x.Save(It.IsAny<PhotoDTO>()), Times.Never);
+        storageMock.Verify(x => x.Save(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
 
     [DataTestMethod]
@@ -343,7 +348,7 @@ public class ProductServiceTest
 
         Assert.AreEqual("Las fotos deben estar en formato JPG", exception.Message);
 
-        storageMock.Verify(x => x.Save(It.IsAny<PhotoDTO>()), Times.Never);
+        storageMock.Verify(x => x.Save(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
 
     [TestMethod]
@@ -647,7 +652,7 @@ public class ProductServiceTest
             .Returns(product);
 
         storageMock
-            .Setup(s => s.Save(It.IsAny<PhotoDTO>()))
+            .Setup(s => s.Save(It.IsAny<string>(), It.IsAny<string>()))
             .Returns("/images/products/1/nueva.jpg");
 
         storageMock
@@ -667,7 +672,7 @@ public class ProductServiceTest
         Assert.IsTrue(result.Photos.Any(p => p.Path == "/images/products/1/nueva.jpg"));
         Assert.IsFalse(result.Photos.Any(p => p.Path == "/images/products/1/b.jpg"));
 
-        storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Once);
+        storageMock.Verify(s => s.Save(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         storageMock.Verify(s => s.Delete("/images/products/1/b.jpg"), Times.Once);
         repoMock.Verify(r => r.GetById(1), Times.Once);
         repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Once);
@@ -744,7 +749,7 @@ public class ProductServiceTest
 
         repoMock.Verify(r => r.GetById(1), Times.Once);
         repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Never);
-        storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Never);
+        storageMock.Verify(s => s.Save(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
 
     [TestMethod]
@@ -792,7 +797,7 @@ public class ProductServiceTest
 
         repoMock.Verify(r => r.GetById(1), Times.Once);
         repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Never);
-        storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Never);
+        storageMock.Verify(s => s.Save(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
 
     [TestMethod]

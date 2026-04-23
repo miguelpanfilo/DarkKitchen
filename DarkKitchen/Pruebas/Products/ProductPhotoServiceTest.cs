@@ -25,7 +25,7 @@ public class ProductPhotoServiceTest
 
         Assert.AreEqual("La foto debe tener un base64 válido", exception.Message);
 
-        storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Never);
+        storageMock.Verify(s => s.Save(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
 
     [TestMethod]
@@ -44,7 +44,7 @@ public class ProductPhotoServiceTest
 
         Assert.AreEqual("La foto debe tener un base64 válido", exception.Message);
 
-        storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Never);
+        storageMock.Verify(s => s.Save(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
 
     [TestMethod]
@@ -66,6 +66,6 @@ public class ProductPhotoServiceTest
 
         Assert.AreEqual("La foto no puede superar los 500 KB", exception.Message);
 
-        storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Never);
+        storageMock.Verify(s => s.Save(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
 }
