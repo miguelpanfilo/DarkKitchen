@@ -206,4 +206,17 @@ public class ProductControllerTest
 
         Assert.AreEqual(1, attribute.Length);
     }
+
+    [TestMethod]
+    public void GivenUpdateEndpoint_WhenCheckingRoleAuthorization_ThenAllowsAdministrative()
+    {
+        var method = typeof(ProductController).GetMethod("Update");
+
+        var attribute = method
+            .GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
+            .Cast<RoleAuthorizationAttribute>()
+            .FirstOrDefault();
+
+        Assert.IsNotNull(attribute);
+    }
 }
