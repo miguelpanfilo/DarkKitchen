@@ -148,4 +148,18 @@ public class ProductControllerTest
 
         Assert.IsNotNull(attribute);
     }
+
+    [TestMethod]
+    public void Get_ShouldHaveRoleAuthorizationAttribute()
+    {
+        var method = typeof(ProductController)
+            .GetMethod("Get");
+
+        var attribute = method!
+            .GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
+            .Cast<RoleAuthorizationAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
+    }
 }
