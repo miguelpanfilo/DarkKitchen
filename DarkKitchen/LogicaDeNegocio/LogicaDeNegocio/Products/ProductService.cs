@@ -23,6 +23,13 @@ public class ProductService : IProductService
     {
         var products = _repository.GetAll();
 
+        if (!string.IsNullOrWhiteSpace(request.Name))
+        {
+            products = products
+                .Where(p => p.Name.Contains(request.Name, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
         return products
             .Select(ProductMapper.ToResponseDto)
             .ToList();
