@@ -17,6 +17,8 @@ public class OrderFacade(IOrderService orderService, IProductService productServ
     {
         var deliveryType = GetValidDeliveryType(request.DeliveryType);
 
+        ValidateItems(request.Items);
+
         var address = Address.MakeAddress(
             request.Address.Street,
             request.Address.DoorNumber,
@@ -33,6 +35,19 @@ public class OrderFacade(IOrderService orderService, IProductService productServ
             shippingCost);
 
         return order.ToOrderResponse();
+    }
+
+    private static void ValidateItems(List<CreateOrderItemRequest> requestItems)
+    {
+        if(requestItems == null || requestItems.Count == 0)
+        {
+            throw new ValidationException("El pedido debe contener al menos un producto");
+        }
+
+        if(requestItems.Any(i => i.Quantity <= 0))
+        {
+            throw new ValidationException("La cantidad de cada producto debe ser mayor a 0");
+        }
     }
 
     private static DeliveryType GetValidDeliveryType(DeliveryTypeDto deliveryTypeDto)
