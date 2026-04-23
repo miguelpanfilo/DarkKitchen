@@ -43,8 +43,7 @@ public class PromotionService : IPromotionService
         var promotions = _promotionRepository.GetAll();
 
         var filtered = FilterByDate(promotions, request.Date.Value);
-        filtered = FilterByProductId(filtered, request.ProductId);
-        filtered = FilterByCommercialLine(filtered, request.CommercialLine);
+        filtered = FilterByAssociatedProductFilters(filtered, request.ProductId, request.CommercialLine);
 
         return filtered
             .Select(MapPromotionWithProducts)
@@ -194,6 +193,30 @@ public class PromotionService : IPromotionService
         return promotions
             .Where(p => p.PromotionProducts.Any(pp =>
                 GetExistingProduct(pp.ProductId).CommercialLine == commercialLine))
+            .ToList();
+    }
+
+    private List<Promotion> FilterByAssociatedProductFilters(
+        List<Promotion> promotions,
+        int? productId,
+        string? commercialLine)
+    {
+        if (productId is null && string.IsNullOrWhiteSpace(commercialLine))
+        {
+            return promotions;
+        }
+
+        return promotions
+            .Where(p => p.PromotionProducts.Any(pp =>
+            {
+                var product = GetExistingProduct(pp.ProductId);
+
+                var matchesProductId = productId is null || product.Id == productId.Value;
+                var matchesCommercialLine = string.IsNullOrWhiteSpace(commercialLine) ||
+                                            product.CommercialLine == commercialLine;
+
+                return matchesProductId && matchesCommercialLine;
+            }))
             .ToList();
     }
 }
