@@ -3,6 +3,7 @@ using Dominio.Exceptions;
 using FluentAssertions;
 using LogicaDeNegocio;
 using LogicaDeNegocio.Shipping;
+using LogicaDeNegocioAbstracciones.Exceptions;
 
 namespace Pruebas.Pedidos;
 
@@ -46,14 +47,14 @@ public sealed class ShippingStrategyFactoryTests
 
     #region Error
     [TestMethod]
-    public void Create_WhenDeliveryTypeIsUnknown_ShouldThrowOrderException()
+    public void Create_WhenDeliveryTypeIsUnknown_ShouldThrowValidationException()
     {
         var unknownType = (DeliveryType)99;
 
         var act = () => ShippingStrategyFactory.Create(unknownType);
 
-        act.Should().Throw<OrderException>()
-            .WithMessage("No se encontró estrategia de envío para el tipo de entrega: 99");
+        act.Should().Throw<ValidationException>()
+            .WithMessage("Tipo de entrega inválido: 99");
     }
     #endregion
     #endregion

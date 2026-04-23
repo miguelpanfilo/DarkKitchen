@@ -1,6 +1,7 @@
 using Contratos.Orders;
 using Contratos.Users;
 using DarkKitchen.Filters;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Orders;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +15,36 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
 
     private CurrentUserDto CurrentUser =>
         (CurrentUserDto)HttpContext.Items["CurrentUser"]!;
+
+    private static string NormalizeStatus(string status)
+    {
+        if(string.IsNullOrWhiteSpace(status))
+        {
+            throw new ValidationException("El estado es obligatorio");
+        }
+
+        return status
+            .Trim()
+            .ToLowerInvariant()
+            .Replace(" ", string.Empty)
+            .Replace("_", string.Empty)
+            .Replace("-", string.Empty);
+    }
+
+    private static OrderStatusDto ParseStatus(string status)
+    {
+        var normalized = NormalizeStatus(status);
+
+        return normalized switch
+        {
+            "preparado" => OrderStatusDto.Prepared,
+            "cancelado" => OrderStatusDto.Cancelled,
+            "encamino" => OrderStatusDto.OnTheWay,
+            "entregado" => OrderStatusDto.Delivered,
+            "noentregado" => OrderStatusDto.NotDelivered,
+            _ => throw new ValidationException($"Estado '{status}' no válido")
+        };
+    }
 
     [HttpPost]
     [RoleAuthorization(UserRolesDto.Client)]
@@ -29,7 +60,7 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
     {
         var order = _orderFacade.GetById(id);
 
-        if(CurrentUser.Role == UserRolesDto.Client && order.ClientId != CurrentUser.Id)
+        if(CurrentUser.Role == UserRolesDto.Client && order.Client.Id != CurrentUser.Id)
         {
             return Forbid();
         }
@@ -62,60 +93,98 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
     [RoleAuthorization(UserRolesDto.Client, UserRolesDto.Preparer, UserRolesDto.Administrative)]
     public IActionResult ChangeStatus(int id, [FromBody] UpdateOrderStatusRequest request)
     {
-        switch(request.Estado)
+        OrderStatusDto status;
+
+        try
         {
-            case "Preparado":
+            status = ParseStatus(request.Estado);
+        }
+        catch(ValidationException ex)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest,
+                new ResponseDto { ExecutionSuccessful = false, Message = ex.Message });
+        }
+
+        switch(status)
+        {
+            case OrderStatusDto.Prepared:
                 if(CurrentUser.Role != UserRolesDto.Preparer && CurrentUser.Role != UserRolesDto.Administrative)
                 {
-                    return Forbid();
+                    return ForbiddenResponse();
                 }
 
                 _orderFacade.Prepare(id);
                 break;
-            case "Cancelado":
+
+            case OrderStatusDto.Cancelled:
                 if(CurrentUser.Role != UserRolesDto.Client && CurrentUser.Role != UserRolesDto.Administrative)
                 {
-                    return Forbid();
+                    return ForbiddenResponse();
+                }
+
+                if(CurrentUser.Role == UserRolesDto.Client)
+                {
+                    var orderToCancel = _orderFacade.GetById(id);
+                    if(orderToCancel.Client.Id != CurrentUser.Id)
+                    {
+                        return ForbiddenResponse();
+                    }
                 }
 
                 _orderFacade.Cancel(id);
                 break;
-            case "EnCamino":
+
+            case OrderStatusDto.OnTheWay:
                 if(CurrentUser.Role != UserRolesDto.Preparer && CurrentUser.Role != UserRolesDto.Administrative)
                 {
-                    return Forbid();
+                    return ForbiddenResponse();
                 }
 
                 _orderFacade.Dispatch(id);
                 break;
-            case "Entregado":
+
+            case OrderStatusDto.Delivered:
                 if(CurrentUser.Role != UserRolesDto.Preparer && CurrentUser.Role != UserRolesDto.Administrative)
                 {
-                    return Forbid();
+                    return ForbiddenResponse();
                 }
 
                 _orderFacade.Deliver(id);
                 break;
-            case "NoEntregado":
+
+            case OrderStatusDto.NotDelivered:
                 if(CurrentUser.Role != UserRolesDto.Preparer && CurrentUser.Role != UserRolesDto.Administrative)
                 {
-                    return Forbid();
+                    return ForbiddenResponse();
                 }
 
                 _orderFacade.MarkNotDelivered(id);
                 break;
+
             default:
-                return BadRequest($"Estado '{request.Estado}' no válido");
+                return StatusCode(StatusCodes.Status400BadRequest,
+                    new ResponseDto { ExecutionSuccessful = false, Message = $"Estado '{request.Estado}' no válido" });
         }
 
         var order = _orderFacade.GetById(id);
+
         return Ok(new OrderStatusResponse
         {
-            PedidoId = order.Id,
-            Estado = order.Status,
-            FechaCambioEstado = order.StatusUpdatedAt
+            PedidoId = order.Id, Estado = order.Status, FechaCambioEstado = order.StatusUpdatedAt
         });
     }
+
+    private IActionResult ForbiddenResponse()
+    {
+        return StatusCode(StatusCodes.Status403Forbidden,
+            new ResponseDto
+            {
+                ExecutionSuccessful = false, Message = "El usuario no tiene permisos para ejecutar esta acción"
+            });
+    }
+}
+
+/*
 
     [HttpPut("{id:int}/prepare")]
     [RoleAuthorization(UserRolesDto.Preparer, UserRolesDto.Administrative)]
@@ -155,5 +224,4 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
     {
         _orderFacade.MarkNotDelivered(id);
         return NoContent();
-    }
-}
+    }*/

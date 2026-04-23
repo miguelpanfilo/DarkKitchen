@@ -32,9 +32,20 @@ public class OrderRepository(SqlContext context) : IOrderRepository
             .Include(o => o.Client)
             .Where(o => o.ClientId == clientId);
 
-        if (dateFrom.HasValue) query = query.Where(o => o.CreatedAt >= dateFrom.Value);
-        if (dateTo.HasValue)   query = query.Where(o => o.CreatedAt <= dateTo.Value);
-        if (status.HasValue)   query = query.Where(o => o.Status == status.Value);
+        if (dateFrom.HasValue)
+        {
+            query = query.Where(o => o.CreatedAt >= dateFrom.Value);
+        }
+
+        if (dateTo.HasValue)
+        {
+            query = query.Where(o => o.CreatedAt <= dateTo.Value);
+        }
+
+        if (status.HasValue)
+        {
+            query = query.Where(o => o.Status == status.Value);
+        }
 
         return query.ToList();
     }
@@ -46,10 +57,18 @@ public class OrderRepository(SqlContext context) : IOrderRepository
             .Include(o => o.Client)
             .Where(o => o.CreatedAt >= dateFrom && o.CreatedAt <= dateTo);
 
-        if (!string.IsNullOrWhiteSpace(street))
-            query = query.Where(o => o.Address.Street == street);
-        if (status.HasValue)
+        if(!string.IsNullOrWhiteSpace(street))
+        {
+            var normalizedStreet = street.Trim().ToLower();
+
+            query = query.Where(o =>
+                o.Address.Street.ToLower().Contains(normalizedStreet));
+        }
+
+        if(status.HasValue)
+        {
             query = query.Where(o => o.Status == status.Value);
+        }
 
         return query.ToList();
     }

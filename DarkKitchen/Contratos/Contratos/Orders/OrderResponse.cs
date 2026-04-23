@@ -4,7 +4,7 @@ public class OrderResponse
 {
     public int Id { get; set; }
     public string OrderNumber { get; set; } = string.Empty;
-    public int ClientId { get; set; }
+    public ClientOrderResponse Client { get; set; } = new();
     public string DeliveryType { get; set; } = string.Empty;
     public AddressResponse Address { get; set; } = new();
     public List<OrderItemResponse> Items { get; set; } = [];
