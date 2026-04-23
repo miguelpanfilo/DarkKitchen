@@ -12,9 +12,6 @@ public class PromotionsController(IPromotionService promotionService) : Controll
 {
     private readonly IPromotionService _promotionService = promotionService;
 
-    private CurrentUserDto CurrentUser =>
-        (CurrentUserDto)HttpContext.Items["CurrentUser"]!;
-
     [HttpPost]
     [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult Create([FromBody] PromotionRequestDto request)

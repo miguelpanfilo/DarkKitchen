@@ -1,11 +1,13 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Contratos.Products;
+using Contratos.Promotions;
 using Dominio;
 using Dominio.Builders;
 using Dominio.Exceptions;
 using LogicaDeNegocio;
 using LogicaDeNegocio.Products;
+using LogicaDeNegocio.Promotions;
 using Mapeo;
 using Moq;
 
@@ -1106,5 +1108,74 @@ public class ProductServiceTest
 
         repoMock.Verify(r => r.GetById(1), Times.Once);
         repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Never);
+    }
+
+    [TestMethod]
+    public void GivenValidDateProductIdAndCommercialLine_WhenProductDoesNotMatchLine_ThenReturnsEmptyList()
+    {
+        var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        var date = new DateOnly(2026, 1, 26);
+
+        var promotion = Promotion.MakePromotion(
+            "Promo Mixta",
+            10,
+            new DateOnly(2026, 1, 25),
+            new DateOnly(2026, 1, 30)
+        );
+        promotion.AssociateProduct(100);
+        promotion.AssociateProduct(200);
+
+        var bebidaProduct = new ProductBuilder()
+            .WithCode("COD100")
+            .WithName("Producto Bebida")
+            .WithDescription("Descripción válida con más de veinte caracteres")
+            .WithCommercialLine("Bebidas")
+            .WithCategory("Categoría")
+            .WithPrice(100)
+            .WithPhotos(new List<ProductPhoto> { new ProductPhoto("photo-1.jpg") })
+            .Build();
+
+        var comidaProduct = new ProductBuilder()
+            .WithCode("COD200")
+            .WithName("Producto Comida")
+            .WithDescription("Descripción válida con más de veinte caracteres")
+            .WithCommercialLine("Comida")
+            .WithCategory("Categoría")
+            .WithPrice(100)
+            .WithPhotos(new List<ProductPhoto> { new ProductPhoto("photo-2.jpg") })
+            .Build();
+
+        promotionRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns(new List<Promotion> { promotion });
+
+        productRepositoryMock
+            .Setup(r => r.GetById(100))
+            .Returns(bebidaProduct);
+
+        productRepositoryMock
+            .Setup(r => r.GetById(200))
+            .Returns(comidaProduct);
+
+        var request = new PromotionSearchRequestDto
+        {
+            Date = date,
+            ProductId = 100,
+            CommercialLine = "Comida"
+        };
+
+        var service = new PromotionService(
+            promotionRepositoryMock.Object,
+            productRepositoryMock.Object
+        );
+
+        var result = service.GetPromotions(request);
+
+        Assert.AreEqual(0, result.Count);
+
+        promotionRepositoryMock.VerifyAll();
+        productRepositoryMock.VerifyAll();
     }
 }
