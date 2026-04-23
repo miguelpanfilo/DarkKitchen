@@ -25,14 +25,18 @@ public class ProductServiceTest
         return new ProductService(repoMock.Object, photoService);
     }
 
-    private Product CreateValidProduct(string code, string name)
+    private Product CreateValidProduct(
+        string code = "CODE12345",
+        string name = "Producto valido 1",
+        string commercialLine = "Linea",
+        string category = "Categoria")
     {
         return new ProductBuilder()
             .WithCode(code)
             .WithName(name)
             .WithDescription("Descripcion valida con mas de veinte caracteres")
-            .WithCommercialLine("Linea")
-            .WithCategory("Categoria")
+            .WithCommercialLine(commercialLine)
+            .WithCategory(category)
             .WithPrice(100)
             .WithPhotos(new List<ProductPhoto>
             {
@@ -1250,6 +1254,35 @@ public class ProductServiceTest
 
         Assert.AreEqual(1, result.Count);
         Assert.AreEqual("Producto valido 1", result[0].Name);
+
+        repoMock.Verify(r => r.GetAll(), Times.Once);
+    }
+
+    [TestMethod]
+    public void GivenProducts_WhenFilteringByCommercialLine_ThenReturnsMatchingProducts()
+    {
+        var products = new List<Product>
+        {
+            CreateValidProduct("CODE12345", "Producto 1", "Linea1"),
+            CreateValidProduct("CODE12346", "Producto 2", "Linea2")
+        };
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        repoMock.Setup(r => r.GetAll()).Returns(products);
+
+        var service = CreateService(repoMock, storageMock);
+
+        var request = new ProductSearchRequestDto
+        {
+            CommercialLine = "Linea1"
+        };
+
+        var result = service.GetProducts(request);
+
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual("Producto 1", result[0].Name);
 
         repoMock.Verify(r => r.GetAll(), Times.Once);
     }
