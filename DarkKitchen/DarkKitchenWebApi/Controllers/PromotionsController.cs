@@ -54,4 +54,11 @@ public class PromotionsController(IPromotionService promotionService) : Controll
         var response = _promotionService.DisassociateProduct(promotionId, productId);
         return Ok(response);
     }
+
+    [HttpGet]
+    public IActionResult Get([FromQuery] PromotionSearchRequestDto request)
+    {
+        var result = _promotionService.GetPromotions(request);
+        return Ok(result);
+    }
 }

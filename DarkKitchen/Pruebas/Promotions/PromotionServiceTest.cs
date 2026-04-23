@@ -935,4 +935,49 @@ public class PromotionServiceTest
         promotionRepositoryMock.VerifyAll();
         productRepositoryMock.VerifyAll();
     }
+
+    [TestMethod]
+    public void GivenValidDate_WhenGettingPromotions_ThenReturnsOnlyActivePromotions()
+    {
+        var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        var date = new DateOnly(2026, 1, 26);
+
+        var activePromotion = Promotion.MakePromotion(
+            "Promo Activa",
+            10,
+            new DateOnly(2026, 1, 25),
+            new DateOnly(2026, 1, 30)
+        );
+
+        var expiredPromotion = Promotion.MakePromotion(
+            "Promo Vencida",
+            10,
+            new DateOnly(2026, 1, 10),
+            new DateOnly(2026, 1, 20)
+        );
+
+        promotionRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns(new List<Promotion> { activePromotion, expiredPromotion });
+
+        var request = new PromotionSearchRequestDto
+        {
+            Date = date
+        };
+
+        var service = new PromotionService(
+            promotionRepositoryMock.Object,
+            productRepositoryMock.Object
+        );
+
+        var result = service.GetPromotions(request);
+
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual("Promo Activa", result[0].Name);
+
+        promotionRepositoryMock.VerifyAll();
+        productRepositoryMock.VerifyAll();
+    }
 }
