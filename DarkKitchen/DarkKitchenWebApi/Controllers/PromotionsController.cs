@@ -56,6 +56,7 @@ public class PromotionsController(IPromotionService promotionService) : Controll
     }
 
     [HttpGet]
+    [RoleAuthorization(UserRolesDto.Administrative, UserRolesDto.Client)]
     public IActionResult Get([FromQuery] PromotionSearchRequestDto request)
     {
         var result = _promotionService.GetPromotions(request);
