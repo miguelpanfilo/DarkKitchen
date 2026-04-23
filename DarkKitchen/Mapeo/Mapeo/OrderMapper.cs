@@ -48,4 +48,14 @@ public static class OrderMapper
             LineTotal = item.LineTotal
         };
     }
+
+    public static DeliveryType ToDomain(this DeliveryTypeDto dto)
+    {
+        return dto switch
+        {
+            DeliveryTypeDto.Express => DeliveryType.Express,
+            DeliveryTypeDto.TwentyFourHours => DeliveryType.TwentyFourHours,
+            _ => throw new ArgumentOutOfRangeException(nameof(dto), "Tipo de entrega no soportado")
+        };
+    }
 }
