@@ -19,6 +19,7 @@ public class ProductController(IProductService productService) : ControllerBase
     }
 
     [HttpGet]
+    [RoleAuthorization(UserRolesDto.Administrative, UserRolesDto.Client)]
     public IActionResult Get([FromQuery] ProductSearchRequestDto request)
     {
         var result = productService.GetProducts(request);
