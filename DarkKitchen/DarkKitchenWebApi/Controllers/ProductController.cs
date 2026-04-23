@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DarkKitchen.Controllers;
 
+[ApiController]
+[Route("api/v1/products")]
 public class ProductController(IProductService productService) : ControllerBase
 {
     [HttpPost]

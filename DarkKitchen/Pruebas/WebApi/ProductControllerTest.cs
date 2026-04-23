@@ -80,4 +80,58 @@ public class ProductControllerTest
 
         Assert.IsNotNull(attribute);
     }
+
+    [TestMethod]
+    public void GivenSearchRequest_WhenGettingProducts_ThenReturnsOk()
+    {
+        var request = new ProductSearchRequestDto
+        {
+            CommercialLine = "Minutas",
+            Categories = new List<string> { "Sandwiches" },
+            Name = "Milanesa"
+        };
+
+        var response = new List<ProductResponseDto>
+        {
+            new ProductResponseDto
+            {
+                Id = 1,
+                Code = "COD123",
+                Name = "Milanesa al pan",
+                Description = "Milanesa al pan completa con fritas",
+                CommercialLine = "Minutas",
+                Category = "Sandwiches",
+                Price = 100,
+                IsActive = true,
+                Photos = new List<PhotoResponseDto>
+                {
+                    new PhotoResponseDto
+                    {
+                        Path = "uploads/photo1.jpg"
+                    }
+                }
+            }
+        };
+
+        var serviceMock = new Mock<IProductService>(MockBehavior.Strict);
+
+        serviceMock
+            .Setup(s => s.GetProducts(request))
+            .Returns(response);
+
+        var controller = new ProductController(serviceMock.Object);
+
+        var result = controller.Get(request) as OkObjectResult;
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(200, result.StatusCode);
+
+        var value = result.Value as List<ProductResponseDto>;
+        Assert.IsNotNull(value);
+        Assert.AreEqual(1, value.Count);
+        Assert.AreEqual("Milanesa al pan", value[0].Name);
+        Assert.AreEqual("uploads/photo1.jpg", value[0].Photos[0].Path);
+
+        serviceMock.Verify(s => s.GetProducts(request), Times.Once);
+    }
 }
