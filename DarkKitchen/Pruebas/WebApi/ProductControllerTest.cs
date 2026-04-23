@@ -163,4 +163,37 @@ public class ProductControllerTest
 
         Assert.IsNotNull(attribute);
     }
+
+    [TestMethod]
+    public void GivenValidPatchRequest_WhenUpdatingProduct_ThenReturnsOk()
+    {
+        var serviceMock = new Mock<IProductService>(MockBehavior.Strict);
+
+        var productId = 1;
+        var request = new ProductPatchDto
+        {
+            Name = "Producto actualizado"
+        };
+
+        var response = new ProductResponseDto
+        {
+            Id = productId,
+            Name = "Producto actualizado"
+        };
+
+        serviceMock
+            .Setup(s => s.Update(productId, request))
+            .Returns(response);
+
+        var controller = new ProductController(serviceMock.Object);
+
+        var result = controller.Update(productId, request);
+
+        var okResult = result as OkObjectResult;
+        Assert.IsNotNull(okResult);
+        Assert.AreEqual(response, okResult.Value);
+
+        serviceMock.Verify(s => s.Update(productId, request), Times.Once);
+        serviceMock.VerifyAll();
+    }
 }
