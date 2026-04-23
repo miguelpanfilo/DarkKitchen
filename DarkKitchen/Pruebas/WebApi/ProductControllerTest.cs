@@ -219,4 +219,23 @@ public class ProductControllerTest
 
         Assert.IsNotNull(attribute);
     }
+
+    [TestMethod]
+    public void GivenValidId_WhenDeletingProduct_ThenReturnsNoContent()
+    {
+        var serviceMock = new Mock<IProductService>(MockBehavior.Strict);
+        var productId = 1;
+
+        serviceMock
+            .Setup(s => s.Delete(productId));
+
+        var controller = new ProductController(serviceMock.Object);
+
+        var result = controller.Delete(productId);
+
+        Assert.IsInstanceOfType(result, typeof(NoContentResult));
+
+        serviceMock.Verify(s => s.Delete(productId), Times.Once);
+        serviceMock.VerifyAll();
+    }
 }
