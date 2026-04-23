@@ -64,4 +64,18 @@ public class GetPromotionsControllerTest
 
         Assert.IsNotNull(attribute);
     }
+
+    [TestMethod]
+    public void GetPromotions_HasHttpGetAttribute()
+    {
+        var method = typeof(PromotionsController).GetMethod(nameof(PromotionsController.Get));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(HttpGetAttribute), false)
+            .Cast<HttpGetAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
+    }
 }
