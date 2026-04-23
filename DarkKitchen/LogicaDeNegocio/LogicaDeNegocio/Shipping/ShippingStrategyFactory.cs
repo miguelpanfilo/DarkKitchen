@@ -1,5 +1,6 @@
 using Dominio;
 using Dominio.Exceptions;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Orders;
 
 namespace LogicaDeNegocio.Shipping;
@@ -12,7 +13,9 @@ public static class ShippingStrategyFactory
         {
             DeliveryType.Express => new ExpressShippingStrategy(),
             DeliveryType.TwentyFourHours => new TwentyFourHoursShippingStrategy(),
-            _ => throw new OrderException($"No se encontró estrategia de envío para el tipo de entrega: {(int)deliveryType}")
+            _ => throw new ValidationException(
+                $"Tipo de entrega inválido: {deliveryType}"
+            )
         };
     }
 }

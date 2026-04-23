@@ -2,6 +2,7 @@ using Contratos.Orders;
 using Dominio;
 using Dominio.Exceptions;
 using LogicaDeNegocio.Shipping;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Orders;
 using LogicaDeNegocioAbstracciones.Products;
 using Mapeo;
@@ -27,13 +28,21 @@ public class OrderFacade(IOrderService orderService, IProductService productServ
     {
         return requestItems.Select(i =>
         {
-            var product = _productService.GetById(i.ProductId);
-            if(!product.IsActive)
+            try
             {
-                throw new OrderException($"El producto {product.Name} no está disponible");
-            }
+                var product = _productService.GetById(i.ProductId);
 
-            return (i.ProductId, i.Quantity, product.Price, 0m);
+                if(!product.IsActive)
+                {
+                    throw new ValidationException($"El producto {product.Name} no está disponible");
+                }
+
+                return (i.ProductId, i.Quantity, product.Price, 0m);
+            }
+            catch(ProductException)
+            {
+                throw new NotFoundException($"El producto con id {i.ProductId} no existe");
+            }
         }).ToList();
     }
 
