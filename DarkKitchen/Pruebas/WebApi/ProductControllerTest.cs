@@ -238,4 +238,14 @@ public class ProductControllerTest
         serviceMock.Verify(s => s.Delete(productId), Times.Once);
         serviceMock.VerifyAll();
     }
+
+    [TestMethod]
+    public void GivenDeleteEndpoint_WhenCheckingHttpAttribute_ThenHasHttpDelete()
+    {
+        var method = typeof(ProductController).GetMethod("Delete");
+
+        var attribute = method.GetCustomAttributes(typeof(HttpDeleteAttribute), false);
+
+        Assert.AreEqual(1, attribute.Length);
+    }
 }
