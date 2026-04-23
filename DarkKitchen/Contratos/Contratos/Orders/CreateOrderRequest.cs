@@ -1,5 +1,3 @@
-using Dominio;
-
 namespace Contratos.Orders;
 
 public class CreateOrderRequest
