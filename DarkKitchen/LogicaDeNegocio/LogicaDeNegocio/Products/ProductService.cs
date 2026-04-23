@@ -24,6 +24,7 @@ public class ProductService : IProductService
         var products = _repository.GetAll();
 
         products = FilterByName(products, request.Name);
+        products = FilterByCommercialLine(products, request.CommercialLine);
 
         return MapProducts(products);
     }
@@ -44,6 +45,18 @@ public class ProductService : IProductService
 
         return products
             .Where(p => p.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+    }
+
+    private static List<Product> FilterByCommercialLine(List<Product> products, string? commercialLine)
+    {
+        if (string.IsNullOrWhiteSpace(commercialLine))
+        {
+            return products;
+        }
+
+        return products
+            .Where(p => p.CommercialLine.Equals(commercialLine, StringComparison.OrdinalIgnoreCase))
             .ToList();
     }
 
