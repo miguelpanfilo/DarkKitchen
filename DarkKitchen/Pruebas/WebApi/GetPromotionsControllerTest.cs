@@ -1,6 +1,7 @@
 using Contratos.Products;
 using Contratos.Promotions;
 using DarkKitchen.Controllers;
+using DarkKitchen.Filters;
 using LogicaDeNegocioAbstracciones.Promotions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -48,5 +49,19 @@ public class GetPromotionsControllerTest
         Assert.AreEqual(response, result.Value);
 
         serviceMock.VerifyAll();
+    }
+
+    [TestMethod]
+    public void GetPromotions_HasRoleAuthorizationAttribute()
+    {
+        var method = typeof(PromotionsController).GetMethod(nameof(PromotionsController.Get));
+
+        Assert.IsNotNull(method);
+
+        var attribute = method.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
+            .Cast<RoleAuthorizationAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
     }
 }
