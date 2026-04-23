@@ -8,6 +8,7 @@ using Dominio.Exceptions;
 using LogicaDeNegocio;
 using LogicaDeNegocio.Products;
 using LogicaDeNegocio.Promotions;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using Mapeo;
 using Moq;
 
@@ -693,7 +694,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ProductException>(() => service.Update(1, patchDto));
+        var exception = Assert.ThrowsException<NotFoundException>(() => service.Update(1, patchDto));
 
         Assert.AreEqual("El producto no existe", exception.Message);
 
@@ -737,7 +738,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ProductException>(() => service.Update(1, patchDto));
+        var exception = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto));
 
         Assert.AreEqual("La foto no pertenece al producto", exception.Message);
 
@@ -785,7 +786,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ProductException>(() => service.Update(1, patchDto));
+        var exception = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto));
 
         Assert.AreEqual("Datos de foto inválidos", exception.Message);
 
@@ -935,7 +936,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ProductException>(
+        var exception = Assert.ThrowsException<NotFoundException>(
             () => service.Delete(productId));
 
         Assert.AreEqual("El producto no existe", exception.Message);
@@ -1076,7 +1077,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ProductException>(
+        var exception = Assert.ThrowsException<NotFoundException>(
             () => service.GetById(productId));
 
         Assert.AreEqual("El producto no existe", exception.Message);
@@ -1102,7 +1103,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ProductException>(() => service.Update(1, patchDto));
+        var exception = Assert.ThrowsException<NotFoundException>(() => service.Update(1, patchDto));
 
         Assert.AreEqual("El producto no existe", exception.Message);
 
