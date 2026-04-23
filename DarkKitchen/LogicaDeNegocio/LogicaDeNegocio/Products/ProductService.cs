@@ -19,7 +19,7 @@ public class ProductService : IProductService
         _productPhotoService = productPhotoService;
     }
 
-    public List<ProductResponseDto> GetAll()
+    public List<ProductResponseDto> GetProducts(ProductSearchRequestDto request)
     {
         var products = _repository.GetAll();
 
@@ -43,11 +43,6 @@ public class ProductService : IProductService
         var createdProduct = _repository.Create(product);
 
         return ProductMapper.ToResponseDto(createdProduct);
-    }
-
-    public List<ProductResponseDto> GetProducts(ProductSearchRequestDto request)
-    {
-        throw new NotImplementedException();
     }
 
     public ProductResponseDto Update(int productId, ProductPatchDto patchDto)

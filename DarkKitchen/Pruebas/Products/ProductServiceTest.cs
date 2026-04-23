@@ -998,7 +998,7 @@ public class ProductServiceTest
     }
 
     [TestMethod]
-    public void GivenExistingProducts_WhenGettingAll_ThenReturnsProductResponseDtoList()
+    public void GivenExistingProducts_WhenGettingProductsWithoutFilters_ThenReturnsProductResponseDtoList()
     {
         var products = new List<Product>
         {
@@ -1024,7 +1024,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var result = service.GetAll();
+        var result = service.GetProducts(new ProductSearchRequestDto());
 
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Count);
@@ -1041,7 +1041,7 @@ public class ProductServiceTest
     }
 
     [TestMethod]
-    public void GivenNoProducts_WhenGettingAll_ThenReturnsEmptyList()
+    public void GivenNoProducts_WhenGettingProductsWithoutFilters_ThenReturnsEmptyList()
     {
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
@@ -1050,7 +1050,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var result = service.GetAll();
+        var result = service.GetProducts(new ProductSearchRequestDto());
 
         Assert.IsNotNull(result);
         Assert.AreEqual(0, result.Count);
