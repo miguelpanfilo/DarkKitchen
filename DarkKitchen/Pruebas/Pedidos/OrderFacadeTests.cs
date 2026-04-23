@@ -7,6 +7,7 @@ using FluentAssertions;
 using LogicaDeNegocio;
 using LogicaDeNegocio.Orders;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Orders;
 using LogicaDeNegocioAbstracciones.Products;
 using Moq;
@@ -74,7 +75,7 @@ public sealed class OrderFacadeTests
 
         var result = _orderFacade.CreateOrder(1, new CreateOrderRequest
         {
-            DeliveryType = DeliveryType.Express,
+            DeliveryType = DeliveryTypeDto.Express,
             Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
             Items = [new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }]
         });
@@ -108,17 +109,40 @@ public sealed class OrderFacadeTests
 
         var act = () => _orderFacade.CreateOrder(1, new CreateOrderRequest
         {
-            DeliveryType = DeliveryType.Express,
+            DeliveryType = DeliveryTypeDto.Express,
             Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
             Items = [new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }]
         });
 
         act.Should()
-            .Throw<OrderException>()
+            .Throw<ValidationException>()
             .WithMessage("El producto Producto Test no está disponible");
-
         _productServiceMock.VerifyAll();
         _orderServiceMock.VerifyAll();
+    }
+
+    [TestMethod]
+    public void CreateOrder_WhenItemsAreEmpty_ShouldThrowValidationException()
+    {
+        var request = new CreateOrderRequest
+        {
+            DeliveryType = DeliveryTypeDto.Express,
+            Address = new CreateAddressRequest
+            {
+                Street = "Rivera",
+                DoorNumber = "1234"
+            },
+            Items = []
+        };
+
+        var act = () => _orderFacade.CreateOrder(1, request);
+
+        act.Should()
+            .Throw<ValidationException>()
+            .WithMessage("El pedido debe contener al menos un producto");
+
+        _productServiceMock.VerifyNoOtherCalls();
+        _orderServiceMock.VerifyNoOtherCalls();
     }
     #endregion
     #endregion
