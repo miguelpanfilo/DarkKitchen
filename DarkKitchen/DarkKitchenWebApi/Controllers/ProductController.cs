@@ -33,4 +33,11 @@ public class ProductController(IProductService productService) : ControllerBase
         var result = productService.Update(productId, request);
         return Ok(result);
     }
+
+    [HttpDelete("{productId}")]
+    public IActionResult Delete(int productId)
+    {
+        productService.Delete(productId);
+        return NoContent();
+    }
 }
