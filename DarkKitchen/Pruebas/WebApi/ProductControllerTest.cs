@@ -1,5 +1,7 @@
 using Contratos.Products;
+using Contratos.Users;
 using DarkKitchen.Controllers;
+using DarkKitchen.Filters;
 using LogicaDeNegocioAbstracciones.Products;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -62,6 +64,19 @@ public class ProductControllerTest
         var attribute = method!
             .GetCustomAttributes(typeof(HttpPostAttribute), false)
             .FirstOrDefault();
+
+        Assert.IsNotNull(attribute);
+    }
+
+    [TestMethod]
+    public void Create_ShouldHaveRoleAuthorizationAttribute()
+    {
+        var method = typeof(ProductController)
+            .GetMethod("Create");
+
+        var attribute = method!
+            .GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
+            .FirstOrDefault() as RoleAuthorizationAttribute;
 
         Assert.IsNotNull(attribute);
     }
