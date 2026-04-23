@@ -1292,9 +1292,9 @@ public class ProductServiceTest
     {
         var products = new List<Product>
         {
-            CreateValidProduct("1", "Producto 1", "Linea", "Bebidas"),
-            CreateValidProduct("2", "Producto 2", "Linea", "Comida"),
-            CreateValidProduct("3", "Producto 3", "Linea", "Postres")
+            CreateValidProduct("CODE12345", "Producto 1", "Linea", "Bebidas"),
+            CreateValidProduct("CODE12346", "Producto 2", "Linea", "Comida"),
+            CreateValidProduct("CODE12347", "Producto 3", "Linea", "Postres")
         };
 
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
