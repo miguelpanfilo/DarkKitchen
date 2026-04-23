@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Contratos.Promotions;
@@ -906,6 +907,30 @@ public class PromotionServiceTest
 
         promotionRepositoryMock.Verify(r => r.GetById(1), Times.Once);
         promotionRepositoryMock.Verify(r => r.Update(It.IsAny<Promotion>()), Times.Never);
+
+        promotionRepositoryMock.VerifyAll();
+        productRepositoryMock.VerifyAll();
+    }
+
+    [TestMethod]
+    public void GivenMissingDate_WhenGettingPromotions_ThenThrowsValidationException()
+    {
+        var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        var request = new PromotionSearchRequestDto
+        {
+            Date = null
+        };
+
+        var service = new PromotionService(
+            promotionRepositoryMock.Object,
+            productRepositoryMock.Object
+        );
+
+        var ex = Assert.ThrowsException<ValidationException>(() => service.GetPromotions(request));
+
+        Assert.AreEqual("La fecha es obligatoria", ex.Message);
 
         promotionRepositoryMock.VerifyAll();
         productRepositoryMock.VerifyAll();
