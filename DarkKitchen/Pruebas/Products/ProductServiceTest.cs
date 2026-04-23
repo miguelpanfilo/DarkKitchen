@@ -25,6 +25,22 @@ public class ProductServiceTest
         return new ProductService(repoMock.Object, photoService);
     }
 
+    private Product CreateValidProduct(string code, string name)
+    {
+        return new ProductBuilder()
+            .WithCode(code)
+            .WithName(name)
+            .WithDescription("Descripcion valida con mas de veinte caracteres")
+            .WithCommercialLine("Linea")
+            .WithCategory("Categoria")
+            .WithPrice(100)
+            .WithPhotos(new List<ProductPhoto>
+            {
+                new ProductPhoto($"{code}.jpg")
+            })
+            .Build();
+    }
+
     private Product CreateValidProduct()
     {
         return new ProductBuilder()
@@ -1183,5 +1199,29 @@ public class ProductServiceTest
 
         promotionRepositoryMock.VerifyAll();
         productRepositoryMock.VerifyAll();
+    }
+
+    [TestMethod]
+    public void GivenProducts_WhenGettingProductsWithoutFilters_ThenReturnsAll()
+    {
+        var products = new List<Product>
+        {
+            CreateValidProduct("CODE12345", "Producto valido 1"),
+            CreateValidProduct("CODE12346", "Producto valido 2")
+        };
+
+        var repositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        repositoryMock
+            .Setup(r => r.GetAll())
+            .Returns(products);
+
+        var service = new ProductService(repositoryMock.Object, null!);
+
+        var result = service.GetProducts(new ProductSearchRequestDto());
+
+        Assert.AreEqual(2, result.Count);
+
+        repositoryMock.Verify(r => r.GetAll(), Times.Once);
     }
 }
