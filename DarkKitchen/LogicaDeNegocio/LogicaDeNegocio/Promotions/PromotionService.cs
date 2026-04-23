@@ -38,31 +38,13 @@ public class PromotionService : IPromotionService
 
     public List<PromotionResponseDto> GetPromotions(PromotionSearchRequestDto request)
     {
-        if (request.Date is null)
-        {
-            throw new ValidationException("La fecha es obligatoria");
-        }
+        ValidateDateIsProvided(request);
 
         var promotions = _promotionRepository.GetAll();
 
-        var filtered = promotions
-            .Where(p => p.StartDate <= request.Date && p.EndDate >= request.Date)
-            .ToList();
-
-        if (request.ProductId is not null)
-        {
-            filtered = filtered
-                .Where(p => p.PromotionProducts.Any(pp => pp.ProductId == request.ProductId.Value))
-                .ToList();
-        }
-
-        if (!string.IsNullOrWhiteSpace(request.CommercialLine))
-        {
-            filtered = filtered
-                .Where(p => p.PromotionProducts.Any(pp =>
-                    GetExistingProduct(pp.ProductId).CommercialLine == request.CommercialLine))
-                .ToList();
-        }
+        var filtered = FilterByDate(promotions, request.Date.Value);
+        filtered = FilterByProductId(filtered, request.ProductId);
+        filtered = FilterByCommercialLine(filtered, request.CommercialLine);
 
         return filtered
             .Select(MapPromotionWithProducts)
@@ -173,5 +155,45 @@ public class PromotionService : IPromotionService
             .ToList();
 
         return PromotionMapper.ToResponseDto(promotion, products);
+    }
+
+    private static void ValidateDateIsProvided(PromotionSearchRequestDto request)
+    {
+        if (request.Date is null)
+        {
+            throw new ValidationException("La fecha es obligatoria");
+        }
+    }
+
+    private static List<Promotion> FilterByDate(List<Promotion> promotions, DateOnly date)
+    {
+        return promotions
+            .Where(p => p.StartDate <= date && p.EndDate >= date)
+            .ToList();
+    }
+
+    private static List<Promotion> FilterByProductId(List<Promotion> promotions, int? productId)
+    {
+        if (productId is null)
+        {
+            return promotions;
+        }
+
+        return promotions
+            .Where(p => p.PromotionProducts.Any(pp => pp.ProductId == productId.Value))
+            .ToList();
+    }
+
+    private List<Promotion> FilterByCommercialLine(List<Promotion> promotions, string? commercialLine)
+    {
+        if (string.IsNullOrWhiteSpace(commercialLine))
+        {
+            return promotions;
+        }
+
+        return promotions
+            .Where(p => p.PromotionProducts.Any(pp =>
+                GetExistingProduct(pp.ProductId).CommercialLine == commercialLine))
+            .ToList();
     }
 }
