@@ -360,6 +360,21 @@ public sealed class OrdersControllerTests
     }
 
     [TestMethod]
+    public void ChangeStatus_WhenPreparerTriesToCancel_ShouldReturnForbidden()
+    {
+        SetCurrentUser(MakePreparer());
+
+        var result = _controller.ChangeStatus(1, new UpdateOrderStatusRequest
+        {
+            Estado = "cancelado"
+        });
+
+        result.Should().BeOfType<ObjectResult>();
+        var objectResult = (ObjectResult)result;
+        objectResult.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
+    }
+
+    [TestMethod]
     public void ChangeStatus_WhenStatusHasMixedCase_ShouldNormalizeAndReturnOk()
     {
         SetCurrentUser(MakePreparer());
