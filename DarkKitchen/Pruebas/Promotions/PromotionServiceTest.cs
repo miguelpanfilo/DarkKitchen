@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Contratos.Promotions;
@@ -7,7 +6,9 @@ using Dominio.Builders;
 using Dominio.Exceptions;
 using LogicaDeNegocio;
 using LogicaDeNegocio.Promotions;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using Moq;
+using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
 
 namespace Pruebas.Promotions;
 
@@ -190,7 +191,7 @@ public class PromotionServiceTest
             productRepositoryMock.Object
         );
 
-        var ex = Assert.ThrowsException<PromotionException>(() => service.AssociateProduct(1, 100)
+        var ex = Assert.ThrowsException<NotFoundException>(() => service.AssociateProduct(1, 100)
         );
 
         Assert.AreEqual("La promoción no existe", ex.Message);
@@ -228,7 +229,7 @@ public class PromotionServiceTest
             productRepositoryMock.Object
         );
 
-        var ex = Assert.ThrowsException<PromotionException>(() => service.AssociateProduct(1, 100)
+        var ex = Assert.ThrowsException<NotFoundException>(() => service.AssociateProduct(1, 100)
         );
 
         Assert.AreEqual("El producto no existe", ex.Message);
@@ -291,7 +292,7 @@ public class PromotionServiceTest
             productRepositoryMock.Object
         );
 
-        var ex = Assert.ThrowsException<PromotionException>(() => service.DisassociateProduct(1, 100)
+        var ex = Assert.ThrowsException<NotFoundException>(() => service.DisassociateProduct(1, 100)
         );
 
         Assert.AreEqual("La promoción no existe", ex.Message);
@@ -329,7 +330,7 @@ public class PromotionServiceTest
             productRepositoryMock.Object
         );
 
-        var ex = Assert.ThrowsException<PromotionException>(() => service.DisassociateProduct(1, 100)
+        var ex = Assert.ThrowsException<NotFoundException>(() => service.DisassociateProduct(1, 100)
         );
 
         Assert.AreEqual("El producto no existe", ex.Message);
@@ -407,7 +408,7 @@ public class PromotionServiceTest
             productRepositoryMock.Object
         );
 
-        var ex = Assert.ThrowsException<PromotionException>(() => service.Update(1, patchDto));
+        var ex = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto));
 
         Assert.AreEqual("El nombre de la promoción no puede ser vacío", ex.Message);
 
@@ -490,7 +491,7 @@ public class PromotionServiceTest
             productRepositoryMock.Object
         );
 
-        var ex = Assert.ThrowsException<PromotionException>(() => service.Update(1, patchDto));
+        var ex = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto));
 
         Assert.AreEqual("El porcentaje de descuento debe estar entre 1 y 100", ex.Message);
 
@@ -658,7 +659,7 @@ public class PromotionServiceTest
             productRepositoryMock.Object
         );
 
-        var ex = Assert.ThrowsException<PromotionException>(() => service.Update(1, patchDto));
+        var ex = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto));
 
         Assert.AreEqual("La fecha de inicio no puede ser mayor a la fecha de fin", ex.Message);
 
@@ -695,7 +696,7 @@ public class PromotionServiceTest
             productRepositoryMock.Object
         );
 
-        var ex = Assert.ThrowsException<PromotionException>(() => service.Update(1, patchDto));
+        var ex = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto));
 
         Assert.AreEqual("La fecha de inicio no puede ser mayor a la fecha de fin", ex.Message);
 
@@ -733,7 +734,7 @@ public class PromotionServiceTest
             productRepositoryMock.Object
         );
 
-        var ex = Assert.ThrowsException<PromotionException>(() => service.Update(1, patchDto));
+        var ex = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto));
 
         Assert.AreEqual("La fecha de inicio no puede ser mayor a la fecha de fin", ex.Message);
 
@@ -763,7 +764,7 @@ public class PromotionServiceTest
             productRepositoryMock.Object
         );
 
-        var ex = Assert.ThrowsException<PromotionException>(() => service.Update(1, patchDto)
+        var ex = Assert.ThrowsException<NotFoundException>(() => service.Update(1, patchDto)
         );
 
         Assert.AreEqual("La promoción no existe", ex.Message);
@@ -825,7 +826,7 @@ public class PromotionServiceTest
             productRepositoryMock.Object
         );
 
-        var ex = Assert.ThrowsException<PromotionException>(() => service.Delete(1));
+        var ex = Assert.ThrowsException<NotFoundException>(() => service.Delete(1));
 
         Assert.AreEqual("La promoción no existe", ex.Message);
 
@@ -860,7 +861,7 @@ public class PromotionServiceTest
             productRepositoryMock.Object
         );
 
-        var exception = Assert.ThrowsException<PromotionException>(() => service.Delete(1));
+        var exception = Assert.ThrowsException<NotFoundException>(() => service.Delete(1));
 
         Assert.AreEqual("La promoción no existe", exception.Message);
 
@@ -899,7 +900,7 @@ public class PromotionServiceTest
             productRepositoryMock.Object
         );
 
-        var ex = Assert.ThrowsException<PromotionException>(() =>
+        var ex = Assert.ThrowsException<NotFoundException>(() =>
             service.Update(1, patchDto)
         );
 

@@ -1,10 +1,11 @@
-using System.ComponentModel.DataAnnotations;
 using AlmacenamientoAbstracciones;
 using Contratos.Promotions;
 using Dominio;
 using Dominio.Exceptions;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Promotions;
 using Mapeo;
+using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
 
 namespace LogicaDeNegocio.Promotions;
 
@@ -68,7 +69,7 @@ public class PromotionService : IPromotionService
         var promotion = GetExistingPromotion(promotionId);
 
         GetExistingProduct(productId);
-        promotion.AssociateProduct(productId);
+        ExecuteWithConflictHandling(() => promotion.AssociateProduct(productId));
 
         var updatedPromotion = _promotionRepository.Update(promotion);
 
@@ -81,7 +82,7 @@ public class PromotionService : IPromotionService
 
         GetExistingProduct(productId);
 
-        promotion.DisassociateProduct(productId);
+        ExecuteWithConflictHandling(() => promotion.DisassociateProduct(productId));
 
         var updatedPromotion = _promotionRepository.Update(promotion);
 
@@ -108,7 +109,7 @@ public class PromotionService : IPromotionService
     {
         if (name != null)
         {
-            promotion.UpdateName(name);
+            ExecuteWithValidationHandling(() => promotion.UpdateName(name));
         }
     }
 
@@ -116,7 +117,7 @@ public class PromotionService : IPromotionService
     {
         if (discountPercentage != null)
         {
-            promotion.UpdateDiscountPercentage(discountPercentage.Value);
+            ExecuteWithValidationHandling(() => promotion.UpdateDiscountPercentage(discountPercentage.Value));
         }
     }
 
@@ -127,7 +128,7 @@ public class PromotionService : IPromotionService
             var newStartDate = startDate ?? promotion.StartDate;
             var newEndDate = endDate ?? promotion.EndDate;
 
-            promotion.UpdateDates(newStartDate, newEndDate);
+            ExecuteWithValidationHandling(() => promotion.UpdateDates(newStartDate, newEndDate));
         }
     }
 
@@ -135,7 +136,7 @@ public class PromotionService : IPromotionService
     {
         if (promotion == null || promotion.IsDeleted)
         {
-            throw new PromotionException("La promoción no existe");
+            throw new NotFoundException("La promoción no existe");
         }
     }
 
@@ -143,7 +144,7 @@ public class PromotionService : IPromotionService
     {
         if (product == null || product.IsDeleted)
         {
-            throw new PromotionException("El producto no existe");
+            throw new NotFoundException("El producto no existe");
         }
     }
 
@@ -218,5 +219,29 @@ public class PromotionService : IPromotionService
                 return matchesProductId && matchesCommercialLine;
             }))
             .ToList();
+    }
+
+    private static void ExecuteWithConflictHandling(Action action)
+    {
+        try
+        {
+            action();
+        }
+        catch (PromotionException ex)
+        {
+            throw new ConflictException(ex.Message);
+        }
+    }
+
+    private static void ExecuteWithValidationHandling(Action action)
+    {
+        try
+        {
+            action();
+        }
+        catch (PromotionException ex)
+        {
+            throw new ValidationException(ex.Message);
+        }
     }
 }
