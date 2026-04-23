@@ -6,4 +6,5 @@ public interface IProductService
 {
     ProductResponseDto GetById(int id);
     ProductResponseDto Create(ProductDTO request);
+    List<ProductResponseDto> GetProducts(ProductSearchRequestDto request);
 }

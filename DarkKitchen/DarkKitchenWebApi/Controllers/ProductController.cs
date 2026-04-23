@@ -17,4 +17,11 @@ public class ProductController(IProductService productService) : ControllerBase
         var response = productService.Create(request);
         return Created(string.Empty, response);
     }
+
+    [HttpGet]
+    public IActionResult Get([FromQuery] ProductSearchRequestDto request)
+    {
+        var result = productService.GetProducts(request);
+        return Ok(result);
+    }
 }

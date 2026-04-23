@@ -45,6 +45,11 @@ public class ProductService : IProductService
         return ProductMapper.ToResponseDto(createdProduct);
     }
 
+    public List<ProductResponseDto> GetProducts(ProductSearchRequestDto request)
+    {
+        throw new NotImplementedException();
+    }
+
     public ProductResponseDto Update(int productId, ProductPatchDto patchDto)
     {
         var product = GetExistingProduct(productId);
