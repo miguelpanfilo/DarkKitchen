@@ -134,4 +134,18 @@ public class ProductControllerTest
 
         serviceMock.Verify(s => s.GetProducts(request), Times.Once);
     }
+
+    [TestMethod]
+    public void Get_ShouldHaveHttpGetAttribute()
+    {
+        var method = typeof(ProductController)
+            .GetMethod("Get");
+
+        var attribute = method!
+            .GetCustomAttributes(typeof(HttpGetAttribute), false)
+            .Cast<HttpGetAttribute>()
+            .SingleOrDefault();
+
+        Assert.IsNotNull(attribute);
+    }
 }
