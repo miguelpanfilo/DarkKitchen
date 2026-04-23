@@ -52,4 +52,17 @@ public class ProductControllerTest
 
         serviceMock.Verify(s => s.Create(request), Times.Once);
     }
+
+    [TestMethod]
+    public void Create_ShouldHaveHttpPostAttribute()
+    {
+        var method = typeof(ProductController)
+            .GetMethod("Create");
+
+        var attribute = method!
+            .GetCustomAttributes(typeof(HttpPostAttribute), false)
+            .FirstOrDefault();
+
+        Assert.IsNotNull(attribute);
+    }
 }
