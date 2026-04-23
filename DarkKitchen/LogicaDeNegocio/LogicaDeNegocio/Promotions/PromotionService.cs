@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using AlmacenamientoAbstracciones;
 using Contratos.Promotions;
 using Dominio;
@@ -33,6 +34,24 @@ public class PromotionService : IPromotionService
         promotion.Delete();
 
         _promotionRepository.Update(promotion);
+    }
+
+    public List<PromotionResponseDto> GetPromotions(PromotionSearchRequestDto request)
+    {
+        if (request.Date is null)
+        {
+            throw new ValidationException("La fecha es obligatoria");
+        }
+
+        var promotions = _promotionRepository.GetAll();
+
+        var filtered = promotions
+            .Where(p => p.StartDate <= request.Date && p.EndDate >= request.Date)
+            .ToList();
+
+        return filtered
+            .Select(MapPromotionWithProducts)
+            .ToList();
     }
 
     public PromotionResponseDto Update(int promotionId, PromotionPatchDto promotionPatchDto)
