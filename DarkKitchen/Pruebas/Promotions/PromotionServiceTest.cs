@@ -1005,13 +1005,37 @@ public class PromotionServiceTest
         );
         otherPromotion.AssociateProduct(200);
 
+        var product100 = new ProductBuilder()
+            .WithCode("COD100")
+            .WithName("Producto 100")
+            .WithDescription("Descripción válida con más de veinte caracteres")
+            .WithCommercialLine("Línea A")
+            .WithCategory("Categoría")
+            .WithPrice(100)
+            .WithPhotos(new List<ProductPhoto> { new ProductPhoto("photo-1.jpg") })
+            .Build();
+
+        var product200 = new ProductBuilder()
+            .WithCode("COD200")
+            .WithName("Producto 200")
+            .WithDescription("Descripción válida con más de veinte caracteres")
+            .WithCommercialLine("Línea B")
+            .WithCategory("Categoría")
+            .WithPrice(100)
+            .WithPhotos(new List<ProductPhoto> { new ProductPhoto("photo-2.jpg") })
+            .Build();
+
         promotionRepositoryMock
             .Setup(r => r.GetAll())
             .Returns(new List<Promotion> { matchingPromotion, otherPromotion });
 
         productRepositoryMock
-            .Setup(r => r.GetById(It.IsAny<int>()))
-            .Returns(CreateValidProduct());
+            .Setup(r => r.GetById(100))
+            .Returns(product100);
+
+        productRepositoryMock
+            .Setup(r => r.GetById(200))
+            .Returns(product200);
 
         var request = new PromotionSearchRequestDto
         {

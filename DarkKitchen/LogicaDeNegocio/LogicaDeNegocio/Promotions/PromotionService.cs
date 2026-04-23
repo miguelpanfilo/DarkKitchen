@@ -211,7 +211,7 @@ public class PromotionService : IPromotionService
             {
                 var product = GetExistingProduct(pp.ProductId);
 
-                var matchesProductId = productId is null || product.Id == productId.Value;
+                var matchesProductId = productId is null || pp.ProductId == productId.Value;
                 var matchesCommercialLine = string.IsNullOrWhiteSpace(commercialLine) ||
                                             product.CommercialLine == commercialLine;
 
