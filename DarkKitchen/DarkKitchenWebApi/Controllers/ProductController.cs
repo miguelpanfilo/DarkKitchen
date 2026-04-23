@@ -12,7 +12,7 @@ public class ProductController(IProductService productService) : ControllerBase
 {
     [HttpPost]
     [RoleAuthorization(UserRolesDto.Administrative)]
-    public CreatedResult Create([FromBody] ProductDTO request)
+    public IActionResult Create([FromBody] ProductDTO request)
     {
         var response = productService.Create(request);
         return Created(string.Empty, response);
