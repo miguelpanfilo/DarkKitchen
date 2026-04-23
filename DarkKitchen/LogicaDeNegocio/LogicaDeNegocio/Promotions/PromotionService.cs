@@ -56,6 +56,14 @@ public class PromotionService : IPromotionService
                 .ToList();
         }
 
+        if (!string.IsNullOrWhiteSpace(request.CommercialLine))
+        {
+            filtered = filtered
+                .Where(p => p.PromotionProducts.Any(pp =>
+                    GetExistingProduct(pp.ProductId).CommercialLine == request.CommercialLine))
+                .ToList();
+        }
+
         return filtered
             .Select(MapPromotionWithProducts)
             .ToList();
