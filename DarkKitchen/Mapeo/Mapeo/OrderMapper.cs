@@ -6,13 +6,17 @@ namespace Mapeo;
 
 public static class OrderMapper
 {
-    public static OrderResponse ToOrderResponse(this Order order)
+    public static OrderResponse ToOrderResponse(this Order order, User user)
     {
         return new OrderResponse
         {
             Id = order.Id,
             OrderNumber = order.OrderNumber,
-            ClientId = order.ClientId,
+            Client =
+                new ClientOrderResponse
+                {
+                    Id = user.Id, Name = user.Name, LastName = user.LastName, Email = user.Email.ToString()
+                },
             DeliveryType = order.DeliveryType.ToString(),
             Address = order.Address.ToAddressResponse(),
             Items = order.Items.Select(i => i.ToOrderItemResponse()).ToList(),
@@ -30,9 +34,7 @@ public static class OrderMapper
     {
         return new AddressResponse
         {
-            Street = address.Street,
-            DoorNumber = address.DoorNumber,
-            Apartment = address.Apartment
+            Street = address.Street, DoorNumber = address.DoorNumber, Apartment = address.Apartment
         };
     }
 
@@ -46,16 +48,6 @@ public static class OrderMapper
             UnitPrice = item.UnitPrice,
             DiscountApplied = item.DiscountApplied,
             LineTotal = item.LineTotal
-        };
-    }
-
-    public static DeliveryType ToDomain(this DeliveryTypeDto dto)
-    {
-        return dto switch
-        {
-            DeliveryTypeDto.Express => DeliveryType.Express,
-            DeliveryTypeDto.TwentyFourHours => DeliveryType.TwentyFourHours,
-            _ => throw new ArgumentOutOfRangeException(nameof(dto), "Tipo de entrega no soportado")
         };
     }
 }

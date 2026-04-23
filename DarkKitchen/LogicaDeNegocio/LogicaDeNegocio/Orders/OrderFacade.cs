@@ -1,3 +1,4 @@
+using AlmacenamientoAbstracciones;
 using Contratos.Orders;
 using Dominio;
 using Dominio.Exceptions;
@@ -9,10 +10,15 @@ using Mapeo;
 
 namespace LogicaDeNegocio.Orders;
 
-public class OrderFacade(IOrderService orderService, IProductService productService) : IOrderFacade
+public class OrderFacade(
+    IOrderService orderService,
+    IProductService productService,
+    IRepositoryUser repositoryUser) : IOrderFacade
 {
     private readonly IOrderService _orderService = orderService;
     private readonly IProductService _productService = productService;
+    private readonly IRepositoryUser _repositoryUser = repositoryUser;
+
     public OrderResponse CreateOrder(int clientId, CreateOrderRequest request)
     {
         var deliveryType = GetValidDeliveryType(request.DeliveryType);
@@ -34,7 +40,39 @@ public class OrderFacade(IOrderService orderService, IProductService productServ
             items,
             shippingCost);
 
-        return order.ToOrderResponse();
+        return ToOrderResponseWithClient(order);
+    }
+
+    public OrderResponse GetById(int orderId)
+    {
+        var order = _orderService.GetById(orderId);
+        return ToOrderResponseWithClient(order);
+    }
+
+    public List<OrderResponse> GetClientOrders(int clientId, DateTime? dateFrom, DateTime? dateTo, OrderStatusDto? status)
+    {
+        return _orderService.GetClientOrders(clientId, dateFrom, dateTo, ToOrderStatus(status))
+            .Select(ToOrderResponseWithClient)
+            .ToList();
+    }
+
+    public List<OrderResponse> GetOrdersByFilters(DateTime dateFrom, DateTime dateTo, string? street, OrderStatusDto? status)
+    {
+        return _orderService.GetOrdersByFilters(dateFrom, dateTo, street, ToOrderStatus(status))
+            .Select(ToOrderResponseWithClient)
+            .ToList();
+    }
+
+    private OrderResponse ToOrderResponseWithClient(Order order)
+    {
+        var user = _repositoryUser.FindById(order.ClientId);
+
+        if(user == null)
+        {
+            throw new NotFoundException($"No se encontró el cliente con id {order.ClientId}");
+        }
+
+        return order.ToOrderResponse(user);
     }
 
     private static void ValidateItems(List<CreateOrderItemRequest> requestItems)
@@ -83,35 +121,12 @@ public class OrderFacade(IOrderService orderService, IProductService productServ
         }).ToList();
     }
 
-    public List<OrderResponse> GetClientOrders(int clientId, DateTime? dateFrom, DateTime? dateTo, OrderStatusDto? status)
-    {
-        return _orderService.GetClientOrders(clientId, dateFrom, dateTo, ToOrderStatus(status))
-            .Select(o => o.ToOrderResponse())
-            .ToList();
-    }
-
-    public OrderResponse GetById(int orderId)
-    {
-        return _orderService.GetById(orderId).ToOrderResponse();
-    }
-
-    public List<OrderResponse> GetOrdersByFilters(DateTime dateFrom, DateTime dateTo, string? street, OrderStatusDto? status)
-    {
-        return _orderService.GetOrdersByFilters(dateFrom, dateTo, street, ToOrderStatus(status))
-            .Select(o => o.ToOrderResponse())
-            .ToList();
-    }
-
     private static OrderStatus? ToOrderStatus(OrderStatusDto? dto) =>
         dto.HasValue ? Enum.Parse<OrderStatus>(dto.Value.ToString()) : null;
 
     public void Prepare(int orderId) => _orderService.Prepare(orderId);
-
     public void Cancel(int orderId) => _orderService.Cancel(orderId);
-
     public void Dispatch(int orderId) => _orderService.Dispatch(orderId);
-
     public void Deliver(int orderId) => _orderService.Deliver(orderId);
-
     public void MarkNotDelivered(int orderId) => _orderService.MarkNotDelivered(orderId);
 }

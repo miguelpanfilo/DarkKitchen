@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using DarkKitchen.Filters;
 using DarkKitchenWebApi.Extensions;
 using FactoryService;
@@ -5,10 +6,14 @@ using FactoryService;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(options =>
-{
-    options.Filters.Add<ExceptionFilter>();
-    options.Filters.Add<AuthenticationFilter>();
-});
+    {
+        options.Filters.Add<ExceptionFilter>();
+        options.Filters.Add<AuthenticationFilter>();
+    })
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 builder.Services.AddCustomSwagger();
 builder.Services.AddDarkKitchenDependencies(builder.Configuration);

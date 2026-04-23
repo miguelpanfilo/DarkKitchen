@@ -1,3 +1,4 @@
+using AlmacenamientoAbstracciones;
 using Contratos;
 using Contratos.Orders;
 using Contratos.Products;
@@ -20,13 +21,44 @@ public sealed class OrderFacadeTests
     private Mock<IOrderService> _orderServiceMock = null!;
     private Mock<IProductService> _productServiceMock = null!;
     private OrderFacade _orderFacade = null!;
+    private Mock<IRepositoryUser> _repositoryUserMock = null!;
+    private static Order MakeTestOrder(int clientId = 1)
+    {
+        var address = Address.MakeAddress("Rivera", "1234");
+
+        var items = new List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)>
+        {
+            (1, 2, 100m, 0m)
+        };
+
+        return Order.MakeOrder(clientId, DeliveryType.Express, address, items, 200m);
+    }
+
+    private static User MakeTestUser(int id = 1)
+    {
+        var phone = Phone.TryMakePhone("099123456").Value!;
+
+        var user = User.MakeClient(
+            "Miguel",
+            "Test",
+            "miguel@test.com",
+            phone,
+            "PasswordSeguraee3!").Value!;
+
+        user.Id = id;
+        return user;
+    }
 
     [TestInitialize]
     public void Initialize()
     {
         _orderServiceMock = new Mock<IOrderService>(MockBehavior.Strict);
         _productServiceMock = new Mock<IProductService>(MockBehavior.Strict);
-        _orderFacade = new OrderFacade(_orderServiceMock.Object, _productServiceMock.Object);
+        _repositoryUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        _orderFacade = new OrderFacade(
+            _orderServiceMock.Object,
+            _productServiceMock.Object,
+            _repositoryUserMock.Object);
     }
 
     private static Order MakeTestOrder()
@@ -71,7 +103,11 @@ public sealed class OrderFacadeTests
                 It.IsAny<Address>(),
                 It.IsAny<List<(int, int, decimal, decimal)>>(),
                 It.IsAny<decimal>()))
-            .Returns(MakeTestOrder());
+            .Returns(MakeTestOrder(1));
+
+        _repositoryUserMock
+            .Setup(r => r.FindById(1))
+            .Returns(MakeTestUser(1));
 
         var result = _orderFacade.CreateOrder(1, new CreateOrderRequest
         {
@@ -82,6 +118,8 @@ public sealed class OrderFacadeTests
 
         _productServiceMock.VerifyAll();
         _orderServiceMock.VerifyAll();
+        _repositoryUserMock.VerifyAll();
+
         result.Should().NotBeNull();
         result.Should().BeOfType<OrderResponse>();
     }
@@ -274,11 +312,17 @@ public sealed class OrderFacadeTests
     {
         _orderServiceMock
             .Setup(s => s.GetClientOrders(1, null, null, null))
-            .Returns([MakeTestOrder(), MakeTestOrder()]);
+            .Returns([MakeTestOrder(1), MakeTestOrder(1)]);
+
+        _repositoryUserMock
+            .Setup(r => r.FindById(1))
+            .Returns(MakeTestUser(1));
 
         var result = _orderFacade.GetClientOrders(1, null, null, null);
 
         _orderServiceMock.VerifyAll();
+        _repositoryUserMock.Verify(r => r.FindById(1), Times.Exactly(2));
+
         result.Should().HaveCount(2);
     }
 
@@ -304,11 +348,17 @@ public sealed class OrderFacadeTests
     {
         _orderServiceMock
             .Setup(s => s.GetById(1))
-            .Returns(MakeTestOrder());
+            .Returns(MakeTestOrder(1));
+
+        _repositoryUserMock
+            .Setup(r => r.FindById(1))
+            .Returns(MakeTestUser(1));
 
         var result = _orderFacade.GetById(1);
 
         _orderServiceMock.VerifyAll();
+        _repositoryUserMock.Verify(r => r.FindById(1), Times.Once);
+
         result.Should().NotBeNull();
         result.Should().BeOfType<OrderResponse>();
     }
@@ -325,11 +375,16 @@ public sealed class OrderFacadeTests
 
         _orderServiceMock
             .Setup(s => s.GetOrdersByFilters(dateFrom, dateTo, null, null))
-            .Returns([MakeTestOrder(), MakeTestOrder()]);
+            .Returns([MakeTestOrder(1), MakeTestOrder(1)]);
+
+        _repositoryUserMock
+            .Setup(r => r.FindById(1))
+            .Returns(MakeTestUser(1));
 
         var result = _orderFacade.GetOrdersByFilters(dateFrom, dateTo, null, null);
 
         _orderServiceMock.VerifyAll();
+        _repositoryUserMock.Verify(r => r.FindById(1), Times.Exactly(2));
         result.Should().HaveCount(2);
     }
 
