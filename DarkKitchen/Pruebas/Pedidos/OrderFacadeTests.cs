@@ -144,6 +144,70 @@ public sealed class OrderFacadeTests
         _productServiceMock.VerifyNoOtherCalls();
         _orderServiceMock.VerifyNoOtherCalls();
     }
+
+    [TestMethod]
+    public void CreateOrder_WhenItemQuantityIsNegative_ShouldThrowValidationException()
+    {
+        var request = new CreateOrderRequest
+        {
+            DeliveryType = DeliveryTypeDto.Express,
+            Address = new CreateAddressRequest
+            {
+                Street = "Rivera",
+                DoorNumber = "1234"
+            },
+            Items =
+            [
+                new CreateOrderItemRequest
+                {
+                    ProductId = 1,
+                    Quantity = -2
+                }
+
+            ]
+        };
+
+        var act = () => _orderFacade.CreateOrder(1, request);
+
+        act.Should()
+            .Throw<ValidationException>()
+            .WithMessage("La cantidad de cada producto debe ser mayor a 0");
+
+        _productServiceMock.VerifyNoOtherCalls();
+        _orderServiceMock.VerifyNoOtherCalls();
+    }
+
+    [TestMethod]
+    public void CreateOrder_WhenItemQuantityIsZero_ShouldThrowValidationException()
+    {
+        var request = new CreateOrderRequest
+        {
+            DeliveryType = DeliveryTypeDto.Express,
+            Address = new CreateAddressRequest
+            {
+                Street = "Rivera",
+                DoorNumber = "1234"
+            },
+            Items =
+            [
+                new CreateOrderItemRequest
+                {
+                    ProductId = 1,
+                    Quantity = 0
+                }
+
+            ]
+        };
+
+        var act = () => _orderFacade.CreateOrder(1, request);
+
+        act.Should()
+            .Throw<ValidationException>()
+            .WithMessage("La cantidad de cada producto debe ser mayor a 0");
+
+        _productServiceMock.VerifyNoOtherCalls();
+        _orderServiceMock.VerifyNoOtherCalls();
+    }
     #endregion
     #endregion
 
