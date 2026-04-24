@@ -57,12 +57,15 @@ public class OrderRepository(SqlContext context) : IOrderRepository
             .Include(o => o.Client)
             .Where(o => o.CreatedAt >= dateFrom && o.CreatedAt <= dateTo);
 
-        if (!string.IsNullOrWhiteSpace(street))
+        if(!string.IsNullOrWhiteSpace(street))
         {
-            query = query.Where(o => o.Address.Street == street);
+            var normalizedStreet = street.Trim().ToLower();
+
+            query = query.Where(o =>
+                o.Address.Street.ToLower().Contains(normalizedStreet));
         }
 
-        if (status.HasValue)
+        if(status.HasValue)
         {
             query = query.Where(o => o.Status == status.Value);
         }

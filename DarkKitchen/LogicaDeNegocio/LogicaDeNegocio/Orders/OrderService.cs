@@ -1,5 +1,6 @@
 using AlmacenamientoAbstracciones;
 using Dominio;
+using Dominio.Exceptions;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Orders;
 
@@ -56,7 +57,16 @@ public class OrderService(IOrderRepository orderRepository) : IOrderService
     private void ApplyStateChange(int orderId, Action<Order> transition)
     {
         var order = GetById(orderId);
-        transition(order);
+
+        try
+        {
+            transition(order);
+        }
+        catch(OrderException ex)
+        {
+            throw new ConflictException(ex.Message);
+        }
+
         _orderRepository.Update(order);
     }
 }

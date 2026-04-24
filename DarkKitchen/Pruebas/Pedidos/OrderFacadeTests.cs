@@ -1,3 +1,4 @@
+using AlmacenamientoAbstracciones;
 using Contratos;
 using Contratos.Orders;
 using Contratos.Products;
@@ -7,6 +8,7 @@ using FluentAssertions;
 using LogicaDeNegocio;
 using LogicaDeNegocio.Orders;
 using LogicaDeNegocioAbstracciones;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Orders;
 using LogicaDeNegocioAbstracciones.Products;
 using Moq;
@@ -19,13 +21,44 @@ public sealed class OrderFacadeTests
     private Mock<IOrderService> _orderServiceMock = null!;
     private Mock<IProductService> _productServiceMock = null!;
     private OrderFacade _orderFacade = null!;
+    private Mock<IRepositoryUser> _repositoryUserMock = null!;
+    private static Order MakeTestOrder(int clientId = 1)
+    {
+        var address = Address.MakeAddress("Rivera", "1234");
+
+        var items = new List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)>
+        {
+            (1, 2, 100m, 0m)
+        };
+
+        return Order.MakeOrder(clientId, DeliveryType.Express, address, items, 200m);
+    }
+
+    private static User MakeTestUser(int id = 1)
+    {
+        var phone = Phone.TryMakePhone("099123456").Value!;
+
+        var user = User.MakeClient(
+            "Miguel",
+            "Test",
+            "miguel@test.com",
+            phone,
+            "PasswordSeguraee3!").Value!;
+
+        user.Id = id;
+        return user;
+    }
 
     [TestInitialize]
     public void Initialize()
     {
         _orderServiceMock = new Mock<IOrderService>(MockBehavior.Strict);
         _productServiceMock = new Mock<IProductService>(MockBehavior.Strict);
-        _orderFacade = new OrderFacade(_orderServiceMock.Object, _productServiceMock.Object);
+        _repositoryUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        _orderFacade = new OrderFacade(
+            _orderServiceMock.Object,
+            _productServiceMock.Object,
+            _repositoryUserMock.Object);
     }
 
     private static Order MakeTestOrder()
@@ -70,17 +103,23 @@ public sealed class OrderFacadeTests
                 It.IsAny<Address>(),
                 It.IsAny<List<(int, int, decimal, decimal)>>(),
                 It.IsAny<decimal>()))
-            .Returns(MakeTestOrder());
+            .Returns(MakeTestOrder(1));
+
+        _repositoryUserMock
+            .Setup(r => r.FindById(1))
+            .Returns(MakeTestUser(1));
 
         var result = _orderFacade.CreateOrder(1, new CreateOrderRequest
         {
-            DeliveryType = DeliveryType.Express,
+            DeliveryType = DeliveryTypeDto.Express,
             Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
             Items = [new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }]
         });
 
         _productServiceMock.VerifyAll();
         _orderServiceMock.VerifyAll();
+        _repositoryUserMock.VerifyAll();
+
         result.Should().NotBeNull();
         result.Should().BeOfType<OrderResponse>();
     }
@@ -108,17 +147,160 @@ public sealed class OrderFacadeTests
 
         var act = () => _orderFacade.CreateOrder(1, new CreateOrderRequest
         {
-            DeliveryType = DeliveryType.Express,
+            DeliveryType = DeliveryTypeDto.Express,
             Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
             Items = [new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }]
         });
 
         act.Should()
-            .Throw<OrderException>()
+            .Throw<ValidationException>()
             .WithMessage("El producto Producto Test no está disponible");
-
         _productServiceMock.VerifyAll();
         _orderServiceMock.VerifyAll();
+    }
+
+    [TestMethod]
+    public void CreateOrder_WhenItemsAreEmpty_ShouldThrowValidationException()
+    {
+        var request = new CreateOrderRequest
+        {
+            DeliveryType = DeliveryTypeDto.Express,
+            Address = new CreateAddressRequest
+            {
+                Street = "Rivera",
+                DoorNumber = "1234"
+            },
+            Items = []
+        };
+
+        var act = () => _orderFacade.CreateOrder(1, request);
+
+        act.Should()
+            .Throw<ValidationException>()
+            .WithMessage("El pedido debe contener al menos un producto");
+
+        _productServiceMock.VerifyNoOtherCalls();
+        _orderServiceMock.VerifyNoOtherCalls();
+    }
+
+    [TestMethod]
+    public void CreateOrder_WhenItemQuantityIsNegative_ShouldThrowValidationException()
+    {
+        var request = new CreateOrderRequest
+        {
+            DeliveryType = DeliveryTypeDto.Express,
+            Address = new CreateAddressRequest
+            {
+                Street = "Rivera",
+                DoorNumber = "1234"
+            },
+            Items =
+            [
+                new CreateOrderItemRequest
+                {
+                    ProductId = 1,
+                    Quantity = -2
+                }
+
+            ]
+        };
+
+        var act = () => _orderFacade.CreateOrder(1, request);
+
+        act.Should()
+            .Throw<ValidationException>()
+            .WithMessage("La cantidad de cada producto debe ser mayor a 0");
+
+        _productServiceMock.VerifyNoOtherCalls();
+        _orderServiceMock.VerifyNoOtherCalls();
+    }
+
+    [TestMethod]
+    public void CreateOrder_WhenDeliveryTypeIsInvalid_ShouldThrowValidationException()
+    {
+        var request = new CreateOrderRequest
+        {
+            DeliveryType = (DeliveryTypeDto)99,
+            Address = new CreateAddressRequest
+            {
+                Street = "Rivera",
+                DoorNumber = "1234"
+            },
+            Items =
+            [
+                new CreateOrderItemRequest
+                {
+                    ProductId = 1,
+                    Quantity = 2
+                }
+
+            ]
+        };
+
+        var act = () => _orderFacade.CreateOrder(1, request);
+
+        act.Should()
+            .Throw<ValidationException>()
+            .WithMessage("El tipo de entrega no es válido");
+
+        _productServiceMock.VerifyNoOtherCalls();
+        _orderServiceMock.VerifyNoOtherCalls();
+    }
+
+    [TestMethod]
+    public void CreateOrder_WhenItemsAreNull_ShouldThrowValidationException()
+    {
+        var request = new CreateOrderRequest
+        {
+            DeliveryType = DeliveryTypeDto.Express,
+            Address = new CreateAddressRequest
+            {
+                Street = "Rivera",
+                DoorNumber = "1234"
+            },
+            Items = null!
+        };
+
+        var act = () => _orderFacade.CreateOrder(1, request);
+
+        act.Should()
+            .Throw<ValidationException>()
+            .WithMessage("El pedido debe contener al menos un producto");
+
+        _productServiceMock.VerifyNoOtherCalls();
+        _orderServiceMock.VerifyNoOtherCalls();
+    }
+
+    [TestMethod]
+    public void CreateOrder_WhenItemQuantityIsZero_ShouldThrowValidationException()
+    {
+        var request = new CreateOrderRequest
+        {
+            DeliveryType = DeliveryTypeDto.Express,
+            Address = new CreateAddressRequest
+            {
+                Street = "Rivera",
+                DoorNumber = "1234"
+            },
+            Items =
+            [
+                new CreateOrderItemRequest
+                {
+                    ProductId = 1,
+                    Quantity = 0
+                }
+
+            ]
+        };
+
+        var act = () => _orderFacade.CreateOrder(1, request);
+
+        act.Should()
+            .Throw<ValidationException>()
+            .WithMessage("La cantidad de cada producto debe ser mayor a 0");
+
+        _productServiceMock.VerifyNoOtherCalls();
+        _orderServiceMock.VerifyNoOtherCalls();
     }
     #endregion
     #endregion
@@ -130,11 +312,17 @@ public sealed class OrderFacadeTests
     {
         _orderServiceMock
             .Setup(s => s.GetClientOrders(1, null, null, null))
-            .Returns([MakeTestOrder(), MakeTestOrder()]);
+            .Returns([MakeTestOrder(1), MakeTestOrder(1)]);
+
+        _repositoryUserMock
+            .Setup(r => r.FindById(1))
+            .Returns(MakeTestUser(1));
 
         var result = _orderFacade.GetClientOrders(1, null, null, null);
 
         _orderServiceMock.VerifyAll();
+        _repositoryUserMock.Verify(r => r.FindById(1), Times.Exactly(2));
+
         result.Should().HaveCount(2);
     }
 
@@ -160,11 +348,17 @@ public sealed class OrderFacadeTests
     {
         _orderServiceMock
             .Setup(s => s.GetById(1))
-            .Returns(MakeTestOrder());
+            .Returns(MakeTestOrder(1));
+
+        _repositoryUserMock
+            .Setup(r => r.FindById(1))
+            .Returns(MakeTestUser(1));
 
         var result = _orderFacade.GetById(1);
 
         _orderServiceMock.VerifyAll();
+        _repositoryUserMock.Verify(r => r.FindById(1), Times.Once);
+
         result.Should().NotBeNull();
         result.Should().BeOfType<OrderResponse>();
     }
@@ -181,11 +375,16 @@ public sealed class OrderFacadeTests
 
         _orderServiceMock
             .Setup(s => s.GetOrdersByFilters(dateFrom, dateTo, null, null))
-            .Returns([MakeTestOrder(), MakeTestOrder()]);
+            .Returns([MakeTestOrder(1), MakeTestOrder(1)]);
+
+        _repositoryUserMock
+            .Setup(r => r.FindById(1))
+            .Returns(MakeTestUser(1));
 
         var result = _orderFacade.GetOrdersByFilters(dateFrom, dateTo, null, null);
 
         _orderServiceMock.VerifyAll();
+        _repositoryUserMock.Verify(r => r.FindById(1), Times.Exactly(2));
         result.Should().HaveCount(2);
     }
 

@@ -1,50 +1,27 @@
-using Almacenamiento;
-using Almacenamiento.Repositories;
-using AlmacenamientoAbstracciones;
+using System.Text.Json.Serialization;
 using DarkKitchen.Filters;
+using DarkKitchenWebApi.Extensions;
 using FactoryService;
-using LogicaDeNegocio.Orders;
-using LogicaDeNegocio.Products;
-using LogicaDeNegocioAbstracciones.Orders;
-using LogicaDeNegocioAbstracciones.Products;
-using LogicaDeNegocioAbstracciones.Users;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(options =>
-{
-    options.Filters.Add<ExceptionFilter>();
-    options.Filters.Add<AuthenticationFilter>();
-});
+    {
+        options.Filters.Add<ExceptionFilter>();
+        options.Filters.Add<AuthenticationFilter>();
+    })
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-// Orders
-builder.Services.AddScoped<IOrderFacade, OrderFacade>();
-builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IProductPhotoStorage>(
-    _ => new ProductPhotoStorage("C:\\temp\\photos"));
-builder.Services.AddScoped<ProductPhotoService>();
-
+builder.Services.AddCustomSwagger();
 builder.Services.AddDarkKitchenDependencies(builder.Configuration);
 builder.Services.AddScoped<AuthenticationFilter>();
 
 var app = builder.Build();
 
-using(var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<SqlContext>();
-    context.Database.Migrate();
-
-    var initializationService = scope.ServiceProvider.GetRequiredService<IInitializationService>();
-    initializationService.EnsureInitialized();
-}
+app.InitializeDatabase();
 
 if(app.Environment.IsDevelopment())
 {
