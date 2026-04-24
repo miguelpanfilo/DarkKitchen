@@ -1,6 +1,5 @@
-/*using AlmacenamientoAbstracciones;
+using AlmacenamientoAbstracciones;
 using Dominio;
-using LogicaDeNegocio;
 using LogicaDeNegocio.Initialization;
 using Moq;
 
@@ -10,6 +9,7 @@ namespace Pruebas.InicioSesion;
 public class InitializationServiceTests
 {
     private Mock<IRepositoryUser> _repositoryUserMock = null!;
+    private Mock<IProductRepository> _productRepositoryMock = null!;
     private InitializationService _service = null!;
     private User? _addedUser;
 
@@ -17,7 +17,12 @@ public class InitializationServiceTests
     public void TestInitialize()
     {
         _repositoryUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        _service = new InitializationService(_repositoryUserMock.Object);
+        _productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        _service = new InitializationService(
+            _repositoryUserMock.Object,
+            _productRepositoryMock.Object);
+
         _addedUser = null;
     }
 
@@ -25,8 +30,8 @@ public class InitializationServiceTests
     public void EnsureInitialized_WhenAdminDoesNotExist_CreatesAdminUser()
     {
         _repositoryUserMock
-            .Setup(x => x.FindByEmail("admin@gmail.com"))
-            .Returns((User?)null);
+            .Setup(x => x.EmailExist("admin@gmail.com"))
+            .Returns(false);
 
         _repositoryUserMock
             .Setup(x => x.Add(It.IsAny<User>()))
@@ -35,7 +40,7 @@ public class InitializationServiceTests
         _service.EnsureInitialized();
 
         _repositoryUserMock.Verify(
-            x => x.FindByEmail("admin@gmail.com"),
+            x => x.EmailExist("admin@gmail.com"),
             Times.Once);
 
         _repositoryUserMock.Verify(
@@ -46,27 +51,14 @@ public class InitializationServiceTests
     [TestMethod]
     public void EnsureInitialized_WhenAdminAlreadyExists_DoesNotCreateAdminUser()
     {
-        var phoneResult = Phone.TryMakePhone("099123456");
-        Assert.IsTrue(phoneResult.Success);
-
-        var existingUserResult = User.MakeIntern(
-            "Admin",
-            "System",
-            "admin@gmail.com",
-            phoneResult.Value!,
-            "PasswordSeguraee3!",
-            UserRoles.Administrative);
-
-        Assert.IsTrue(existingUserResult.Success);
-
         _repositoryUserMock
-            .Setup(x => x.FindByEmail("admin@gmail.com"))
-            .Returns(existingUserResult.Value!);
+            .Setup(x => x.EmailExist("admin@gmail.com"))
+            .Returns(true);
 
         _service.EnsureInitialized();
 
         _repositoryUserMock.Verify(
-            x => x.FindByEmail("admin@gmail.com"),
+            x => x.EmailExist("admin@gmail.com"),
             Times.Once);
 
         _repositoryUserMock.Verify(
@@ -78,8 +70,8 @@ public class InitializationServiceTests
     public void EnsureInitialized_WhenAdminDoesNotExist_AddsUserWithExpectedEmail()
     {
         _repositoryUserMock
-            .Setup(x => x.FindByEmail("admin@gmail.com"))
-            .Returns((User?)null);
+            .Setup(x => x.EmailExist("admin@gmail.com"))
+            .Returns(false);
 
         _repositoryUserMock
             .Setup(x => x.Add(It.IsAny<User>()))
@@ -96,8 +88,8 @@ public class InitializationServiceTests
     public void EnsureInitialized_WhenAdminDoesNotExist_AddsAdministrativeUser()
     {
         _repositoryUserMock
-            .Setup(x => x.FindByEmail("admin@gmail.com"))
-            .Returns((User?)null);
+            .Setup(x => x.EmailExist("admin@gmail.com"))
+            .Returns(false);
 
         _repositoryUserMock
             .Setup(x => x.Add(It.IsAny<User>()))
@@ -114,8 +106,8 @@ public class InitializationServiceTests
     public void EnsureInitialized_WhenAdminDoesNotExist_AddsUserWithExpectedNameAndLastName()
     {
         _repositoryUserMock
-            .Setup(x => x.FindByEmail("admin@gmail.com"))
-            .Returns((User?)null);
+            .Setup(x => x.EmailExist("admin@gmail.com"))
+            .Returns(false);
 
         _repositoryUserMock
             .Setup(x => x.Add(It.IsAny<User>()))
@@ -132,24 +124,24 @@ public class InitializationServiceTests
     [TestMethod]
     public void EnsureInitialized_WhenCalledTwice_DoesNotAddAdminTwice()
     {
-        User? existingUser = null;
-
         _repositoryUserMock
-            .SetupSequence(x => x.FindByEmail("admin@gmail.com"))
-            .Returns((User?)null)
-            .Returns(() => existingUser);
+            .SetupSequence(x => x.EmailExist("admin@gmail.com"))
+            .Returns(false)
+            .Returns(true);
 
         _repositoryUserMock
             .Setup(x => x.Add(It.IsAny<User>()))
-            .Callback<User>(user => existingUser = user)
             .Returns((User user) => user);
 
         _service.EnsureInitialized();
         _service.EnsureInitialized();
 
         _repositoryUserMock.Verify(
+            x => x.EmailExist("admin@gmail.com"),
+            Times.Exactly(2));
+
+        _repositoryUserMock.Verify(
             x => x.Add(It.IsAny<User>()),
             Times.Once);
     }
 }
-*/

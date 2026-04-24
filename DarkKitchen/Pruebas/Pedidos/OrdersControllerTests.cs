@@ -1,4 +1,3 @@
-using Contratos;
 using Contratos.Orders;
 using Contratos.Users;
 using DarkKitchen.Controllers;
@@ -28,51 +27,35 @@ public sealed class OrdersControllerTests
     {
         var httpContext = new DefaultHttpContext();
         httpContext.Items["CurrentUser"] = user;
-        _controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = httpContext
-        };
+        _controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
     }
 
     private static CurrentUserDto MakeClient(int id = 1) => new()
     {
-        Id = id,
-        Role = UserRolesDto.Client,
-        Email = "client@test.com"
+        Id = id, Role = UserRolesDto.Client, Email = "client@test.com"
     };
 
     private static CurrentUserDto MakePreparer(int id = 2) => new()
     {
-        Id = id,
-        Role = UserRolesDto.Preparer,
-        Email = "preparer@test.com"
+        Id = id, Role = UserRolesDto.Preparer, Email = "preparer@test.com"
     };
 
     private static CurrentUserDto MakeAdmin(int id = 3) => new()
     {
-        Id = id,
-        Role = UserRolesDto.Administrative,
-        Email = "admin@test.com"
+        Id = id, Role = UserRolesDto.Administrative, Email = "admin@test.com"
     };
 
     private static OrderResponse MakeOrderResponse(int clientId = 1, string status = "Pending") => new()
     {
         Id = 1,
         OrderNumber = "ORD-123",
-        Client = new ClientOrderResponse
-        {
-            Id = clientId,
-            Name = "Miguel",
-            LastName = "Panfilo",
-            Email = "miguel@test.com"
-        },
+        Client =
+            new ClientOrderResponse
+            {
+                Id = clientId, Name = "Miguel", LastName = "Panfilo", Email = "miguel@test.com"
+            },
         DeliveryType = "Express",
-        Address = new AddressResponse
-        {
-            Street = "Rivera",
-            DoorNumber = "1234",
-            Apartment = null
-        },
+        Address = new AddressResponse { Street = "Rivera", DoorNumber = "1234", Apartment = null },
         Items = new List<OrderItemResponse>
         {
             new()
@@ -97,19 +80,10 @@ public sealed class OrdersControllerTests
     private static CreateOrderRequest MakeCreateOrderRequest() => new()
     {
         DeliveryType = DeliveryTypeDto.Express,
-        Address = new CreateAddressRequest
-        {
-            Street = "Rivera",
-            DoorNumber = "1234"
-        },
+        Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
         Items =
         [
-            new CreateOrderItemRequest
-            {
-                ProductId = 1,
-                Quantity = 2
-            }
-
+            new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }
         ]
     };
 
@@ -291,36 +265,10 @@ public sealed class OrdersControllerTests
 
     #endregion
 
-    #region ChangeStatus
+    #region StatusEndpoints
 
     [TestMethod]
-    public void ChangeStatus_WhenClientCancelsOwnOrder_ShouldReturnOk()
-    {
-        var order = MakeOrderResponse(clientId: 1, status: "Cancelado");
-
-        _orderFacadeMock
-            .Setup(f => f.GetById(1))
-            .Returns(order);
-
-        _orderFacadeMock
-            .Setup(f => f.Cancel(1));
-
-        _orderFacadeMock
-            .Setup(f => f.GetById(1))
-            .Returns(order);
-
-        var result = _controller.ChangeStatus(1, new UpdateOrderStatusRequest
-        {
-            Estado = "Cancelado"
-        });
-
-        _orderFacadeMock.VerifyAll();
-
-        result.Should().BeOfType<OkObjectResult>();
-    }
-
-    [TestMethod]
-    public void ChangeStatus_WhenStatusHasExtraSpaces_ShouldNormalizeAndReturnOk()
+    public void Prepare_WhenPreparer_ShouldReturnOk()
     {
         SetCurrentUser(MakePreparer());
 
@@ -329,10 +277,30 @@ public sealed class OrdersControllerTests
         _orderFacadeMock.Setup(f => f.Prepare(1));
         _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
 
-        var result = _controller.ChangeStatus(1, new UpdateOrderStatusRequest
-        {
-            Estado = "   preparado   "
-        });
+        var result = _controller.Prepare(1);
+
+        _orderFacadeMock.VerifyAll();
+
+        result.Should().BeOfType<OkObjectResult>();
+        var okResult = (OkObjectResult)result;
+        okResult.Value.Should().BeOfType<OrderStatusResponse>();
+    }
+
+    [TestMethod]
+    public void Cancel_WhenClientCancelsOwnOrder_ShouldReturnOk()
+    {
+        SetCurrentUser(MakeClient(id: 1));
+
+        var order = MakeOrderResponse(clientId: 1, status: "Pending");
+        var updatedOrder = MakeOrderResponse(clientId: 1, status: "Cancelled");
+
+        _orderFacadeMock.SetupSequence(f => f.GetById(1))
+            .Returns(order)
+            .Returns(updatedOrder);
+
+        _orderFacadeMock.Setup(f => f.Cancel(1));
+
+        var result = _controller.Cancel(1);
 
         _orderFacadeMock.VerifyAll();
 
@@ -340,159 +308,15 @@ public sealed class OrdersControllerTests
     }
 
     [TestMethod]
-    public void ChangeStatus_WhenStatusIsUppercase_ShouldNormalizeAndReturnOk()
-    {
-        SetCurrentUser(MakePreparer());
-
-        var updatedOrder = MakeOrderResponse(clientId: 1, status: "Prepared");
-
-        _orderFacadeMock.Setup(f => f.Prepare(1));
-        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
-
-        var result = _controller.ChangeStatus(1, new UpdateOrderStatusRequest
-        {
-            Estado = "PREPARADO"
-        });
-
-        _orderFacadeMock.VerifyAll();
-
-        result.Should().BeOfType<OkObjectResult>();
-    }
-
-    [TestMethod]
-    public void ChangeStatus_WhenPreparerTriesToCancel_ShouldReturnForbidden()
-    {
-        SetCurrentUser(MakePreparer());
-
-        var result = _controller.ChangeStatus(1, new UpdateOrderStatusRequest
-        {
-            Estado = "cancelado"
-        });
-
-        result.Should().BeOfType<ObjectResult>();
-        var objectResult = (ObjectResult)result;
-        objectResult.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
-    }
-
-    [TestMethod]
-    public void ChangeStatus_WhenStatusHasMixedCase_ShouldNormalizeAndReturnOk()
-    {
-        SetCurrentUser(MakePreparer());
-
-        var updatedOrder = MakeOrderResponse(clientId: 1, status: "Prepared");
-
-        _orderFacadeMock.Setup(f => f.Prepare(1));
-        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
-
-        var result = _controller.ChangeStatus(1, new UpdateOrderStatusRequest
-        {
-            Estado = "PrEpArAdO"
-        });
-
-        _orderFacadeMock.VerifyAll();
-
-        result.Should().BeOfType<OkObjectResult>();
-    }
-
-    [TestMethod]
-    public void ChangeStatus_WhenStatusHasSpaceBetweenWords_ShouldNormalizeAndReturnOk()
-    {
-        SetCurrentUser(MakePreparer());
-
-        var updatedOrder = MakeOrderResponse(clientId: 1, status: "OnTheWay");
-
-        _orderFacadeMock.Setup(f => f.Dispatch(1));
-        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
-
-        var result = _controller.ChangeStatus(1, new UpdateOrderStatusRequest
-        {
-            Estado = "en camino"
-        });
-
-        _orderFacadeMock.VerifyAll();
-
-        result.Should().BeOfType<OkObjectResult>();
-    }
-
-    [TestMethod]
-    public void ChangeStatus_WhenStatusHasHyphen_ShouldNormalizeAndReturnOk()
-    {
-        SetCurrentUser(MakePreparer());
-
-        var updatedOrder = MakeOrderResponse(clientId: 1, status: "OnTheWay");
-
-        _orderFacadeMock.Setup(f => f.Dispatch(1));
-        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
-
-        var result = _controller.ChangeStatus(1, new UpdateOrderStatusRequest
-        {
-            Estado = "en-camino"
-        });
-
-        _orderFacadeMock.VerifyAll();
-
-        result.Should().BeOfType<OkObjectResult>();
-    }
-
-    [TestMethod]
-    public void ChangeStatus_WhenStatusIsWhitespace_ShouldReturnBadRequest()
-    {
-        var result = _controller.ChangeStatus(1, new UpdateOrderStatusRequest
-        {
-            Estado = "   "
-        });
-
-        result.Should().BeOfType<ObjectResult>();
-        var objectResult = (ObjectResult)result;
-        objectResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
-    }
-
-    [TestMethod]
-    public void ChangeStatus_WhenStatusIsNull_ShouldReturnBadRequest()
-    {
-        var result = _controller.ChangeStatus(1, new UpdateOrderStatusRequest
-        {
-            Estado = null!
-        });
-
-        result.Should().BeOfType<ObjectResult>();
-        var objectResult = (ObjectResult)result;
-        objectResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
-    }
-
-    [TestMethod]
-    public void ChangeStatus_WhenStatusHasUnderscore_ShouldNormalizeAndReturnOk()
-    {
-        SetCurrentUser(MakePreparer());
-
-        var updatedOrder = MakeOrderResponse(clientId: 1, status: "OnTheWay");
-
-        _orderFacadeMock.Setup(f => f.Dispatch(1));
-        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
-
-        var result = _controller.ChangeStatus(1, new UpdateOrderStatusRequest
-        {
-            Estado = "en_camino"
-        });
-
-        _orderFacadeMock.VerifyAll();
-
-        result.Should().BeOfType<OkObjectResult>();
-    }
-
-    [TestMethod]
-    public void ChangeStatus_WhenClientCancelsOrderOfAnotherClient_ShouldReturn403ObjectResult()
+    public void Cancel_WhenClientCancelsAnotherClientOrder_ShouldReturnForbidden()
     {
         SetCurrentUser(MakeClient(id: 99));
 
-        _orderFacadeMock
-            .Setup(f => f.GetById(1))
-            .Returns(MakeOrderResponse(clientId: 1));
+        var order = MakeOrderResponse(clientId: 1);
 
-        var result = _controller.ChangeStatus(1, new UpdateOrderStatusRequest
-        {
-            Estado = "Cancelado"
-        });
+        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(order);
+
+        var result = _controller.Cancel(1);
 
         _orderFacadeMock.VerifyAll();
 
@@ -502,36 +326,112 @@ public sealed class OrdersControllerTests
     }
 
     [TestMethod]
-    public void ChangeStatus_WhenClientTriesToPrepare_ShouldReturn403ObjectResult()
+    public void Prepare_WhenAdmin_ShouldReturnOk()
     {
-        var result = _controller.ChangeStatus(1, new UpdateOrderStatusRequest
-        {
-            Estado = "Preparado"
-        });
+        SetCurrentUser(MakeAdmin());
 
-        result.Should().BeOfType<ObjectResult>();
-        var objectResult = (ObjectResult)result;
-        objectResult.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
+        var updatedOrder = MakeOrderResponse(clientId: 1, status: "Prepared");
+
+        _orderFacadeMock.Setup(f => f.Prepare(1));
+        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
+
+        var result = _controller.Prepare(1);
+
+        _orderFacadeMock.VerifyAll();
+
+        result.Should().BeOfType<OkObjectResult>();
+
+        var okResult = (OkObjectResult)result;
+        var response = okResult.Value.Should().BeOfType<OrderStatusResponse>().Subject;
+
+        response.PedidoId.Should().Be(updatedOrder.Id);
+        response.Estado.Should().Be(updatedOrder.Status);
+        response.FechaCambioEstado.Should().Be(updatedOrder.StatusUpdatedAt);
     }
 
     [TestMethod]
-    public void ChangeStatus_WhenPreparerPrepares_ShouldReturnOk()
+    public void Dispatch_WhenAdmin_ShouldReturnOk()
     {
-        SetCurrentUser(MakePreparer());
+        SetCurrentUser(MakeAdmin());
 
-        var updatedOrder = MakeOrderResponse(clientId: 1, status: "Preparado");
+        var updatedOrder = MakeOrderResponse(clientId: 1, status: "OnTheWay");
 
-        _orderFacadeMock
-            .Setup(f => f.Prepare(1));
+        _orderFacadeMock.Setup(f => f.Dispatch(1));
+        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
 
-        _orderFacadeMock
-            .Setup(f => f.GetById(1))
-            .Returns(updatedOrder);
+        var result = _controller.Dispatch(1);
 
-        var result = _controller.ChangeStatus(1, new UpdateOrderStatusRequest
-        {
-            Estado = "Preparado"
-        });
+        _orderFacadeMock.VerifyAll();
+
+        result.Should().BeOfType<OkObjectResult>();
+
+        var okResult = (OkObjectResult)result;
+        var response = okResult.Value.Should().BeOfType<OrderStatusResponse>().Subject;
+
+        response.PedidoId.Should().Be(updatedOrder.Id);
+        response.Estado.Should().Be(updatedOrder.Status);
+        response.FechaCambioEstado.Should().Be(updatedOrder.StatusUpdatedAt);
+    }
+
+    [TestMethod]
+    public void Deliver_WhenAdmin_ShouldReturnOk()
+    {
+        SetCurrentUser(MakeAdmin());
+
+        var updatedOrder = MakeOrderResponse(clientId: 1, status: "Delivered");
+
+        _orderFacadeMock.Setup(f => f.Deliver(1));
+        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
+
+        var result = _controller.Deliver(1);
+
+        _orderFacadeMock.VerifyAll();
+
+        result.Should().BeOfType<OkObjectResult>();
+
+        var okResult = (OkObjectResult)result;
+        var response = okResult.Value.Should().BeOfType<OrderStatusResponse>().Subject;
+
+        response.PedidoId.Should().Be(updatedOrder.Id);
+        response.Estado.Should().Be(updatedOrder.Status);
+        response.FechaCambioEstado.Should().Be(updatedOrder.StatusUpdatedAt);
+    }
+
+    [TestMethod]
+    public void MarkNotDelivered_WhenAdmin_ShouldReturnOk()
+    {
+        SetCurrentUser(MakeAdmin());
+
+        var updatedOrder = MakeOrderResponse(clientId: 1, status: "NotDelivered");
+
+        _orderFacadeMock.Setup(f => f.MarkNotDelivered(1));
+        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
+
+        var result = _controller.MarkNotDelivered(1);
+
+        _orderFacadeMock.VerifyAll();
+
+        result.Should().BeOfType<OkObjectResult>();
+
+        var okResult = (OkObjectResult)result;
+        var response = okResult.Value.Should().BeOfType<OrderStatusResponse>().Subject;
+
+        response.PedidoId.Should().Be(updatedOrder.Id);
+        response.Estado.Should().Be(updatedOrder.Status);
+        response.FechaCambioEstado.Should().Be(updatedOrder.StatusUpdatedAt);
+    }
+
+    [TestMethod]
+    public void Cancel_WhenAdmin_ShouldReturnOk()
+    {
+        SetCurrentUser(MakeAdmin());
+
+        var updatedOrder = MakeOrderResponse(clientId: 1, status: "Cancelled");
+
+        _orderFacadeMock.Setup(f => f.Cancel(1));
+        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
+
+        var result = _controller.Cancel(1);
 
         _orderFacadeMock.VerifyAll();
 
@@ -539,23 +439,16 @@ public sealed class OrdersControllerTests
     }
 
     [TestMethod]
-    public void ChangeStatus_WhenPreparerDispatches_ShouldReturnOk()
+    public void Dispatch_WhenPreparer_ShouldReturnOk()
     {
         SetCurrentUser(MakePreparer());
 
-        var updatedOrder = MakeOrderResponse(clientId: 1, status: "EnCamino");
+        var updatedOrder = MakeOrderResponse(clientId: 1, status: "OnTheWay");
 
-        _orderFacadeMock
-            .Setup(f => f.Dispatch(1));
+        _orderFacadeMock.Setup(f => f.Dispatch(1));
+        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
 
-        _orderFacadeMock
-            .Setup(f => f.GetById(1))
-            .Returns(updatedOrder);
-
-        var result = _controller.ChangeStatus(1, new UpdateOrderStatusRequest
-        {
-            Estado = "EnCamino"
-        });
+        var result = _controller.Dispatch(1);
 
         _orderFacadeMock.VerifyAll();
 
@@ -563,23 +456,16 @@ public sealed class OrdersControllerTests
     }
 
     [TestMethod]
-    public void ChangeStatus_WhenPreparerDelivers_ShouldReturnOk()
+    public void Deliver_WhenPreparer_ShouldReturnOk()
     {
         SetCurrentUser(MakePreparer());
 
-        var updatedOrder = MakeOrderResponse(clientId: 1, status: "Entregado");
+        var updatedOrder = MakeOrderResponse(clientId: 1, status: "Delivered");
 
-        _orderFacadeMock
-            .Setup(f => f.Deliver(1));
+        _orderFacadeMock.Setup(f => f.Deliver(1));
+        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
 
-        _orderFacadeMock
-            .Setup(f => f.GetById(1))
-            .Returns(updatedOrder);
-
-        var result = _controller.ChangeStatus(1, new UpdateOrderStatusRequest
-        {
-            Estado = "Entregado"
-        });
+        var result = _controller.Deliver(1);
 
         _orderFacadeMock.VerifyAll();
 
@@ -587,40 +473,20 @@ public sealed class OrdersControllerTests
     }
 
     [TestMethod]
-    public void ChangeStatus_WhenPreparerMarksNotDelivered_ShouldReturnOk()
+    public void MarkNotDelivered_WhenPreparer_ShouldReturnOk()
     {
         SetCurrentUser(MakePreparer());
 
-        var updatedOrder = MakeOrderResponse(clientId: 1, status: "NoEntregado");
+        var updatedOrder = MakeOrderResponse(clientId: 1, status: "NotDelivered");
 
-        _orderFacadeMock
-            .Setup(f => f.MarkNotDelivered(1));
+        _orderFacadeMock.Setup(f => f.MarkNotDelivered(1));
+        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
 
-        _orderFacadeMock
-            .Setup(f => f.GetById(1))
-            .Returns(updatedOrder);
-
-        var result = _controller.ChangeStatus(1, new UpdateOrderStatusRequest
-        {
-            Estado = "NoEntregado"
-        });
+        var result = _controller.MarkNotDelivered(1);
 
         _orderFacadeMock.VerifyAll();
 
         result.Should().BeOfType<OkObjectResult>();
-    }
-
-    [TestMethod]
-    public void ChangeStatus_WhenEstadoIsInvalid_ShouldReturnBadRequestObjectResult()
-    {
-        var result = _controller.ChangeStatus(1, new UpdateOrderStatusRequest
-        {
-            Estado = "Invalido"
-        });
-
-        result.Should().BeOfType<ObjectResult>();
-        var objectResult = (ObjectResult)result;
-        objectResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
 
     #endregion
