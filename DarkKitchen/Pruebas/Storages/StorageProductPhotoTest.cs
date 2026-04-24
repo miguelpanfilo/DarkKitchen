@@ -19,7 +19,7 @@ public class StorageProductPhotoTest
 
             var photo = new PhotoDTO("foto", ".jpg", 3, base64);
 
-            var path = storage.Save(photo);
+            var path = storage.Save(photo.Base64, photo.Extension);
 
             Assert.IsTrue(File.Exists(path));
         }
@@ -64,7 +64,7 @@ public class StorageProductPhotoTest
 
             var photo = new PhotoDTO("foto", ".jpg", 3, base64);
 
-            var path = storage.Save(photo);
+            var path = storage.Save(photo.Base64, photo.Extension);
 
             Assert.IsTrue(Directory.Exists(tempDir));
             Assert.IsTrue(File.Exists(path));

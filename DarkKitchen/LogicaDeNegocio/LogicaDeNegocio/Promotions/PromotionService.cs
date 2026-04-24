@@ -2,11 +2,13 @@ using AlmacenamientoAbstracciones;
 using Contratos.Promotions;
 using Dominio;
 using Dominio.Exceptions;
+using LogicaDeNegocioAbstracciones.Exceptions;
+using LogicaDeNegocioAbstracciones.Promotions;
 using Mapeo;
 
 namespace LogicaDeNegocio.Promotions;
 
-public class PromotionService
+public class PromotionService : IPromotionService
 {
     private readonly IPromotionRepository _promotionRepository;
     private readonly IProductRepository _productRepository;
@@ -17,12 +19,14 @@ public class PromotionService
         _productRepository = productRepository;
     }
 
-    public PromotionResponseDto Create(PromotionDto promotionDto)
+    public PromotionResponseDto Create(PromotionRequestDto promotionRequestDto)
     {
-        var promotion = PromotionMapper.ToEntity(promotionDto);
+        var promotion = ExecuteWithValidationHandling(() =>
+            PromotionMapper.ToEntity(promotionRequestDto));
+
         var createdPromotion = _promotionRepository.Create(promotion);
 
-        return PromotionMapper.ToResponseDto(createdPromotion);
+        return MapPromotionWithProducts(createdPromotion);
     }
 
     public void Delete(int promotionId)
@@ -32,6 +36,20 @@ public class PromotionService
         promotion.Delete();
 
         _promotionRepository.Update(promotion);
+    }
+
+    public List<PromotionResponseDto> GetPromotions(PromotionSearchRequestDto request)
+    {
+        ValidateDateIsProvided(request);
+
+        var promotions = _promotionRepository.GetAll();
+
+        var filtered = FilterByDate(promotions, request.Date.Value);
+        filtered = FilterByAssociatedProductFilters(filtered, request.ProductId, request.CommercialLine);
+
+        return filtered
+            .Select(MapPromotionWithProducts)
+            .ToList();
     }
 
     public PromotionResponseDto Update(int promotionId, PromotionPatchDto promotionPatchDto)
@@ -44,7 +62,7 @@ public class PromotionService
 
         var updatedPromotion = _promotionRepository.Update(promotion);
 
-        return PromotionMapper.ToResponseDto(updatedPromotion);
+        return MapPromotionWithProducts(updatedPromotion);
     }
 
     public PromotionResponseDto AssociateProduct(int promotionId, int productId)
@@ -52,12 +70,11 @@ public class PromotionService
         var promotion = GetExistingPromotion(promotionId);
 
         GetExistingProduct(productId);
-
-        promotion.AssociateProduct(productId);
+        ExecuteWithConflictHandling(() => promotion.AssociateProduct(productId));
 
         var updatedPromotion = _promotionRepository.Update(promotion);
 
-        return PromotionMapper.ToResponseDto(updatedPromotion);
+        return MapPromotionWithProducts(updatedPromotion);
     }
 
     public PromotionResponseDto DisassociateProduct(int promotionId, int productId)
@@ -66,11 +83,11 @@ public class PromotionService
 
         GetExistingProduct(productId);
 
-        promotion.DisassociateProduct(productId);
+        ExecuteWithConflictHandling(() => promotion.DisassociateProduct(productId));
 
         var updatedPromotion = _promotionRepository.Update(promotion);
 
-        return PromotionMapper.ToResponseDto(updatedPromotion);
+        return MapPromotionWithProducts(updatedPromotion);
     }
 
     private Promotion GetExistingPromotion(int promotionId)
@@ -86,14 +103,14 @@ public class PromotionService
     {
         var product = _productRepository.GetById(productId);
         ValidateProductExists(product);
-        return product;
+        return product!;
     }
 
     private static void UpdateNameIfProvided(Promotion promotion, string? name)
     {
         if (name != null)
         {
-            promotion.UpdateName(name);
+            ExecuteWithValidationHandling(() => promotion.UpdateName(name));
         }
     }
 
@@ -101,7 +118,7 @@ public class PromotionService
     {
         if (discountPercentage != null)
         {
-            promotion.UpdateDiscountPercentage(discountPercentage.Value);
+            ExecuteWithValidationHandling(() => promotion.UpdateDiscountPercentage(discountPercentage.Value));
         }
     }
 
@@ -112,7 +129,7 @@ public class PromotionService
             var newStartDate = startDate ?? promotion.StartDate;
             var newEndDate = endDate ?? promotion.EndDate;
 
-            promotion.UpdateDates(newStartDate, newEndDate);
+            ExecuteWithValidationHandling(() => promotion.UpdateDates(newStartDate, newEndDate));
         }
     }
 
@@ -120,7 +137,7 @@ public class PromotionService
     {
         if (promotion == null || promotion.IsDeleted)
         {
-            throw new PromotionException("La promoción no existe");
+            throw new NotFoundException("La promoción no existe");
         }
     }
 
@@ -128,7 +145,116 @@ public class PromotionService
     {
         if (product == null || product.IsDeleted)
         {
-            throw new PromotionException("El producto no existe");
+            throw new NotFoundException("El producto no existe");
+        }
+    }
+
+    private PromotionResponseDto MapPromotionWithProducts(Promotion promotion)
+    {
+        var products = promotion.PromotionProducts?
+            .Select(pp => GetExistingProduct(pp.ProductId))
+            .ToList() ?? [];
+
+        return PromotionMapper.ToResponseDto(promotion, products);
+    }
+
+    private static void ValidateDateIsProvided(PromotionSearchRequestDto request)
+    {
+        if (request.Date is null)
+        {
+            throw new ValidationException("La fecha es obligatoria");
+        }
+    }
+
+    private static List<Promotion> FilterByDate(List<Promotion> promotions, DateOnly date)
+    {
+        return promotions
+            .Where(p => p.StartDate <= date && p.EndDate >= date)
+            .ToList();
+    }
+
+    private static List<Promotion> FilterByProductId(List<Promotion> promotions, int? productId)
+    {
+        if (productId is null)
+        {
+            return promotions;
+        }
+
+        return promotions
+            .Where(p => p.PromotionProducts.Any(pp => pp.ProductId == productId.Value))
+            .ToList();
+    }
+
+    private List<Promotion> FilterByCommercialLine(List<Promotion> promotions, string? commercialLine)
+    {
+        if (string.IsNullOrWhiteSpace(commercialLine))
+        {
+            return promotions;
+        }
+
+        return promotions
+            .Where(p => p.PromotionProducts.Any(pp =>
+                GetExistingProduct(pp.ProductId).CommercialLine == commercialLine))
+            .ToList();
+    }
+
+    private List<Promotion> FilterByAssociatedProductFilters(
+        List<Promotion> promotions,
+        int? productId,
+        string? commercialLine)
+    {
+        if (productId is null && string.IsNullOrWhiteSpace(commercialLine))
+        {
+            return promotions;
+        }
+
+        return promotions
+            .Where(p => p.PromotionProducts.Any(pp =>
+            {
+                var product = GetExistingProduct(pp.ProductId);
+
+                var matchesProductId = productId is null || pp.ProductId == productId.Value;
+                var matchesCommercialLine = string.IsNullOrWhiteSpace(commercialLine) ||
+                                            product.CommercialLine == commercialLine;
+
+                return matchesProductId && matchesCommercialLine;
+            }))
+            .ToList();
+    }
+
+    private static void ExecuteWithConflictHandling(Action action)
+    {
+        try
+        {
+            action();
+        }
+        catch (PromotionException ex)
+        {
+            throw new ConflictException(ex.Message);
+        }
+    }
+
+    private static void ExecuteWithValidationHandling(Action action)
+    {
+        try
+        {
+            action();
+        }
+        catch (PromotionException ex)
+        {
+            throw new ValidationException(ex.Message);
+        }
+    }
+
+    private static T ExecuteWithValidationHandling<T>(Func<T> action)
+    {
+        try
+        {
+            return action();
+        }
+        catch (PromotionException ex)
+        {
+            throw new ValidationException(ex.Message);
         }
     }
 }

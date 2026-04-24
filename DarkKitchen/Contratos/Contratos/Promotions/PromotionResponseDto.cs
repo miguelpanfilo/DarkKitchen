@@ -1,3 +1,5 @@
+using Contratos.Products;
+
 namespace Contratos.Promotions;
 
 public class PromotionResponseDto
@@ -8,14 +10,21 @@ public class PromotionResponseDto
 
     public DateOnly StartDate { get; set; }
     public DateOnly EndDate { get; set; }
+    public List<ProductSummaryDto> Products { get; set; }
 
-    public PromotionResponseDto(int id, string name, decimal discountPercentage,
-        DateOnly startDate, DateOnly endDate)
+    public PromotionResponseDto(
+        int id,
+        string name,
+        decimal discountPercentage,
+        DateOnly startDate,
+        DateOnly endDate,
+        List<ProductSummaryDto> products)
     {
         Id = id;
         Name = name;
         DiscountPercentage = discountPercentage;
         StartDate = startDate;
         EndDate = endDate;
+        Products = products;
     }
 }

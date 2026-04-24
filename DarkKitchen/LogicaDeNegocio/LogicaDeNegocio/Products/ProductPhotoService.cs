@@ -103,7 +103,7 @@ public class ProductPhotoService
 
     private ProductPhoto SavePhoto(PhotoDTO photoDto)
     {
-        var savedPath = _productPhotoStorage.Save(photoDto);
+        var savedPath = _productPhotoStorage.Save(photoDto.Base64, photoDto.Extension);
         return new ProductPhoto(savedPath);
     }
 

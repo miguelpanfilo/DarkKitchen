@@ -2,6 +2,7 @@ using AlmacenamientoAbstracciones;
 using Contratos.Products;
 using Dominio;
 using Dominio.Exceptions;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Products;
 using Mapeo;
 
@@ -18,12 +19,58 @@ public class ProductService : IProductService
         _productPhotoService = productPhotoService;
     }
 
-    public List<ProductResponseDto> GetAll()
+    public List<ProductResponseDto> GetProducts(ProductSearchRequestDto request)
     {
-        var products = _repository.GetAll();
+        var products = _repository.GetAll()
+            .Where(p => !p.IsDeleted).ToList();
 
+        products = FilterByName(products, request.Name);
+        products = FilterByCategories(products, request.Categories);
+        products = FilterByCommercialLine(products, request.CommercialLine);
+
+        return MapProducts(products);
+    }
+
+    private static List<ProductResponseDto> MapProducts(List<Product> products)
+    {
         return products
             .Select(ProductMapper.ToResponseDto)
+            .ToList();
+    }
+
+    private static List<Product> FilterByName(List<Product> products, string? name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return products;
+        }
+
+        return products
+            .Where(p => p.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+    }
+
+    private static List<Product> FilterByCategories(List<Product> products, List<string>? categories)
+    {
+        if (categories == null || !categories.Any())
+        {
+            return products;
+        }
+
+        return products
+            .Where(p => categories.Contains(p.Category))
+            .ToList();
+    }
+
+    private static List<Product> FilterByCommercialLine(List<Product> products, string? commercialLine)
+    {
+        if (string.IsNullOrWhiteSpace(commercialLine))
+        {
+            return products;
+        }
+
+        return products
+            .Where(p => p.CommercialLine.Equals(commercialLine, StringComparison.OrdinalIgnoreCase))
             .ToList();
     }
 
@@ -35,8 +82,10 @@ public class ProductService : IProductService
 
     public ProductResponseDto Create(ProductDTO productDto)
     {
-        var savedPhotos = _productPhotoService.SavePhotos(productDto.Photos);
-        var product = ProductMapper.ToEntity(productDto, savedPhotos);
+        var savedPhotos = ExecuteWithValidationHandling(() =>
+            _productPhotoService.SavePhotos(productDto.Photos));
+        var product = ExecuteWithValidationHandling(() => ProductMapper.ToEntity(productDto, savedPhotos));
+
         var createdProduct = _repository.Create(product);
 
         return ProductMapper.ToResponseDto(createdProduct);
@@ -56,7 +105,7 @@ public class ProductService : IProductService
     {
         var product = GetExistingProduct(productId);
 
-        product.Delete();
+        ExecuteWithConflictHandling(() => product.Delete());
         _repository.Update(product);
     }
 
@@ -76,7 +125,7 @@ public class ProductService : IProductService
     {
         if (patchDto.Code != null)
         {
-            product.UpdateCode(patchDto.Code);
+            ExecuteWithValidationHandling(() => product.UpdateCode(patchDto.Code));
         }
     }
 
@@ -84,7 +133,7 @@ public class ProductService : IProductService
     {
         if (patchDto.Name != null)
         {
-            product.UpdateName(patchDto.Name);
+            ExecuteWithValidationHandling(() => product.UpdateName(patchDto.Name));
         }
     }
 
@@ -92,7 +141,7 @@ public class ProductService : IProductService
     {
         if (patchDto.Description != null)
         {
-            product.UpdateDescription(patchDto.Description);
+            ExecuteWithValidationHandling(() => product.UpdateDescription(patchDto.Description));
         }
     }
 
@@ -100,7 +149,7 @@ public class ProductService : IProductService
     {
         if (patchDto.CommercialLine != null)
         {
-            product.UpdateCommercialLine(patchDto.CommercialLine);
+            ExecuteWithValidationHandling(() => product.UpdateCommercialLine(patchDto.CommercialLine));
         }
     }
 
@@ -108,7 +157,7 @@ public class ProductService : IProductService
     {
         if (patchDto.Category != null)
         {
-            product.UpdateCategory(patchDto.Category);
+            ExecuteWithValidationHandling(() => product.UpdateCategory(patchDto.Category));
         }
     }
 
@@ -116,7 +165,7 @@ public class ProductService : IProductService
     {
         if (patchDto.Price.HasValue)
         {
-            product.UpdatePrice(patchDto.Price.Value);
+            ExecuteWithValidationHandling(() => product.UpdatePrice(patchDto.Price.Value));
         }
     }
 
@@ -124,8 +173,8 @@ public class ProductService : IProductService
     {
         if (patchDto.Photos != null)
         {
-            var finalPhotos = _productPhotoService.SyncPhotos(product, patchDto.Photos);
-            product.UpdatePhotos(finalPhotos);
+            var finalPhotos = ExecuteWithValidationHandling(() => _productPhotoService.SyncPhotos(product, patchDto.Photos));
+            ExecuteWithValidationHandling(() => product.UpdatePhotos(finalPhotos));
         }
     }
 
@@ -152,9 +201,45 @@ public class ProductService : IProductService
 
         if (product == null || product.IsDeleted)
         {
-            throw new ProductException("El producto no existe");
+            throw new NotFoundException("El producto no existe");
         }
 
         return product;
+    }
+
+    private static void ExecuteWithValidationHandling(Action action)
+    {
+        try
+        {
+            action();
+        }
+        catch (ProductException ex)
+        {
+            throw new ValidationException(ex.Message);
+        }
+    }
+
+    private static void ExecuteWithConflictHandling(Action action)
+    {
+        try
+        {
+            action();
+        }
+        catch (ProductException ex)
+        {
+            throw new ConflictException(ex.Message);
+        }
+    }
+
+    private static T ExecuteWithValidationHandling<T>(Func<T> action)
+    {
+        try
+        {
+            return action();
+        }
+        catch (ProductException ex)
+        {
+            throw new ValidationException(ex.Message);
+        }
     }
 }

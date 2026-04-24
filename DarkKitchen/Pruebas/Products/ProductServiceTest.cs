@@ -1,11 +1,14 @@
 using AlmacenamientoAbstracciones;
 using Contratos;
 using Contratos.Products;
+using Contratos.Promotions;
 using Dominio;
 using Dominio.Builders;
 using Dominio.Exceptions;
 using LogicaDeNegocio;
 using LogicaDeNegocio.Products;
+using LogicaDeNegocio.Promotions;
+using LogicaDeNegocioAbstracciones.Exceptions;
 using Mapeo;
 using Moq;
 
@@ -20,6 +23,26 @@ public class ProductServiceTest
     {
         var photoService = new ProductPhotoService(storageMock.Object);
         return new ProductService(repoMock.Object, photoService);
+    }
+
+    private Product CreateValidProduct(
+        string code = "CODE12345",
+        string name = "Producto valido 1",
+        string commercialLine = "Linea",
+        string category = "Categoria")
+    {
+        return new ProductBuilder()
+            .WithCode(code)
+            .WithName(name)
+            .WithDescription("Descripcion valida con mas de veinte caracteres")
+            .WithCommercialLine(commercialLine)
+            .WithCategory(category)
+            .WithPrice(100)
+            .WithPhotos(new List<ProductPhoto>
+            {
+                new ProductPhoto($"{code}.jpg")
+            })
+            .Build();
     }
 
     private Product CreateValidProduct()
@@ -59,7 +82,7 @@ public class ProductServiceTest
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
         storageMock
-            .Setup(s => s.Save(It.IsAny<PhotoDTO>()))
+            .Setup(s => s.Save(It.IsAny<string>(), It.IsAny<string>()))
             .Returns("uploads/photo1.jpg");
 
         repoMock
@@ -93,7 +116,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        Assert.ThrowsException<ProductException>(() => service.Create(dto));
+        Assert.ThrowsException<ValidationException>(() => service.Create(dto));
 
         repoMock.Verify(repository => repository.Create(It.IsAny<Product>()), Times.Never);
     }
@@ -120,7 +143,7 @@ public class ProductServiceTest
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
         storageMock
-            .Setup(storage => storage.Save(It.IsAny<PhotoDTO>()))
+            .Setup(storage => storage.Save(It.IsAny<string>(), It.IsAny<string>()))
             .Returns("uploads/foto1.jpg");
 
         repoMock
@@ -133,7 +156,7 @@ public class ProductServiceTest
 
         Assert.IsNotNull(result);
 
-        storageMock.Verify(storage => storage.Save(It.IsAny<PhotoDTO>()), Times.Once);
+        storageMock.Verify(storage => storage.Save(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         repoMock.Verify(repository => repository.Create(It.IsAny<Product>()), Times.Once);
     }
 
@@ -159,7 +182,7 @@ public class ProductServiceTest
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
         storageMock
-            .Setup(s => s.Save(It.IsAny<PhotoDTO>()))
+            .Setup(s => s.Save(It.IsAny<string>(), It.IsAny<string>()))
             .Returns("uploads/foto1.jpg");
 
         repoMock
@@ -205,9 +228,14 @@ public class ProductServiceTest
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
 
+        var counter = 0;
         storageMock
-            .Setup(s => s.Save(It.IsAny<PhotoDTO>()))
-            .Returns((PhotoDTO photo) => $"uploads/{photo.FileName}{photo.Extension}");
+            .Setup(s => s.Save(It.IsAny<string>(), It.IsAny<string>()))
+            .Returns((string base64, string extension) =>
+            {
+                counter++;
+                return $"uploads/photo{counter}{extension}";
+            });
 
         repoMock
             .Setup(r => r.Create(It.IsAny<Product>()))
@@ -225,7 +253,7 @@ public class ProductServiceTest
             Assert.AreEqual($"uploads/photo{i + 1}.jpg", result.Photos[i].Path);
         }
 
-        storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Exactly(cantidadFotos));
+        storageMock.Verify(s => s.Save(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(cantidadFotos));
         repoMock.Verify(r => r.Create(It.IsAny<Product>()), Times.Once);
     }
 
@@ -259,10 +287,10 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ProductException>(() => service.Create(productDto));
+        var exception = Assert.ThrowsException<ValidationException>(() => service.Create(productDto));
 
         Assert.AreEqual("El producto debe tener entre 1 y 3 fotos", exception.Message);
-        storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Never);
+        storageMock.Verify(s => s.Save(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         repoMock.Verify(r => r.Create(It.IsAny<Product>()), Times.Never);
     }
 
@@ -298,13 +326,13 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ProductException>(() =>
+        var exception = Assert.ThrowsException<ValidationException>(() =>
             service.Create(productDto)
         );
 
         Assert.AreEqual("Las fotos deben estar en formato JPG", exception.Message);
 
-        storageMock.Verify(x => x.Save(It.IsAny<PhotoDTO>()), Times.Never);
+        storageMock.Verify(x => x.Save(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
 
     [DataTestMethod]
@@ -335,12 +363,12 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ProductException>(() =>
+        var exception = Assert.ThrowsException<ValidationException>(() =>
             service.Create(productDto));
 
         Assert.AreEqual("Las fotos deben estar en formato JPG", exception.Message);
 
-        storageMock.Verify(x => x.Save(It.IsAny<PhotoDTO>()), Times.Never);
+        storageMock.Verify(x => x.Save(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
 
     [TestMethod]
@@ -644,7 +672,7 @@ public class ProductServiceTest
             .Returns(product);
 
         storageMock
-            .Setup(s => s.Save(It.IsAny<PhotoDTO>()))
+            .Setup(s => s.Save(It.IsAny<string>(), It.IsAny<string>()))
             .Returns("/images/products/1/nueva.jpg");
 
         storageMock
@@ -664,7 +692,7 @@ public class ProductServiceTest
         Assert.IsTrue(result.Photos.Any(p => p.Path == "/images/products/1/nueva.jpg"));
         Assert.IsFalse(result.Photos.Any(p => p.Path == "/images/products/1/b.jpg"));
 
-        storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Once);
+        storageMock.Verify(s => s.Save(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         storageMock.Verify(s => s.Delete("/images/products/1/b.jpg"), Times.Once);
         repoMock.Verify(r => r.GetById(1), Times.Once);
         repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Once);
@@ -691,7 +719,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ProductException>(() => service.Update(1, patchDto));
+        var exception = Assert.ThrowsException<NotFoundException>(() => service.Update(1, patchDto));
 
         Assert.AreEqual("El producto no existe", exception.Message);
 
@@ -735,13 +763,13 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ProductException>(() => service.Update(1, patchDto));
+        var exception = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto));
 
         Assert.AreEqual("La foto no pertenece al producto", exception.Message);
 
         repoMock.Verify(r => r.GetById(1), Times.Once);
         repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Never);
-        storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Never);
+        storageMock.Verify(s => s.Save(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
 
     [TestMethod]
@@ -783,13 +811,13 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ProductException>(() => service.Update(1, patchDto));
+        var exception = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto));
 
         Assert.AreEqual("Datos de foto inválidos", exception.Message);
 
         repoMock.Verify(r => r.GetById(1), Times.Once);
         repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Never);
-        storageMock.Verify(s => s.Save(It.IsAny<PhotoDTO>()), Times.Never);
+        storageMock.Verify(s => s.Save(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
 
     [TestMethod]
@@ -816,7 +844,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ProductException>(
+        var exception = Assert.ThrowsException<ValidationException>(
             () => service.Create(productDto));
 
         Assert.AreEqual("La foto no puede superar los 500 KB", exception.Message);
@@ -933,7 +961,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ProductException>(
+        var exception = Assert.ThrowsException<NotFoundException>(
             () => service.Delete(productId));
 
         Assert.AreEqual("El producto no existe", exception.Message);
@@ -974,7 +1002,7 @@ public class ProductServiceTest
     }
 
     [TestMethod]
-    public void GivenExistingProducts_WhenGettingAll_ThenReturnsProductResponseDtoList()
+    public void GivenExistingProducts_WhenGettingProductsWithoutFilters_ThenReturnsProductResponseDtoList()
     {
         var products = new List<Product>
         {
@@ -1000,7 +1028,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var result = service.GetAll();
+        var result = service.GetProducts(new ProductSearchRequestDto());
 
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Count);
@@ -1017,7 +1045,7 @@ public class ProductServiceTest
     }
 
     [TestMethod]
-    public void GivenNoProducts_WhenGettingAll_ThenReturnsEmptyList()
+    public void GivenNoProducts_WhenGettingProductsWithoutFilters_ThenReturnsEmptyList()
     {
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
@@ -1026,7 +1054,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var result = service.GetAll();
+        var result = service.GetProducts(new ProductSearchRequestDto());
 
         Assert.IsNotNull(result);
         Assert.AreEqual(0, result.Count);
@@ -1074,7 +1102,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ProductException>(
+        var exception = Assert.ThrowsException<NotFoundException>(
             () => service.GetById(productId));
 
         Assert.AreEqual("El producto no existe", exception.Message);
@@ -1100,11 +1128,193 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ProductException>(() => service.Update(1, patchDto));
+        var exception = Assert.ThrowsException<NotFoundException>(() => service.Update(1, patchDto));
 
         Assert.AreEqual("El producto no existe", exception.Message);
 
         repoMock.Verify(r => r.GetById(1), Times.Once);
         repoMock.Verify(r => r.Update(It.IsAny<Product>()), Times.Never);
+    }
+
+    [TestMethod]
+    public void GivenValidDateProductIdAndCommercialLine_WhenProductDoesNotMatchLine_ThenReturnsEmptyList()
+    {
+        var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        var date = new DateOnly(2026, 1, 26);
+
+        var promotion = Promotion.MakePromotion(
+            "Promo Mixta",
+            10,
+            new DateOnly(2026, 1, 25),
+            new DateOnly(2026, 1, 30)
+        );
+        promotion.AssociateProduct(100);
+        promotion.AssociateProduct(200);
+
+        var bebidaProduct = new ProductBuilder()
+            .WithCode("COD100")
+            .WithName("Producto Bebida")
+            .WithDescription("Descripción válida con más de veinte caracteres")
+            .WithCommercialLine("Bebidas")
+            .WithCategory("Categoría")
+            .WithPrice(100)
+            .WithPhotos(new List<ProductPhoto> { new ProductPhoto("photo-1.jpg") })
+            .Build();
+
+        var comidaProduct = new ProductBuilder()
+            .WithCode("COD200")
+            .WithName("Producto Comida")
+            .WithDescription("Descripción válida con más de veinte caracteres")
+            .WithCommercialLine("Comida")
+            .WithCategory("Categoría")
+            .WithPrice(100)
+            .WithPhotos(new List<ProductPhoto> { new ProductPhoto("photo-2.jpg") })
+            .Build();
+
+        promotionRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns(new List<Promotion> { promotion });
+
+        productRepositoryMock
+            .Setup(r => r.GetById(100))
+            .Returns(bebidaProduct);
+
+        productRepositoryMock
+            .Setup(r => r.GetById(200))
+            .Returns(comidaProduct);
+
+        var request = new PromotionSearchRequestDto
+        {
+            Date = date,
+            ProductId = 100,
+            CommercialLine = "Comida"
+        };
+
+        var service = new PromotionService(
+            promotionRepositoryMock.Object,
+            productRepositoryMock.Object
+        );
+
+        var result = service.GetPromotions(request);
+
+        Assert.AreEqual(0, result.Count);
+
+        promotionRepositoryMock.VerifyAll();
+        productRepositoryMock.VerifyAll();
+    }
+
+    [TestMethod]
+    public void GivenProducts_WhenGettingProductsWithoutFilters_ThenReturnsAll()
+    {
+        var products = new List<Product>
+        {
+            CreateValidProduct("CODE12345", "Producto valido 1"),
+            CreateValidProduct("CODE12346", "Producto valido 2")
+        };
+
+        var repositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        repositoryMock
+            .Setup(r => r.GetAll())
+            .Returns(products);
+
+        var service = new ProductService(repositoryMock.Object, null!);
+
+        var result = service.GetProducts(new ProductSearchRequestDto());
+
+        Assert.AreEqual(2, result.Count);
+
+        repositoryMock.Verify(r => r.GetAll(), Times.Once);
+    }
+
+    [TestMethod]
+    public void GivenProducts_WhenFilteringByName_ThenReturnsMatchingProducts()
+    {
+        var products = new List<Product>
+        {
+            CreateValidProduct("CODE12345", "Producto valido 1"),
+            CreateValidProduct("CODE12346", "Otro producto distinto")
+        };
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        repoMock.Setup(r => r.GetAll()).Returns(products);
+
+        var service = CreateService(repoMock, storageMock);
+
+        var request = new ProductSearchRequestDto
+        {
+            Name = "valido"
+        };
+
+        var result = service.GetProducts(request);
+
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual("Producto valido 1", result[0].Name);
+
+        repoMock.Verify(r => r.GetAll(), Times.Once);
+    }
+
+    [TestMethod]
+    public void GivenProducts_WhenFilteringByCommercialLine_ThenReturnsMatchingProducts()
+    {
+        var products = new List<Product>
+        {
+            CreateValidProduct("CODE12345", "Producto 1", "Linea1"),
+            CreateValidProduct("CODE12346", "Producto 2", "Linea2")
+        };
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        repoMock.Setup(r => r.GetAll()).Returns(products);
+
+        var service = CreateService(repoMock, storageMock);
+
+        var request = new ProductSearchRequestDto
+        {
+            CommercialLine = "Linea1"
+        };
+
+        var result = service.GetProducts(request);
+
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual("Producto 1", result[0].Name);
+
+        repoMock.Verify(r => r.GetAll(), Times.Once);
+    }
+
+    [TestMethod]
+    public void GivenProducts_WhenFilteringByCategories_ThenReturnsMatchingProducts()
+    {
+        var products = new List<Product>
+        {
+            CreateValidProduct("CODE12345", "Producto 1", "Linea", "Bebidas"),
+            CreateValidProduct("CODE12346", "Producto 2", "Linea", "Comida"),
+            CreateValidProduct("CODE12347", "Producto 3", "Linea", "Postres")
+        };
+
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+
+        repoMock.Setup(r => r.GetAll()).Returns(products);
+
+        var service = CreateService(repoMock, storageMock);
+
+        var request = new ProductSearchRequestDto
+        {
+            Categories = new List<string> { "Comida", "Postres" }
+        };
+
+        var result = service.GetProducts(request);
+
+        Assert.AreEqual(2, result.Count);
+        Assert.IsTrue(result.Any(p => p.Category == "Comida"));
+        Assert.IsTrue(result.Any(p => p.Category == "Postres"));
+
+        repoMock.Verify(r => r.GetAll(), Times.Once);
     }
 }
