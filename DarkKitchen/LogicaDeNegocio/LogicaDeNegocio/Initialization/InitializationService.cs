@@ -27,7 +27,6 @@ public class InitializationService : IInitializationService
     public void EnsureInitialized()
     {
         EnsureAdminCreated();
-        EnsureProductsCreated();
     }
 
     private void EnsureAdminCreated()
@@ -58,8 +57,10 @@ public class InitializationService : IInitializationService
 
         _repositoryUser.Add(adminResult.Value!);
     }
+}
 
-    private void EnsureProductsCreated()
+/*
+  private void EnsureProductsCreated()
     {
         var existingProducts = _productRepository.GetAll();
 
@@ -111,5 +112,4 @@ public class InitializationService : IInitializationService
         {
             _productRepository.Create(product);
         }
-    }
-}
+ */
