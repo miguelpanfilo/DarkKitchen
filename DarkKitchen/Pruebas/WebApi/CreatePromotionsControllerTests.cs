@@ -47,12 +47,13 @@ public class CreatePromotionsControllerTests
     [TestMethod]
     public void Create_WhenAdmin_ShouldReturn201()
     {
-        var request = new PromotionRequestDto(
-            "Black Friday",
-            20,
-            new DateOnly(2026, 11, 1),
-            new DateOnly(2026, 11, 30)
-        );
+        var request = new PromotionRequestDto
+        {
+            Name = "Black Friday",
+            DiscountPercentage = 20,
+            StartDate = new DateOnly(2026, 11, 1),
+            EndDate = new DateOnly(2026, 11, 30)
+        };
 
         var response = new PromotionResponseDto(
             1,

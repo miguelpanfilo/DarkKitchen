@@ -17,7 +17,7 @@ public class PromotionsController(IPromotionService promotionService) : Controll
     public IActionResult Create([FromBody] PromotionRequestDto request)
     {
         var response = _promotionService.Create(request);
-        return Created(string.Empty, response);
+        return Created($"/api/v1/promotions/{response.Id}", response);
     }
 
     [HttpPatch("{id}")]

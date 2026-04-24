@@ -116,7 +116,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        Assert.ThrowsException<ProductException>(() => service.Create(dto));
+        Assert.ThrowsException<ValidationException>(() => service.Create(dto));
 
         repoMock.Verify(repository => repository.Create(It.IsAny<Product>()), Times.Never);
     }
@@ -287,7 +287,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ProductException>(() => service.Create(productDto));
+        var exception = Assert.ThrowsException<ValidationException>(() => service.Create(productDto));
 
         Assert.AreEqual("El producto debe tener entre 1 y 3 fotos", exception.Message);
         storageMock.Verify(s => s.Save(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
@@ -326,7 +326,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ProductException>(() =>
+        var exception = Assert.ThrowsException<ValidationException>(() =>
             service.Create(productDto)
         );
 
@@ -363,7 +363,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ProductException>(() =>
+        var exception = Assert.ThrowsException<ValidationException>(() =>
             service.Create(productDto));
 
         Assert.AreEqual("Las fotos deben estar en formato JPG", exception.Message);
@@ -844,7 +844,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ProductException>(
+        var exception = Assert.ThrowsException<ValidationException>(
             () => service.Create(productDto));
 
         Assert.AreEqual("La foto no puede superar los 500 KB", exception.Message);

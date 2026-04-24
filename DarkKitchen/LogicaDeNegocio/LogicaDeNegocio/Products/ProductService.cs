@@ -21,7 +21,8 @@ public class ProductService : IProductService
 
     public List<ProductResponseDto> GetProducts(ProductSearchRequestDto request)
     {
-        var products = _repository.GetAll();
+        var products = _repository.GetAll()
+            .Where(p => !p.IsDeleted).ToList();
 
         products = FilterByName(products, request.Name);
         products = FilterByCategories(products, request.Categories);
@@ -81,8 +82,8 @@ public class ProductService : IProductService
 
     public ProductResponseDto Create(ProductDTO productDto)
     {
-        var savedPhotos = _productPhotoService.SavePhotos(productDto.Photos);
-
+        var savedPhotos = ExecuteWithValidationHandling(() =>
+            _productPhotoService.SavePhotos(productDto.Photos));
         var product = ExecuteWithValidationHandling(() => ProductMapper.ToEntity(productDto, savedPhotos));
 
         var createdProduct = _repository.Create(product);

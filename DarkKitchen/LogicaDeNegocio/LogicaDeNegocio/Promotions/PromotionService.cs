@@ -5,7 +5,6 @@ using Dominio.Exceptions;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Promotions;
 using Mapeo;
-using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
 
 namespace LogicaDeNegocio.Promotions;
 
@@ -22,7 +21,9 @@ public class PromotionService : IPromotionService
 
     public PromotionResponseDto Create(PromotionRequestDto promotionRequestDto)
     {
-        var promotion = PromotionMapper.ToEntity(promotionRequestDto);
+        var promotion = ExecuteWithValidationHandling(() =>
+            PromotionMapper.ToEntity(promotionRequestDto));
+
         var createdPromotion = _promotionRepository.Create(promotion);
 
         return MapPromotionWithProducts(createdPromotion);
@@ -150,9 +151,9 @@ public class PromotionService : IPromotionService
 
     private PromotionResponseDto MapPromotionWithProducts(Promotion promotion)
     {
-        var products = promotion.PromotionProducts
+        var products = promotion.PromotionProducts?
             .Select(pp => GetExistingProduct(pp.ProductId))
-            .ToList();
+            .ToList() ?? [];
 
         return PromotionMapper.ToResponseDto(promotion, products);
     }
@@ -238,6 +239,18 @@ public class PromotionService : IPromotionService
         try
         {
             action();
+        }
+        catch (PromotionException ex)
+        {
+            throw new ValidationException(ex.Message);
+        }
+    }
+
+    private static T ExecuteWithValidationHandling<T>(Func<T> action)
+    {
+        try
+        {
+            return action();
         }
         catch (PromotionException ex)
         {

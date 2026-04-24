@@ -1,5 +1,6 @@
 using AlmacenamientoAbstracciones;
 using Dominio;
+using Microsoft.EntityFrameworkCore;
 
 namespace Almacenamiento;
 
@@ -21,12 +22,16 @@ public class PromotionRepository : IPromotionRepository
 
     public List<Promotion> GetAll()
     {
-        return _context.Promotions.ToList();
+        return _context.Promotions
+            .Include(p => p.PromotionProducts)
+            .ToList();
     }
 
     public Promotion? GetById(int id)
     {
-        return _context.Promotions.FirstOrDefault(p => p.Id == id);
+        return _context.Promotions
+            .Include(p => p.PromotionProducts)
+            .FirstOrDefault(p => p.Id == id);
     }
 
     public Promotion Update(Promotion promotion)

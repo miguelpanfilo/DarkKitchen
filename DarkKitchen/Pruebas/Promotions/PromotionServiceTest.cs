@@ -1,14 +1,11 @@
 using AlmacenamientoAbstracciones;
-using Contratos;
 using Contratos.Promotions;
 using Dominio;
 using Dominio.Builders;
 using Dominio.Exceptions;
-using LogicaDeNegocio;
 using LogicaDeNegocio.Promotions;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using Moq;
-using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
 
 namespace Pruebas.Promotions;
 
@@ -37,12 +34,13 @@ public class PromotionServiceTest
     [TestMethod]
     public void GivenValidPromotionDto_WhenCreating_ThenRepositoryIsCalledAndPromotionIsReturned()
     {
-        var promotionDto = new PromotionRequestDto(
-            "Black Friday",
-            10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
-        );
+        var promotionDto = new PromotionRequestDto
+        {
+            Name = "Black Friday",
+            DiscountPercentage = 10,
+            StartDate = new DateOnly(2026, 1, 25),
+            EndDate = new DateOnly(2026, 1, 30)
+        };
 
         var repositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
         var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
@@ -69,19 +67,20 @@ public class PromotionServiceTest
     [DataRow(" ")]
     public void GivenPromotionDtoWithInvalidName_WhenCreating_ThenThrowsPromotionException(string invalidName)
     {
-        var promotionDto = new PromotionRequestDto(
-            invalidName,
-            10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
-        );
+        var promotionDto = new PromotionRequestDto
+        {
+            Name = invalidName,
+            DiscountPercentage = 10,
+            StartDate = new DateOnly(2026, 1, 25),
+            EndDate = new DateOnly(2026, 1, 30)
+        };
 
         var repositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
         var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
 
         var service = new PromotionService(repositoryMock.Object, productRepositoryMock.Object);
 
-        var ex = Assert.ThrowsException<PromotionException>(() => service.Create(promotionDto));
+        var ex = Assert.ThrowsException<ValidationException>(() => service.Create(promotionDto));
 
         Assert.AreEqual("El nombre de la promoción no puede ser vacío", ex.Message);
     }
@@ -93,19 +92,20 @@ public class PromotionServiceTest
     public void GivenPromotionDtoWithInvalidDiscountPercentage_WhenCreating_ThenThrowsPromotionException(
         int invalidDiscount)
     {
-        var promotionDto = new PromotionRequestDto(
-            "Black Friday",
-            (decimal)invalidDiscount,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
-        );
+        var promotionDto = new PromotionRequestDto
+        {
+            Name = "Black Friday",
+            DiscountPercentage = (decimal)invalidDiscount,
+            StartDate = new DateOnly(2026, 1, 25),
+            EndDate = new DateOnly(2026, 1, 30)
+        };
 
         var repositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
         var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
 
         var service = new PromotionService(repositoryMock.Object, productRepositoryMock.Object);
 
-        var ex = Assert.ThrowsException<PromotionException>(() => service.Create(promotionDto));
+        var ex = Assert.ThrowsException<ValidationException>(() => service.Create(promotionDto));
 
         Assert.AreEqual("El porcentaje de descuento debe estar entre 1 y 100", ex.Message);
     }
@@ -120,18 +120,20 @@ public class PromotionServiceTest
         int endMonth,
         int endDay)
     {
-        var promotionDto = new PromotionRequestDto(
-            "Black Friday",
-            10,
-            new DateOnly(startYear, startMonth, startDay),
-            new DateOnly(endYear, endMonth, endDay));
+        var promotionDto = new PromotionRequestDto
+        {
+            Name = "Black Friday",
+            DiscountPercentage = 10,
+            StartDate = new DateOnly(startYear, startMonth, startDay),
+            EndDate = new DateOnly(endYear, endMonth, endDay)
+        };
 
         var repositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
         var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
 
         var service = new PromotionService(repositoryMock.Object, productRepositoryMock.Object);
 
-        var ex = Assert.ThrowsException<PromotionException>(() => service.Create(promotionDto));
+        var ex = Assert.ThrowsException<ValidationException>(() => service.Create(promotionDto));
 
         Assert.AreEqual("La fecha de inicio no puede ser mayor a la fecha de fin", ex.Message);
     }

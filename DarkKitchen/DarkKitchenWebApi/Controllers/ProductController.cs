@@ -15,7 +15,7 @@ public class ProductController(IProductService productService) : ControllerBase
     public IActionResult Create([FromBody] ProductDTO request)
     {
         var response = productService.Create(request);
-        return Created(string.Empty, response);
+        return Created($"/api/v1/products/{response.Id}", response);
     }
 
     [HttpGet]
@@ -26,7 +26,7 @@ public class ProductController(IProductService productService) : ControllerBase
         return Ok(result);
     }
 
-    [HttpPatch]
+    [HttpPatch("{productId}")]
     [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult Update(int productId, ProductPatchDto request)
     {
