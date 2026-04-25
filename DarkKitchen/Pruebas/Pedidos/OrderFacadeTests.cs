@@ -106,6 +106,10 @@ public sealed class OrderFacadeTests
             .Setup(p => p.GetById(1))
             .Returns(MakeActiveProduct());
 
+        _promotionServiceMock
+            .Setup(p => p.GetPromotions(It.IsAny<PromotionSearchRequestDto>()))
+            .Returns([]);
+
         _orderServiceMock
             .Setup(s => s.CreateOrder(
                 It.IsAny<int>(),
@@ -128,6 +132,7 @@ public sealed class OrderFacadeTests
             });
 
         _productServiceMock.VerifyAll();
+        _promotionServiceMock.VerifyAll();
         _orderServiceMock.VerifyAll();
         _repositoryUserMock.VerifyAll();
 
