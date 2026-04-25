@@ -2,6 +2,7 @@ using AlmacenamientoAbstracciones;
 using Contratos.Promotions;
 using Dominio;
 using Dominio.Exceptions;
+using LogicaDeNegocio.Shared;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Promotions;
 using Mapeo;
@@ -21,8 +22,9 @@ public class PromotionService : IPromotionService
 
     public PromotionResponseDto Create(PromotionRequestDto promotionRequestDto)
     {
-        var promotion = ExecuteWithValidationHandling(() =>
-            PromotionMapper.ToEntity(promotionRequestDto));
+        var promotion = ServiceExceptionHandler.ExecuteWithValidationHandling<Promotion, PromotionException>(() =>
+            PromotionMapper.ToEntity(promotionRequestDto)
+        );
 
         var createdPromotion = _promotionRepository.Create(promotion);
 
@@ -70,7 +72,8 @@ public class PromotionService : IPromotionService
         var promotion = GetExistingPromotion(promotionId);
 
         GetExistingProduct(productId);
-        ExecuteWithConflictHandling(() => promotion.AssociateProduct(productId));
+        ServiceExceptionHandler.ExecuteWithConflictHandling<PromotionException>(()
+            => promotion.AssociateProduct(productId));
 
         var updatedPromotion = _promotionRepository.Update(promotion);
 
@@ -83,7 +86,8 @@ public class PromotionService : IPromotionService
 
         GetExistingProduct(productId);
 
-        ExecuteWithConflictHandling(() => promotion.DisassociateProduct(productId));
+        ServiceExceptionHandler.ExecuteWithConflictHandling<PromotionException>(()
+            => promotion.DisassociateProduct(productId));
 
         var updatedPromotion = _promotionRepository.Update(promotion);
 
@@ -110,7 +114,8 @@ public class PromotionService : IPromotionService
     {
         if (name != null)
         {
-            ExecuteWithValidationHandling(() => promotion.UpdateName(name));
+            ServiceExceptionHandler.ExecuteWithValidationHandling<PromotionException>(()
+                => promotion.UpdateName(name));
         }
     }
 
@@ -118,7 +123,7 @@ public class PromotionService : IPromotionService
     {
         if (discountPercentage != null)
         {
-            ExecuteWithValidationHandling(() => promotion.UpdateDiscountPercentage(discountPercentage.Value));
+            ServiceExceptionHandler.ExecuteWithValidationHandling<PromotionException>(() => promotion.UpdateDiscountPercentage(discountPercentage.Value));
         }
     }
 
@@ -129,7 +134,8 @@ public class PromotionService : IPromotionService
             var newStartDate = startDate ?? promotion.StartDate;
             var newEndDate = endDate ?? promotion.EndDate;
 
-            ExecuteWithValidationHandling(() => promotion.UpdateDates(newStartDate, newEndDate));
+            ServiceExceptionHandler.ExecuteWithValidationHandling<PromotionException>(()
+                => promotion.UpdateDates(newStartDate, newEndDate));
         }
     }
 
@@ -173,31 +179,6 @@ public class PromotionService : IPromotionService
             .ToList();
     }
 
-    private static List<Promotion> FilterByProductId(List<Promotion> promotions, int? productId)
-    {
-        if (productId is null)
-        {
-            return promotions;
-        }
-
-        return promotions
-            .Where(p => p.PromotionProducts.Any(pp => pp.ProductId == productId.Value))
-            .ToList();
-    }
-
-    private List<Promotion> FilterByCommercialLine(List<Promotion> promotions, string? commercialLine)
-    {
-        if (string.IsNullOrWhiteSpace(commercialLine))
-        {
-            return promotions;
-        }
-
-        return promotions
-            .Where(p => p.PromotionProducts.Any(pp =>
-                GetExistingProduct(pp.ProductId).CommercialLine == commercialLine))
-            .ToList();
-    }
-
     private List<Promotion> FilterByAssociatedProductFilters(
         List<Promotion> promotions,
         int? productId,
@@ -220,41 +201,5 @@ public class PromotionService : IPromotionService
                 return matchesProductId && matchesCommercialLine;
             }))
             .ToList();
-    }
-
-    private static void ExecuteWithConflictHandling(Action action)
-    {
-        try
-        {
-            action();
-        }
-        catch (PromotionException ex)
-        {
-            throw new ConflictException(ex.Message);
-        }
-    }
-
-    private static void ExecuteWithValidationHandling(Action action)
-    {
-        try
-        {
-            action();
-        }
-        catch (PromotionException ex)
-        {
-            throw new ValidationException(ex.Message);
-        }
-    }
-
-    private static T ExecuteWithValidationHandling<T>(Func<T> action)
-    {
-        try
-        {
-            return action();
-        }
-        catch (PromotionException ex)
-        {
-            throw new ValidationException(ex.Message);
-        }
     }
 }
