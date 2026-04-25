@@ -2,6 +2,7 @@ using AlmacenamientoAbstracciones;
 using Contratos;
 using Contratos.Orders;
 using Contratos.Products;
+using Contratos.Promotions;
 using Dominio;
 using Dominio.Exceptions;
 using FluentAssertions;
@@ -12,9 +13,8 @@ using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Orders;
 using LogicaDeNegocioAbstracciones.Products;
 using LogicaDeNegocioAbstracciones.Promotions;
-using Moq;
-using Contratos.Promotions;
 using LogicaDeNegocioAbstracciones.Promotions;
+using Moq;
 
 namespace Pruebas.Pedidos;
 
@@ -185,22 +185,22 @@ public sealed class OrderFacadeTests
                 request.ProductId == 1 &&
                 request.Date.HasValue)))
             .Returns([
-                new PromotionResponseDto
-                {
-                    Id = 1,
-                    Name = "Promo 10",
-                    DiscountPercentage = 10,
-                    StartDate = new DateOnly(2026, 4, 1),
-                    EndDate = new DateOnly(2026, 4, 30)
-                },
-                new PromotionResponseDto
-                {
-                    Id = 2,
-                    Name = "Promo Abril",
-                    DiscountPercentage = 20,
-                    StartDate = new DateOnly(2026, 4, 1),
-                    EndDate = new DateOnly(2026, 4, 30)
-                }
+                new PromotionResponseDto(
+                    1,
+                    "Promo 10",
+                    10,
+                    new DateOnly(2026, 4, 1),
+                    new DateOnly(2026, 4, 30),
+                    []
+                ),
+                new PromotionResponseDto(
+                    2,
+                    "Promo Abril",
+                    20,
+                    new DateOnly(2026, 4, 1),
+                    new DateOnly(2026, 4, 30),
+                    []
+                )
             ]);
 
         _orderServiceMock
@@ -244,6 +244,56 @@ public sealed class OrderFacadeTests
         result.Items.Should().ContainSingle();
         result.Items[0].DiscountApplied.Should().Be(0.20m);
         result.Items[0].LineTotal.Should().Be(416m);
+    }
+
+    [TestMethod]
+    public void CreateOrder_WhenProductHasNoCurrentPromotion_ShouldApplyZeroDiscount()
+    {
+        _productServiceMock
+            .Setup(p => p.GetById(1))
+            .Returns(MakeActiveProduct(price: 520m));
+
+        _promotionServiceMock
+            .Setup(p => p.GetPromotions(It.IsAny<PromotionSearchRequestDto>()))
+            .Returns([]);
+
+        _orderServiceMock
+            .Setup(s => s.CreateOrder(
+                1,
+                DeliveryType.Express,
+                It.IsAny<Address>(),
+                It.Is<List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)>>(items =>
+                    items.Count == 1 &&
+                    items[0].DiscountApplied == 0m),
+                200m))
+            .Returns((int clientId,
+                    DeliveryType deliveryType,
+                    Address address,
+                    List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)> items,
+                    decimal shippingCost) =>
+                Order.MakeOrder(clientId, deliveryType, address, items, shippingCost));
+
+        _repositoryUserMock
+            .Setup(r => r.FindById(1))
+            .Returns(MakeTestUser(1));
+
+        var result = _orderFacade.CreateOrder(1, new CreateOrderRequest
+        {
+            DeliveryType = DeliveryTypeDto.Express,
+            Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
+            Items =
+            [
+                new CreateOrderItemRequest { ProductId = 1, Quantity = 1 }
+            ]
+        });
+
+        _productServiceMock.VerifyAll();
+        _promotionServiceMock.VerifyAll();
+        _orderServiceMock.VerifyAll();
+        _repositoryUserMock.VerifyAll();
+
+        result.Items[0].DiscountApplied.Should().Be(0m);
+        result.Items[0].LineTotal.Should().Be(520m);
     }
 
     [TestMethod]
