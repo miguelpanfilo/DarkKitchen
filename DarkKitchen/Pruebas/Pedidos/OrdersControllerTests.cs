@@ -60,7 +60,6 @@ public sealed class OrdersControllerTests
         {
             new()
             {
-                Id = 1,
                 ProductId = 1,
                 Quantity = 2,
                 UnitPrice = 100m,
