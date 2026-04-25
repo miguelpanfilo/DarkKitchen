@@ -1,28 +1,26 @@
 using Contratos.Users;
 using DarkKitchen.Filters;
-using LogicaDeNegocioAbstracciones.Orders;
+using LogicaDeNegocioAbstracciones.Exceptions;
+using LogicaDeNegocioAbstracciones.Reports;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DarkKitchen.Controllers;
 
 [ApiController]
 [Route("api/v1/reports")]
-public class ReportsController(IOrderFacade orderFacade) : ControllerBase
+public class ReportsController(IReportService reportService) : ControllerBase
 {
-    private readonly IOrderFacade _orderFacade = orderFacade;
+    private readonly IReportService _reportService = reportService;
 
-    [HttpGet("top")]
+    [HttpGet("top-products")]
     [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult GetTopProducts(
         [FromQuery] DateTime? dateFrom,
         [FromQuery] DateTime? dateTo)
     {
-        if (dateFrom.HasValue && dateTo.HasValue && dateFrom > dateTo)
-        {
-            return BadRequest("Start date cannot be later than end date");
-        }
+        ValidateDateRange(dateFrom, dateTo);
 
-        var result = _orderFacade.GetTopProducts(dateFrom, dateTo);
+        var result = _reportService.GetTopProducts(dateFrom, dateTo);
         return Ok(result);
     }
 
@@ -32,12 +30,17 @@ public class ReportsController(IOrderFacade orderFacade) : ControllerBase
         [FromQuery] DateTime? dateFrom,
         [FromQuery] DateTime? dateTo)
     {
-        if (dateFrom.HasValue && dateTo.HasValue && dateFrom > dateTo)
-        {
-            return BadRequest("Start date cannot be later than end date");
-        }
+        ValidateDateRange(dateFrom, dateTo);
 
-        var result = _orderFacade.GetSalesReport(dateFrom, dateTo);
+        var result = _reportService.GetSalesReport(dateFrom, dateTo);
         return Ok(result);
+    }
+
+    private static void ValidateDateRange(DateTime? dateFrom, DateTime? dateTo)
+    {
+        if(dateFrom.HasValue && dateTo.HasValue && dateFrom > dateTo)
+        {
+            throw new ValidationException("Fecha inicio no puede ser posterior a fecha fin");
+        }
     }
 }
