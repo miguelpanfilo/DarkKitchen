@@ -54,6 +54,8 @@ public class OrderRepository(SqlContext context) : IOrderRepository
     {
         var query = _context.Orders
             .Include(o => o.Items)
+                .ThenInclude(i => i.Product)
+                    .ThenInclude(p => p!.Photos)
             .Include(o => o.Client)
             .Where(o => o.CreatedAt >= dateFrom && o.CreatedAt <= dateTo);
 
