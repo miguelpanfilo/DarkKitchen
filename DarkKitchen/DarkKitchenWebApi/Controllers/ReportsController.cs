@@ -13,31 +13,31 @@ public class ReportsController(IOrderFacade orderFacade) : ControllerBase
 
     [HttpGet("top")]
     [RoleAuthorization(UserRolesDto.Administrative)]
-    public IActionResult GetTopProductos(
-        [FromQuery] DateTime? fechaDesde,
-        [FromQuery] DateTime? fechaHasta)
+    public IActionResult GetTopProducts(
+        [FromQuery] DateTime? dateFrom,
+        [FromQuery] DateTime? dateTo)
     {
-        if (fechaDesde.HasValue && fechaHasta.HasValue && fechaDesde > fechaHasta)
+        if (dateFrom.HasValue && dateTo.HasValue && dateFrom > dateTo)
         {
-            return BadRequest("La fecha de inicio no puede ser posterior a la fecha de fin");
+            return BadRequest("Start date cannot be later than end date");
         }
 
-        var result = _orderFacade.GetTopProductos(fechaDesde, fechaHasta);
+        var result = _orderFacade.GetTopProducts(dateFrom, dateTo);
         return Ok(result);
     }
 
     [HttpGet("sales")]
     [RoleAuthorization(UserRolesDto.Administrative)]
-    public IActionResult GetReporteVentas(
-        [FromQuery] DateTime? fechaDesde,
-        [FromQuery] DateTime? fechaHasta)
+    public IActionResult GetSalesReport(
+        [FromQuery] DateTime? dateFrom,
+        [FromQuery] DateTime? dateTo)
     {
-        if (fechaDesde.HasValue && fechaHasta.HasValue && fechaDesde > fechaHasta)
+        if (dateFrom.HasValue && dateTo.HasValue && dateFrom > dateTo)
         {
-            return BadRequest("La fecha de inicio no puede ser posterior a la fecha de fin");
+            return BadRequest("Start date cannot be later than end date");
         }
 
-        var result = _orderFacade.GetReporteVentas(fechaDesde, fechaHasta);
+        var result = _orderFacade.GetSalesReport(dateFrom, dateTo);
         return Ok(result);
     }
 }

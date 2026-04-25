@@ -1,6 +1,6 @@
 using Contratos;
 using Contratos.Orders;
-using Contratos.Reportes;
+using Contratos.Reports;
 using Dominio;
 
 namespace Mapeo;
@@ -51,7 +51,7 @@ public static class OrderMapper
         };
     }
 
-    public static List<TopProductoReporteItemDto> ToTopProductosReporte(this List<Order> orders)
+    public static List<TopProductReportItemDto> ToTopProductsReport(this List<Order> orders)
     {
         return orders
             .SelectMany(o => o.Items)
@@ -59,46 +59,46 @@ public static class OrderMapper
             .Select(g => new
             {
                 Product = g.First().Product!,
-                CantidadVendida = g.Sum(i => i.Quantity)
+                QuantitySold = g.Sum(i => i.Quantity)
             })
-            .OrderByDescending(x => x.CantidadVendida)
+            .OrderByDescending(x => x.QuantitySold)
             .Take(5)
-            .Select(x => new TopProductoReporteItemDto
+            .Select(x => new TopProductReportItemDto
             {
-                Codigo = x.Product.Code,
-                Nombre = x.Product.Name,
-                CantidadVendida = x.CantidadVendida,
-                Imagenes = x.Product.Photos.Select(p => p.Path).ToList()
+                Code = x.Product.Code,
+                Name = x.Product.Name,
+                QuantitySold = x.QuantitySold,
+                Images = x.Product.Photos.Select(p => p.Path).ToList()
             })
             .ToList();
     }
 
-    public static ReporteVentasDto ToReporteVentas(this List<Order> orders)
+    public static SalesReportDto ToSalesReport(this List<Order> orders)
     {
-        var periodos = orders
+        var periods = orders
             .GroupBy(o => new { o.CreatedAt.Year, o.CreatedAt.Month })
             .OrderBy(g => g.Key.Year).ThenBy(g => g.Key.Month)
-            .Select(g => new PeriodoVentasDto
+            .Select(g => new SalesPeriodDto
             {
-                Anio = g.Key.Year,
-                Mes = g.Key.Month,
-                Clientes = g
+                Year = g.Key.Year,
+                Month = g.Key.Month,
+                Customers = g
                     .GroupBy(o => o.ClientId)
-                    .Select(cg => new ClienteVentasDto
+                    .Select(cg => new CustomerSalesDto
                     {
-                        Cliente = $"{cg.First().Client!.Name} {cg.First().Client!.LastName}",
-                        TotalVentas = cg.Sum(o => o.Total)
+                        Customer = $"{cg.First().Client!.Name} {cg.First().Client!.LastName}",
+                        TotalSales = cg.Sum(o => o.Total)
                     })
-                    .OrderBy(c => c.Cliente)
+                    .OrderBy(c => c.Customer)
                     .ToList(),
-                TotalMes = g.Sum(o => o.Total)
+                MonthTotal = g.Sum(o => o.Total)
             })
             .ToList();
 
-        return new ReporteVentasDto
+        return new SalesReportDto
         {
-            Periodos = periodos,
-            TotalGeneral = periodos.Sum(p => p.TotalMes)
+            Periods = periods,
+            GrandTotal = periods.Sum(p => p.MonthTotal)
         };
     }
 }

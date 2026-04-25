@@ -1,7 +1,7 @@
 using AlmacenamientoAbstracciones;
 using Contratos.Orders;
 using Contratos.Promotions;
-using Contratos.Reportes;
+using Contratos.Reports;
 using Dominio;
 using Dominio.Exceptions;
 using LogicaDeNegocio.Shipping;
@@ -147,20 +147,20 @@ public class OrderFacade(
     private static OrderStatus? ToOrderStatus(OrderStatusDto? dto) =>
         dto.HasValue ? Enum.Parse<OrderStatus>(dto.Value.ToString()) : null;
 
-    public List<TopProductoReporteItemDto> GetTopProductos(DateTime? fechaDesde, DateTime? fechaHasta)
+    public List<TopProductReportItemDto> GetTopProducts(DateTime? dateFrom, DateTime? dateTo)
     {
-        var from = fechaDesde ?? DateTime.MinValue;
-        var to = fechaHasta ?? DateTime.MaxValue;
+        var from = dateFrom ?? DateTime.MinValue;
+        var to = dateTo ?? DateTime.MaxValue;
         var orders = _orderService.GetOrdersByFilters(from, to, null, null);
-        return orders.ToTopProductosReporte();
+        return orders.ToTopProductsReport();
     }
 
-    public ReporteVentasDto GetReporteVentas(DateTime? fechaDesde, DateTime? fechaHasta)
+    public SalesReportDto GetSalesReport(DateTime? dateFrom, DateTime? dateTo)
     {
-        var from = fechaDesde ?? DateTime.MinValue;
-        var to = fechaHasta ?? DateTime.MaxValue;
+        var from = dateFrom ?? DateTime.MinValue;
+        var to = dateTo ?? DateTime.MaxValue;
         var orders = _orderService.GetOrdersByFilters(from, to, null, null);
-        return orders.ToReporteVentas();
+        return orders.ToSalesReport();
     }
 
     public void Prepare(int orderId) => _orderService.Prepare(orderId);
