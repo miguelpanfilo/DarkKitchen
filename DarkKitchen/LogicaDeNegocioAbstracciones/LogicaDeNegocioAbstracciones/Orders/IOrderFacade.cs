@@ -1,9 +1,14 @@
 using Contratos.Orders;
+using Contratos.Reportes;
 
 namespace LogicaDeNegocioAbstracciones.Orders;
 
 public interface IOrderFacade
 {
+    List<TopProductoReporteItemDto> GetTopProductos(DateTime? fechaDesde, DateTime? fechaHasta);
+
+    ReporteVentasDto GetReporteVentas(DateTime? fechaDesde, DateTime? fechaHasta);
+
     OrderResponse CreateOrder(int clientId, CreateOrderRequest request);
 
     OrderResponse GetById(int orderId);
