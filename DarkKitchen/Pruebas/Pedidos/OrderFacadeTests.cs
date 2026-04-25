@@ -11,7 +11,10 @@ using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Orders;
 using LogicaDeNegocioAbstracciones.Products;
+using LogicaDeNegocioAbstracciones.Promotions;
 using Moq;
+using Contratos.Promotions;
+using LogicaDeNegocioAbstracciones.Promotions;
 
 namespace Pruebas.Pedidos;
 
@@ -22,6 +25,8 @@ public sealed class OrderFacadeTests
     private Mock<IProductService> _productServiceMock = null!;
     private OrderFacade _orderFacade = null!;
     private Mock<IRepositoryUser> _repositoryUserMock = null!;
+    private Mock<IPromotionService> _promotionServiceMock = null!;
+
     private static Order MakeTestOrder(int clientId = 1)
     {
         var address = Address.MakeAddress("Rivera", "1234");
@@ -55,9 +60,12 @@ public sealed class OrderFacadeTests
         _orderServiceMock = new Mock<IOrderService>(MockBehavior.Strict);
         _productServiceMock = new Mock<IProductService>(MockBehavior.Strict);
         _repositoryUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
+        _promotionServiceMock = new Mock<IPromotionService>(MockBehavior.Strict);
+
         _orderFacade = new OrderFacade(
             _orderServiceMock.Object,
             _productServiceMock.Object,
+            _promotionServiceMock.Object,
             _repositoryUserMock.Object);
     }
 
@@ -88,7 +96,9 @@ public sealed class OrderFacadeTests
     }
 
     #region CreateOrder
+
     #region Success
+
     [TestMethod]
     public void CreateOrder_WhenValidRequest_ShouldReturnOrderResponse()
     {
@@ -109,12 +119,13 @@ public sealed class OrderFacadeTests
             .Setup(r => r.FindById(1))
             .Returns(MakeTestUser(1));
 
-        var result = _orderFacade.CreateOrder(1, new CreateOrderRequest
-        {
-            DeliveryType = DeliveryTypeDto.Express,
-            Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
-            Items = [new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }]
-        });
+        var result = _orderFacade.CreateOrder(1,
+            new CreateOrderRequest
+            {
+                DeliveryType = DeliveryTypeDto.Express,
+                Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
+                Items = [new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }]
+            });
 
         _productServiceMock.VerifyAll();
         _orderServiceMock.VerifyAll();
@@ -123,9 +134,11 @@ public sealed class OrderFacadeTests
         result.Should().NotBeNull();
         result.Should().BeOfType<OrderResponse>();
     }
+
     #endregion
 
     #region Error
+
     [TestMethod]
     public void CreateOrder_WhenProductIsInactive_ShouldThrowOrderException()
     {
@@ -145,12 +158,13 @@ public sealed class OrderFacadeTests
             .Setup(p => p.GetById(1))
             .Returns(product);
 
-        var act = () => _orderFacade.CreateOrder(1, new CreateOrderRequest
-        {
-            DeliveryType = DeliveryTypeDto.Express,
-            Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
-            Items = [new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }]
-        });
+        var act = () => _orderFacade.CreateOrder(1,
+            new CreateOrderRequest
+            {
+                DeliveryType = DeliveryTypeDto.Express,
+                Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
+                Items = [new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }]
+            });
 
         act.Should()
             .Throw<ValidationException>()
@@ -160,16 +174,85 @@ public sealed class OrderFacadeTests
     }
 
     [TestMethod]
+    public void CreateOrder_WhenProductHasCurrentPromotion_ShouldApplyHighestDiscount()
+    {
+        _productServiceMock
+            .Setup(p => p.GetById(1))
+            .Returns(MakeActiveProduct(price: 520m));
+
+        _promotionServiceMock
+            .Setup(p => p.GetPromotions(It.Is<PromotionSearchRequestDto>(request =>
+                request.ProductId == 1 &&
+                request.Date.HasValue)))
+            .Returns([
+                new PromotionResponseDto
+                {
+                    Id = 1,
+                    Name = "Promo 10",
+                    DiscountPercentage = 10,
+                    StartDate = new DateOnly(2026, 4, 1),
+                    EndDate = new DateOnly(2026, 4, 30)
+                },
+                new PromotionResponseDto
+                {
+                    Id = 2,
+                    Name = "Promo Abril",
+                    DiscountPercentage = 20,
+                    StartDate = new DateOnly(2026, 4, 1),
+                    EndDate = new DateOnly(2026, 4, 30)
+                }
+            ]);
+
+        _orderServiceMock
+            .Setup(s => s.CreateOrder(
+                1,
+                DeliveryType.Express,
+                It.IsAny<Address>(),
+                It.Is<List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)>>(items =>
+                    items.Count == 1 &&
+                    items[0].ProductId == 1 &&
+                    items[0].Quantity == 1 &&
+                    items[0].UnitPrice == 520m &&
+                    items[0].DiscountApplied == 0.20m),
+                200m))
+            .Returns((int clientId,
+                    DeliveryType deliveryType,
+                    Address address,
+                    List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)> items,
+                    decimal shippingCost) =>
+                Order.MakeOrder(clientId, deliveryType, address, items, shippingCost));
+
+        _repositoryUserMock
+            .Setup(r => r.FindById(1))
+            .Returns(MakeTestUser(1));
+
+        var result = _orderFacade.CreateOrder(1, new CreateOrderRequest
+        {
+            DeliveryType = DeliveryTypeDto.Express,
+            Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
+            Items =
+            [
+                new CreateOrderItemRequest { ProductId = 1, Quantity = 1 }
+            ]
+        });
+
+        _productServiceMock.VerifyAll();
+        _promotionServiceMock.VerifyAll();
+        _orderServiceMock.VerifyAll();
+        _repositoryUserMock.VerifyAll();
+
+        result.Items.Should().ContainSingle();
+        result.Items[0].DiscountApplied.Should().Be(0.20m);
+        result.Items[0].LineTotal.Should().Be(416m);
+    }
+
+    [TestMethod]
     public void CreateOrder_WhenItemsAreEmpty_ShouldThrowValidationException()
     {
         var request = new CreateOrderRequest
         {
             DeliveryType = DeliveryTypeDto.Express,
-            Address = new CreateAddressRequest
-            {
-                Street = "Rivera",
-                DoorNumber = "1234"
-            },
+            Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
             Items = []
         };
 
@@ -189,19 +272,10 @@ public sealed class OrderFacadeTests
         var request = new CreateOrderRequest
         {
             DeliveryType = DeliveryTypeDto.Express,
-            Address = new CreateAddressRequest
-            {
-                Street = "Rivera",
-                DoorNumber = "1234"
-            },
+            Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
             Items =
             [
-                new CreateOrderItemRequest
-                {
-                    ProductId = 1,
-                    Quantity = -2
-                }
-
+                new CreateOrderItemRequest { ProductId = 1, Quantity = -2 }
             ]
         };
 
@@ -221,19 +295,10 @@ public sealed class OrderFacadeTests
         var request = new CreateOrderRequest
         {
             DeliveryType = (DeliveryTypeDto)99,
-            Address = new CreateAddressRequest
-            {
-                Street = "Rivera",
-                DoorNumber = "1234"
-            },
+            Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
             Items =
             [
-                new CreateOrderItemRequest
-                {
-                    ProductId = 1,
-                    Quantity = 2
-                }
-
+                new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }
             ]
         };
 
@@ -253,11 +318,7 @@ public sealed class OrderFacadeTests
         var request = new CreateOrderRequest
         {
             DeliveryType = DeliveryTypeDto.Express,
-            Address = new CreateAddressRequest
-            {
-                Street = "Rivera",
-                DoorNumber = "1234"
-            },
+            Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
             Items = null!
         };
 
@@ -277,19 +338,10 @@ public sealed class OrderFacadeTests
         var request = new CreateOrderRequest
         {
             DeliveryType = DeliveryTypeDto.Express,
-            Address = new CreateAddressRequest
-            {
-                Street = "Rivera",
-                DoorNumber = "1234"
-            },
+            Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
             Items =
             [
-                new CreateOrderItemRequest
-                {
-                    ProductId = 1,
-                    Quantity = 0
-                }
-
+                new CreateOrderItemRequest { ProductId = 1, Quantity = 0 }
             ]
         };
 
@@ -302,11 +354,15 @@ public sealed class OrderFacadeTests
         _productServiceMock.VerifyNoOtherCalls();
         _orderServiceMock.VerifyNoOtherCalls();
     }
+
     #endregion
+
     #endregion
 
     #region GetClientOrders
+
     #region Success
+
     [TestMethod]
     public void GetClientOrders_WhenClientHasOrders_ShouldReturnOrderResponseList()
     {
@@ -338,11 +394,15 @@ public sealed class OrderFacadeTests
         _orderServiceMock.VerifyAll();
         result.Should().BeEmpty();
     }
+
     #endregion
+
     #endregion
 
     #region GetById
+
     #region Success
+
     [TestMethod]
     public void GetById_WhenOrderExists_ShouldReturnOrderResponse()
     {
@@ -362,11 +422,15 @@ public sealed class OrderFacadeTests
         result.Should().NotBeNull();
         result.Should().BeOfType<OrderResponse>();
     }
+
     #endregion
+
     #endregion
 
     #region GetOrdersByFilters
+
     #region Success
+
     [TestMethod]
     public void GetOrdersByFilters_WhenOrdersMatch_ShouldReturnOrderResponseList()
     {
@@ -403,11 +467,15 @@ public sealed class OrderFacadeTests
         _orderServiceMock.VerifyAll();
         result.Should().BeEmpty();
     }
+
     #endregion
+
     #endregion
 
     #region Prepare
+
     #region Success
+
     [TestMethod]
     public void Prepare_WhenValidId_ShouldDelegateToService()
     {
@@ -417,11 +485,15 @@ public sealed class OrderFacadeTests
 
         _orderServiceMock.VerifyAll();
     }
+
     #endregion
+
     #endregion
 
     #region Cancel
+
     #region Success
+
     [TestMethod]
     public void Cancel_WhenValidId_ShouldDelegateToService()
     {
@@ -431,11 +503,15 @@ public sealed class OrderFacadeTests
 
         _orderServiceMock.VerifyAll();
     }
+
     #endregion
+
     #endregion
 
     #region Dispatch
+
     #region Success
+
     [TestMethod]
     public void Dispatch_WhenValidId_ShouldDelegateToService()
     {
@@ -445,11 +521,15 @@ public sealed class OrderFacadeTests
 
         _orderServiceMock.VerifyAll();
     }
+
     #endregion
+
     #endregion
 
     #region Deliver
+
     #region Success
+
     [TestMethod]
     public void Deliver_WhenValidId_ShouldDelegateToService()
     {
@@ -459,11 +539,15 @@ public sealed class OrderFacadeTests
 
         _orderServiceMock.VerifyAll();
     }
+
     #endregion
+
     #endregion
 
     #region MarkNotDelivered
+
     #region Success
+
     [TestMethod]
     public void MarkNotDelivered_WhenValidId_ShouldDelegateToService()
     {
@@ -473,6 +557,8 @@ public sealed class OrderFacadeTests
 
         _orderServiceMock.VerifyAll();
     }
+
     #endregion
+
     #endregion
 }
