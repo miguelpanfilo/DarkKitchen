@@ -67,6 +67,23 @@ public class InitializationServiceTests
     }
 
     [TestMethod]
+    public void MakeIntern_WhenRoleIsClient_ShouldReturnFail()
+    {
+        var phone = Phone.TryMakePhone("099123456").Value!;
+
+        var result = User.MakeIntern(
+            "Miguel",
+            "Lopez",
+            "miguel@gmail.com",
+            phone,
+            "PasswordSeguraee3!",
+            UserRoles.Client);
+
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Internal role is not valid", result.ErrorMessage);
+    }
+
+    [TestMethod]
     public void EnsureInitialized_WhenAdminDoesNotExist_AddsUserWithExpectedEmail()
     {
         _repositoryUserMock

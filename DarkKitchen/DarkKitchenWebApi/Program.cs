@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
+using DarkKitchen;
 using DarkKitchen.Filters;
-using DarkKitchenWebApi.Extensions;
 using FactoryService;
 
 var builder = WebApplication.CreateBuilder(args);

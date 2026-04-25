@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Dominio;
 
 public class Session
@@ -6,6 +8,7 @@ public class Session
     public int UserId { get; private set; }
     public DateTime ExpireDate { get; private set; }
 
+    [ExcludeFromCodeCoverage]
     private Session() { }
 
     public Session(int userId, DateTime expireDate)

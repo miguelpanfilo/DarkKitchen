@@ -2,6 +2,7 @@ using AlmacenamientoAbstracciones;
 using Contratos.Products;
 using Dominio;
 using Dominio.Exceptions;
+using LogicaDeNegocio.Shared;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Products;
 using Mapeo;
@@ -82,9 +83,9 @@ public class ProductService : IProductService
 
     public ProductResponseDto Create(ProductDTO productDto)
     {
-        var savedPhotos = ExecuteWithValidationHandling(() =>
+        var savedPhotos = ServiceExceptionHandler.ExecuteWithValidationHandling<List<ProductPhoto>,ProductException>(() =>
             _productPhotoService.SavePhotos(productDto.Photos));
-        var product = ExecuteWithValidationHandling(() => ProductMapper.ToEntity(productDto, savedPhotos));
+        var product = ServiceExceptionHandler.ExecuteWithValidationHandling<Product,ProductException>(() => ProductMapper.ToEntity(productDto, savedPhotos));
 
         var createdProduct = _repository.Create(product);
 
@@ -105,7 +106,7 @@ public class ProductService : IProductService
     {
         var product = GetExistingProduct(productId);
 
-        ExecuteWithConflictHandling(() => product.Delete());
+        ServiceExceptionHandler.ExecuteWithConflictHandling<ProductException>(() => product.Delete());
         _repository.Update(product);
     }
 
@@ -125,7 +126,8 @@ public class ProductService : IProductService
     {
         if (patchDto.Code != null)
         {
-            ExecuteWithValidationHandling(() => product.UpdateCode(patchDto.Code));
+            ServiceExceptionHandler.ExecuteWithValidationHandling<ProductException>(()
+                => product.UpdateCode(patchDto.Code));
         }
     }
 
@@ -133,7 +135,7 @@ public class ProductService : IProductService
     {
         if (patchDto.Name != null)
         {
-            ExecuteWithValidationHandling(() => product.UpdateName(patchDto.Name));
+            ServiceExceptionHandler.ExecuteWithValidationHandling<ProductException>(() => product.UpdateName(patchDto.Name));
         }
     }
 
@@ -141,7 +143,8 @@ public class ProductService : IProductService
     {
         if (patchDto.Description != null)
         {
-            ExecuteWithValidationHandling(() => product.UpdateDescription(patchDto.Description));
+            ServiceExceptionHandler.ExecuteWithValidationHandling<ProductException>(()
+                => product.UpdateDescription(patchDto.Description));
         }
     }
 
@@ -149,7 +152,8 @@ public class ProductService : IProductService
     {
         if (patchDto.CommercialLine != null)
         {
-            ExecuteWithValidationHandling(() => product.UpdateCommercialLine(patchDto.CommercialLine));
+            ServiceExceptionHandler.ExecuteWithValidationHandling<ProductException>(()
+                => product.UpdateCommercialLine(patchDto.CommercialLine));
         }
     }
 
@@ -157,7 +161,8 @@ public class ProductService : IProductService
     {
         if (patchDto.Category != null)
         {
-            ExecuteWithValidationHandling(() => product.UpdateCategory(patchDto.Category));
+            ServiceExceptionHandler.ExecuteWithValidationHandling<ProductException>(()
+                => product.UpdateCategory(patchDto.Category));
         }
     }
 
@@ -165,7 +170,8 @@ public class ProductService : IProductService
     {
         if (patchDto.Price.HasValue)
         {
-            ExecuteWithValidationHandling(() => product.UpdatePrice(patchDto.Price.Value));
+            ServiceExceptionHandler.ExecuteWithValidationHandling<ProductException>(()
+                => product.UpdatePrice(patchDto.Price.Value));
         }
     }
 
@@ -173,8 +179,10 @@ public class ProductService : IProductService
     {
         if (patchDto.Photos != null)
         {
-            var finalPhotos = ExecuteWithValidationHandling(() => _productPhotoService.SyncPhotos(product, patchDto.Photos));
-            ExecuteWithValidationHandling(() => product.UpdatePhotos(finalPhotos));
+            var finalPhotos = ServiceExceptionHandler.ExecuteWithValidationHandling<List<ProductPhoto>,
+                ProductException>(() => _productPhotoService.SyncPhotos(product, patchDto.Photos));
+            ServiceExceptionHandler.ExecuteWithValidationHandling<ProductException>(()
+                => product.UpdatePhotos(finalPhotos));
         }
     }
 
@@ -205,41 +213,5 @@ public class ProductService : IProductService
         }
 
         return product;
-    }
-
-    private static void ExecuteWithValidationHandling(Action action)
-    {
-        try
-        {
-            action();
-        }
-        catch (ProductException ex)
-        {
-            throw new ValidationException(ex.Message);
-        }
-    }
-
-    private static void ExecuteWithConflictHandling(Action action)
-    {
-        try
-        {
-            action();
-        }
-        catch (ProductException ex)
-        {
-            throw new ConflictException(ex.Message);
-        }
-    }
-
-    private static T ExecuteWithValidationHandling<T>(Func<T> action)
-    {
-        try
-        {
-            return action();
-        }
-        catch (ProductException ex)
-        {
-            throw new ValidationException(ex.Message);
-        }
     }
 }

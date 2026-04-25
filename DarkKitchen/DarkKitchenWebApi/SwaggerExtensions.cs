@@ -1,7 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.OpenApi.Models;
 
-namespace DarkKitchenWebApi.Extensions;
-
+namespace DarkKitchen;
+[ExcludeFromCodeCoverage]
 public static class SwaggerExtensions
 {
     public static IServiceCollection AddCustomSwagger(this IServiceCollection services)

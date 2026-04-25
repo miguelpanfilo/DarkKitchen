@@ -1,10 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using Almacenamiento;
-using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Users;
 using Microsoft.EntityFrameworkCore;
 
-namespace DarkKitchenWebApi.Extensions;
+namespace DarkKitchen;
 
+[ExcludeFromCodeCoverage]
 public static class ApplicationInitializationExtensions
 {
     public static WebApplication InitializeDatabase(this WebApplication app)
