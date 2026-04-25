@@ -100,6 +100,47 @@ public sealed class OrderFacadeTests
     #region Success
 
     [TestMethod]
+    public void CreateOrder_WhenUserNotFound_ShouldThrowNotFoundException()
+    {
+        _productServiceMock
+            .Setup(p => p.GetById(1))
+            .Returns(MakeActiveProduct());
+
+        _promotionServiceMock
+            .Setup(p => p.GetPromotions(It.IsAny<PromotionSearchRequestDto>()))
+            .Returns([]);
+
+        _orderServiceMock
+            .Setup(s => s.CreateOrder(
+                It.IsAny<int>(),
+                It.IsAny<DeliveryType>(),
+                It.IsAny<Address>(),
+                It.IsAny<List<(int, int, decimal, decimal)>>(),
+                It.IsAny<decimal>()))
+            .Returns(MakeTestOrder(1));
+
+        _repositoryUserMock
+            .Setup(r => r.FindById(1))
+            .Returns((User?)null);
+
+        var act = () => _orderFacade.CreateOrder(1, new CreateOrderRequest
+        {
+            DeliveryType = DeliveryTypeDto.Express,
+            Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
+            Items = [new CreateOrderItemRequest { ProductId = 1, Quantity = 1 }]
+        });
+
+        act.Should()
+            .Throw<NotFoundException>()
+            .WithMessage("No se encontró el cliente con id 1");
+
+        _productServiceMock.VerifyAll();
+        _promotionServiceMock.VerifyAll();
+        _orderServiceMock.VerifyAll();
+        _repositoryUserMock.VerifyAll();
+    }
+
+    [TestMethod]
     public void CreateOrder_WhenValidRequest_ShouldReturnOrderResponse()
     {
         _productServiceMock
@@ -138,6 +179,45 @@ public sealed class OrderFacadeTests
 
         result.Should().NotBeNull();
         result.Should().BeOfType<OrderResponse>();
+    }
+
+    [TestMethod]
+    public void CreateOrder_WhenDeliveryTypeIsTwentyFourHours_ShouldCreateOrderWithTwentyFourHoursAndShipping250()
+    {
+        _productServiceMock
+            .Setup(p => p.GetById(1))
+            .Returns(MakeActiveProduct());
+
+        _promotionServiceMock
+            .Setup(p => p.GetPromotions(It.IsAny<PromotionSearchRequestDto>()))
+            .Returns([]);
+
+        _orderServiceMock
+            .Setup(s => s.CreateOrder(
+                1,
+                DeliveryType.TwentyFourHours,
+                It.IsAny<Address>(),
+                It.IsAny<List<(int, int, decimal, decimal)>>(),
+                250m))
+            .Returns(MakeTestOrder(1));
+
+        _repositoryUserMock
+            .Setup(r => r.FindById(1))
+            .Returns(MakeTestUser(1));
+
+        var result = _orderFacade.CreateOrder(1, new CreateOrderRequest
+        {
+            DeliveryType = DeliveryTypeDto.TwentyFourHours,
+            Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
+            Items = [new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }]
+        });
+
+        result.Should().NotBeNull();
+
+        _productServiceMock.VerifyAll();
+        _promotionServiceMock.VerifyAll();
+        _orderServiceMock.VerifyAll();
+        _repositoryUserMock.VerifyAll();
     }
 
     #endregion
