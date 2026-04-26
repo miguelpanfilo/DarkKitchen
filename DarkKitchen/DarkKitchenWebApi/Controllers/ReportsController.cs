@@ -1,5 +1,6 @@
 using Contratos.Users;
 using DarkKitchen.Filters;
+using LogicaDeNegocio.Reports;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Reports;
 using Microsoft.AspNetCore.Mvc;
@@ -18,8 +19,6 @@ public class ReportsController(IReportService reportService) : ControllerBase
         [FromQuery] DateTime? dateFrom,
         [FromQuery] DateTime? dateTo)
     {
-        ValidateDateRange(dateFrom, dateTo);
-
         var result = _reportService.GetTopProducts(dateFrom, dateTo);
         return Ok(result);
     }
@@ -30,17 +29,7 @@ public class ReportsController(IReportService reportService) : ControllerBase
         [FromQuery] DateTime? dateFrom,
         [FromQuery] DateTime? dateTo)
     {
-        ValidateDateRange(dateFrom, dateTo);
-
         var result = _reportService.GetSalesReport(dateFrom, dateTo);
         return Ok(result);
-    }
-
-    private static void ValidateDateRange(DateTime? dateFrom, DateTime? dateTo)
-    {
-        if(dateFrom.HasValue && dateTo.HasValue && dateFrom > dateTo)
-        {
-            throw new ValidationException("Fecha inicio no puede ser posterior a fecha fin");
-        }
     }
 }
