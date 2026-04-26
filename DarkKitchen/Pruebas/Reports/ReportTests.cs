@@ -1,9 +1,12 @@
 using System.Data.Common;
 using Almacenamiento;
 using Almacenamiento.Repositories;
+using AlmacenamientoAbstracciones;
 using Dominio;
 using FluentAssertions;
 using LogicaDeNegocio.Reports;
+using LogicaDeNegocioAbstracciones.Exceptions;
+using Moq;
 using Pruebas.Persistence;
 
 namespace Pruebas.Reports;
@@ -111,5 +114,20 @@ public sealed class ReportIntegrationTests
             address,
             [(productId, quantity, price, 0m)],
             200m);
+    }
+
+    [TestMethod]
+    public void GivenInvalidDateRange_WhenGettingTopProducts_ThenThrowsValidationExceptionWithMessage()
+    {
+        var repositoryMock = new Mock<IOrderRepository>(MockBehavior.Strict);
+        var service = new ReportService(repositoryMock.Object);
+
+        var dateFrom = new DateTime(2026, 2, 1);
+        var dateTo = new DateTime(2026, 1, 1);
+
+        var ex = Assert.ThrowsException<ValidationException>(() =>
+            service.GetTopProducts(dateFrom, dateTo));
+
+        Assert.AreEqual("Fecha inicio no puede ser posterior a fecha fin", ex.Message);
     }
 }
