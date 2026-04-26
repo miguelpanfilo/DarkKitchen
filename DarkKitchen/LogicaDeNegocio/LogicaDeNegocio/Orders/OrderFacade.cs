@@ -1,6 +1,8 @@
 using AlmacenamientoAbstracciones;
 using Contratos.Orders;
 using Dominio;
+using Dominio.Exceptions;
+using LogicaDeNegocio.Shared;
 using LogicaDeNegocio.Shipping;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Orders;
@@ -16,28 +18,44 @@ public class OrderFacade(
     private readonly IOrderItemResolver _orderItemResolver = orderItemResolver;
     private readonly IOrderService _orderService = orderService;
     private readonly IRepositoryUser _repositoryUser = repositoryUser;
-
     public OrderResponse CreateOrder(int clientId, CreateOrderRequest request)
     {
-        var deliveryType = GetValidDeliveryType(request.DeliveryType);
+        return ServiceExceptionHandler.ExecuteWithValidationHandling<OrderResponse, OrderException>(() =>
+        {
+            var deliveryType = GetValidDeliveryType(request.DeliveryType);
 
-        ValidateItems(request.Items);
+            ValidateItems(request.Items);
 
-        var address = Address.MakeAddress(
+            var address = BuildAddress(request);
+
+            var items = _orderItemResolver.Resolve(request.Items);
+
+            var shippingCost = ShippingStrategyFactory
+                .Create(deliveryType)
+                .Calculate(0m);
+
+            var order = _orderService.CreateOrder(
+                clientId,
+                deliveryType,
+                address,
+                items,
+                shippingCost);
+
+            return ToOrderResponseWithClient(order);
+        });
+    }
+
+    private static Address BuildAddress(CreateOrderRequest request)
+    {
+        if (request.Address == null)
+        {
+            throw new ValidationException("La dirección es obligatoria");
+        }
+
+        return Address.MakeAddress(
             request.Address.Street,
             request.Address.DoorNumber,
             request.Address.Apartment);
-
-        var items = _orderItemResolver.Resolve(request.Items);        var shippingCost = ShippingStrategyFactory.Create(deliveryType).Calculate(0m);
-
-        var order = _orderService.CreateOrder(
-            clientId,
-            deliveryType,
-            address,
-            items,
-            shippingCost);
-
-        return ToOrderResponseWithClient(order);
     }
 
     public OrderResponse GetById(int orderId)
@@ -85,9 +103,19 @@ public class OrderFacade(
         }
     }
 
-    private static DeliveryType GetValidDeliveryType(DeliveryTypeDto deliveryTypeDto)
+    private static DeliveryType GetValidDeliveryType(string? deliveryType)
     {
-        return deliveryTypeDto switch
+        if (string.IsNullOrWhiteSpace(deliveryType))
+        {
+            throw new ValidationException("El tipo de entrega es obligatorio");
+        }
+
+        if (!Enum.TryParse<DeliveryTypeDto>(deliveryType, ignoreCase: true, out var dto))
+        {
+            throw new ValidationException("El tipo de entrega no es válido");
+        }
+
+        return dto switch
         {
             DeliveryTypeDto.Express => DeliveryType.Express,
             DeliveryTypeDto.TwentyFourHours => DeliveryType.TwentyFourHours,
@@ -98,9 +126,23 @@ public class OrderFacade(
     private static OrderStatus? ToOrderStatus(OrderStatusDto? dto) =>
         dto.HasValue ? Enum.Parse<OrderStatus>(dto.Value.ToString()) : null;
 
-    public void Prepare(int orderId) => _orderService.Prepare(orderId);
-    public void Cancel(int orderId) => _orderService.Cancel(orderId);
-    public void Dispatch(int orderId) => _orderService.Dispatch(orderId);
-    public void Deliver(int orderId) => _orderService.Deliver(orderId);
-    public void MarkNotDelivered(int orderId) => _orderService.MarkNotDelivered(orderId);
+    public void Prepare(int orderId) =>
+        ServiceExceptionHandler.ExecuteWithConflictHandling<OrderException>(
+            () => _orderService.Prepare(orderId));
+
+    public void Cancel(int orderId) =>
+        ServiceExceptionHandler.ExecuteWithConflictHandling<OrderException>(
+            () => _orderService.Cancel(orderId));
+
+    public void Dispatch(int orderId) =>
+        ServiceExceptionHandler.ExecuteWithConflictHandling<OrderException>(
+            () => _orderService.Dispatch(orderId));
+
+    public void Deliver(int orderId) =>
+        ServiceExceptionHandler.ExecuteWithConflictHandling<OrderException>(
+            () => _orderService.Deliver(orderId));
+
+    public void MarkNotDelivered(int orderId) =>
+        ServiceExceptionHandler.ExecuteWithConflictHandling<OrderException>(
+            () => _orderService.MarkNotDelivered(orderId));
 }

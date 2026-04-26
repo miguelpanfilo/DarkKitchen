@@ -78,7 +78,7 @@ public sealed class OrdersControllerTests
 
     private static CreateOrderRequest MakeCreateOrderRequest() => new()
     {
-        DeliveryType = DeliveryTypeDto.Express,
+        DeliveryType = "Express",
         Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
         Items =
         [

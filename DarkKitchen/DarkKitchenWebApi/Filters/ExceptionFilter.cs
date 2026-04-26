@@ -8,41 +8,36 @@ namespace DarkKitchen.Filters;
 public class ExceptionFilter : Attribute, IExceptionFilter
 {
     private const string InternalErrorMessage = "Ocurrió un error interno.";
-    private const string ValidationErrorMessage = "Los datos ingresados no son válidos.";
-    private const string AuthenticationErrorMessage = "No fue posible autenticar al usuario.";
-    private const string ForbiddenErrorMessage = "No tienes permisos para realizar esta acción.";
-    private const string NotFoundErrorMessage = "No se encontró el recurso solicitado.";
-    private const string ConflictErrorMessage = "No fue posible completar la operación por un conflicto de datos.";
 
     public void OnException(ExceptionContext context)
     {
         var statusCode = StatusCodes.Status500InternalServerError;
         var message = InternalErrorMessage;
 
-        if(context.Exception is ValidationException)
+        if (context.Exception is ValidationException)
         {
             statusCode = StatusCodes.Status400BadRequest;
-            message = ValidationErrorMessage;
+            message = context.Exception.Message;
         }
-        else if(context.Exception is UserAuthenticationException)
+        else if (context.Exception is UserAuthenticationException)
         {
             statusCode = StatusCodes.Status401Unauthorized;
-            message = AuthenticationErrorMessage;
+            message = context.Exception.Message;
         }
-        else if(context.Exception is ForbiddenException)
+        else if (context.Exception is ForbiddenException)
         {
             statusCode = StatusCodes.Status403Forbidden;
-            message = ForbiddenErrorMessage;
+            message = context.Exception.Message;
         }
-        else if(context.Exception is NotFoundException)
+        else if (context.Exception is NotFoundException)
         {
             statusCode = StatusCodes.Status404NotFound;
-            message = NotFoundErrorMessage;
+            message = context.Exception.Message;
         }
-        else if(context.Exception is ConflictException)
+        else if (context.Exception is ConflictException)
         {
             statusCode = StatusCodes.Status409Conflict;
-            message = ConflictErrorMessage;
+            message = context.Exception.Message;
         }
 
         var response = new ResponseDto
