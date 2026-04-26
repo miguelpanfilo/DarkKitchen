@@ -2,6 +2,13 @@ namespace Dominio;
 
 public sealed class Email
 {
+    private const char AtSymbol = '@';
+    private const char Dot = '.';
+    private const string DoubleDot = "..";
+
+    private const string EmptyEmailMessage = "Email no puede estar vacío";
+    private const string InvalidFormatMessage = "Formato de Email inválido";
+
     public string Value { get; private set; } = null!;
 
     private Email(string value)
@@ -9,65 +16,56 @@ public sealed class Email
         Value = value;
     }
 
-    public static Result<Email> TryMakeEmail(string? email)
-    {
-        if(string.IsNullOrWhiteSpace(email))
-        {
-            return Result<Email>.Fail("Email no puede estar vacío");
-        }
-
-        var emailNormalized = email.Trim().ToLowerInvariant();
-
-        if(!HaveCorrectFormat(emailNormalized))
-        {
-            return Result<Email>.Fail("Formato de Email inválido");
-        }
-
-        return Result<Email>.Ok(new Email(emailNormalized));
-    }
-
     private Email()
     {
         Value = null!;
     }
 
-    public override string ToString()
+    public static Result<Email> TryMakeEmail(string? email)
     {
-        return Value;
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            return Result<Email>.Fail(EmptyEmailMessage);
+        }
+
+        var normalized = email.Trim().ToLowerInvariant();
+
+        if (!HasValidFormat(normalized))
+        {
+            return Result<Email>.Fail(InvalidFormatMessage);
+        }
+
+        return Result<Email>.Ok(new Email(normalized));
     }
 
-    private static bool HaveCorrectFormat(string mail)
+    private static bool HasValidFormat(string mail)
     {
-        if(string.IsNullOrWhiteSpace(mail))
+        if (mail.Contains(' ') || mail.Contains(DoubleDot))
         {
             return false;
         }
 
-        if(mail.Contains(' ') || mail.Contains(".."))
+        var atIndex = mail.IndexOf(AtSymbol);
+
+        if (atIndex <= 0 || atIndex != mail.LastIndexOf(AtSymbol))
         {
             return false;
         }
 
-        var indexOfSymbol = mail.IndexOf('@');
+        var domainStartIndex = atIndex + 1;
+        var domain = mail[domainStartIndex..];
 
-        if(indexOfSymbol <= 0 || indexOfSymbol != mail.LastIndexOf('@'))
+        if (string.IsNullOrEmpty(domain))
         {
             return false;
         }
 
-        var domain = mail[(indexOfSymbol + 1)..];
-
-        if(domain.Length == 0)
+        if (!domain.Contains(Dot))
         {
             return false;
         }
 
-        if(!domain.Contains('.'))
-        {
-            return false;
-        }
-
-        if(domain.StartsWith('.') || domain.EndsWith('.'))
+        if (domain.StartsWith(Dot) || domain.EndsWith(Dot))
         {
             return false;
         }
@@ -78,5 +76,10 @@ public sealed class Email
     public bool IsTheSame(Email mail)
     {
         return Value == mail.Value;
+    }
+
+    public override string ToString()
+    {
+        return Value;
     }
 }

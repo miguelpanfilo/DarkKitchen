@@ -1,10 +1,7 @@
 using AlmacenamientoAbstracciones;
-using Contratos;
 using Contratos.Users;
 using Dominio;
-using LogicaDeNegocio;
 using LogicaDeNegocio.Users;
-using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Users;
 using Mapeo;
@@ -323,7 +320,7 @@ public class UserServiceTests
             "Password@2026Ok");
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("El apellido no puede estar vacio", result.ErrorMessage);
+        Assert.AreEqual("El apellido no puede estar vacío", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -341,7 +338,7 @@ public class UserServiceTests
             "Password@2026Ok");
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("El apellido tiene que tener entre 3 y 25 caracteres", result.ErrorMessage);
+        Assert.AreEqual("El apellido debe tener entre 3 y 25 caracteres", result.ErrorMessage);
     }
 
     [TestMethod]
@@ -359,7 +356,7 @@ public class UserServiceTests
             "Password@2026Ok");
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("El apellido tiene que tener entre 3 y 25 caracteres", result.ErrorMessage);
+        Assert.AreEqual("El apellido debe tener entre 3 y 25 caracteres", result.ErrorMessage);
     }
 
     [TestMethod]

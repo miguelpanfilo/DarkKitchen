@@ -1,7 +1,6 @@
 using Contratos.Orders;
 using Contratos.Users;
 using DarkKitchen.Filters;
-using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Orders;
 using Microsoft.AspNetCore.Mvc;
 
