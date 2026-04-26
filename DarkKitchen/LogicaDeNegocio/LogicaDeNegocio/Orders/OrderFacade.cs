@@ -1,27 +1,20 @@
 using AlmacenamientoAbstracciones;
 using Contratos.Orders;
-using Contratos.Promotions;
-using Contratos.Reports;
 using Dominio;
-using Dominio.Exceptions;
 using LogicaDeNegocio.Shipping;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Orders;
-using LogicaDeNegocioAbstracciones.Products;
-using LogicaDeNegocioAbstracciones.Promotions;
 using Mapeo;
 
 namespace LogicaDeNegocio.Orders;
 
 public class OrderFacade(
     IOrderService orderService,
-    IProductService productService,
-    IPromotionService promotionService,
+    IOrderItemResolver orderItemResolver,
     IRepositoryUser repositoryUser) : IOrderFacade
 {
+    private readonly IOrderItemResolver _orderItemResolver = orderItemResolver;
     private readonly IOrderService _orderService = orderService;
-    private readonly IProductService _productService = productService;
-    private readonly IPromotionService _promotionService = promotionService;
     private readonly IRepositoryUser _repositoryUser = repositoryUser;
 
     public OrderResponse CreateOrder(int clientId, CreateOrderRequest request)
@@ -35,8 +28,7 @@ public class OrderFacade(
             request.Address.DoorNumber,
             request.Address.Apartment);
 
-        var items = ResolveItems(request.Items);
-        var shippingCost = ShippingStrategyFactory.Create(deliveryType).Calculate(0m);
+        var items = _orderItemResolver.Resolve(request.Items);        var shippingCost = ShippingStrategyFactory.Create(deliveryType).Calculate(0m);
 
         var order = _orderService.CreateOrder(
             clientId,
@@ -101,47 +93,6 @@ public class OrderFacade(
             DeliveryTypeDto.TwentyFourHours => DeliveryType.TwentyFourHours,
             _ => throw new ValidationException("El tipo de entrega no es válido")
         };
-    }
-
-    private List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)> ResolveItems(
-        List<CreateOrderItemRequest> requestItems)
-    {
-        return requestItems.Select(i =>
-        {
-            try
-            {
-                var product = _productService.GetById(i.ProductId);
-
-                if(!product.IsActive)
-                {
-                    throw new ValidationException($"El producto {product.Name} no está disponible");
-                }
-
-                var discountApplied = GetHighestCurrentDiscount(i.ProductId);
-
-                return (i.ProductId, i.Quantity, product.Price, discountApplied);
-            }
-            catch(ProductException)
-            {
-                throw new NotFoundException($"El producto con id {i.ProductId} no existe");
-            }
-        }).ToList();
-    }
-
-    private decimal GetHighestCurrentDiscount(int productId)
-    {
-        var promotions = _promotionService.GetPromotions(new PromotionSearchRequestDto
-        {
-            Date = DateOnly.FromDateTime(DateTime.UtcNow),
-            ProductId = productId
-        });
-
-        if(!promotions.Any())
-        {
-            return 0m;
-        }
-
-        return promotions.Max(p => p.DiscountPercentage) / 100m;
     }
 
     private static OrderStatus? ToOrderStatus(OrderStatusDto? dto) =>

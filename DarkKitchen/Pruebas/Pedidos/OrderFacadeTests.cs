@@ -1,19 +1,12 @@
 using AlmacenamientoAbstracciones;
-using Contratos;
 using Contratos.Orders;
 using Contratos.Products;
 using Contratos.Promotions;
 using Dominio;
-using Dominio.Exceptions;
 using FluentAssertions;
-using LogicaDeNegocio;
 using LogicaDeNegocio.Orders;
-using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Orders;
-using LogicaDeNegocioAbstracciones.Products;
-using LogicaDeNegocioAbstracciones.Promotions;
-using LogicaDeNegocioAbstracciones.Promotions;
 using Moq;
 
 namespace Pruebas.Pedidos;
@@ -22,11 +15,9 @@ namespace Pruebas.Pedidos;
 public sealed class OrderFacadeTests
 {
     private Mock<IOrderService> _orderServiceMock = null!;
-    private Mock<IProductService> _productServiceMock = null!;
     private OrderFacade _orderFacade = null!;
     private Mock<IRepositoryUser> _repositoryUserMock = null!;
-    private Mock<IPromotionService> _promotionServiceMock = null!;
-
+    private Mock<IOrderItemResolver> _orderItemResolverMock = null!;
     private static Order MakeTestOrder(int clientId = 1)
     {
         var address = Address.MakeAddress("Rivera", "1234");
@@ -58,14 +49,12 @@ public sealed class OrderFacadeTests
     public void Initialize()
     {
         _orderServiceMock = new Mock<IOrderService>(MockBehavior.Strict);
-        _productServiceMock = new Mock<IProductService>(MockBehavior.Strict);
         _repositoryUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        _promotionServiceMock = new Mock<IPromotionService>(MockBehavior.Strict);
+        _orderItemResolverMock = new Mock<IOrderItemResolver>(MockBehavior.Strict);
 
         _orderFacade = new OrderFacade(
             _orderServiceMock.Object,
-            _productServiceMock.Object,
-            _promotionServiceMock.Object,
+            _orderItemResolverMock.Object,
             _repositoryUserMock.Object);
     }
 
@@ -102,13 +91,9 @@ public sealed class OrderFacadeTests
     [TestMethod]
     public void CreateOrder_WhenUserNotFound_ShouldThrowNotFoundException()
     {
-        _productServiceMock
-            .Setup(p => p.GetById(1))
-            .Returns(MakeActiveProduct());
-
-        _promotionServiceMock
-            .Setup(p => p.GetPromotions(It.IsAny<PromotionSearchRequestDto>()))
-            .Returns([]);
+        _orderItemResolverMock
+            .Setup(r => r.Resolve(It.IsAny<List<CreateOrderItemRequest>>()))
+            .Returns([(1, 1, 100m, 0m)]);
 
         _orderServiceMock
             .Setup(s => s.CreateOrder(
@@ -134,8 +119,7 @@ public sealed class OrderFacadeTests
             .Throw<NotFoundException>()
             .WithMessage("No se encontró el cliente con id 1");
 
-        _productServiceMock.VerifyAll();
-        _promotionServiceMock.VerifyAll();
+        _orderItemResolverMock.VerifyAll();
         _orderServiceMock.VerifyAll();
         _repositoryUserMock.VerifyAll();
     }
@@ -143,13 +127,9 @@ public sealed class OrderFacadeTests
     [TestMethod]
     public void CreateOrder_WhenValidRequest_ShouldReturnOrderResponse()
     {
-        _productServiceMock
-            .Setup(p => p.GetById(1))
-            .Returns(MakeActiveProduct());
-
-        _promotionServiceMock
-            .Setup(p => p.GetPromotions(It.IsAny<PromotionSearchRequestDto>()))
-            .Returns([]);
+        _orderItemResolverMock
+            .Setup(r => r.Resolve(It.IsAny<List<CreateOrderItemRequest>>()))
+            .Returns([(1, 2, 100m, 0m)]);
 
         _orderServiceMock
             .Setup(s => s.CreateOrder(
@@ -172,8 +152,7 @@ public sealed class OrderFacadeTests
                 Items = [new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }]
             });
 
-        _productServiceMock.VerifyAll();
-        _promotionServiceMock.VerifyAll();
+        _orderItemResolverMock.VerifyAll();
         _orderServiceMock.VerifyAll();
         _repositoryUserMock.VerifyAll();
 
@@ -184,13 +163,9 @@ public sealed class OrderFacadeTests
     [TestMethod]
     public void CreateOrder_WhenDeliveryTypeIsTwentyFourHours_ShouldCreateOrderWithTwentyFourHoursAndShipping250()
     {
-        _productServiceMock
-            .Setup(p => p.GetById(1))
-            .Returns(MakeActiveProduct());
-
-        _promotionServiceMock
-            .Setup(p => p.GetPromotions(It.IsAny<PromotionSearchRequestDto>()))
-            .Returns([]);
+        _orderItemResolverMock
+            .Setup(r => r.Resolve(It.IsAny<List<CreateOrderItemRequest>>()))
+            .Returns([(1, 2, 100m, 0m)]);
 
         _orderServiceMock
             .Setup(s => s.CreateOrder(
@@ -214,8 +189,7 @@ public sealed class OrderFacadeTests
 
         result.Should().NotBeNull();
 
-        _productServiceMock.VerifyAll();
-        _promotionServiceMock.VerifyAll();
+        _orderItemResolverMock.VerifyAll();
         _orderServiceMock.VerifyAll();
         _repositoryUserMock.VerifyAll();
     }
@@ -223,163 +197,6 @@ public sealed class OrderFacadeTests
     #endregion
 
     #region Error
-
-    [TestMethod]
-    public void CreateOrder_WhenProductIsInactive_ShouldThrowOrderException()
-    {
-        var product = new ProductResponseDto
-        {
-            Code = "COD123",
-            Name = "Producto Test",
-            Description = "Descripción de prueba válida",
-            CommercialLine = "Línea",
-            Category = "Categoría",
-            Price = 100m,
-            IsActive = false,
-            Photos = [new PhotoResponseDto { Path = "foto0.jpg" }]
-        };
-
-        _productServiceMock
-            .Setup(p => p.GetById(1))
-            .Returns(product);
-
-        var act = () => _orderFacade.CreateOrder(1,
-            new CreateOrderRequest
-            {
-                DeliveryType = DeliveryTypeDto.Express,
-                Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
-                Items = [new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }]
-            });
-
-        act.Should()
-            .Throw<ValidationException>()
-            .WithMessage("El producto Producto Test no está disponible");
-        _productServiceMock.VerifyAll();
-        _orderServiceMock.VerifyAll();
-    }
-
-    [TestMethod]
-    public void CreateOrder_WhenProductHasCurrentPromotion_ShouldApplyHighestDiscount()
-    {
-        _productServiceMock
-            .Setup(p => p.GetById(1))
-            .Returns(MakeActiveProduct(price: 520m));
-
-        _promotionServiceMock
-            .Setup(p => p.GetPromotions(It.Is<PromotionSearchRequestDto>(request =>
-                request.ProductId == 1 &&
-                request.Date.HasValue)))
-            .Returns([
-                new PromotionResponseDto(
-                    1,
-                    "Promo 10",
-                    10,
-                    new DateOnly(2026, 4, 1),
-                    new DateOnly(2026, 4, 30),
-                    []
-                ),
-                new PromotionResponseDto(
-                    2,
-                    "Promo Abril",
-                    20,
-                    new DateOnly(2026, 4, 1),
-                    new DateOnly(2026, 4, 30),
-                    []
-                )
-            ]);
-
-        _orderServiceMock
-            .Setup(s => s.CreateOrder(
-                1,
-                DeliveryType.Express,
-                It.IsAny<Address>(),
-                It.Is<List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)>>(items =>
-                    items.Count == 1 &&
-                    items[0].ProductId == 1 &&
-                    items[0].Quantity == 1 &&
-                    items[0].UnitPrice == 520m &&
-                    items[0].DiscountApplied == 0.20m),
-                200m))
-            .Returns((int clientId,
-                    DeliveryType deliveryType,
-                    Address address,
-                    List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)> items,
-                    decimal shippingCost) =>
-                Order.MakeOrder(clientId, deliveryType, address, items, shippingCost));
-
-        _repositoryUserMock
-            .Setup(r => r.FindById(1))
-            .Returns(MakeTestUser(1));
-
-        var result = _orderFacade.CreateOrder(1, new CreateOrderRequest
-        {
-            DeliveryType = DeliveryTypeDto.Express,
-            Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
-            Items =
-            [
-                new CreateOrderItemRequest { ProductId = 1, Quantity = 1 }
-            ]
-        });
-
-        _productServiceMock.VerifyAll();
-        _promotionServiceMock.VerifyAll();
-        _orderServiceMock.VerifyAll();
-        _repositoryUserMock.VerifyAll();
-
-        result.Items.Should().ContainSingle();
-        result.Items[0].DiscountApplied.Should().Be(0.20m);
-        result.Items[0].LineTotal.Should().Be(416m);
-    }
-
-    [TestMethod]
-    public void CreateOrder_WhenProductHasNoCurrentPromotion_ShouldApplyZeroDiscount()
-    {
-        _productServiceMock
-            .Setup(p => p.GetById(1))
-            .Returns(MakeActiveProduct(price: 520m));
-
-        _promotionServiceMock
-            .Setup(p => p.GetPromotions(It.IsAny<PromotionSearchRequestDto>()))
-            .Returns([]);
-
-        _orderServiceMock
-            .Setup(s => s.CreateOrder(
-                1,
-                DeliveryType.Express,
-                It.IsAny<Address>(),
-                It.Is<List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)>>(items =>
-                    items.Count == 1 &&
-                    items[0].DiscountApplied == 0m),
-                200m))
-            .Returns((int clientId,
-                    DeliveryType deliveryType,
-                    Address address,
-                    List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)> items,
-                    decimal shippingCost) =>
-                Order.MakeOrder(clientId, deliveryType, address, items, shippingCost));
-
-        _repositoryUserMock
-            .Setup(r => r.FindById(1))
-            .Returns(MakeTestUser(1));
-
-        var result = _orderFacade.CreateOrder(1, new CreateOrderRequest
-        {
-            DeliveryType = DeliveryTypeDto.Express,
-            Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
-            Items =
-            [
-                new CreateOrderItemRequest { ProductId = 1, Quantity = 1 }
-            ]
-        });
-
-        _productServiceMock.VerifyAll();
-        _promotionServiceMock.VerifyAll();
-        _orderServiceMock.VerifyAll();
-        _repositoryUserMock.VerifyAll();
-
-        result.Items[0].DiscountApplied.Should().Be(0m);
-        result.Items[0].LineTotal.Should().Be(520m);
-    }
 
     [TestMethod]
     public void CreateOrder_WhenItemsAreEmpty_ShouldThrowValidationException()
@@ -397,8 +214,8 @@ public sealed class OrderFacadeTests
             .Throw<ValidationException>()
             .WithMessage("El pedido debe contener al menos un producto");
 
-        _productServiceMock.VerifyNoOtherCalls();
         _orderServiceMock.VerifyNoOtherCalls();
+        _orderItemResolverMock.VerifyNoOtherCalls();
     }
 
     [TestMethod]
@@ -420,8 +237,8 @@ public sealed class OrderFacadeTests
             .Throw<ValidationException>()
             .WithMessage("La cantidad de cada producto debe ser mayor a 0");
 
-        _productServiceMock.VerifyNoOtherCalls();
         _orderServiceMock.VerifyNoOtherCalls();
+        _orderItemResolverMock.VerifyNoOtherCalls();
     }
 
     [TestMethod]
@@ -443,8 +260,8 @@ public sealed class OrderFacadeTests
             .Throw<ValidationException>()
             .WithMessage("El tipo de entrega no es válido");
 
-        _productServiceMock.VerifyNoOtherCalls();
         _orderServiceMock.VerifyNoOtherCalls();
+        _orderItemResolverMock.VerifyNoOtherCalls();
     }
 
     [TestMethod]
@@ -463,8 +280,8 @@ public sealed class OrderFacadeTests
             .Throw<ValidationException>()
             .WithMessage("El pedido debe contener al menos un producto");
 
-        _productServiceMock.VerifyNoOtherCalls();
         _orderServiceMock.VerifyNoOtherCalls();
+        _orderItemResolverMock.VerifyNoOtherCalls();
     }
 
     [TestMethod]
@@ -486,8 +303,8 @@ public sealed class OrderFacadeTests
             .Throw<ValidationException>()
             .WithMessage("La cantidad de cada producto debe ser mayor a 0");
 
-        _productServiceMock.VerifyNoOtherCalls();
         _orderServiceMock.VerifyNoOtherCalls();
+        _orderItemResolverMock.VerifyNoOtherCalls();
     }
 
     #endregion
