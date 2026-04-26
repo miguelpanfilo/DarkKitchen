@@ -9,7 +9,6 @@ namespace Pruebas.InicioSesion;
 public class InitializationServiceTests
 {
     private Mock<IRepositoryUser> _repositoryUserMock = null!;
-    private Mock<IProductRepository> _productRepositoryMock = null!;
     private InitializationService _service = null!;
     private User? _addedUser;
 
@@ -17,11 +16,9 @@ public class InitializationServiceTests
     public void TestInitialize()
     {
         _repositoryUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        _productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
 
         _service = new InitializationService(
-            _repositoryUserMock.Object,
-            _productRepositoryMock.Object);
+            _repositoryUserMock.Object);
 
         _addedUser = null;
     }
