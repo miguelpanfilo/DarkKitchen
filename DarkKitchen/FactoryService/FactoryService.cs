@@ -5,13 +5,14 @@ using LogicaDeNegocio.Initialization;
 using LogicaDeNegocio.Orders;
 using LogicaDeNegocio.Products;
 using LogicaDeNegocio.Promotions;
+using LogicaDeNegocio.Reports;
 using LogicaDeNegocio.Sessions;
 using LogicaDeNegocio.Shared;
 using LogicaDeNegocio.Users;
-using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Orders;
 using LogicaDeNegocioAbstracciones.Products;
 using LogicaDeNegocioAbstracciones.Promotions;
+using LogicaDeNegocioAbstracciones.Reports;
 using LogicaDeNegocioAbstracciones.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -70,6 +71,10 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IOrderFacade, OrderFacade>();
         services.AddScoped<IOrderService, OrderService>();
+        services.AddScoped<IOrderItemResolver, OrderItemResolver>();
+
+        services.AddScoped<IReportService, ReportService>();
+
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IPromotionService, PromotionService>();
         services.AddScoped<ProductPhotoService>();
