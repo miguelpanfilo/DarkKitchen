@@ -1,7 +1,5 @@
 using Dominio;
-using Dominio.Exceptions;
 using FluentAssertions;
-using LogicaDeNegocio;
 using LogicaDeNegocio.Shipping;
 using LogicaDeNegocioAbstracciones.Exceptions;
 

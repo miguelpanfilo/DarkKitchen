@@ -1,4 +1,3 @@
-
 using Contratos.Reports;
 using DarkKitchen.Controllers;
 using DarkKitchen.Filters;

@@ -1,4 +1,3 @@
-using Contratos;
 using Contratos.Orders;
 using Contratos.Reports;
 using Dominio;

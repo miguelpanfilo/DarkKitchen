@@ -1,7 +1,5 @@
 using Contratos.Users;
 using DarkKitchen.Filters;
-using LogicaDeNegocio.Reports;
-using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Reports;
 using Microsoft.AspNetCore.Mvc;
 

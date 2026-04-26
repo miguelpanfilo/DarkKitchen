@@ -2,7 +2,6 @@ using AlmacenamientoAbstracciones;
 using Contratos.Promotions;
 using Dominio;
 using Dominio.Builders;
-using Dominio.Exceptions;
 using LogicaDeNegocio.Promotions;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using Moq;

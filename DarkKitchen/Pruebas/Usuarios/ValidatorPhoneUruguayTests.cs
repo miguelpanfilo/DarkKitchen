@@ -1,4 +1,3 @@
-using LogicaDeNegocio;
 using LogicaDeNegocio.Shared;
 
 namespace Pruebas.Usuarios;

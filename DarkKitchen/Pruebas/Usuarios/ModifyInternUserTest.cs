@@ -1,10 +1,7 @@
 using AlmacenamientoAbstracciones;
-using Contratos;
 using Contratos.Users;
 using Dominio;
-using LogicaDeNegocio;
 using LogicaDeNegocio.Users;
-using LogicaDeNegocioAbstracciones;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Users;
 using Moq;
@@ -373,7 +370,7 @@ public class ModifyInternUserTest
         var ex = Assert.ThrowsException<ValidationException>(() =>
             _service.UpdateInternalUser(5, 99, request));
 
-        Assert.AreEqual("El apellido tiene que tener entre 3 y 25 caracteres", ex.Message);
+        Assert.AreEqual("El apellido debe tener entre 3 y 25 caracteres", ex.Message);
     }
 
     [TestMethod]

@@ -17,6 +17,11 @@ public class User
         Password = null!;
     }
 
+    private const int MinLastNameLength = 3;
+    private const int MaxLastNameLength = 25;
+
+    private static readonly string LastNameEmptyMessage = "El apellido no puede estar vacío";
+    private static readonly string LastNameLengthMessage = $"El apellido debe tener entre {MinLastNameLength} y {MaxLastNameLength} caracteres";
     public static Result<User> MakeClient(string name, string lastName, string email, Phone phone, string password)
     {
         var nameResult = ValidateName(name);
@@ -133,16 +138,18 @@ public class User
         return Result<bool>.Ok(true);
     }
 
-    private static Result<bool> ValidateLastName(string lastName)
+  private static Result<bool> ValidateLastName(string lastName)
     {
-        if(string.IsNullOrWhiteSpace(lastName))
+        if (string.IsNullOrWhiteSpace(lastName))
         {
-            return Result<bool>.Fail("El apellido no puede estar vacio");
+            return Result<bool>.Fail(LastNameEmptyMessage);
         }
 
-        if(lastName.Trim().Length < 3 || lastName.Trim().Length > 25)
+        var trimmedLastName = lastName.Trim();
+
+        if (trimmedLastName.Length < MinLastNameLength || trimmedLastName.Length > MaxLastNameLength)
         {
-            return Result<bool>.Fail("El apellido tiene que tener entre 3 y 25 caracteres");
+            return Result<bool>.Fail(LastNameLengthMessage);
         }
 
         return Result<bool>.Ok(true);

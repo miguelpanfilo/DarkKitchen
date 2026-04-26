@@ -3,7 +3,6 @@ using Almacenamiento;
 using Almacenamiento.Repositories;
 using Dominio;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Pruebas.Persistence;
 
 namespace Pruebas.Repositories;
