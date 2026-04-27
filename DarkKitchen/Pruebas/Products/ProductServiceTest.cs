@@ -1288,7 +1288,7 @@ public class ProductServiceTest
     }
 
     [TestMethod]
-    public void GivenProducts_WhenFilteringByCategories_ThenReturnsMatchingProducts()
+    public void GivenProducts_WhenFilteringByCategory_ThenReturnsMatchingProducts()
     {
         var products = new List<Product>
         {
@@ -1306,14 +1306,13 @@ public class ProductServiceTest
 
         var request = new ProductSearchRequestDto
         {
-            Categories = new List<string> { "Comida", "Postres" }
+            Category = "Comida"
         };
 
         var result = service.GetProducts(request);
 
-        Assert.AreEqual(2, result.Count);
-        Assert.IsTrue(result.Any(p => p.Category == "Comida"));
-        Assert.IsTrue(result.Any(p => p.Category == "Postres"));
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual("Comida", result[0].Category);
 
         repoMock.Verify(r => r.GetAll(), Times.Once);
     }

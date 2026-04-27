@@ -86,7 +86,7 @@ public class ProductControllerTest
         var request = new ProductSearchRequestDto
         {
             CommercialLine = "Minutas",
-            Categories = new List<string> { "Sandwiches" },
+            Category = "Sandwiches",
             Name = "Milanesa"
         };
 
