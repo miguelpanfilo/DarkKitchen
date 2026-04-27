@@ -14,10 +14,12 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Id).ValueGeneratedOnAdd();
 
         builder.Property(u => u.Name)
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(25);
 
         builder.Property(u => u.LastName)
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(25);
 
         builder.Property(u => u.Role)
             .HasConversion<string>()
