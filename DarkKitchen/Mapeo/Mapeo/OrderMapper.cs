@@ -8,25 +8,58 @@ public static class OrderMapper
 {
     public static OrderResponse ToOrderResponse(this Order order, User user)
     {
+        var iva = CalculateIva(order);
+
         return new OrderResponse
         {
             Id = order.Id,
             OrderNumber = order.OrderNumber,
-            Client =
-                new ClientOrderResponse
-                {
-                    Id = user.Id, Name = user.Name, LastName = user.LastName, Email = user.Email.ToString()
-                },
+            Client = MapClient(user),
             DeliveryType = order.DeliveryType.ToString(),
             Address = order.Address.ToAddressResponse(),
             Items = order.Items.Select(i => i.ToOrderItemResponse()).ToList(),
-            ItemsCount = order.Items.Count,
+
+            ItemsCount = CalculateItemsCount(order),
+
             Status = order.Status.ToString(),
             CreatedAt = order.CreatedAt,
             StatusUpdatedAt = order.StatusUpdatedAt,
-            Subtotal = order.Subtotal,
-            ShippingCost = order.ShippingCost,
-            Total = order.Total
+
+            Subtotal = Round(order.Subtotal),
+            ShippingCost = Round(order.ShippingCost),
+
+            Iva = iva,
+            IvaPercentage = VatPercentage,
+
+            Total = Round(order.Total),
+        };
+    }
+
+    private const decimal VatPercentage = 22m;
+
+    private static decimal CalculateIva(Order order)
+    {
+        return Round(order.Total - (order.Subtotal + order.ShippingCost));
+    }
+
+    private static int CalculateItemsCount(Order order)
+    {
+        return order.Items.Sum(i => i.Quantity);
+    }
+
+    private static decimal Round(decimal value)
+    {
+        return Math.Round(value, 2);
+    }
+
+    private static ClientOrderResponse MapClient(User user)
+    {
+        return new ClientOrderResponse
+        {
+            Id = user.Id,
+            Name = user.Name,
+            LastName = user.LastName,
+            Email = user.Email.ToString()
         };
     }
 
@@ -44,9 +77,9 @@ public static class OrderMapper
         {
             ProductId = item.ProductId,
             Quantity = item.Quantity,
-            UnitPrice = item.UnitPrice,
-            DiscountApplied = item.DiscountApplied,
-            LineTotal = item.LineTotal
+            UnitPrice = Math.Round(item.UnitPrice, 2),
+            DiscountApplied = Math.Round(item.DiscountApplied, 2),
+            LineTotal = Math.Round(item.LineTotal, 2)
         };
     }
 
