@@ -19,11 +19,11 @@ public sealed class ShippingStrategyFactoryTests
     }
 
     [TestMethod]
-    public void Create_WhenDeliveryTypeIsExpress_ShouldCalculate200()
+    public void Create_WhenDeliveryTypeIsExpress_ShouldCalculate300()
     {
         var result = ShippingStrategyFactory.Create(DeliveryType.Express);
 
-        result.Calculate(500m).Should().Be(200m);
+        result.Calculate(500m).Should().Be(300m);
     }
 
     [TestMethod]
@@ -35,11 +35,11 @@ public sealed class ShippingStrategyFactoryTests
     }
 
     [TestMethod]
-    public void Create_WhenDeliveryTypeIsTwentyFourHours_ShouldCalculate250()
+    public void Create_WhenDeliveryTypeIsTwentyFourHours_ShouldCalculate200()
     {
         var result = ShippingStrategyFactory.Create(DeliveryType.TwentyFourHours);
 
-        result.Calculate(500m).Should().Be(250m);
+        result.Calculate(500m).Should().Be(200m);
     }
     #endregion
 

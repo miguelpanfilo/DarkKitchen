@@ -31,7 +31,28 @@ public sealed class OrderFacadeTests
             _repositoryUserMock.Object);
     }
 
-    private static Order MakeTestOrder(int clientId = 1, DeliveryType deliveryType = DeliveryType.Express)
+    private static CreateOrderRequest MakeCreateOrderRequest(string deliveryType = "Express") => new()
+    {
+        DeliveryType = deliveryType,
+        Address = new CreateAddressRequest
+        {
+            Street = "Rivera",
+            DoorNumber = "1234"
+        },
+        Items =
+        [
+            new CreateOrderItemRequest
+            {
+                ProductId = 1,
+                Quantity = 2
+            }
+
+        ]
+    };
+
+    private static Order MakeTestOrder(
+        int clientId = 1,
+        DeliveryType deliveryType = DeliveryType.Express)
     {
         var address = Address.MakeAddress("Rivera", "1234");
 
@@ -40,7 +61,7 @@ public sealed class OrderFacadeTests
             (1, 2, 100m, 0m)
         };
 
-        var shippingCost = deliveryType == DeliveryType.TwentyFourHours ? 250m : 200m;
+        var shippingCost = deliveryType == DeliveryType.TwentyFourHours ? 200m : 300m;
 
         return Order.MakeOrder(clientId, deliveryType, address, items, shippingCost);
     }
@@ -73,22 +94,18 @@ public sealed class OrderFacadeTests
                 DeliveryType.Express,
                 It.IsAny<Address>(),
                 It.IsAny<List<(int, int, decimal, decimal)>>(),
-                200m))
-            .Returns(MakeTestOrder(1));
+                300m))
+            .Returns(MakeTestOrder(1, DeliveryType.Express));
 
         _repositoryUserMock
             .Setup(r => r.FindById(1))
             .Returns(MakeTestUser(1));
 
-        var result = _orderFacade.CreateOrder(1, new CreateOrderRequest
-        {
-            DeliveryType = "Express",
-            Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
-            Items = [new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }]
-        });
+        var result = _orderFacade.CreateOrder(1, MakeCreateOrderRequest());
 
         result.Should().NotBeNull();
         result.Should().BeOfType<OrderResponse>();
+        result.DeliveryType.Should().Be(nameof(DeliveryType.Express));
 
         _orderItemResolverMock.VerifyAll();
         _orderServiceMock.VerifyAll();
@@ -96,7 +113,7 @@ public sealed class OrderFacadeTests
     }
 
     [TestMethod]
-    public void CreateOrder_WhenDeliveryTypeIsTwentyFourHours_ShouldCreateOrderWithTwentyFourHoursAndShipping250()
+    public void CreateOrder_WhenDeliveryTypeIsTwentyFourHours_ShouldCreateOrderWithTwentyFourHoursAndShipping200()
     {
         _orderItemResolverMock
             .Setup(r => r.Resolve(It.IsAny<List<CreateOrderItemRequest>>()))
@@ -108,21 +125,18 @@ public sealed class OrderFacadeTests
                 DeliveryType.TwentyFourHours,
                 It.IsAny<Address>(),
                 It.IsAny<List<(int, int, decimal, decimal)>>(),
-                250m))
+                200m))
             .Returns(MakeTestOrder(1, DeliveryType.TwentyFourHours));
 
         _repositoryUserMock
             .Setup(r => r.FindById(1))
             .Returns(MakeTestUser(1));
 
-        var result = _orderFacade.CreateOrder(1, new CreateOrderRequest
-        {
-            DeliveryType = "TwentyFourHours",
-            Address = new CreateAddressRequest { Street = "Rivera", DoorNumber = "1234" },
-            Items = [new CreateOrderItemRequest { ProductId = 1, Quantity = 2 }]
-        });
+        var result = _orderFacade.CreateOrder(1, MakeCreateOrderRequest("TwentyFourHours"));
 
         result.Should().NotBeNull();
+        result.Should().BeOfType<OrderResponse>();
+        result.DeliveryType.Should().Be(nameof(DeliveryType.TwentyFourHours));
 
         _orderItemResolverMock.VerifyAll();
         _orderServiceMock.VerifyAll();

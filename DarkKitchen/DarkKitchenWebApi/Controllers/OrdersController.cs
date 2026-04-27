@@ -43,19 +43,54 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
         [FromQuery] DateTime? dateFrom,
         [FromQuery] DateTime? dateTo,
         [FromQuery] string? street,
-        [FromQuery] OrderStatusDto? status)
+        [FromQuery] string? status)
     {
-        if(CurrentUser.Role == UserRolesDto.Client)
+        if (!TryParseStatus(status, out var parsedStatus, out var errorMessage))
         {
-            return Ok(_orderFacade.GetClientOrders(CurrentUser.Id, dateFrom, dateTo, status));
+            return BadRequest(errorMessage);
         }
 
-        if(!dateFrom.HasValue || !dateTo.HasValue)
+        if (CurrentUser.Role == UserRolesDto.Client)
+        {
+            var clientOrders = _orderFacade.GetClientOrders(CurrentUser.Id, dateFrom, dateTo, parsedStatus);
+            return Ok(clientOrders);
+        }
+
+        if (!HasValidDateRange(dateFrom, dateTo))
         {
             return BadRequest("El rango de fechas es obligatorio");
         }
 
-        return Ok(_orderFacade.GetOrdersByFilters(dateFrom.Value, dateTo.Value, street, status));
+        var orders = _orderFacade.GetOrdersByFilters(dateFrom!.Value, dateTo!.Value, street, parsedStatus);
+        return Ok(orders);
+    }
+
+    private static bool TryParseStatus(
+        string? status,
+        out OrderStatusDto? parsedStatus,
+        out string? errorMessage)
+    {
+        parsedStatus = null;
+        errorMessage = null;
+
+        if (string.IsNullOrWhiteSpace(status))
+        {
+            return true;
+        }
+
+        if (Enum.TryParse<OrderStatusDto>(status, true, out var tempStatus))
+        {
+            parsedStatus = tempStatus;
+            return true;
+        }
+
+        errorMessage = "El estado ingresado no es válido";
+        return false;
+    }
+
+    private static bool HasValidDateRange(DateTime? dateFrom, DateTime? dateTo)
+    {
+        return dateFrom.HasValue && dateTo.HasValue;
     }
 
     [HttpPut("{id:int}/prepare")]
