@@ -26,7 +26,7 @@ public class ProductService : IProductService
             .Where(p => !p.IsDeleted).ToList();
 
         products = FilterByName(products, request.Name);
-        products = FilterByCategories(products, request.Categories);
+        products = FilterByCategory(products, request.Category);
         products = FilterByCommercialLine(products, request.CommercialLine);
 
         return MapProducts(products);
@@ -46,20 +46,24 @@ public class ProductService : IProductService
             return products;
         }
 
+        var normalized = name.Trim();
+
         return products
-            .Where(p => p.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
+            .Where(p => p.Name.Contains(normalized, StringComparison.OrdinalIgnoreCase))
             .ToList();
     }
 
-    private static List<Product> FilterByCategories(List<Product> products, List<string>? categories)
+    private static List<Product> FilterByCategory(List<Product> products, string? category)
     {
-        if (categories == null || !categories.Any())
+        if (string.IsNullOrWhiteSpace(category))
         {
             return products;
         }
 
+        var normalized = category.Trim();
+
         return products
-            .Where(p => categories.Contains(p.Category))
+            .Where(p => p.Category.Contains(normalized, StringComparison.OrdinalIgnoreCase))
             .ToList();
     }
 
@@ -70,8 +74,10 @@ public class ProductService : IProductService
             return products;
         }
 
+        var normalized = commercialLine.Trim();
+
         return products
-            .Where(p => p.CommercialLine.Equals(commercialLine, StringComparison.OrdinalIgnoreCase))
+            .Where(p => p.CommercialLine.Contains(normalized, StringComparison.OrdinalIgnoreCase))
             .ToList();
     }
 
