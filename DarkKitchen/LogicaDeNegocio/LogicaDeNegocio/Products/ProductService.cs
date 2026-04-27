@@ -46,8 +46,10 @@ public class ProductService : IProductService
             return products;
         }
 
+        var normalized = name.Trim();
+
         return products
-            .Where(p => p.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
+            .Where(p => p.Name.Contains(normalized, StringComparison.OrdinalIgnoreCase))
             .ToList();
     }
 
@@ -58,8 +60,10 @@ public class ProductService : IProductService
             return products;
         }
 
+        var normalized = category.Trim();
+
         return products
-            .Where(p => p.Category.Equals(category.Trim(), StringComparison.OrdinalIgnoreCase))
+            .Where(p => p.Category.Contains(normalized, StringComparison.OrdinalIgnoreCase))
             .ToList();
     }
 
@@ -70,8 +74,10 @@ public class ProductService : IProductService
             return products;
         }
 
+        var normalized = commercialLine.Trim();
+
         return products
-            .Where(p => p.CommercialLine.Equals(commercialLine, StringComparison.OrdinalIgnoreCase))
+            .Where(p => p.CommercialLine.Contains(normalized, StringComparison.OrdinalIgnoreCase))
             .ToList();
     }
 
