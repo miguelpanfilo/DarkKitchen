@@ -12,7 +12,10 @@ public class OrderResponse
     public string Status { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public DateTime StatusUpdatedAt { get; set; }
+
     public decimal Subtotal { get; set; }
     public decimal ShippingCost { get; set; }
+    public decimal Iva { get; set; }
+    public decimal IvaPercentage { get; set; }
     public decimal Total { get; set; }
 }
