@@ -10,4 +10,5 @@ public interface IPromotionService
     PromotionResponseDto DisassociateProduct(int promotionId, int productId);
     void Delete(int promotionId);
     List<PromotionResponseDto> GetPromotions(PromotionSearchRequestDto request);
+    decimal GetHighestCurrentDiscountForProduct(int productId);
 }

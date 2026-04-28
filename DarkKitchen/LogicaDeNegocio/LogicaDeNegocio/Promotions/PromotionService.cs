@@ -31,6 +31,26 @@ public class PromotionService : IPromotionService
         return MapPromotionWithProducts(createdPromotion);
     }
 
+    public decimal GetHighestCurrentDiscountForProduct(int productId)
+    {
+        var promotions = _promotionRepository.GetAll();
+
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+        var applicablePromotions = promotions
+            .Where(p => !p.IsDeleted)
+            .Where(p => p.StartDate <= today && p.EndDate >= today)
+            .Where(p => p.PromotionProducts.Any(pp => pp.ProductId == productId))
+            .ToList();
+
+        if (!applicablePromotions.Any())
+        {
+            return 0m;
+        }
+
+        return applicablePromotions.Max(p => p.DiscountPercentage) / 100m;
+    }
+
     public void Delete(int promotionId)
     {
         var promotion = GetExistingPromotion(promotionId);

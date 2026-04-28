@@ -28,17 +28,17 @@ public class OrderFacade(
 
             var address = BuildAddress(request);
 
-            var items = _orderItemResolver.Resolve(request.Items);
-
             var shippingCost = ShippingStrategyFactory
                 .Create(deliveryType)
                 .Calculate(0m);
+
+            var resolvedItems = _orderItemResolver.Resolve(request.Items);
 
             var order = _orderService.CreateOrder(
                 clientId,
                 deliveryType,
                 address,
-                items,
+                resolvedItems,
                 shippingCost);
 
             return ToOrderResponseWithClient(order);

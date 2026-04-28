@@ -1,3 +1,4 @@
+using Contratos.Orders;
 using Dominio;
 
 namespace LogicaDeNegocioAbstracciones.Orders;
@@ -8,7 +9,7 @@ public interface IOrderService
         int clientId,
         DeliveryType deliveryType,
         Address address,
-        List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)> items,
+        List<ResolvedOrderItemDto> items,
         decimal shippingCost);
 
     Order GetById(int orderId);
