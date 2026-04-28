@@ -80,7 +80,7 @@ public class OrderFacade(
 
     private OrderResponse ToOrderResponseWithClient(Order order)
     {
-        var user = _repositoryUser.FindById(order.ClientId);
+        var user = _repositoryUser.FindByIdIncludingInactive(order.ClientId);
 
         if(user == null)
         {
