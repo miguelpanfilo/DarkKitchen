@@ -1,0 +1,6 @@
+@DarkKitchen_HostAddress = http://localhost:5254
+
+GET {{DarkKitchen_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
