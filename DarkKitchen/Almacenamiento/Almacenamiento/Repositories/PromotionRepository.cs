@@ -2,7 +2,7 @@ using AlmacenamientoAbstracciones;
 using Dominio;
 using Microsoft.EntityFrameworkCore;
 
-namespace Almacenamiento;
+namespace Almacenamiento.Repositories;
 
 public class PromotionRepository : IPromotionRepository
 {

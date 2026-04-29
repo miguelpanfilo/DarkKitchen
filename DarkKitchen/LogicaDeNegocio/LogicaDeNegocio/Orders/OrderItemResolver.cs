@@ -1,5 +1,4 @@
 using Contratos.Orders;
-using Contratos.Promotions;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Orders;
 using LogicaDeNegocioAbstracciones.Products;

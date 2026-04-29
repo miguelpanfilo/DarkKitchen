@@ -1,6 +1,6 @@
 using AlmacenamientoAbstracciones;
 
-namespace Almacenamiento;
+namespace Almacenamiento.Repositories;
 
 public class ProductPhotoStorage : IProductPhotoStorage
 {

@@ -26,7 +26,7 @@ public class Order
         int clientId,
         DeliveryType deliveryType,
         Address address,
-        List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)> items,
+        List<OrderItemData> items,
         decimal shippingCost)
     {
         if(items.Count == 0)
@@ -47,7 +47,11 @@ public class Order
         };
 
         order.Items = items
-            .Select(i => OrderItem.MakeOrderItem(i.ProductId, i.Quantity, i.UnitPrice, i.DiscountApplied))
+            .Select(i => OrderItem.MakeOrderItem(
+                i.ProductId,
+                i.Quantity,
+                i.UnitPrice,
+                i.DiscountApplied))
             .ToList();
 
         order.CalculateTotals();

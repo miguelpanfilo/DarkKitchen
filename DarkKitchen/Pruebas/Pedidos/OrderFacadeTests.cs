@@ -56,9 +56,15 @@ public sealed class OrderFacadeTests
     {
         var address = Address.MakeAddress("Rivera", "1234");
 
-        var items = new List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)>
+        var items = new List<OrderItemData>
         {
-            (1, 2, 100m, 0m)
+            new()
+            {
+                ProductId = 1,
+                Quantity = 2,
+                UnitPrice = 100m,
+                DiscountApplied = 0m
+            }
         };
 
         var shippingCost = deliveryType == DeliveryType.TwentyFourHours ? 200m : 300m;

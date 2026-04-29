@@ -52,8 +52,17 @@ public class OrderRepositoryTests
 
     private Address MakeAddress() => Address.MakeAddress("Rivera", "1234");
 
-    private List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)> MakeItems() =>
-        [(SeededProduct.Id, 1, 100m, 0m)];
+    private List<OrderItemData> MakeItems() =>
+    [
+        new OrderItemData
+        {
+            ProductId = SeededProduct.Id,
+            Quantity = 1,
+            UnitPrice = 100m,
+            DiscountApplied = 0m
+        }
+
+    ];
 
     private Order MakeOrder(int? clientId = null) =>
         Order.MakeOrder(clientId ?? SeededClient.Id, DeliveryType.Express, MakeAddress(), MakeItems(), 200m);

@@ -21,11 +21,16 @@ public class OrderService(IOrderRepository orderRepository) : IOrderService
         decimal shippingCost)
     {
         var domainItems = items
-            .Select(i => (i.ProductId, i.Quantity, i.UnitPrice, i.DiscountApplied))
+            .Select(i => new OrderItemData
+            {
+                ProductId = i.ProductId,
+                Quantity = i.Quantity,
+                UnitPrice = i.UnitPrice,
+                DiscountApplied = i.DiscountApplied
+            })
             .ToList();
 
         var order = Order.MakeOrder(clientId, deliveryType, address, domainItems, shippingCost);
-
         return _orderRepository.Add(order);
     }
 

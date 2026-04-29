@@ -17,6 +17,52 @@ public sealed class ReportIntegrationTests
     private DbConnection _connection = null!;
     private SqlContext _context = null!;
     private ReportService _reportService = null!;
+    private static User MakeClient()
+    {
+        var phone = Phone.TryMakePhone("099123456").Value!;
+
+        return User.MakeClient(
+            "Juan",
+            "Perez",
+            "juan@test.com",
+            phone,
+            "PasswordSeguraee3!").Value!;
+    }
+
+    private static Product MakeProduct(string code, string name, decimal price)
+    {
+        return Product.MakeProduct(
+            code,
+            name,
+            "Descripción válida de prueba",
+            "Línea comercial",
+            "Categoría",
+            price,
+            [new ProductPhoto("img.jpg")]);
+    }
+
+    private static Order MakeOrder(int clientId, int productId, int quantity, decimal price)
+    {
+        var address = Address.MakeAddress("Rivera", "1234");
+
+        var items = new List<OrderItemData>
+        {
+            new()
+            {
+                ProductId = productId,
+                Quantity = quantity,
+                UnitPrice = price,
+                DiscountApplied = 0m
+            }
+        };
+
+        return Order.MakeOrder(
+            clientId,
+            DeliveryType.Express,
+            address,
+            items,
+            200m);
+    }
 
     [TestInitialize]
     public void Initialize()
@@ -78,42 +124,6 @@ public sealed class ReportIntegrationTests
         result.Periods[0].Customers.Should().ContainSingle();
         result.Periods[0].Customers[0].Customer.Should().Be("Juan Perez");
         result.GrandTotal.Should().BeGreaterThan(0);
-    }
-
-    private static User MakeClient()
-    {
-        var phone = Phone.TryMakePhone("099123456").Value!;
-
-        return User.MakeClient(
-            "Juan",
-            "Perez",
-            "juan@test.com",
-            phone,
-            "PasswordSeguraee3!").Value!;
-    }
-
-    private static Product MakeProduct(string code, string name, decimal price)
-    {
-        return Product.MakeProduct(
-            code,
-            name,
-            "Descripción válida de prueba",
-            "Línea comercial",
-            "Categoría",
-            price,
-            [new ProductPhoto("img.jpg")]);
-    }
-
-    private static Order MakeOrder(int clientId, int productId, int quantity, decimal price)
-    {
-        var address = Address.MakeAddress("Rivera", "1234");
-
-        return Order.MakeOrder(
-            clientId,
-            DeliveryType.Express,
-            address,
-            [(productId, quantity, price, 0m)],
-            200m);
     }
 
     [TestMethod]

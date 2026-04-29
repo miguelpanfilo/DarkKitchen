@@ -17,10 +17,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controladores\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\AlmacenamientoAbstracciones\AlmacenamientoAbstracciones\AlmacenamientoAbstracciones.csproj" />
       <ProjectReference Include="..\Almacenamiento\Almacenamiento\Almacenamiento.csproj" />
       <ProjectReference Include="..\FactoryService\FactoryService.csproj" />

@@ -24,9 +24,16 @@ public sealed class OrderServiceTests
     private static Order MakeOrder()
     {
         var address = Address.MakeAddress("Rivera", "1234");
-        var items = new List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)>
+
+        var items = new List<OrderItemData>
         {
-            (1, 2, 100m, 0m)
+            new()
+            {
+                ProductId = 1,
+                Quantity = 2,
+                UnitPrice = 100m,
+                DiscountApplied = 0m
+            }
         };
 
         return Order.MakeOrder(1, DeliveryType.Express, address, items, 200m);
