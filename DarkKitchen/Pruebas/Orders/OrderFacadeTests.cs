@@ -8,7 +8,7 @@ using LogicaDeNegocioAbstracciones.Exceptions;
 using LogicaDeNegocioAbstracciones.Orders;
 using Moq;
 
-namespace Pruebas.Pedidos;
+namespace Pruebas.Orders;
 
 [TestClass]
 public sealed class OrderFacadeTests

@@ -3,7 +3,7 @@ using Dominio;
 using LogicaDeNegocio.Initialization;
 using Moq;
 
-namespace Pruebas.InicioSesion;
+namespace Pruebas.Logins;
 
 [TestClass]
 public class InitializationServiceTests

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace Pruebas.Pedidos;
+namespace Pruebas.Orders;
 
 [TestClass]
 public sealed class OrdersControllerTests

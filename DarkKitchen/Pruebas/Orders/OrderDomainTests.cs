@@ -2,7 +2,7 @@ using Dominio;
 using Dominio.Exceptions;
 using FluentAssertions;
 
-namespace Pruebas.Pedidos;
+namespace Pruebas.Orders;
 
 [TestClass]
 public sealed class OrderDomainTests

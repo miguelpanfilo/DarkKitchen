@@ -7,7 +7,7 @@ using LogicaDeNegocioAbstracciones.Products;
 using LogicaDeNegocioAbstracciones.Promotions;
 using Moq;
 
-namespace Pruebas.Pedidos;
+namespace Pruebas.Orders;
 
 [TestClass]
 public sealed class OrderItemResolverTests
