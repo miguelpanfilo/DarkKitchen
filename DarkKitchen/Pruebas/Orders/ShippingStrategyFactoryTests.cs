@@ -3,7 +3,7 @@ using FluentAssertions;
 using LogicaDeNegocio.Shipping;
 using LogicaDeNegocioAbstracciones.Exceptions;
 
-namespace Pruebas.Pedidos;
+namespace Pruebas.Orders;
 
 [TestClass]
 public sealed class ShippingStrategyFactoryTests

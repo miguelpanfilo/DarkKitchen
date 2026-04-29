@@ -2,7 +2,7 @@ using Dominio;
 using FluentAssertions;
 using Mapeo;
 
-namespace Pruebas.Pedidos;
+namespace Pruebas.Orders;
 
 [TestClass]
 public sealed class OrderMapperTests

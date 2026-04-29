@@ -1,7 +1,7 @@
 using FluentAssertions;
 using LogicaDeNegocio.Shipping;
 
-namespace Pruebas.Pedidos;
+namespace Pruebas.Orders;
 
 [TestClass]
 public sealed class ExpressShippingStrategyTests

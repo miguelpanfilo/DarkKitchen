@@ -6,7 +6,7 @@ using LogicaDeNegocio.Orders;
 using LogicaDeNegocioAbstracciones.Exceptions;
 using Moq;
 
-namespace Pruebas.Pedidos;
+namespace Pruebas.Orders;
 
 [TestClass]
 public sealed class OrderServiceTests
