@@ -1,4 +1,5 @@
-/*using AlmacenamientoAbstracciones;
+using AlmacenamientoAbstracciones;
+using Contratos.Orders;
 using Dominio;
 using FluentAssertions;
 using LogicaDeNegocio.Orders;
@@ -42,11 +43,22 @@ public sealed class OrderServiceTests
             .Setup(r => r.Add(It.IsAny<Order>()))
             .Returns(expected);
 
+        var items = new List<ResolvedOrderItemDto>
+        {
+            new()
+            {
+                ProductId = 1,
+                Quantity = 2,
+                UnitPrice = 100m,
+                DiscountApplied = 0m
+            }
+        };
+
         var result = _orderService.CreateOrder(
             1,
             DeliveryType.Express,
             Address.MakeAddress("Rivera", "1234"),
-            [(1, 2, 100m, 0m)],
+            items,
             200m);
 
         _orderRepositoryMock.VerifyAll();
@@ -324,4 +336,3 @@ public sealed class OrderServiceTests
     #endregion
     #endregion
 }
-*/
