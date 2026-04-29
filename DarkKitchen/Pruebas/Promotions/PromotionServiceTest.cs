@@ -984,6 +984,51 @@ public class PromotionServiceTest
     }
 
     [TestMethod]
+    public void GetHighestCurrentDiscountForProduct_WhenProductHasMultipleCurrentPromotions_ShouldReturnHighestDiscount()
+    {
+        var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+        var promo10 = Promotion.MakePromotion(
+            "Promo 10",
+            10,
+            today.AddDays(-1),
+            today.AddDays(1));
+        promo10.AssociateProduct(100);
+
+        var promo25 = Promotion.MakePromotion(
+            "Promo 25",
+            25,
+            today.AddDays(-1),
+            today.AddDays(1));
+        promo25.AssociateProduct(100);
+
+        var promoOtherProduct = Promotion.MakePromotion(
+            "Promo Otro Producto",
+            50,
+            today.AddDays(-1),
+            today.AddDays(1));
+        promoOtherProduct.AssociateProduct(200);
+
+        promotionRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([promo10, promo25, promoOtherProduct]);
+
+        var service = new PromotionService(
+            promotionRepositoryMock.Object,
+            productRepositoryMock.Object);
+
+        var result = service.GetHighestCurrentDiscountForProduct(100);
+
+        Assert.AreEqual(0.25m, result);
+
+        promotionRepositoryMock.Verify(r => r.GetAll(), Times.Once);
+        productRepositoryMock.VerifyNoOtherCalls();
+    }
+
+    [TestMethod]
     public void GivenValidDateAndProductId_WhenGettingPromotions_ThenReturnsOnlyPromotionsForThatProduct()
     {
         var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);

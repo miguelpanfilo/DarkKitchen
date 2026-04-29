@@ -56,9 +56,15 @@ public sealed class OrderFacadeTests
     {
         var address = Address.MakeAddress("Rivera", "1234");
 
-        var items = new List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)>
+        var items = new List<OrderItemData>
         {
-            (1, 2, 100m, 0m)
+            new()
+            {
+                ProductId = 1,
+                Quantity = 2,
+                UnitPrice = 100m,
+                DiscountApplied = 0m
+            }
         };
 
         var shippingCost = deliveryType == DeliveryType.TwentyFourHours ? 200m : 300m;
@@ -81,24 +87,36 @@ public sealed class OrderFacadeTests
         return user;
     }
 
+    private static List<ResolvedOrderItemDto> MakeResolvedItems(int quantity = 2) =>
+    [
+        new ResolvedOrderItemDto
+        {
+            ProductId = 1,
+            Quantity = quantity,
+            UnitPrice = 100m,
+            DiscountApplied = 0m
+        }
+
+    ];
+
     [TestMethod]
     public void CreateOrder_WhenValidRequest_ShouldReturnOrderResponse()
     {
         _orderItemResolverMock
             .Setup(r => r.Resolve(It.IsAny<List<CreateOrderItemRequest>>()))
-            .Returns([(1, 2, 100m, 0m)]);
+            .Returns(MakeResolvedItems());
 
         _orderServiceMock
             .Setup(s => s.CreateOrder(
                 1,
                 DeliveryType.Express,
                 It.IsAny<Address>(),
-                It.IsAny<List<(int, int, decimal, decimal)>>(),
+                It.IsAny<List<ResolvedOrderItemDto>>(),
                 300m))
             .Returns(MakeTestOrder(1, DeliveryType.Express));
 
         _repositoryUserMock
-            .Setup(r => r.FindById(1))
+            .Setup(r => r.FindByIdIncludingInactive(1))
             .Returns(MakeTestUser(1));
 
         var result = _orderFacade.CreateOrder(1, MakeCreateOrderRequest());
@@ -117,19 +135,19 @@ public sealed class OrderFacadeTests
     {
         _orderItemResolverMock
             .Setup(r => r.Resolve(It.IsAny<List<CreateOrderItemRequest>>()))
-            .Returns([(1, 2, 100m, 0m)]);
+            .Returns(MakeResolvedItems());
 
         _orderServiceMock
             .Setup(s => s.CreateOrder(
                 1,
                 DeliveryType.TwentyFourHours,
                 It.IsAny<Address>(),
-                It.IsAny<List<(int, int, decimal, decimal)>>(),
+                It.IsAny<List<ResolvedOrderItemDto>>(),
                 200m))
             .Returns(MakeTestOrder(1, DeliveryType.TwentyFourHours));
 
         _repositoryUserMock
-            .Setup(r => r.FindById(1))
+            .Setup(r => r.FindByIdIncludingInactive(1))
             .Returns(MakeTestUser(1));
 
         var result = _orderFacade.CreateOrder(1, MakeCreateOrderRequest("TwentyFourHours"));
@@ -148,19 +166,19 @@ public sealed class OrderFacadeTests
     {
         _orderItemResolverMock
             .Setup(r => r.Resolve(It.IsAny<List<CreateOrderItemRequest>>()))
-            .Returns([(1, 1, 100m, 0m)]);
+            .Returns(MakeResolvedItems(1));
 
         _orderServiceMock
             .Setup(s => s.CreateOrder(
                 It.IsAny<int>(),
                 It.IsAny<DeliveryType>(),
                 It.IsAny<Address>(),
-                It.IsAny<List<(int, int, decimal, decimal)>>(),
+                It.IsAny<List<ResolvedOrderItemDto>>(),
                 It.IsAny<decimal>()))
             .Returns(MakeTestOrder(1));
 
         _repositoryUserMock
-            .Setup(r => r.FindById(1))
+            .Setup(r => r.FindByIdIncludingInactive(1))
             .Returns((User?)null);
 
         var act = () => _orderFacade.CreateOrder(1, new CreateOrderRequest
@@ -367,7 +385,7 @@ public sealed class OrderFacadeTests
             .Returns(MakeTestOrder(1));
 
         _repositoryUserMock
-            .Setup(r => r.FindById(1))
+            .Setup(r => r.FindByIdIncludingInactive(1))
             .Returns(MakeTestUser(1));
 
         var result = _orderFacade.GetById(1);
@@ -376,7 +394,7 @@ public sealed class OrderFacadeTests
         result.Should().BeOfType<OrderResponse>();
 
         _orderServiceMock.VerifyAll();
-        _repositoryUserMock.Verify(r => r.FindById(1), Times.Once);
+        _repositoryUserMock.Verify(r => r.FindByIdIncludingInactive(1), Times.Once);
     }
 
     [TestMethod]
@@ -387,7 +405,7 @@ public sealed class OrderFacadeTests
             .Returns([MakeTestOrder(1), MakeTestOrder(1)]);
 
         _repositoryUserMock
-            .Setup(r => r.FindById(1))
+            .Setup(r => r.FindByIdIncludingInactive(1))
             .Returns(MakeTestUser(1));
 
         var result = _orderFacade.GetClientOrders(1, null, null, null);
@@ -395,7 +413,7 @@ public sealed class OrderFacadeTests
         result.Should().HaveCount(2);
 
         _orderServiceMock.VerifyAll();
-        _repositoryUserMock.Verify(r => r.FindById(1), Times.Exactly(2));
+        _repositoryUserMock.Verify(r => r.FindByIdIncludingInactive(1), Times.Exactly(2));
     }
 
     [TestMethod]
@@ -423,7 +441,7 @@ public sealed class OrderFacadeTests
             .Returns([MakeTestOrder(1), MakeTestOrder(1)]);
 
         _repositoryUserMock
-            .Setup(r => r.FindById(1))
+            .Setup(r => r.FindByIdIncludingInactive(1))
             .Returns(MakeTestUser(1));
 
         var result = _orderFacade.GetOrdersByFilters(dateFrom, dateTo, null, null);
@@ -431,7 +449,7 @@ public sealed class OrderFacadeTests
         result.Should().HaveCount(2);
 
         _orderServiceMock.VerifyAll();
-        _repositoryUserMock.Verify(r => r.FindById(1), Times.Exactly(2));
+        _repositoryUserMock.Verify(r => r.FindByIdIncludingInactive(1), Times.Exactly(2));
     }
 
     [TestMethod]

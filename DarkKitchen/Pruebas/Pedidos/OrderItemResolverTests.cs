@@ -1,6 +1,5 @@
 using Contratos.Orders;
 using Contratos.Products;
-using Contratos.Promotions;
 using FluentAssertions;
 using LogicaDeNegocio.Orders;
 using LogicaDeNegocioAbstracciones.Exceptions;
@@ -83,28 +82,8 @@ public sealed class OrderItemResolverTests
             .Returns(MakeActiveProduct(price: 520m));
 
         _promotionServiceMock
-            .Setup(p => p.GetPromotions(It.Is<PromotionSearchRequestDto>(request =>
-                request.ProductId == 1 &&
-                request.Date.HasValue)))
-            .Returns(
-            [
-                new PromotionResponseDto(
-                    1,
-                    "Promo 10",
-                    10,
-                    new DateOnly(2026, 4, 1),
-                    new DateOnly(2026, 4, 30),
-                    []
-                ),
-                new PromotionResponseDto(
-                    2,
-                    "Promo Abril",
-                    20,
-                    new DateOnly(2026, 4, 1),
-                    new DateOnly(2026, 4, 30),
-                    []
-                )
-            ]);
+            .Setup(p => p.GetHighestCurrentDiscountForProduct(1))
+            .Returns(0.20m);
 
         var result = _resolver.Resolve(
         [
@@ -129,8 +108,8 @@ public sealed class OrderItemResolverTests
             .Returns(MakeActiveProduct(price: 520m));
 
         _promotionServiceMock
-            .Setup(p => p.GetPromotions(It.IsAny<PromotionSearchRequestDto>()))
-            .Returns([]);
+            .Setup(p => p.GetHighestCurrentDiscountForProduct(1))
+            .Returns(0m);
 
         var result = _resolver.Resolve(
         [

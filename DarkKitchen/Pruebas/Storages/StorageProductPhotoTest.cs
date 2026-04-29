@@ -1,4 +1,5 @@
 using Almacenamiento;
+using Almacenamiento.Repositories;
 using Contratos.Products;
 
 namespace Pruebas.Storages;

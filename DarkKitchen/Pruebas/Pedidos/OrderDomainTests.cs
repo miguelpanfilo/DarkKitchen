@@ -7,9 +7,19 @@ namespace Pruebas.Pedidos;
 [TestClass]
 public sealed class OrderDomainTests
 {
-    private static List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)> MakeItems()
+    private static List<OrderItemData> MakeItems()
     {
-        return [(1, 2, 100m, 0m)];
+        return
+        [
+            new OrderItemData
+            {
+                ProductId = 1,
+                Quantity = 2,
+                UnitPrice = 100m,
+                DiscountApplied = 0m
+            }
+
+        ];
     }
 
     #region Address

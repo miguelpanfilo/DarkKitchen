@@ -1,4 +1,5 @@
 using AlmacenamientoAbstracciones;
+using Contratos.Orders;
 using Dominio;
 using Dominio.Exceptions;
 using LogicaDeNegocioAbstracciones.Exceptions;
@@ -16,10 +17,20 @@ public class OrderService(IOrderRepository orderRepository) : IOrderService
         int clientId,
         DeliveryType deliveryType,
         Address address,
-        List<(int ProductId, int Quantity, decimal UnitPrice, decimal DiscountApplied)> items,
+        List<ResolvedOrderItemDto> items,
         decimal shippingCost)
     {
-        var order = Order.MakeOrder(clientId, deliveryType, address, items, shippingCost);
+        var domainItems = items
+            .Select(i => new OrderItemData
+            {
+                ProductId = i.ProductId,
+                Quantity = i.Quantity,
+                UnitPrice = i.UnitPrice,
+                DiscountApplied = i.DiscountApplied
+            })
+            .ToList();
+
+        var order = Order.MakeOrder(clientId, deliveryType, address, domainItems, shippingCost);
         return _orderRepository.Add(order);
     }
 

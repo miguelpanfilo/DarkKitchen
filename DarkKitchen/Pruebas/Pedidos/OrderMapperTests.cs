@@ -10,8 +10,15 @@ public sealed class OrderMapperTests
     private static Order MakeOrder(int clientId = 1, int itemCount = 1)
     {
         var address = Address.MakeAddress("Rivera", "1234");
+
         var items = Enumerable.Range(1, itemCount)
-            .Select(i => (ProductId: i, Quantity: 1, UnitPrice: 100m, DiscountApplied: 0m))
+            .Select(i => new OrderItemData
+            {
+                ProductId = i,
+                Quantity = 1,
+                UnitPrice = 100m,
+                DiscountApplied = 0m
+            })
             .ToList();
 
         return Order.MakeOrder(clientId, DeliveryType.Express, address, items, 200m);

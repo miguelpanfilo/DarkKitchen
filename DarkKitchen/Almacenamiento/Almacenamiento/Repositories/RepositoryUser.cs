@@ -81,4 +81,11 @@ public class RepositoryUser(SqlContext context) : IRepositoryUser
         _context.SaveChanges();
         return user;
     }
+
+    public User? FindByIdIncludingInactive(int id)
+    {
+        return _context.Users
+            .AsNoTracking()
+            .SingleOrDefault(u => u.Id == id);
+    }
 }

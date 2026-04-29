@@ -28,17 +28,17 @@ public class OrderFacade(
 
             var address = BuildAddress(request);
 
-            var items = _orderItemResolver.Resolve(request.Items);
-
             var shippingCost = ShippingStrategyFactory
                 .Create(deliveryType)
                 .Calculate(0m);
+
+            var resolvedItems = _orderItemResolver.Resolve(request.Items);
 
             var order = _orderService.CreateOrder(
                 clientId,
                 deliveryType,
                 address,
-                items,
+                resolvedItems,
                 shippingCost);
 
             return ToOrderResponseWithClient(order);
@@ -80,7 +80,7 @@ public class OrderFacade(
 
     private OrderResponse ToOrderResponseWithClient(Order order)
     {
-        var user = _repositoryUser.FindById(order.ClientId);
+        var user = _repositoryUser.FindByIdIncludingInactive(order.ClientId);
 
         if(user == null)
         {
