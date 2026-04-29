@@ -16,18 +16,18 @@ El archivo `Release.zip` incluye:
 ## Requisitos
 
 - Docker instalado
-- .NET 8 (solo si se ejecuta con `dotnet` en lugar de `.exe`)
+- .NET 8 
 
 ## Ejecución
 
 ### 1. Descomprimir el archivo
 
-Descomprimir `Release.zip`.
+Descomprimir Entrega 1
 
 ### 2. Levantar la base de datos
 
 Host=localhost
-Database=DarkKitchen2
+Database=DarkKitchenDb
 User Id=sa
 Password=Passw1rd
 TrustServerCertificate=true
@@ -43,10 +43,10 @@ TrustServerCertificate=true
 9) El nombre de la base de datos es DarkKitchenDb
 10) Click derecho en master refrescar
 11) En DarkKitchenDb hacer click derecho - > Editor SQL -> Nuevo Script SQL
-12) Copiar los scripts que estan a continuacion y ejecutarlo
+12) Copiar los scripts que estan a continuacion y ejecutarlo ( 1: usuarios 2: productos: 3: promociones 4: ordenes) 
 13) Click derecho en DarkKitchenDb -> refrescar
 14) En la carpeta publish del Release abir el ejecutable llamado DarkKitchenWebApi.exe
-17) Ingresar a Postman y a divertirse realizando request :)
+17) Ingresar a Postman y a divertirse realizando requests :)
 
 ## SCRIPT DE TABLAS 
 
