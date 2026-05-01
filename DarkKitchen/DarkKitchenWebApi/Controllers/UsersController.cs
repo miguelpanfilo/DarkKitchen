@@ -1,7 +1,7 @@
 using System.Security.Claims;
-using Contratos.Users;
+using BusinessLogicsAbstractions.Users;
+using Contract.Users;
 using DarkKitchen.Filters;
-using LogicaDeNegocioAbstracciones.Users;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DarkKitchen.Controllers;

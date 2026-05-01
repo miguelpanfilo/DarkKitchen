@@ -1,7 +1,7 @@
-using Contratos.Orders;
-using Contratos.Users;
+using BusinessLogicsAbstractions.Orders;
+using Contract.Orders;
+using Contract.Users;
 using DarkKitchen.Filters;
-using LogicaDeNegocioAbstracciones.Orders;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DarkKitchen.Controllers;

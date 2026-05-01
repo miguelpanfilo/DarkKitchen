@@ -13,8 +13,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\LogicaDeNegocioAbstracciones\LogicaDeNegocioAbstracciones\LogicaDeNegocioAbstracciones.csproj" />
-        <ProjectReference Include="..\LogicaDeNegocio\LogicaDeNegocio\LogicaDeNegocio.csproj" />
+        <ProjectReference Include="..\AlmacenamientoAbstracciones\DataAccessAbstractions\DataAccessAbstractions.csproj" />
+        <ProjectReference Include="..\Almacenamiento\DataAccess\DataAccess.csproj" />
+        <ProjectReference Include="..\LogicaDeNegocioAbstracciones\BusinessLogicsAbstractions\BusinessLogicsAbstractions.csproj" />
+        <ProjectReference Include="..\LogicaDeNegocio\BusinessLogics\BusinessLogics.csproj" />
     </ItemGroup>
 
 </Project>

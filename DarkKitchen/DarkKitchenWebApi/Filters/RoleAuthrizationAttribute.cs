@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using Contratos.Users;
+using Contract.Users;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 

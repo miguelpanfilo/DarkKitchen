@@ -1,5 +1,5 @@
-using Contratos.Users;
-using LogicaDeNegocioAbstracciones.Exceptions;
+using BusinessLogicsAbstractions.Exceptions;
+using Contract.Users;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
