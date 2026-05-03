@@ -178,7 +178,9 @@ public class PromotionService : IPromotionService
     private PromotionResponseDto MapPromotionWithProducts(Promotion promotion)
     {
         var products = promotion.PromotionProducts?
-            .Select(pp => GetExistingProduct(pp.ProductId))
+            .Select(pp => _productRepository.GetById(pp.ProductId))
+            .Where(product => product is not null && !product.IsDeleted)
+            .Select(product => product!)
             .ToList() ?? [];
 
         return PromotionMapper.ToResponseDto(promotion, products);
