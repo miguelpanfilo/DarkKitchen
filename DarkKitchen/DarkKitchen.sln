@@ -6,37 +6,37 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{2205AA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebApi", "WebApi", "{244C2AD0-1F2F-40F5-92F7-7050B71AC24F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BusinessLogic", "BusinessLogic", "{071A66E5-5C58-4ADD-9EFD-D0055EF05575}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BusinessLogics", "BusinessLogics", "{071A66E5-5C58-4ADD-9EFD-D0055EF05575}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F2BA8B15-8C93-4DC1-A162-38693D2199EA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Storage", "Storage", "{613E4475-988C-441F-B392-42C9C39AE8E7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataAccess", "DataAccess", "{613E4475-988C-441F-B392-42C9C39AE8E7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BusinessLogicAbstractions", "BusinessLogicAbstractions", "{24DFC3C8-C09D-4E1D-A01E-7C1F0F6E6288}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contracts", "Contracts", "{AA7A41DD-9C5E-4ACC-988C-C0D1A3361FEC}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contract", "Contract", "{AA7A41DD-9C5E-4ACC-988C-C0D1A3361FEC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mapping", "Mapping", "{ED90B497-4BBE-415C-B5F5-4DE639260D3C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mappers", "Mappers", "{ED90B497-4BBE-415C-B5F5-4DE639260D3C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StorageAbstractions", "StorageAbstractions", "{7D506078-2491-4C02-B33F-1C15C7822414}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataAccessAbstractions", "DataAccessAbstractions", "{7D506078-2491-4C02-B33F-1C15C7822414}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pruebas", "Pruebas\Pruebas.csproj", "{D5E992D6-541D-4486-BF30-C3FC1BAFAFA8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{D5E992D6-541D-4486-BF30-C3FC1BAFAFA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almacenamiento", "Almacenamiento\Almacenamiento\Almacenamiento.csproj", "{2B8895C1-9F8D-4783-A27B-E94ADB4F428F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "Almacenamiento\DataAccess\DataAccess.csproj", "{2B8895C1-9F8D-4783-A27B-E94ADB4F428F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlmacenamientoAbstracciones", "AlmacenamientoAbstracciones\AlmacenamientoAbstracciones\AlmacenamientoAbstracciones.csproj", "{CE5533BB-184A-424B-B5D4-7604612EDC34}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessAbstractions", "AlmacenamientoAbstracciones\DataAccessAbstractions\DataAccessAbstractions.csproj", "{CE5533BB-184A-424B-B5D4-7604612EDC34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contratos", "Contratos\Contratos\Contratos.csproj", "{864DCA78-9079-4636-917C-7BDBF184C70A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contract", "Contratos\Contract\Contract.csproj", "{864DCA78-9079-4636-917C-7BDBF184C70A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dominio", "Dominio\Dominio\Dominio.csproj", "{D6FC0C88-2A98-4108-8DF3-A72A2167806D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Dominio\Domain\Domain.csproj", "{D6FC0C88-2A98-4108-8DF3-A72A2167806D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicaDeNegocioAbstracciones", "LogicaDeNegocioAbstracciones\LogicaDeNegocioAbstracciones\LogicaDeNegocioAbstracciones.csproj", "{CEBE8BA8-EEAC-4BA8-8302-FE618A1E2A99}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLogicsAbstractions", "LogicaDeNegocioAbstracciones\BusinessLogicsAbstractions\BusinessLogicsAbstractions.csproj", "{CEBE8BA8-EEAC-4BA8-8302-FE618A1E2A99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicaDeNegocio", "LogicaDeNegocio\LogicaDeNegocio\LogicaDeNegocio.csproj", "{EB0A9ABA-3BF2-4B20-9633-468E28DDF12C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLogics", "LogicaDeNegocio\BusinessLogics\BusinessLogics.csproj", "{EB0A9ABA-3BF2-4B20-9633-468E28DDF12C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mapeo", "Mapeo\Mapeo\Mapeo.csproj", "{4F8A971F-4D8D-4E35-87DB-1E42E812F22D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mappers", "Mapeo\Mappers\Mappers.csproj", "{4F8A971F-4D8D-4E35-87DB-1E42E812F22D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServiceFactory", "ServiceFactory", "{70023B42-3054-41CE-B8EE-4D542E89DCA8}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FactoryService", "FactoryService", "{70023B42-3054-41CE-B8EE-4D542E89DCA8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FactoryService", "FactoryService\FactoryService.csproj", "{97EB534A-D6E0-4A02-99BD-ADC497E73AEC}"
 EndProject

@@ -10,18 +10,18 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.7"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\AlmacenamientoAbstracciones\AlmacenamientoAbstracciones\AlmacenamientoAbstracciones.csproj" />
-      <ProjectReference Include="..\Almacenamiento\Almacenamiento\Almacenamiento.csproj" />
-      <ProjectReference Include="..\FactoryService\FactoryService.csproj" />
-      <ProjectReference Include="..\LogicaDeNegocioAbstracciones\LogicaDeNegocioAbstracciones\LogicaDeNegocioAbstracciones.csproj" />
-      <ProjectReference Include="..\LogicaDeNegocio\LogicaDeNegocio\LogicaDeNegocio.csproj" />
+        <ProjectReference Include="..\AlmacenamientoAbstracciones\DataAccessAbstractions\DataAccessAbstractions.csproj" />
+        <ProjectReference Include="..\Almacenamiento\DataAccess\DataAccess.csproj" />
+        <ProjectReference Include="..\FactoryService\FactoryService.csproj" />
+        <ProjectReference Include="..\LogicaDeNegocioAbstracciones\BusinessLogicsAbstractions\BusinessLogicsAbstractions.csproj" />
+        <ProjectReference Include="..\LogicaDeNegocio\BusinessLogics\BusinessLogics.csproj" />
     </ItemGroup>
 
 </Project>
