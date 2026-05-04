@@ -277,4 +277,14 @@ public class OrderStateTests
             .Throw<InvalidOperationException>()
             .WithMessage("Solo se puede marcar como no entregado un pedido en camino");
     }
+
+    [TestMethod]
+    public void DeliveredState_WhenCancel_ShouldThrowInvalidOperationException()
+    {
+        var state = new DeliveredState();
+
+        Action act = () => state.Cancel();
+
+        act.Should().Throw<InvalidOperationException>();
+    }
 }
