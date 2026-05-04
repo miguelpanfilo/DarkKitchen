@@ -106,4 +106,16 @@ public class OrderStateTests
 
         nextState.Should().BeOfType<NotDeliveredState>();
     }
+
+    [TestMethod]
+    public void PendingState_WhenDispatch_ShouldThrowInvalidOperationException()
+    {
+        var state = new PendingState();
+
+        Action act = () => state.Dispatch();
+
+        act.Should()
+            .Throw<InvalidOperationException>()
+            .WithMessage("Solo se puede poner en camino un pedido preparado");
+    }
 }
