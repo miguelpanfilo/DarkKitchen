@@ -118,4 +118,16 @@ public class OrderStateTests
             .Throw<InvalidOperationException>()
             .WithMessage("Solo se puede poner en camino un pedido preparado");
     }
+
+    [TestMethod]
+    public void DelayedState_WhenDispatch_ShouldThrowInvalidOperationException()
+    {
+        var state = new DelayedState();
+
+        Action act = () => state.Dispatch();
+
+        act.Should()
+            .Throw<InvalidOperationException>()
+            .WithMessage("Primero se debe preparar el pedido");
+    }
 }
