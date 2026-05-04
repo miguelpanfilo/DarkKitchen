@@ -205,4 +205,14 @@ public class OrderStateTests
             .Throw<InvalidOperationException>()
             .WithMessage("El pedido ya se encuentra entregado");
     }
+
+    [TestMethod]
+    public void CancelledState_WhenCancel_ShouldThrowInvalidOperationException()
+    {
+        var state = new CancelledState();
+
+        Action act = () => state.Cancel();
+
+        act.Should().Throw<InvalidOperationException>("El pedido ya esta cancelado");
+    }
 }
