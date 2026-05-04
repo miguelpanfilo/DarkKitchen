@@ -534,4 +534,13 @@ public sealed class OrderFacadeTests
 
         _orderServiceMock.VerifyAll();
     }
+    [TestMethod]
+    public void Delay_WhenValidId_ShouldDelegateToService()
+    {
+        _orderServiceMock.Setup(s => s.Delay(1));
+
+        _orderFacade.Delay(1);
+
+        _orderServiceMock.VerifyAll();
+    }
 }
