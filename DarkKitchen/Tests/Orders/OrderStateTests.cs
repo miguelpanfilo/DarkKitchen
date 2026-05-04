@@ -193,4 +193,16 @@ public class OrderStateTests
             .Throw<InvalidOperationException>()
             .WithMessage("El pedido ya se encuentra en camino");
     }
+
+    [TestMethod]
+    public void DeliveredState_WhenDeliver_ShouldThrowInvalidOperationException()
+    {
+        var state = new DeliveredState();
+
+        Action act = () => state.Deliver();
+
+        act.Should()
+            .Throw<InvalidOperationException>()
+            .WithMessage("El pedido ya se encuentra entregado");
+    }
 }
