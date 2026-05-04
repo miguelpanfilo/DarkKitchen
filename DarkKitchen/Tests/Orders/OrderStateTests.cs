@@ -36,4 +36,14 @@ public class OrderStateTests
 
         nextState.Should().BeOfType<OnTheWayState>();
     }
+
+    [TestMethod]
+    public void PreparedState_WhenCancel_ShouldThrowInvalidOperationException()
+    {
+        var state = new PreparedState();
+
+        Action act = () => state.Cancel();
+
+        act.Should().Throw<InvalidOperationException>();
+    }
 }
