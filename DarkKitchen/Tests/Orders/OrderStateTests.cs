@@ -241,4 +241,16 @@ public class OrderStateTests
             .Throw<InvalidOperationException>()
             .WithMessage("El pedido ya se encuentra preparado");
     }
+
+    [TestMethod]
+    public void PreparedState_WhenDeliver_ShouldThrowInvalidOperationException()
+    {
+        var state = new PreparedState();
+
+        Action act = () => state.Deliver();
+
+        act.Should()
+            .Throw<InvalidOperationException>()
+            .WithMessage("Primero hay que despachar el pedido");
+    }
 }
