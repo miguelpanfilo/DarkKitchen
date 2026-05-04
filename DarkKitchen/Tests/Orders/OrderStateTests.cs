@@ -213,7 +213,9 @@ public class OrderStateTests
 
         Action act = () => state.Cancel();
 
-        act.Should().Throw<InvalidOperationException>("El pedido ya esta cancelado");
+        act.Should()
+            .Throw<InvalidOperationException>()
+            .WithMessage("El pedido ya esta cancelado");
     }
 
     [TestMethod]
@@ -223,6 +225,8 @@ public class OrderStateTests
 
         Action act = () => state.MarkNotDelivered();
 
-        act.Should().Throw<InvalidOperationException>("El pedido ya se encuentra como no entregado");
+        act.Should()
+            .Throw<InvalidOperationException>()
+            .WithMessage("El pedido ya se encuentra como no entregado");
     }
 }
