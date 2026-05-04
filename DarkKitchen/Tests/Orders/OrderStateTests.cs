@@ -169,4 +169,16 @@ public class OrderStateTests
             .Throw<InvalidOperationException>()
             .WithMessage("El pedido ya esta demorado");
     }
+
+    [TestMethod]
+    public void DelayedState_WhenDeliver_ShouldThrowInvalidOperationException()
+    {
+        var state = new DelayedState();
+
+        Action act = () => state.Deliver();
+
+        act.Should()
+            .Throw<InvalidOperationException>()
+            .WithMessage("Solo se puede entregar un pedido en camino");
+    }
 }
