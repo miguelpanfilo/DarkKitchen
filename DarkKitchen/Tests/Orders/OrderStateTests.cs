@@ -26,4 +26,14 @@ public class OrderStateTests
 
         nextState.Should().BeOfType<CancelledState>();
     }
+
+    [TestMethod]
+    public void PreparedState_WhenDispatch_ShouldTransitionToOnTheWayState()
+    {
+        var state = new PreparedState();
+
+        var nextState = state.Dispatch();
+
+        nextState.Should().BeOfType<OnTheWayState>();
+    }
 }
