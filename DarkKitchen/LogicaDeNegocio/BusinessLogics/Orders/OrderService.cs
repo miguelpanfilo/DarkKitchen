@@ -64,7 +64,7 @@ public class OrderService(IOrderRepository orderRepository) : IOrderService
     public void Deliver(int orderId) => ApplyStateChange(orderId, o => o.Deliver());
 
     public void MarkNotDelivered(int orderId) => ApplyStateChange(orderId, o => o.MarkNotDelivered());
-
+    public void Delay(int orderId) => ApplyStateChange(orderId, o => o.Delay());
     private void ApplyStateChange(int orderId, Action<Order> transition)
     {
         var order = GetById(orderId);
@@ -73,7 +73,7 @@ public class OrderService(IOrderRepository orderRepository) : IOrderService
         {
             transition(order);
         }
-        catch(OrderException ex)
+        catch(InvalidOperationException ex)
         {
             throw new ConflictException(ex.Message);
         }
