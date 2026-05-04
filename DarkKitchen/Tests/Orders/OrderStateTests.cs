@@ -96,4 +96,14 @@ public class OrderStateTests
 
         nextState.Should().BeOfType<DeliveredState>();
     }
+
+    [TestMethod]
+    public void OnTheWayState_WhenMarkNotDelivered_ShouldTransitionToNotDeliveredState()
+    {
+        var state = new OnTheWayState();
+
+        var nextState = state.MarkNotDelivered();
+
+        nextState.Should().BeOfType<NotDeliveredState>();
+    }
 }
