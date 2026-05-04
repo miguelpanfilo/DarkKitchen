@@ -265,4 +265,16 @@ public class OrderStateTests
             .Throw<InvalidOperationException>()
             .WithMessage("No se puede demorar un pedido que ya esta en camino");
     }
+
+    [TestMethod]
+    public void PendingState_WhenMarkNotDelivered_ShouldThrowInvalidOperationException()
+    {
+        var state = new PendingState();
+
+        Action act = () => state.MarkNotDelivered();
+
+        act.Should()
+            .Throw<InvalidOperationException>()
+            .WithMessage("Solo se puede marcar como no entregado un pedido en camino");
+    }
 }
