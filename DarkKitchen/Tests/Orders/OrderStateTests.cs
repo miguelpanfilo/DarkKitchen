@@ -86,4 +86,13 @@ public class OrderStateTests
 
         act.Should().Throw<InvalidOperationException>();
     }
+    [TestMethod]
+    public void OnTheWayState_WhenDeliver_ShouldTransitionToDeliveredState()
+    {
+        var state = new OnTheWayState();
+
+        var nextState = state.Deliver();
+
+        nextState.Should().BeOfType<DeliveredState>();
+    }
 }
