@@ -157,4 +157,16 @@ public class OrderStateTests
         state = state.Deliver();
         state.Should().BeOfType<DeliveredState>();
     }
+
+    [TestMethod]
+    public void DelayedState_WhenDelay_ShouldThrowInvalidOperationException()
+    {
+        var state = new DelayedState();
+
+        Action act = () => state.Delay();
+
+        act.Should()
+            .Throw<InvalidOperationException>()
+            .WithMessage("El pedido ya esta demorado");
+    }
 }
