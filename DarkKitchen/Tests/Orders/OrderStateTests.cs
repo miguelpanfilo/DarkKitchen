@@ -46,4 +46,14 @@ public class OrderStateTests
 
         act.Should().Throw<InvalidOperationException>();
     }
+
+    [TestMethod]
+    public void PendingState_WhenDelay_ShouldTransitionToDelayedState()
+    {
+        var state = new PendingState();
+
+        var nextState = state.Delay();
+
+        nextState.Should().BeOfType<DelayedState>();
+    }
 }
