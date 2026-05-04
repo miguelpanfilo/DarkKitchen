@@ -181,4 +181,16 @@ public class OrderStateTests
             .Throw<InvalidOperationException>()
             .WithMessage("Solo se puede entregar un pedido en camino");
     }
+
+    [TestMethod]
+    public void OnTheWayState_WhenDispatch_ShouldThrowInvalidOperationException()
+    {
+        var state = new OnTheWayState();
+
+        Action act = () => state.Dispatch();
+
+        act.Should()
+            .Throw<InvalidOperationException>()
+            .WithMessage("El pedido ya se encuentra en camino");
+    }
 }
