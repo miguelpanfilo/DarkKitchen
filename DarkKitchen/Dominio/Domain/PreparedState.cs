@@ -14,4 +14,6 @@ public class PreparedState : IOrderState
 
     public IOrderState MarkNotDelivered() =>
         throw new InvalidOperationException("No aplica para Prepared");
+    public IOrderState Delay() =>
+        throw new InvalidOperationException("Solo se puede demorar un pedido pendiente");
 }
