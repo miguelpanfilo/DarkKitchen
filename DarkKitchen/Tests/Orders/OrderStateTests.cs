@@ -56,4 +56,14 @@ public class OrderStateTests
 
         nextState.Should().BeOfType<DelayedState>();
     }
+
+    [TestMethod]
+    public void DelayedState_WhenPrepare_ShouldTransitionToPreparedState()
+    {
+        var state = new DelayedState();
+
+        var nextState = state.Prepare();
+
+        nextState.Should().BeOfType<PreparedState>();
+    }
 }
