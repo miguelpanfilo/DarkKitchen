@@ -1,5 +1,3 @@
-using Microsoft.VisualBasic.CompilerServices;
-
 namespace Domain;
 
 public class OnTheWayState : IOrderState

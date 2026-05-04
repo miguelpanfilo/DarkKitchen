@@ -7,4 +7,5 @@ public interface IOrderState
     IOrderState Dispatch();
     IOrderState Deliver();
     IOrderState MarkNotDelivered();
+    IOrderState Delay();
 }
