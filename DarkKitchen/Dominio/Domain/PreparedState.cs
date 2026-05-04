@@ -5,7 +5,8 @@ public class PreparedState : IOrderState
     public IOrderState Prepare() =>
         throw new InvalidOperationException("El pedido ya se encuentra preparado");
 
-    public IOrderState Cancel() => new CancelledState();
+    public IOrderState Cancel() =>
+        throw new InvalidOperationException("Solo se puede cancelar un pedido pendiente");
 
     public IOrderState Dispatch() => new OnTheWayState();
 

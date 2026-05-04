@@ -44,7 +44,9 @@ public class OrderStateTests
 
         Action act = () => state.Cancel();
 
-        act.Should().Throw<InvalidOperationException>();
+        act.Should()
+            .Throw<InvalidOperationException>()
+            .WithMessage("Solo se puede cancelar un pedido pendiente");
     }
 
     [TestMethod]
