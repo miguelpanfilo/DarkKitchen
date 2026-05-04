@@ -253,4 +253,16 @@ public class OrderStateTests
             .Throw<InvalidOperationException>()
             .WithMessage("Primero hay que despachar el pedido");
     }
+
+    [TestMethod]
+    public void OnTheWayState_WhenDelay_ShouldThrowInvalidOperationException()
+    {
+        var state = new OnTheWayState();
+
+        Action act = () => state.Delay();
+
+        act.Should()
+            .Throw<InvalidOperationException>()
+            .WithMessage("No se puede demorar un pedido que ya esta en camino");
+    }
 }
