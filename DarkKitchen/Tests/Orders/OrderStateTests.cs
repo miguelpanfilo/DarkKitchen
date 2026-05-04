@@ -76,4 +76,14 @@ public class OrderStateTests
 
         nextState.Should().BeOfType<CancelledState>();
     }
+
+    [TestMethod]
+    public void PreparedState_WhenDelay_ShouldThrowInvalidOperationException()
+    {
+        var state = new PreparedState();
+
+        Action act = () => state.Delay();
+
+        act.Should().Throw<InvalidOperationException>();
+    }
 }
