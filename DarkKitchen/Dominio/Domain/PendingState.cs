@@ -7,6 +7,10 @@ public class PendingState : IOrderState
     public IOrderState Cancel() => new CancelledState();
 
     public IOrderState Delay() => new DelayedState();
+    public OrderStatus GetStatus()
+    {
+        return OrderStatus.Pending;
+    }
 
     public IOrderState Dispatch() =>
         throw new InvalidOperationException("Solo se puede poner en camino un pedido preparado");

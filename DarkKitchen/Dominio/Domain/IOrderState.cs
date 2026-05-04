@@ -8,4 +8,5 @@ public interface IOrderState
     IOrderState Deliver();
     IOrderState MarkNotDelivered();
     IOrderState Delay();
+    OrderStatus GetStatus();
 }

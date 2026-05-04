@@ -28,4 +28,16 @@ public class OrderTransitionStateTests
 
         order.Status.Should().Be(OrderStatus.Delayed);
     }
+
+    [TestMethod]
+    public void
+        Order_WhenPrepareFromDelayed_ShouldHavePreparedStatus()
+    {
+        var order = MakeOrder();
+        order.Delay();
+
+        order.Prepare();
+
+        order.Status.Should().Be(OrderStatus.Prepared);
+    }
 }

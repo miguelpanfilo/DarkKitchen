@@ -9,6 +9,11 @@ public class DelayedState : IOrderState
     public IOrderState Delay() =>
         throw new InvalidOperationException("El pedido ya esta demorado");
 
+    public OrderStatus GetStatus()
+    {
+        return OrderStatus.Delayed;
+    }
+
     public IOrderState Dispatch() =>
         throw new InvalidOperationException("Primero se debe preparar el pedido");
 

@@ -21,4 +21,9 @@ public class CancelledState : IOrderState
 
     public IOrderState Delay() =>
         throw new InvalidOperationException(ErrorMessage);
+
+    public OrderStatus GetStatus()
+    {
+        return OrderStatus.Pending;
+    }
 }

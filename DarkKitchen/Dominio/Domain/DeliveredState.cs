@@ -21,4 +21,9 @@ public class DeliveredState : IOrderState
 
     public IOrderState Delay() =>
         throw new InvalidOperationException(ErrorMessage);
+
+    public OrderStatus GetStatus()
+    {
+        return OrderStatus.Delivered;
+    }
 }
