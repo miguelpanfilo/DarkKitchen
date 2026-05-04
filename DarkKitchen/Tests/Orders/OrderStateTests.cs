@@ -16,4 +16,14 @@ public class OrderStateTests
 
         nextState.Should().BeOfType<PreparedState>();
     }
+
+    [TestMethod]
+    public void PendingState_WhenCancel_ShouldTransitionToCancelledState()
+    {
+        var state = new PendingState();
+
+        var nextState = state.Cancel();
+
+        nextState.Should().BeOfType<CancelledState>();
+    }
 }
