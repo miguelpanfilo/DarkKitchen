@@ -7,7 +7,7 @@ public class DelayedState : IOrderState
     public IOrderState Cancel() => new CancelledState();
 
     public IOrderState Delay() =>
-        throw new InvalidOperationException("El pedido ya está demorado");
+        throw new InvalidOperationException("El pedido ya esta demorado");
 
     public IOrderState Dispatch() =>
         throw new InvalidOperationException("Primero se debe preparar el pedido");
