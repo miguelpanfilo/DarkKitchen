@@ -5,12 +5,7 @@ namespace BusinessLogicsAbstractions.Orders;
 
 public interface IOrderService
 {
-    Order CreateOrder(
-        int clientId,
-        DeliveryType deliveryType,
-        Address address,
-        List<ResolvedOrderItemDto> items,
-        decimal shippingCost);
+    Order CreateOrder(CreateOrderData data);
 
     Order GetById(int orderId);
 
@@ -27,5 +22,6 @@ public interface IOrderService
     void Deliver(int orderId);
 
     void MarkNotDelivered(int orderId);
+
     void Delay(int orderId);
 }

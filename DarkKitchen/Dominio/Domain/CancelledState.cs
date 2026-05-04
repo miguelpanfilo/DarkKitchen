@@ -24,6 +24,6 @@ public class CancelledState : IOrderState
 
     public OrderStatus GetStatus()
     {
-        return OrderStatus.Pending;
+        return OrderStatus.Cancelled;
     }
 }

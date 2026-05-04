@@ -61,12 +61,16 @@ public sealed class OrderServiceTests
             }
         };
 
-        var result = _orderService.CreateOrder(
-            1,
-            DeliveryType.Express,
-            Address.MakeAddress("Rivera", "1234"),
-            items,
-            200m);
+        var data = new CreateOrderData
+        {
+            ClientId = 1,
+            DeliveryType = DeliveryType.Express,
+            Address = Address.MakeAddress("Rivera", "1234"),
+            Items = items,
+            ShippingCost = 200m
+        };
+
+        var result = _orderService.CreateOrder(data);
 
         _orderRepositoryMock.VerifyAll();
         result.Should().NotBeNull();

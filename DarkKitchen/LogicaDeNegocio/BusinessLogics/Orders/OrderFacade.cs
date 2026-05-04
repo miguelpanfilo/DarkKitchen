@@ -34,12 +34,14 @@ public class OrderFacade(
 
             var resolvedItems = _orderItemResolver.Resolve(request.Items);
 
-            var order = _orderService.CreateOrder(
-                clientId,
-                deliveryType,
-                address,
-                resolvedItems,
-                shippingCost);
+            var order = _orderService.CreateOrder(new CreateOrderData
+            {
+                ClientId = clientId,
+                DeliveryType = deliveryType,
+                Address = address,
+                Items = resolvedItems,
+                ShippingCost = shippingCost
+            });
 
             return ToOrderResponseWithClient(order);
         });

@@ -13,14 +13,9 @@ public class OrderService(IOrderRepository orderRepository) : IOrderService
 
     private const string OrderNotFoundMessage = "Pedido no encontrado";
 
-    public Order CreateOrder(
-        int clientId,
-        DeliveryType deliveryType,
-        Address address,
-        List<ResolvedOrderItemDto> items,
-        decimal shippingCost)
+    public Order CreateOrder(CreateOrderData data)
     {
-        var domainItems = items
+        var domainItems = data.Items
             .Select(i => new OrderItemData
             {
                 ProductId = i.ProductId,
@@ -30,7 +25,13 @@ public class OrderService(IOrderRepository orderRepository) : IOrderService
             })
             .ToList();
 
-        var order = Order.MakeOrder(clientId, deliveryType, address, domainItems, shippingCost);
+        var order = Order.MakeOrder(
+            data.ClientId,
+            data.DeliveryType,
+            data.Address,
+            domainItems,
+            data.ShippingCost);
+
         return _orderRepository.Add(order);
     }
 
