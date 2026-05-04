@@ -9,5 +9,5 @@ public class OnTheWayState : IOrderState
     public IOrderState Dispatch() => throw new InvalidOperationException();
     public IOrderState Deliver() => new DeliveredState();
 
-    public IOrderState MarkNotDelivered() => throw new InvalidOperationException();
+    public IOrderState MarkNotDelivered() => new NotDeliveredState();
 }
