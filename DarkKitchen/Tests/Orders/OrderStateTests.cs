@@ -229,4 +229,16 @@ public class OrderStateTests
             .Throw<InvalidOperationException>()
             .WithMessage("El pedido ya se encuentra como no entregado");
     }
+
+    [TestMethod]
+    public void PreparedState_WhenPrepare_ShouldThrowInvalidOperationException()
+    {
+        var state = new PreparedState();
+
+        Action act = () => state.Prepare();
+
+        act.Should()
+            .Throw<InvalidOperationException>()
+            .WithMessage("El pedido ya se encuentra preparado");
+    }
 }
