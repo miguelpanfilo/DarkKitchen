@@ -130,4 +130,16 @@ public class OrderStateTests
             .Throw<InvalidOperationException>()
             .WithMessage("Primero se debe preparar el pedido");
     }
+
+    [TestMethod]
+    public void OnTheWayState_WhenCancel_ShouldThrowInvalidOperationException()
+    {
+        var state = new OnTheWayState();
+
+        Action act = () => state.Cancel();
+
+        act.Should()
+            .Throw<InvalidOperationException>()
+            .WithMessage("No es posible cancelar un pedido que ya esta en camino");
+    }
 }
