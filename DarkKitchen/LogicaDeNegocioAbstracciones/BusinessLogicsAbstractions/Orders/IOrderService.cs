@@ -27,4 +27,5 @@ public interface IOrderService
     void Deliver(int orderId);
 
     void MarkNotDelivered(int orderId);
+    void Delay(int orderId);
 }

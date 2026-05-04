@@ -145,4 +145,7 @@ public class OrderFacade(
     public void MarkNotDelivered(int orderId) =>
         ServiceExceptionHandler.ExecuteWithConflictHandling<OrderException>(
             () => _orderService.MarkNotDelivered(orderId));
+    public void Delay(int orderId) =>
+        ServiceExceptionHandler.ExecuteWithConflictHandling<OrderException>(
+            () => _orderService.Delay(orderId));
 }
