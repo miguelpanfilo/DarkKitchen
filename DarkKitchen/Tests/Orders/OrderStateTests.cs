@@ -142,4 +142,19 @@ public class OrderStateTests
             .Throw<InvalidOperationException>()
             .WithMessage("No es posible cancelar un pedido que ya esta en camino");
     }
+
+    [TestMethod]
+    public void OrderFlow_ShouldGoThroughAllValidStates()
+    {
+        IOrderState state = new PendingState();
+
+        state = state.Prepare();
+        state.Should().BeOfType<PreparedState>();
+
+        state = state.Dispatch();
+        state.Should().BeOfType<OnTheWayState>();
+
+        state = state.Deliver();
+        state.Should().BeOfType<DeliveredState>();
+    }
 }
