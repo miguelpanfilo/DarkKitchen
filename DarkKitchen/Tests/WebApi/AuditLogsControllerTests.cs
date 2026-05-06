@@ -1,6 +1,6 @@
 using BusinessLogicsAbstractions;
-using BusinessLogicsAbstractions.AuditLogs;
 using Contract;
+using DarkKitchen.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -25,8 +25,11 @@ public class AuditLogsControllerTests
 
         var logs = new List<AuditLogResponse>
         {
-            new AuditLogResponse { Id = 1, EntityName = "PRODUCTO",
-                EntityId = 5 }
+            new AuditLogResponse
+            {
+                Id = 1, EntityName = "PRODUCTO",
+                EntityId = 5
+            }
         };
 
         auditServiceMock
