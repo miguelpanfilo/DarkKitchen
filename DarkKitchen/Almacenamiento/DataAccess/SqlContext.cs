@@ -14,6 +14,7 @@ public class SqlContext : DbContext
     public DbSet<ProductPhoto> ProductPhotos { get; set; }
     public DbSet<Order> Orders { get; set; } = null!;
     public DbSet<OrderItem> OrderItems { get; set; } = null!;
+    public DbSet<ShippingType> ShippingTypes { get; set; } = null!;
 
     public SqlContext(DbContextOptions<SqlContext> options)
         : base(options)
@@ -29,5 +30,6 @@ public class SqlContext : DbContext
         modelBuilder.ApplyConfiguration(new PromotionProductConfiguration());
         modelBuilder.ApplyConfiguration(new OrderConfiguration());
         modelBuilder.ApplyConfiguration(new OrderItemConfiguration());
+        modelBuilder.ApplyConfiguration(new ShippingTypeConfiguration());
     }
 }
