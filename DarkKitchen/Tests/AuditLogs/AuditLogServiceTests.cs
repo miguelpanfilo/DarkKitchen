@@ -54,8 +54,10 @@ public class AuditLogServiceTests
             EntityId = 5
         };
 
-        Assert.ThrowsException<ValidationException>(() =>
+        var ex = Assert.ThrowsException<ValidationException>(() =>
             service.GetByFilters(request));
+
+        Assert.AreEqual("La fecha-hora desde es obligatoria.", ex.Message);
     }
 
     [TestMethod]
@@ -76,7 +78,9 @@ public class AuditLogServiceTests
             EntityId = 5
         };
 
-        Assert.ThrowsException<ValidationException>(() =>
+        var ex = Assert.ThrowsException<ValidationException>(() =>
             service.GetByFilters(request));
+
+        Assert.AreEqual("La fecha-hora hasta es obligatoria.", ex.Message);
     }
 }
