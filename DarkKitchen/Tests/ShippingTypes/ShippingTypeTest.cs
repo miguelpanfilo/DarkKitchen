@@ -45,7 +45,7 @@ public class ShippingTypeTest
     public void GivenNegativeCost_WhenCreatingShippingType_ThenThrowsShippingTypeException()
     {
         var ex = Assert.ThrowsException<ShippingTypeException>(() =>
-            ShippingType.MakeShippingType("Envío express", -1));
+            ShippingType.MakeShippingType("Envío express", -1m));
 
         Assert.AreEqual("El costo del tipo de envío no puede ser negativo.", ex.Message);
     }
