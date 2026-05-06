@@ -64,6 +64,8 @@ public class PromotionService : IPromotionService
         promotion.Delete();
 
         _promotionRepository.Update(promotion);
+        _auditLogService.Register(AuditedEntities.Promotion, promotion.Id,
+            AuditDescriptions.PromotionDeleted);
     }
 
     public List<PromotionResponseDto> GetPromotions(PromotionSearchRequestDto request)
