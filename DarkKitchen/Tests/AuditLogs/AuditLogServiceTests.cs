@@ -157,4 +157,53 @@ public class AuditLogServiceTests
         Assert.AreEqual("El id de la entidad es obligatorio.",
             ex.Message);
     }
+    [TestMethod]
+    public void GetByFilters_ValidRequest_ReturnsLogsFromRepository()
+    {
+        var repoMock = new Mock<IAuditLogRepository>(MockBehavior.Strict);
+        var currentUserMock = new
+            Mock<ICurrentUserService>(MockBehavior.Strict);
+
+        var from = new DateTime(2026, 1, 1, 8, 0, 0);
+        var to = new DateTime(2026, 1, 1, 10, 0, 0);
+
+        var logsFromRepo = new List<AuditLog>
+        {
+            new AuditLog
+            {
+                Id = 1,
+                EntityName = AuditedEntities.Product,
+                EntityId = 5,
+                ChangeDescription = AuditDescriptions.ProductCreated,
+                ResponsibleUser = "admin@dark.com",
+                DateTime = from.AddMinutes(30)
+            }
+        };
+
+        repoMock
+            .Setup(r => r.GetByFilters(from, to, AuditedEntities.Product,
+                5))
+            .Returns(logsFromRepo);
+
+        var service = new AuditLogService(repoMock.Object,
+            currentUserMock.Object);
+
+        var request = new AuditLogFilterRequest
+        {
+            DateTimeFrom = from,
+            DateTimeTo = to,
+            EntityName = AuditedEntities.Product,
+            EntityId = 5
+        };
+
+        var result = service.GetByFilters(request);
+
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual(1, result[0].Id);
+        Assert.AreEqual(AuditedEntities.Product, result[0].EntityName);
+        Assert.AreEqual(5, result[0].EntityId);
+        Assert.AreEqual(AuditDescriptions.ProductCreated,
+            result[0].ChangeDescription);
+        Assert.AreEqual("admin@dark.com", result[0].ResponsibleUser);
+    }
 }
