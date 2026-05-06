@@ -1,9 +1,9 @@
-using BusinessLogics.Users;
+using System.Security.Claims;
+using BusinessLogics;
 using Microsoft.AspNetCore.Http;
 using Moq;
-using System.Security.Claims;
 
-namespace Tests.Users;
+namespace Tests.AuditLogs;
 
 [TestClass]
 public class CurrentUserServiceTests
