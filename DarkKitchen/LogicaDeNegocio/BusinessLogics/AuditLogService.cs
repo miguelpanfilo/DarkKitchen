@@ -31,6 +31,11 @@ public class AuditLogService(IAuditLogRepository repository,
             throw new ValidationException("La fecha-hora desde es obligatoria.");
         }
 
+        if (!request.DateTimeTo.HasValue)
+        {
+            throw new ValidationException("La fecha-hora hasta es obligatoria.");
+        }
+
         return new List<AuditLogResponse>();
     }
 }
