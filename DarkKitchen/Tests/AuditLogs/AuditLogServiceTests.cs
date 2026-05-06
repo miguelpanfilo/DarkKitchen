@@ -422,5 +422,4 @@ public class AuditLogServiceTests
         context.Dispose();
         connection.Dispose();
     }
-
 }
