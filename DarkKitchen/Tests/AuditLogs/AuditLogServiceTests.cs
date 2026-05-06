@@ -358,4 +358,36 @@ public class AuditLogServiceTests
         context.Dispose();
         connection.Dispose();
     }
+
+    [TestMethod]
+    public void GetByFilters_WhenLogHasProductModifiedDescription_ReturnsLogWithThatDescription()
+    {
+        var context = SqliteTestContextFactory.CreateContext(out var
+            connection);
+        var repo = new AuditLogRepository(context);
+
+        var from = new DateTime(2026, 1, 1, 8, 0, 0);
+        var to = new DateTime(2026, 1, 1, 10, 0, 0);
+
+        var log = new AuditLog
+        {
+            EntityName = AuditedEntities.Product,
+            EntityId = 5,
+            ChangeDescription = AuditDescriptions.ProductModified,
+            ResponsibleUser = "admin@dark.com",
+            DateTime = from.AddMinutes(30)
+        };
+
+        repo.Add(log);
+
+        var result = repo.GetByFilters(from, to, AuditedEntities.Product,
+            5);
+
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual("Modificación de producto",
+            result[0].ChangeDescription);
+
+        context.Dispose();
+        connection.Dispose();
+    }
 }
