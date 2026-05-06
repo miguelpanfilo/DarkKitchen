@@ -1,6 +1,7 @@
-using BusinessLogics.AuditLogs;
-using BusinessLogicsAbstractions.AuditLogs;
+using BusinessLogics;
+using BusinessLogicsAbstractions;
 using BusinessLogicsAbstractions.Users;
+using DataAccessAbstractions;
 using Domain;
 using Moq;
 
