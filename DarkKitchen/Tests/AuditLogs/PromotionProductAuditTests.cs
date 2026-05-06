@@ -1,0 +1,45 @@
+using BusinessLogics.Promotions;
+using BusinessLogicsAbstractions;
+using BusinessLogicsAbstractions.Promotions;
+using Contract.Promotions;
+using DataAccessAbstractions;
+using Domain;
+using Moq;
+
+namespace Tests.AuditLogs;
+
+[TestClass]
+public class PromotionServiceAuditTests
+{
+    [TestMethod]
+    public void Create_ValidPromotion_RegistersAuditLog()
+    {
+        var promotionRepoMock = new
+            Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepoMock = new
+            Mock<IProductRepository>(MockBehavior.Strict);
+        var auditMock = new
+            Mock<IAuditLogService>(MockBehavior.Strict);
+
+        promotionRepoMock
+            .Setup(r => r.Create(It.IsAny<Promotion>()))
+            .Returns((Promotion p) => p);
+
+        auditMock
+            .Setup(a => a.Register(AuditedEntities.Promotion,
+                It.IsAny<int>(), AuditDescriptions.PromotionCreated));
+
+        var service = new PromotionService(promotionRepoMock.Object, productRepoMock.Object, auditMock.Object);
+
+        service.Create(new PromotionRequestDto
+        {
+            Name = "Black Friday",
+            DiscountPercentage = 10,
+            StartDate = new DateOnly(2026, 1, 25),
+            EndDate = new DateOnly(2026, 1, 30)
+        });
+
+        auditMock.Verify(a => a.Register(AuditedEntities.Promotion,
+            It.IsAny<int>(), AuditDescriptions.PromotionCreated), Times.Once);
+    }
+}
