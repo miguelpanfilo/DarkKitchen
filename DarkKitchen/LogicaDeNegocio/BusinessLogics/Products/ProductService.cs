@@ -111,6 +111,8 @@ public class ProductService : IProductService
 
         ApplyPatch(product, patchDto);
         var updatedProduct = _repository.Update(product);
+        _auditLogService.Register(AuditedEntities.Product, updatedProduct.Id,
+            AuditDescriptions.ProductModified);
 
         return ProductMapper.ToResponseDto(updatedProduct);
     }
