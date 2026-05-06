@@ -6,6 +6,7 @@ using Contract;
 using DataAccessAbstractions;
 using Domain;
 using Moq;
+using Tests.Persistence;
 
 namespace Tests.AuditLogs;
 
@@ -206,5 +207,32 @@ public class AuditLogServiceTests
         Assert.AreEqual(AuditDescriptions.ProductCreated,
             result[0].ChangeDescription);
         Assert.AreEqual("admin@dark.com", result[0].ResponsibleUser);
+    }
+
+    [TestMethod]
+    public void Add_ValidLog_IsSavedToDatabase()
+    {
+        var context = SqliteTestContextFactory.CreateContext(out var
+            connection);
+        var repo = new AuditLogRepository(context);
+
+        var log = new AuditLog
+        {
+            EntityName = AuditedEntities.Product,
+            EntityId = 5,
+            ChangeDescription = AuditDescriptions.ProductCreated,
+            ResponsibleUser = "admin@dark.com"
+        };
+
+        repo.Add(log);
+
+        var saved = context.AuditLogs.FirstOrDefault();
+
+        Assert.IsNotNull(saved);
+        Assert.AreEqual(AuditedEntities.Product, saved.EntityName);
+        Assert.AreEqual(5, saved.EntityId);
+
+        context.Dispose();
+        connection.Dispose();
     }
 }
