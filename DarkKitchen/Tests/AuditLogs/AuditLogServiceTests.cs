@@ -33,4 +33,26 @@ public class AuditLogServiceTests
 
         repoMock.Verify(r => r.Add(It.IsAny<AuditLog>()), Times.Once);
     }
+
+    [TestMethod]
+    public void GetByFilters_MissingDateFrom_ThrowsValidationException()
+    {
+        var repoMock = new Mock<IAuditLogRepository>(MockBehavior.Strict);
+        var currentUserMock = new
+            Mock<ICurrentUserService>(MockBehavior.Strict);
+
+        var service = new AuditLogService(repoMock.Object,
+            currentUserMock.Object);
+
+        var request = new AuditLogFilterRequest
+        {
+            DateTimeFrom = null,
+            DateTimeTo = DateTime.UtcNow.AddHours(1),
+            EntityName = AuditedEntities.Product,
+            EntityId = 5
+        };
+
+        Assert.ThrowsException<ValidationException>(() =>
+            service.GetByFilters(request));
+    }
 }
