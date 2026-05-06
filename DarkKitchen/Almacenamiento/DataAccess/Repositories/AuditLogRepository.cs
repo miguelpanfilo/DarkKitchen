@@ -1,5 +1,6 @@
 using DataAccessAbstractions;
 using Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories;
 
@@ -21,6 +22,14 @@ public class AuditLogRepository : IAuditLogRepository
     public List<AuditLog> GetByFilters(DateTime dateTimeFrom, DateTime
         dateTimeTo, string entityName, int entityId)
     {
-        throw new NotImplementedException();
+        return _context.AuditLogs
+            .AsNoTracking()
+            .Where(log =>
+                log.DateTime >= dateTimeFrom &&
+                log.DateTime <= dateTimeTo &&
+                log.EntityName == entityName &&
+                log.EntityId == entityId)
+            .OrderBy(log => log.DateTime)
+            .ToList();
     }
 }
