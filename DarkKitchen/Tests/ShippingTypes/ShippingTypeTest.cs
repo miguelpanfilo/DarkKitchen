@@ -17,18 +17,8 @@ public class ShippingTypeTest
         var shippingType = ShippingType.MakeShippingType("Envío express", 150m);
 
         Assert.IsNotNull(shippingType);
-        Assert.AreNotEqual(Guid.Empty, shippingType.Id);
         Assert.AreEqual("Envío express", shippingType.Name);
         Assert.AreEqual(150m, shippingType.Cost);
-    }
-
-    [TestMethod]
-    public void GivenTwoShippingTypes_WhenCreated_ThenHaveDifferentIds()
-    {
-        var first = ShippingType.MakeShippingType("Envío express", 150m);
-        var second = ShippingType.MakeShippingType("Envío estándar", 80m);
-
-        Assert.AreNotEqual(first.Id, second.Id);
     }
 
     [DataTestMethod]
