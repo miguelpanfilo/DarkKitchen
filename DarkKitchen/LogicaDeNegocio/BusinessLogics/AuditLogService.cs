@@ -51,6 +51,20 @@ public class AuditLogService(IAuditLogRepository repository,
             throw new ValidationException("El id de la entidad es obligatorio.");
         }
 
-        return new List<AuditLogResponse>();
+        return repository.GetByFilters(
+                request.DateTimeFrom!.Value,
+                request.DateTimeTo!.Value,
+                request.EntityName,
+                request.EntityId!.Value)
+            .Select(log => new AuditLogResponse
+            {
+                Id = log.Id,
+                DateTime = log.DateTime,
+                EntityName = log.EntityName,
+                EntityId = log.EntityId,
+                ChangeDescription = log.ChangeDescription,
+                ResponsibleUser = log.ResponsibleUser
+            })
+            .ToList();
     }
 }

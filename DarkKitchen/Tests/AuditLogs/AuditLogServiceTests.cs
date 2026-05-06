@@ -157,6 +157,7 @@ public class AuditLogServiceTests
         Assert.AreEqual("El id de la entidad es obligatorio.",
             ex.Message);
     }
+
     [TestMethod]
     public void GetByFilters_ValidRequest_ReturnsLogsFromRepository()
     {
