@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DarkKitchen.Controllers;
 
 [ApiController]
-[Route("api/v1/audit-logs")]
+[Route("api/v1/audits")]
 public class AuditLogsController(IAuditLogService auditLogService) : ControllerBase
 {
     [HttpGet]
