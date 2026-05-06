@@ -7,4 +7,5 @@ public static class AuditDescriptions
     public const string ProductModified = "Modificación de producto";
     public const string ProductDeleted = "Eliminación de producto";
     public const string PromotionModified = "Modificación de promoción";
+    public const string PromotionDeleted = "Eliminación de promoción";
 }
