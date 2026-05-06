@@ -1,6 +1,8 @@
 using BusinessLogics;
 using BusinessLogicsAbstractions;
+using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.Users;
+using Contract;
 using DataAccessAbstractions;
 using Domain;
 using Moq;

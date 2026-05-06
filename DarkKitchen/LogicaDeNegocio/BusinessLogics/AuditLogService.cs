@@ -1,4 +1,6 @@
 using BusinessLogicsAbstractions;
+using BusinessLogicsAbstractions.Exceptions;
+using Contract;
 using DataAccessAbstractions;
 using Domain;
 
@@ -19,5 +21,16 @@ public class AuditLogService(IAuditLogRepository repository,
         };
 
         repository.Add(auditLog);
+    }
+
+    public List<AuditLogResponse> GetByFilters(AuditLogFilterRequest
+        request)
+    {
+        if (!request.DateTimeFrom.HasValue)
+        {
+            throw new ValidationException("La fecha-hora desde es obligatoria.");
+        }
+
+        return new List<AuditLogResponse>();
     }
 }
