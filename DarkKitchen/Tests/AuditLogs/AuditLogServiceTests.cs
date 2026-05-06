@@ -485,4 +485,36 @@ public class AuditLogServiceTests
         context.Dispose();
         connection.Dispose();
     }
+
+    [TestMethod]
+    public void GetByFilters_WhenLogHasPromotionDeletedDescription_ReturnsLogWithThatDescription()
+    {
+        var context = SqliteTestContextFactory.CreateContext(out var
+            connection);
+        var repo = new AuditLogRepository(context);
+
+        var from = new DateTime(2026, 1, 1, 8, 0, 0);
+        var to = new DateTime(2026, 1, 1, 10, 0, 0);
+
+        var log = new AuditLog
+        {
+            EntityName = AuditedEntities.Promotion,
+            EntityId = 3,
+            ChangeDescription = AuditDescriptions.PromotionDeleted,
+            ResponsibleUser = "admin@dark.com",
+            DateTime = from.AddMinutes(30)
+        };
+
+        repo.Add(log);
+
+        var result = repo.GetByFilters(from, to,
+            AuditedEntities.Promotion, 3);
+
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual("Eliminación de promoción",
+            result[0].ChangeDescription);
+
+        context.Dispose();
+        connection.Dispose();
+    }
 }
