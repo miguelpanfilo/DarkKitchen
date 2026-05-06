@@ -108,4 +108,28 @@ public class AuditLogServiceTests
 
         Assert.AreEqual("La fecha-hora desde debe ser menor que la fecha-hora hasta.", ex.Message);
     }
+
+    [TestMethod]
+    public void GetByFilters_MissingEntityName_ThrowsValidationException()
+    {
+        var repoMock = new Mock<IAuditLogRepository>(MockBehavior.Strict);
+        var currentUserMock = new
+            Mock<ICurrentUserService>(MockBehavior.Strict);
+
+        var service = new AuditLogService(repoMock.Object,
+            currentUserMock.Object);
+
+        var request = new AuditLogFilterRequest
+        {
+            DateTimeFrom = DateTime.UtcNow,
+            DateTimeTo = DateTime.UtcNow.AddHours(1),
+            EntityName = string.Empty,
+            EntityId = 5
+        };
+
+        var ex = Assert.ThrowsException<ValidationException>(() =>
+            service.GetByFilters(request));
+
+        Assert.AreEqual("La entidad es obligatoria.", ex.Message);
+    }
 }
