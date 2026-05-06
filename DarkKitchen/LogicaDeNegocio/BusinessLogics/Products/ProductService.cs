@@ -123,6 +123,8 @@ public class ProductService : IProductService
 
         ServiceExceptionHandler.ExecuteWithConflictHandling<ProductException>(() => product.Delete());
         _repository.Update(product);
+        _auditLogService.Register(AuditedEntities.Product, product.Id,
+            AuditDescriptions.ProductDeleted);
     }
 
     private void ApplyPatch(Product product, ProductPatchDto patchDto)
