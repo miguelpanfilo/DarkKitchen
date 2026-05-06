@@ -328,4 +328,34 @@ public class AuditLogServiceTests
         context.Dispose();
         connection.Dispose();
     }
+
+    [TestMethod]
+    public void GetByFilters_LogFromDifferentEntityId_IsNotReturned()
+    {
+        var context = SqliteTestContextFactory.CreateContext(out var
+            connection);
+        var repo = new AuditLogRepository(context);
+
+        var from = new DateTime(2026, 1, 1, 8, 0, 0);
+        var to = new DateTime(2026, 1, 1, 10, 0, 0);
+
+        var log = new AuditLog
+        {
+            EntityName = AuditedEntities.Product,
+            EntityId = 99,
+            ChangeDescription = AuditDescriptions.ProductCreated,
+            ResponsibleUser = "admin@dark.com",
+            DateTime = from.AddMinutes(30)
+        };
+
+        repo.Add(log);
+
+        var result = repo.GetByFilters(from, to, AuditedEntities.Product,
+            5);
+
+        Assert.AreEqual(0, result.Count);
+
+        context.Dispose();
+        connection.Dispose();
+    }
 }
