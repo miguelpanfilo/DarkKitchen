@@ -544,4 +544,32 @@ public class AuditLogServiceTests
         Assert.IsNotNull(savedLog);
         Assert.AreEqual("admin@dark.com", savedLog.ResponsibleUser);
     }
+
+    [TestMethod]
+    public void GetByFilters_WhenEntityNameIsPartial_ReturnsMatchingLogs()
+    {
+        var context = SqliteTestContextFactory.CreateContext(out var connection);
+        var repo = new AuditLogRepository(context);
+
+        var from = new DateTime(2026, 1, 1, 8, 0, 0);
+        var to = new DateTime(2026, 1, 1, 10, 0, 0);
+
+        var log = new AuditLog
+        {
+            EntityName = AuditedEntities.Product,
+            EntityId = 5,
+            ChangeDescription = AuditDescriptions.ProductCreated,
+            ResponsibleUser = "admin@dark.com",
+            DateTime = from.AddMinutes(30)
+        };
+
+        repo.Add(log);
+
+        var result = repo.GetByFilters(from, to, "PROD", 5);
+
+        Assert.AreEqual(1, result.Count);
+
+        context.Dispose();
+        connection.Dispose();
+    }
 }
