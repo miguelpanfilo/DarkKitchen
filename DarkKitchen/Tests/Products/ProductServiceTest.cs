@@ -1192,9 +1192,10 @@ public class ProductServiceTest
             CommercialLine = "Comida"
         };
 
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
 
         var result = service.GetPromotions(request);

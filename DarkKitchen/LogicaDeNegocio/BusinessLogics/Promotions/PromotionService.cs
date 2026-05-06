@@ -1,4 +1,5 @@
 using BusinessLogics.Shared;
+using BusinessLogicsAbstractions;
 using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.Promotions;
 using Contract.Promotions;
@@ -13,11 +14,14 @@ public class PromotionService : IPromotionService
 {
     private readonly IPromotionRepository _promotionRepository;
     private readonly IProductRepository _productRepository;
+    private readonly IAuditLogService _auditLogService;
 
-    public PromotionService(IPromotionRepository promotionRepository, IProductRepository productRepository)
+    public PromotionService(IPromotionRepository promotionRepository, IProductRepository productRepository, IAuditLogService
+        auditLogService)
     {
         _promotionRepository = promotionRepository;
         _productRepository = productRepository;
+        _auditLogService = auditLogService;
     }
 
     public PromotionResponseDto Create(PromotionRequestDto promotionRequestDto)
@@ -27,6 +31,8 @@ public class PromotionService : IPromotionService
         );
 
         var createdPromotion = _promotionRepository.Create(promotion);
+        _auditLogService.Register(AuditedEntities.Promotion,
+            createdPromotion.Id, AuditDescriptions.PromotionCreated);
 
         return MapPromotionWithProducts(createdPromotion);
     }
