@@ -46,6 +46,11 @@ public class AuditLogService(IAuditLogRepository repository,
             throw new ValidationException("La entidad es obligatoria.");
         }
 
+        if (!request.EntityId.HasValue || request.EntityId.Value <= 0)
+        {
+            throw new ValidationException("El id de la entidad es obligatorio.");
+        }
+
         return new List<AuditLogResponse>();
     }
 }
