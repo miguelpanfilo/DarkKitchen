@@ -27,4 +27,20 @@ public class CurrentUserServiceTests
 
         Assert.AreEqual("admin@dark.com", result);
     }
+
+    [TestMethod]
+    public void GetEmail_WhenNoUserIsLoggedIn_ReturnsDefaultMessage()
+    {
+        var httpContextMock = new Mock<IHttpContextAccessor>();
+
+        httpContextMock
+            .Setup(h => h.HttpContext)
+            .Returns(new DefaultHttpContext());
+
+        var service = new CurrentUserService(httpContextMock.Object);
+
+        var result = service.GetEmail();
+
+        Assert.AreEqual("No hay usuario logueado", result);
+    }
 }
