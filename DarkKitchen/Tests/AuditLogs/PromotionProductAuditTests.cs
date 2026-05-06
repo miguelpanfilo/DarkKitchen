@@ -42,4 +42,43 @@ public class PromotionServiceAuditTests
         auditMock.Verify(a => a.Register(AuditedEntities.Promotion,
             It.IsAny<int>(), AuditDescriptions.PromotionCreated), Times.Once);
     }
+
+    [TestMethod]
+    public void Update_ValidPromotion_RegistersAuditLog()
+    {
+        var promotionRepoMock = new
+            Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepoMock = new
+            Mock<IProductRepository>(MockBehavior.Strict);
+        var auditMock = new Mock<IAuditLogService>(MockBehavior.Strict);
+
+        var promotion = Promotion.MakePromotion(
+            "Black Friday",
+            10,
+            new DateOnly(2026, 1, 25),
+            new DateOnly(2026, 1, 30));
+
+        promotionRepoMock
+            .Setup(r => r.GetById(It.IsAny<int>()))
+            .Returns(promotion);
+
+        promotionRepoMock
+            .Setup(r => r.Update(It.IsAny<Promotion>()))
+            .Returns((Promotion p) => p);
+
+        auditMock
+            .Setup(a => a.Register(AuditedEntities.Promotion,
+                It.IsAny<int>(), AuditDescriptions.PromotionModified));
+
+        var service = new PromotionService(promotionRepoMock.Object,
+            productRepoMock.Object, auditMock.Object);
+
+        service.Update(1, new PromotionPatchDto
+        {
+            Name = "Nuevo nombre"
+        });
+
+        auditMock.Verify(a => a.Register(AuditedEntities.Promotion,
+            It.IsAny<int>(), AuditDescriptions.PromotionModified), Times.Once);
+    }
 }
