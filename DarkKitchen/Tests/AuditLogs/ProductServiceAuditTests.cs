@@ -1,6 +1,5 @@
 using BusinessLogics.Products;
 using BusinessLogicsAbstractions;
-using BusinessLogicsAbstractions.AuditLogs;
 using BusinessLogicsAbstractions.Users;
 using Contract.Products;
 using DataAccessAbstractions;
@@ -23,9 +22,8 @@ public class ProductServiceAuditTests
             Mock<IAuditLogService>(MockBehavior.Strict);
 
         storageMock
-            .Setup(s => s.Save(It.IsAny<string>(),
-                It.IsAny<byte[]>()))
-            .Returns("photo.jpg");
+            .Setup(s => s.Save(It.IsAny<string>(), It.IsAny<string>()))
+            .Returns("uploads/photo1.jpg");
 
         repoMock
             .Setup(r => r.Create(It.IsAny<Product>()))

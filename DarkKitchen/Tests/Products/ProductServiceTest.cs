@@ -1,5 +1,6 @@
 using BusinessLogics.Products;
 using BusinessLogics.Promotions;
+using BusinessLogicsAbstractions;
 using BusinessLogicsAbstractions.Exceptions;
 using Contract.Products;
 using Contract.Promotions;
@@ -19,7 +20,9 @@ public class ProductServiceTest
         Mock<IProductPhotoStorage> storageMock)
     {
         var photoService = new ProductPhotoService(storageMock.Object);
-        return new ProductService(repoMock.Object, photoService);
+        var auditMock = new Mock<IAuditLogService>();
+        return new ProductService(repoMock.Object, photoService,
+            auditMock.Object);
     }
 
     private Product CreateValidProduct(
@@ -1217,8 +1220,9 @@ public class ProductServiceTest
             .Setup(r => r.GetAll())
             .Returns(products);
 
-        var service = new ProductService(repositoryMock.Object, null!);
-
+        var auditMock = new Mock<IAuditLogService>();
+        var service = new ProductService(repositoryMock.Object, null!,
+            auditMock.Object);
         var result = service.GetProducts(new ProductSearchRequestDto());
 
         Assert.AreEqual(2, result.Count);

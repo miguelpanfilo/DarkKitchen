@@ -1,4 +1,5 @@
 using BusinessLogics.Shared;
+using BusinessLogicsAbstractions;
 using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.Products;
 using Contract.Products;
@@ -13,11 +14,15 @@ public class ProductService : IProductService
 {
     private readonly IProductRepository _repository;
     private readonly ProductPhotoService _productPhotoService;
+    private readonly IAuditLogService _auditLogService;
 
-    public ProductService(IProductRepository repository, ProductPhotoService productPhotoService)
+    public ProductService(IProductRepository repository,
+        ProductPhotoService productPhotoService, IAuditLogService
+            auditLogService)
     {
         _repository = repository;
         _productPhotoService = productPhotoService;
+        _auditLogService = auditLogService;
     }
 
     public List<ProductResponseDto> GetProducts(ProductSearchRequestDto request)
@@ -94,6 +99,8 @@ public class ProductService : IProductService
         var product = ServiceExceptionHandler.ExecuteWithValidationHandling<Product,ProductException>(() => ProductMapper.ToEntity(productDto, savedPhotos));
 
         var createdProduct = _repository.Create(product);
+        _auditLogService.Register(AuditedEntities.Product, createdProduct.Id,
+            AuditDescriptions.ProductCreated);
 
         return ProductMapper.ToResponseDto(createdProduct);
     }
