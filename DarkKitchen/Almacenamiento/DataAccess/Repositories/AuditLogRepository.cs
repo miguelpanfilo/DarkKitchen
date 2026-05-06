@@ -27,7 +27,7 @@ public class AuditLogRepository : IAuditLogRepository
             .Where(log =>
                 log.DateTime >= dateTimeFrom &&
                 log.DateTime <= dateTimeTo &&
-                log.EntityName.Contains(entityName) &&
+                log.EntityName.ToLower().Contains(entityName.ToLower()) &&
                 log.EntityId == entityId)
             .OrderBy(log => log.DateTime)
             .ToList();
