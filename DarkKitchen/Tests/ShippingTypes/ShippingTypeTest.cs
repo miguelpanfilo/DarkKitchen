@@ -43,12 +43,12 @@ public class ShippingTypeTest
     }
 
     [DataTestMethod]
-    [DataRow(0.0)]
-    [DataRow(-1.0)]
-    public void GivenInvalidCost_WhenCreatingShippingType_ThenThrowsShippingTypeException(double invalidCost)
+    [DataRow(0)]
+    [DataRow(-1)]
+    public void GivenInvalidCost_WhenCreatingShippingType_ThenThrowsShippingTypeException(int invalidCost)
     {
         var ex = Assert.ThrowsException<ShippingTypeException>(() =>
-            ShippingType.MakeShippingType("Envío express", (decimal)invalidCost));
+            ShippingType.MakeShippingType("Envío express", invalidCost));
 
         Assert.AreEqual("El costo del tipo de envío debe ser mayor a 0.", ex.Message);
     }
