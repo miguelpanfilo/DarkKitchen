@@ -517,4 +517,31 @@ public class AuditLogServiceTests
         context.Dispose();
         connection.Dispose();
     }
+
+    [TestMethod]
+    public void Register_ValidData_SavesResponsibleUserFromCurrentUser()
+    {
+        var repoMock = new Mock<IAuditLogRepository>(MockBehavior.Strict);
+        var currentUserMock = new
+            Mock<ICurrentUserService>(MockBehavior.Strict);
+
+        AuditLog? savedLog = null;
+
+        currentUserMock
+            .Setup(s => s.GetEmail())
+            .Returns("admin@dark.com");
+
+        repoMock
+            .Setup(r => r.Add(It.IsAny<AuditLog>()))
+            .Callback<AuditLog>(log => savedLog = log);
+
+        var service = new AuditLogService(repoMock.Object,
+            currentUserMock.Object);
+
+        service.Register(AuditedEntities.Product, 5,
+            AuditDescriptions.ProductCreated);
+
+        Assert.IsNotNull(savedLog);
+        Assert.AreEqual("admin@dark.com", savedLog.ResponsibleUser);
+    }
 }
