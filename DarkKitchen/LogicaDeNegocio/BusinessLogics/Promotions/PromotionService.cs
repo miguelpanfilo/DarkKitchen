@@ -89,6 +89,8 @@ public class PromotionService : IPromotionService
         UpdateDatesIfProvided(promotion, promotionPatchDto.StartDate, promotionPatchDto.EndDate);
 
         var updatedPromotion = _promotionRepository.Update(promotion);
+        _auditLogService.Register(AuditedEntities.Promotion,
+            updatedPromotion.Id, AuditDescriptions.PromotionModified);
 
         return MapPromotionWithProducts(updatedPromotion);
     }
