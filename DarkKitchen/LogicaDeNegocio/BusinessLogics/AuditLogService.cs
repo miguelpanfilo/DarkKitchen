@@ -41,6 +41,11 @@ public class AuditLogService(IAuditLogRepository repository,
             throw new ValidationException("La fecha-hora desde debe ser menor que la fecha-hora hasta.");
         }
 
+        if (string.IsNullOrWhiteSpace(request.EntityName))
+        {
+            throw new ValidationException("La entidad es obligatoria.");
+        }
+
         return new List<AuditLogResponse>();
     }
 }
