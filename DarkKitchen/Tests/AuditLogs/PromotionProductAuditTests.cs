@@ -55,8 +55,8 @@ public class PromotionServiceAuditTests
         var promotion = Promotion.MakePromotion(
             "Black Friday",
             10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30));
+            new DateOnly(2026, 6, 1),
+            new DateOnly(2026, 6, 30));
 
         promotionRepoMock
             .Setup(r => r.GetById(It.IsAny<int>()))
