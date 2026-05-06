@@ -32,15 +32,22 @@ public class ShippingTypeTest
         Assert.AreEqual("El nombre del tipo de envío no puede estar vacío.", ex.Message);
     }
 
-    [DataTestMethod]
-    [DataRow(0)]
-    [DataRow(-1)]
-    public void GivenInvalidCost_WhenCreatingShippingType_ThenThrowsShippingTypeException(int invalidCost)
+    [TestMethod]
+    public void GivenZeroCost_WhenCreatingShippingType_ThenShippingTypeIsCreated()
+    {
+        var shippingType = ShippingType.MakeShippingType("Envío gratis", 0m);
+
+        Assert.IsNotNull(shippingType);
+        Assert.AreEqual(0m, shippingType.Cost);
+    }
+
+    [TestMethod]
+    public void GivenNegativeCost_WhenCreatingShippingType_ThenThrowsShippingTypeException()
     {
         var ex = Assert.ThrowsException<ShippingTypeException>(() =>
-            ShippingType.MakeShippingType("Envío express", invalidCost));
+            ShippingType.MakeShippingType("Envío express", -1));
 
-        Assert.AreEqual("El costo del tipo de envío debe ser mayor a 0.", ex.Message);
+        Assert.AreEqual("El costo del tipo de envío no puede ser negativo.", ex.Message);
     }
 
     [TestMethod]
@@ -76,16 +83,24 @@ public class ShippingTypeTest
         Assert.AreEqual(200m, shippingType.Cost);
     }
 
-    [DataTestMethod]
-    [DataRow(0.0)]
-    [DataRow(-50.0)]
-    public void GivenInvalidCost_WhenUpdatingCost_ThenThrowsShippingTypeException(double invalidCost)
+    [TestMethod]
+    public void GivenZeroCost_WhenUpdatingCost_ThenCostIsUpdated()
+    {
+        var shippingType = CreateValidShippingType();
+
+        shippingType.UpdateCost(0m);
+
+        Assert.AreEqual(0m, shippingType.Cost);
+    }
+
+    [TestMethod]
+    public void GivenNegativeCost_WhenUpdatingCost_ThenThrowsShippingTypeException()
     {
         var shippingType = CreateValidShippingType();
 
         var ex = Assert.ThrowsException<ShippingTypeException>(() =>
-            shippingType.UpdateCost((decimal)invalidCost));
+            shippingType.UpdateCost(-50m));
 
-        Assert.AreEqual("El costo del tipo de envío debe ser mayor a 0.", ex.Message);
+        Assert.AreEqual("El costo del tipo de envío no puede ser negativo.", ex.Message);
     }
 }
