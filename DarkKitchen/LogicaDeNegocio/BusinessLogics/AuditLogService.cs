@@ -7,7 +7,7 @@ using Domain;
 namespace BusinessLogics;
 
 public class AuditLogService(IAuditLogRepository repository,
-    ICurrentUserService currentUserService)
+    ICurrentUserService currentUserService) : IAuditLogService
 {
     public void Register(string entityName, int entityId, string
         description)
