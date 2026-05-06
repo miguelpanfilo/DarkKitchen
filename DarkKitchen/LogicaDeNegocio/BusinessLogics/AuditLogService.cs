@@ -36,6 +36,11 @@ public class AuditLogService(IAuditLogRepository repository,
             throw new ValidationException("La fecha-hora hasta es obligatoria.");
         }
 
+        if (request.DateTimeFrom.Value >= request.DateTimeTo.Value)
+        {
+            throw new ValidationException("La fecha-hora desde debe ser menor que la fecha-hora hasta.");
+        }
+
         return new List<AuditLogResponse>();
     }
 }
