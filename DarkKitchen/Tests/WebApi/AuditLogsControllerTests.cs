@@ -1,6 +1,8 @@
 using BusinessLogicsAbstractions;
 using Contract;
+using Contract.Users;
 using DarkKitchen.Controllers;
+using DarkKitchen.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -58,6 +60,19 @@ public class AuditLogsControllerTests
         var attribute = method!
             .GetCustomAttributes(typeof(HttpGetAttribute), false)
             .FirstOrDefault();
+
+        Assert.IsNotNull(attribute);
+    }
+
+    [TestMethod]
+    public void GetByFilters_ShouldHaveRoleAuthorizationAttribute()
+    {
+        var method = typeof(AuditLogsController)
+            .GetMethod("GetByFilters");
+
+        var attribute = method!
+            .GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
+            .FirstOrDefault() as RoleAuthorizationAttribute;
 
         Assert.IsNotNull(attribute);
     }
