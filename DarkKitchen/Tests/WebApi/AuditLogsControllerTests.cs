@@ -48,4 +48,17 @@ public class AuditLogsControllerTests
         auditServiceMock.Verify(s => s.GetByFilters(request),
             Times.Once);
     }
+
+    [TestMethod]
+    public void GetByFilters_ShouldHaveHttpGetAttribute()
+    {
+        var method = typeof(AuditLogsController)
+            .GetMethod("GetByFilters");
+
+        var attribute = method!
+            .GetCustomAttributes(typeof(HttpGetAttribute), false)
+            .FirstOrDefault();
+
+        Assert.IsNotNull(attribute);
+    }
 }
