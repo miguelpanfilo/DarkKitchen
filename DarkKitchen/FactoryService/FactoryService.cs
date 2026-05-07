@@ -47,6 +47,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IPromotionRepository, PromotionRepository>();
+        services.AddScoped<IShippingTypeRepository, ShippingTypeRepository>();
 
         services.AddScoped<IProductPhotoStorage>(_ => new ProductPhotoStorage("C:\\temp\\photos"));
 
