@@ -57,7 +57,7 @@ public class ShippingTypesControllerTests
     [TestMethod]
     public void Create_WhenServiceThrowsValidationException_PropagatesException()
     {
-        var request = new ShippingTypeRequestDto { Name = "", Cost = 150m };
+        var request = new ShippingTypeRequestDto { Name = string.Empty, Cost = 150m };
 
         _serviceMock
             .Setup(s => s.CreateShippingType(request))
