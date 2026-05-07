@@ -65,4 +65,79 @@ public class ShippingTypeServiceTest
 
         Assert.AreEqual("El costo del tipo de envío no puede ser negativo.", ex.Message);
     }
+
+    [TestMethod]
+    public void GivenExistingShippingType_WhenUpdating_ThenRepositoryIsCalledAndResponseIsReturned()
+    {
+        var shippingType = ShippingType.MakeShippingType("Envío express", 150m);
+        var patchDto = new ShippingTypePatchDto { Name = "Envío premium", Cost = 200m };
+
+        var repositoryMock = CreateRepositoryMock();
+        repositoryMock.Setup(r => r.GetById(1)).Returns(shippingType);
+        repositoryMock.Setup(r => r.Update(shippingType)).Returns(shippingType);
+
+        var service = new ShippingTypeService(repositoryMock.Object);
+
+        var result = service.UpdateShippingType(1, patchDto);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual("Envío premium", result.Name);
+        Assert.AreEqual(200m, result.Cost);
+        repositoryMock.VerifyAll();
+    }
+
+    [TestMethod]
+    public void GivenNonExistingShippingType_WhenUpdating_ThenThrowsNotFoundException()
+    {
+        var patchDto = new ShippingTypePatchDto { Name = "Envío premium" };
+
+        var repositoryMock = CreateRepositoryMock();
+        repositoryMock.Setup(r => r.GetById(1)).Returns((ShippingType)null!);
+
+        var service = new ShippingTypeService(repositoryMock.Object);
+
+        var ex = Assert.ThrowsException<NotFoundException>(() => service.UpdateShippingType(1, patchDto));
+
+        Assert.AreEqual("El tipo de envío no existe", ex.Message);
+        repositoryMock.Verify(r => r.Update(It.IsAny<ShippingType>()), Times.Never);
+        repositoryMock.VerifyAll();
+    }
+
+    [DataTestMethod]
+    [DataRow("")]
+    [DataRow("   ")]
+    public void GivenEmptyName_WhenUpdatingShippingType_ThenThrowsValidationException(string invalidName)
+    {
+        var shippingType = ShippingType.MakeShippingType("Envío express", 150m);
+        var patchDto = new ShippingTypePatchDto { Name = invalidName };
+
+        var repositoryMock = CreateRepositoryMock();
+        repositoryMock.Setup(r => r.GetById(1)).Returns(shippingType);
+
+        var service = new ShippingTypeService(repositoryMock.Object);
+
+        var ex = Assert.ThrowsException<ValidationException>(() => service.UpdateShippingType(1, patchDto));
+
+        Assert.AreEqual("El nombre del tipo de envío no puede estar vacío.", ex.Message);
+        repositoryMock.Verify(r => r.Update(It.IsAny<ShippingType>()), Times.Never);
+        repositoryMock.VerifyAll();
+    }
+
+    [TestMethod]
+    public void GivenNegativeCost_WhenUpdatingShippingType_ThenThrowsValidationException()
+    {
+        var shippingType = ShippingType.MakeShippingType("Envío express", 150m);
+        var patchDto = new ShippingTypePatchDto { Cost = -1m };
+
+        var repositoryMock = CreateRepositoryMock();
+        repositoryMock.Setup(r => r.GetById(1)).Returns(shippingType);
+
+        var service = new ShippingTypeService(repositoryMock.Object);
+
+        var ex = Assert.ThrowsException<ValidationException>(() => service.UpdateShippingType(1, patchDto));
+
+        Assert.AreEqual("El costo del tipo de envío no puede ser negativo.", ex.Message);
+        repositoryMock.Verify(r => r.Update(It.IsAny<ShippingType>()), Times.Never);
+        repositoryMock.VerifyAll();
+    }
 }
