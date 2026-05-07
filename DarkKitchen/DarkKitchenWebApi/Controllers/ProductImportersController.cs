@@ -6,7 +6,7 @@ namespace DarkKitchen.Controllers;
 
 [ApiController]
 [Route("api/v1/product-importers")]
-public class ProductImportController(IProductImportService productImportService) : ControllerBase
+public class ProductImportersController(IProductImportService productImportService) : ControllerBase
 {
     [HttpGet]
     public IActionResult GetImporters()

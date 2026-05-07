@@ -1,6 +1,8 @@
+using Contract.Importers;
+
 namespace BusinessLogicsAbstractions.Imports;
 
-public class IProductImportService
+public interface IProductImportService
 {
-    
+    public List<ImporterDto> GetImporters();
 }
