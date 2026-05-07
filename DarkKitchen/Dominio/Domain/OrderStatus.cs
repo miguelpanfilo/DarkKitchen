@@ -7,5 +7,6 @@ public enum OrderStatus
     OnTheWay,
     Delivered,
     NotDelivered,
-    Cancelled
+    Cancelled,
+    Delayed
 }
