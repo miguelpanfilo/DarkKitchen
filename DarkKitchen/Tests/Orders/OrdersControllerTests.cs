@@ -488,5 +488,46 @@ public sealed class OrdersControllerTests
         result.Should().BeOfType<OkObjectResult>();
     }
 
+    [TestMethod]
+    public void Delay_WhenAdmin_ShouldReturnOk()
+    {
+        SetCurrentUser(MakeAdmin());
+
+        var updatedOrder = MakeOrderResponse(clientId: 1, status: "Delayed");
+
+        _orderFacadeMock.Setup(f => f.Delay(1));
+        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
+
+        var result = _controller.Delay(1);
+
+        _orderFacadeMock.VerifyAll();
+
+        result.Should().BeOfType<OkObjectResult>();
+    }
+
+    [TestMethod]
+    public void Delay_WhenAdmin_ShouldReturnOkWithStatusResponse()
+    {
+        SetCurrentUser(MakeAdmin());
+
+        var updatedOrder = MakeOrderResponse(clientId: 1, status: "Delayed");
+
+        _orderFacadeMock.Setup(f => f.Delay(1));
+        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
+
+        var result = _controller.Delay(1);
+
+        _orderFacadeMock.VerifyAll();
+
+        result.Should().BeOfType<OkObjectResult>();
+
+        var okResult = (OkObjectResult)result;
+        var response = okResult.Value.Should().BeOfType<OrderStatusResponse>().Subject;
+
+        response.PedidoId.Should().Be(updatedOrder.Id);
+        response.Estado.Should().Be(updatedOrder.Status);
+        response.FechaCambioEstado.Should().Be(updatedOrder.StatusUpdatedAt);
+    }
+
     #endregion
 }
