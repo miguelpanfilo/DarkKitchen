@@ -1,7 +1,9 @@
-/*using BusinessLogicsAbstractions.Products;
+using System.Security.Claims;
+using BusinessLogicsAbstractions.Products;
 using Contract.Products;
 using DarkKitchen.Controllers;
 using DarkKitchen.Filters;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -37,10 +39,18 @@ public class ProductControllerTest
         var serviceMock = new Mock<IProductService>(MockBehavior.Strict);
 
         serviceMock
-            .Setup(s => s.Create(request))
+            .Setup(s => s.Create(request, It.IsAny<string>()))
             .Returns(response);
 
         var controller = new ProductController(serviceMock.Object);
+        var claims = new List<Claim> { new Claim(ClaimTypes.Email, "admin@dark.com") };
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(claims))
+            }
+        };
 
         var result = controller.Create(request) as CreatedResult;
 
@@ -51,7 +61,7 @@ public class ProductControllerTest
         Assert.IsNotNull(value);
         Assert.AreEqual(request.Name, value.Name);
 
-        serviceMock.Verify(s => s.Create(request), Times.Once);
+        serviceMock.Verify(s => s.Create(request, It.IsAny<string>()), Times.Once);
     }
 
     [TestMethod]
@@ -180,10 +190,18 @@ public class ProductControllerTest
         };
 
         serviceMock
-            .Setup(s => s.Update(productId, request))
+            .Setup(s => s.Update(productId, request, It.IsAny<string>()))
             .Returns(response);
 
         var controller = new ProductController(serviceMock.Object);
+        var claims = new List<Claim> { new Claim(ClaimTypes.Email, "admin@dark.com") };
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(claims))
+            }
+        };
 
         var result = controller.Update(productId, request);
 
@@ -191,7 +209,7 @@ public class ProductControllerTest
         Assert.IsNotNull(okResult);
         Assert.AreEqual(response, okResult.Value);
 
-        serviceMock.Verify(s => s.Update(productId, request), Times.Once);
+        serviceMock.Verify(s => s.Update(productId, request, It.IsAny<string>()), Times.Once);
         serviceMock.VerifyAll();
     }
 
@@ -225,15 +243,23 @@ public class ProductControllerTest
         var productId = 1;
 
         serviceMock
-            .Setup(s => s.Delete(productId));
+            .Setup(s => s.Delete(productId, It.IsAny<string>()));
 
         var controller = new ProductController(serviceMock.Object);
+        var claims = new List<Claim> { new Claim(ClaimTypes.Email, "admin@dark.com") };
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(claims))
+            }
+        };
 
         var result = controller.Delete(productId);
 
         Assert.IsInstanceOfType(result, typeof(NoContentResult));
 
-        serviceMock.Verify(s => s.Delete(productId), Times.Once);
+        serviceMock.Verify(s => s.Delete(productId, It.IsAny<string>()), Times.Once);
         serviceMock.VerifyAll();
     }
 
@@ -260,4 +286,3 @@ public class ProductControllerTest
         Assert.IsNotNull(attribute);
     }
 }
-*/
