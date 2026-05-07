@@ -23,11 +23,18 @@ public class UpdatePromotionsControllerTests
         _controller = new PromotionsController(_promotionServiceMock.Object);
     }
 
-    private void SetCurrentUser(CurrentUserDto user)
+    private void SetCurrentUser(string email)
     {
-        var httpContext = new DefaultHttpContext();
-        httpContext.Items["CurrentUser"] = user;
-
+        var claims = new List<System.Security.Claims.Claim>
+        {
+            new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Email,
+                email)
+        };
+        var httpContext = new DefaultHttpContext
+        {
+            User = new System.Security.Claims.ClaimsPrincipal(
+                new System.Security.Claims.ClaimsIdentity(claims))
+        };
         _controller.ControllerContext = new ControllerContext
         {
             HttpContext = httpContext
@@ -68,18 +75,18 @@ public class UpdatePromotionsControllerTests
         );
 
         _promotionServiceMock
-            .Setup(x => x.Update(1, request))
+            .Setup(x => x.Update(1, request, It.IsAny<string>()))
             .Returns(response);
 
-        SetCurrentUser(MakeAdmin());
-
+        SetCurrentUser("admin@test.com");
         var result = _controller.Update(1, request) as OkObjectResult;
 
         Assert.IsNotNull(result);
         Assert.AreEqual(StatusCodes.Status200OK, result.StatusCode);
         Assert.AreEqual(response, result.Value);
 
-        _promotionServiceMock.Verify(x => x.Update(1, request), Times.Once);
+        _promotionServiceMock.Verify(x => x.Update(1, request, It.IsAny<string>()),
+            Times.Once);
     }
 
     [TestMethod]

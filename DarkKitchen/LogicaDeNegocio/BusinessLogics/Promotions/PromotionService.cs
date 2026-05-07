@@ -7,6 +7,7 @@ using DataAccessAbstractions;
 using Domain;
 using Domain.Exceptions;
 using Mappers;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 namespace BusinessLogics.Promotions;
 
@@ -24,7 +25,7 @@ public class PromotionService : IPromotionService
         _auditLogService = auditLogService;
     }
 
-    public PromotionResponseDto Create(PromotionRequestDto promotionRequestDto)
+    public PromotionResponseDto Create(PromotionRequestDto promotionRequestDto,  string responsibleUser)
     {
         var promotion = ServiceExceptionHandler.ExecuteWithValidationHandling<Promotion, PromotionException>(() =>
             PromotionMapper.ToEntity(promotionRequestDto)
@@ -32,7 +33,7 @@ public class PromotionService : IPromotionService
 
         var createdPromotion = _promotionRepository.Create(promotion);
         _auditLogService.Register(AuditedEntities.Promotion,
-            createdPromotion.Id, AuditDescriptions.PromotionCreated, string.Empty);
+            createdPromotion.Id, AuditDescriptions.PromotionCreated, responsibleUser);
 
         return MapPromotionWithProducts(createdPromotion);
     }
@@ -57,7 +58,7 @@ public class PromotionService : IPromotionService
         return applicablePromotions.Max(p => p.DiscountPercentage) / 100m;
     }
 
-    public void Delete(int promotionId)
+    public void Delete(int promotionId,  string responsibleUser)
     {
         var promotion = GetExistingPromotion(promotionId);
 
@@ -65,7 +66,7 @@ public class PromotionService : IPromotionService
 
         _promotionRepository.Update(promotion);
         _auditLogService.Register(AuditedEntities.Promotion, promotion.Id,
-            AuditDescriptions.PromotionDeleted, string.Empty);
+            AuditDescriptions.PromotionDeleted, responsibleUser);
     }
 
     public List<PromotionResponseDto> GetPromotions(PromotionSearchRequestDto request)
@@ -82,7 +83,7 @@ public class PromotionService : IPromotionService
             .ToList();
     }
 
-    public PromotionResponseDto Update(int promotionId, PromotionPatchDto promotionPatchDto)
+    public PromotionResponseDto Update(int promotionId, PromotionPatchDto promotionPatchDto,  string responsibleUser)
     {
         var promotion = GetExistingPromotion(promotionId);
 
@@ -92,7 +93,7 @@ public class PromotionService : IPromotionService
 
         var updatedPromotion = _promotionRepository.Update(promotion);
         _auditLogService.Register(AuditedEntities.Promotion,
-            updatedPromotion.Id, AuditDescriptions.PromotionModified, string.Empty);
+            updatedPromotion.Id, AuditDescriptions.PromotionModified, responsibleUser);
 
         return MapPromotionWithProducts(updatedPromotion);
     }
