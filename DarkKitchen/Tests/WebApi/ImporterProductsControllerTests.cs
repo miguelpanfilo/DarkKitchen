@@ -1,6 +1,8 @@
 using BusinessLogicsAbstractions.Imports;
 using Contract.Importers;
+using Contract.Users;
 using DarkKitchen.Controllers;
+using DarkKitchen.Filters;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -42,5 +44,18 @@ public class ImporterProductsControllerTests
         okResult.Should().NotBeNull();
         okResult!.StatusCode.Should().Be(200);
         okResult.Value.Should().BeEquivalentTo(expectedImporters);
+    }
+
+    [TestMethod]
+    public void GetImporters_ShouldHaveRoleAuthorization()
+    {
+        var method = typeof(ProductImportersController)
+            .GetMethod("GetImporters");
+
+        var hasAttribute = method!
+            .GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
+            .Any();
+
+        hasAttribute.Should().BeTrue();
     }
 }
