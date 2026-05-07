@@ -21,4 +21,5 @@ public interface IOrderFacade
     void Deliver(int orderId);
 
     void MarkNotDelivered(int orderId);
+    void Delay(int orderId);
 }
