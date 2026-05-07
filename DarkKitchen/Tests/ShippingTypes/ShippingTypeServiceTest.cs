@@ -15,6 +15,11 @@ public class ShippingTypeServiceTest
         return new Mock<IShippingTypeRepository>(MockBehavior.Strict);
     }
 
+    private static ShippingTypeService CreateService()
+    {
+        return new ShippingTypeService(CreateRepositoryMock().Object);
+    }
+
     [TestMethod]
     public void GivenValidRequest_WhenCreatingShippingType_ThenRepositoryIsCalledAndResponseIsReturned()
     {
@@ -42,8 +47,7 @@ public class ShippingTypeServiceTest
     {
         var request = new ShippingTypeRequestDto { Name = invalidName, Cost = 150m };
 
-        var repositoryMock = CreateRepositoryMock();
-        var service = new ShippingTypeService(repositoryMock.Object);
+        var service = CreateService();
 
         var ex = Assert.ThrowsException<ValidationException>(() => service.CreateShippingType(request));
 
@@ -55,8 +59,7 @@ public class ShippingTypeServiceTest
     {
         var request = new ShippingTypeRequestDto { Name = "Envío express", Cost = -1m };
 
-        var repositoryMock = CreateRepositoryMock();
-        var service = new ShippingTypeService(repositoryMock.Object);
+        var service = CreateService();
 
         var ex = Assert.ThrowsException<ValidationException>(() => service.CreateShippingType(request));
 
