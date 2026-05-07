@@ -140,4 +140,43 @@ public class ShippingTypeServiceTest
         repositoryMock.Verify(r => r.Update(It.IsAny<ShippingType>()), Times.Never);
         repositoryMock.VerifyAll();
     }
+
+    [TestMethod]
+    public void GivenExistingShippingTypes_WhenGettingAll_ThenReturnsAllMapped()
+    {
+        var shippingTypes = new List<ShippingType>
+        {
+            ShippingType.MakeShippingType("Envío express", 150m),
+            ShippingType.MakeShippingType("Envío estándar", 80m)
+        };
+
+        var repositoryMock = CreateRepositoryMock();
+        repositoryMock.Setup(r => r.GetAll()).Returns(shippingTypes);
+
+        var service = new ShippingTypeService(repositoryMock.Object);
+
+        var result = service.GetAllShippingTypes();
+
+        Assert.AreEqual(2, result.Count);
+        Assert.AreEqual("Envío express", result[0].Name);
+        Assert.AreEqual(150m, result[0].Cost);
+        Assert.AreEqual("Envío estándar", result[1].Name);
+        Assert.AreEqual(80m, result[1].Cost);
+        repositoryMock.VerifyAll();
+    }
+
+    [TestMethod]
+    public void GivenNoShippingTypes_WhenGettingAll_ThenReturnsEmptyList()
+    {
+        var repositoryMock = CreateRepositoryMock();
+        repositoryMock.Setup(r => r.GetAll()).Returns(new List<ShippingType>());
+
+        var service = new ShippingTypeService(repositoryMock.Object);
+
+        var result = service.GetAllShippingTypes();
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(0, result.Count);
+        repositoryMock.VerifyAll();
+    }
 }
