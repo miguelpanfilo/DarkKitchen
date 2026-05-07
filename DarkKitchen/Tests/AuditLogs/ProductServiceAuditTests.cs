@@ -46,7 +46,7 @@ public class ProductServiceAuditTests
             "Categoria",
             100,
             new List<PhotoDTO> { new PhotoDTO("photo", ".jpg", 1024, "dGVzdA==") }
-        ));
+        ), "admin@dark.com");
 
         auditMock.Verify(a =>  a.Register(AuditedEntities.Product, It.IsAny<int>(),
             AuditDescriptions.ProductCreated, It.IsAny<string>()));
@@ -90,8 +90,7 @@ public class ProductServiceAuditTests
         var service = new ProductService(repoMock.Object, photoService,
             auditMock.Object);
 
-        service.Update(7, new ProductPatchDto { Name = "Nuevo nombre valido" });
-
+        service.Update(7, new ProductPatchDto { Name = "Nuevo nombre valido" }, "admin@dark.com");
         auditMock.Verify(a => a.Register(AuditedEntities.Product, It.IsAny<int>(),
             AuditDescriptions.ProductModified, It.IsAny<string>()));
     }
@@ -133,8 +132,8 @@ public class ProductServiceAuditTests
         var service = new ProductService(repoMock.Object, photoService,
             auditMock.Object);
 
-        service.Delete(5);
-
+        service.Delete(5, "admin@dark.com");
+        
         auditMock.Verify(a =>  a.Register(AuditedEntities.Product, It.IsAny<int>(),
             AuditDescriptions.ProductDeleted, It.IsAny<string>()));
     }
