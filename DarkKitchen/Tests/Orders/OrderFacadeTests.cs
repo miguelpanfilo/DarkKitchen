@@ -107,11 +107,12 @@ public sealed class OrderFacadeTests
             .Returns(MakeResolvedItems());
 
         _orderServiceMock
-            .Setup(s => s.CreateOrder(It.Is<CreateOrderData>(data =>
-                data.ClientId == 1 &&
-                data.DeliveryType == DeliveryType.Express &&
-                data.ShippingCost == 300m &&
-                data.Items.Count == 1)))
+            .Setup(s => s.CreateOrder(
+                1,
+                DeliveryType.Express,
+                It.IsAny<Address>(),
+                It.IsAny<List<ResolvedOrderItemDto>>(),
+                300m))
             .Returns(MakeTestOrder(1, DeliveryType.Express));
 
         _repositoryUserMock
@@ -137,11 +138,12 @@ public sealed class OrderFacadeTests
             .Returns(MakeResolvedItems());
 
         _orderServiceMock
-            .Setup(s => s.CreateOrder(It.Is<CreateOrderData>(data =>
-                data.ClientId == 1 &&
-                data.DeliveryType == DeliveryType.TwentyFourHours &&
-                data.ShippingCost == 200m &&
-                data.Items.Count == 1)))
+            .Setup(s => s.CreateOrder(
+                1,
+                DeliveryType.TwentyFourHours,
+                It.IsAny<Address>(),
+                It.IsAny<List<ResolvedOrderItemDto>>(),
+                200m))
             .Returns(MakeTestOrder(1, DeliveryType.TwentyFourHours));
 
         _repositoryUserMock
@@ -167,7 +169,12 @@ public sealed class OrderFacadeTests
             .Returns(MakeResolvedItems(1));
 
         _orderServiceMock
-            .Setup(s => s.CreateOrder(It.IsAny<CreateOrderData>()))
+            .Setup(s => s.CreateOrder(
+                It.IsAny<int>(),
+                It.IsAny<DeliveryType>(),
+                It.IsAny<Address>(),
+                It.IsAny<List<ResolvedOrderItemDto>>(),
+                It.IsAny<decimal>()))
             .Returns(MakeTestOrder(1));
 
         _repositoryUserMock
@@ -524,16 +531,6 @@ public sealed class OrderFacadeTests
         _orderServiceMock.Setup(s => s.MarkNotDelivered(1));
 
         _orderFacade.MarkNotDelivered(1);
-
-        _orderServiceMock.VerifyAll();
-    }
-
-    [TestMethod]
-    public void Delay_WhenValidId_ShouldDelegateToService()
-    {
-        _orderServiceMock.Setup(s => s.Delay(1));
-
-        _orderFacade.Delay(1);
 
         _orderServiceMock.VerifyAll();
     }

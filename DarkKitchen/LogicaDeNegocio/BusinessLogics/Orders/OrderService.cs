@@ -13,9 +13,14 @@ public class OrderService(IOrderRepository orderRepository) : IOrderService
 
     private const string OrderNotFoundMessage = "Pedido no encontrado";
 
-    public Order CreateOrder(CreateOrderData data)
+    public Order CreateOrder(
+        int clientId,
+        DeliveryType deliveryType,
+        Address address,
+        List<ResolvedOrderItemDto> items,
+        decimal shippingCost)
     {
-        var domainItems = data.Items
+        var domainItems = items
             .Select(i => new OrderItemData
             {
                 ProductId = i.ProductId,
@@ -25,13 +30,7 @@ public class OrderService(IOrderRepository orderRepository) : IOrderService
             })
             .ToList();
 
-        var order = Order.MakeOrder(
-            data.ClientId,
-            data.DeliveryType,
-            data.Address,
-            domainItems,
-            data.ShippingCost);
-
+        var order = Order.MakeOrder(clientId, deliveryType, address, domainItems, shippingCost);
         return _orderRepository.Add(order);
     }
 
@@ -65,7 +64,7 @@ public class OrderService(IOrderRepository orderRepository) : IOrderService
     public void Deliver(int orderId) => ApplyStateChange(orderId, o => o.Deliver());
 
     public void MarkNotDelivered(int orderId) => ApplyStateChange(orderId, o => o.MarkNotDelivered());
-    public void Delay(int orderId) => ApplyStateChange(orderId, o => o.Delay());
+
     private void ApplyStateChange(int orderId, Action<Order> transition)
     {
         var order = GetById(orderId);
@@ -74,7 +73,7 @@ public class OrderService(IOrderRepository orderRepository) : IOrderService
         {
             transition(order);
         }
-        catch(InvalidOperationException ex)
+        catch(OrderException ex)
         {
             throw new ConflictException(ex.Message);
         }

@@ -17,21 +17,10 @@ public class Order
     public decimal Subtotal { get; private set; }
     public decimal ShippingCost { get; private set; }
     public decimal Total { get; private set; }
+
     private Order()
     {
     }
-
-    private IOrderState CurrentState => Status switch
-    {
-        OrderStatus.Pending => new PendingState(),
-        OrderStatus.Prepared => new PreparedState(),
-        OrderStatus.OnTheWay => new OnTheWayState(),
-        OrderStatus.Delivered => new DeliveredState(),
-        OrderStatus.NotDelivered => new NotDeliveredState(),
-        OrderStatus.Cancelled => new CancelledState(),
-        OrderStatus.Delayed => new DelayedState(),
-        _ => throw new InvalidOperationException($"Estado desconocido: {Status}")
-    };
 
     public static Order MakeOrder(
         int clientId,
@@ -72,40 +61,32 @@ public class Order
 
     public void Prepare()
     {
-        var nextState = CurrentState.Prepare();
-        TransitionTo(nextState.GetStatus());
+        EnsureCurrentStatus(OrderStatus.Pending);
+        TransitionTo(OrderStatus.Prepared);
     }
 
     public void Cancel()
     {
-        var nextState = CurrentState.Cancel();
-        TransitionTo(nextState.GetStatus());
+        EnsureCurrentStatus(OrderStatus.Pending);
+        TransitionTo(OrderStatus.Cancelled);
     }
 
     public void Dispatch()
     {
-        var nextState = CurrentState.Dispatch();
-        TransitionTo(nextState.GetStatus());
+        EnsureCurrentStatus(OrderStatus.Prepared);
+        TransitionTo(OrderStatus.OnTheWay);
     }
 
     public void Deliver()
     {
-        var nextState = CurrentState.Deliver();
-        TransitionTo(nextState.GetStatus());
-    }
-
-    public void Delay()
-    {
-        var nextState = CurrentState.Delay();
-
-        TransitionTo(nextState.GetStatus());
+        EnsureCurrentStatus(OrderStatus.OnTheWay);
+        TransitionTo(OrderStatus.Delivered);
     }
 
     public void MarkNotDelivered()
     {
-        var nextState = CurrentState.MarkNotDelivered();
-
-        TransitionTo(nextState.GetStatus());
+        EnsureCurrentStatus(OrderStatus.OnTheWay);
+        TransitionTo(OrderStatus.NotDelivered);
     }
 
     private void CalculateTotals()
@@ -113,6 +94,14 @@ public class Order
         const decimal VatRate = 1.22m;
         Subtotal = Items.Sum(i => i.LineTotal);
         Total = (Subtotal + ShippingCost) * VatRate;
+    }
+
+    private void EnsureCurrentStatus(OrderStatus required)
+    {
+        if(Status != required)
+        {
+            throw new OrderException($"No se puede transicionar desde {Status}. Estado esperado: {required}");
+        }
     }
 
     private void TransitionTo(OrderStatus newStatus)

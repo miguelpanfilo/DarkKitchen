@@ -34,14 +34,12 @@ public class OrderFacade(
 
             var resolvedItems = _orderItemResolver.Resolve(request.Items);
 
-            var order = _orderService.CreateOrder(new CreateOrderData
-            {
-                ClientId = clientId,
-                DeliveryType = deliveryType,
-                Address = address,
-                Items = resolvedItems,
-                ShippingCost = shippingCost
-            });
+            var order = _orderService.CreateOrder(
+                clientId,
+                deliveryType,
+                address,
+                resolvedItems,
+                shippingCost);
 
             return ToOrderResponseWithClient(order);
         });
@@ -147,7 +145,4 @@ public class OrderFacade(
     public void MarkNotDelivered(int orderId) =>
         ServiceExceptionHandler.ExecuteWithConflictHandling<OrderException>(
             () => _orderService.MarkNotDelivered(orderId));
-    public void Delay(int orderId) =>
-        ServiceExceptionHandler.ExecuteWithConflictHandling<OrderException>(
-            () => _orderService.Delay(orderId));
 }

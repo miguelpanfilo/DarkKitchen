@@ -180,21 +180,4 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
                 ExecutionSuccessful = false, Message = "El usuario no tiene permisos para ejecutar esta acción"
             });
     }
-
-// solo un preparador puede pooner delay, SACARLO ANTES DEL RELEASE
-    [HttpPut("{id:int}/delay")]
-    [RoleAuthorization(UserRolesDto.Preparer, UserRolesDto.Administrative)]
-    public IActionResult Delay(int id)
-    {
-        _orderFacade.Delay(id);
-
-        var order = _orderFacade.GetById(id);
-
-        return Ok(new OrderStatusResponse
-        {
-            PedidoId = order.Id,
-            Estado = order.Status,
-            FechaCambioEstado = order.StatusUpdatedAt
-        });
-    }
 }

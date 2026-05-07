@@ -219,19 +219,4 @@ public class DependencyInjectionTests
         Assert.AreEqual(typeof(RepositorySession), descriptor.ImplementationType);
         Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
     }
-
-    [TestMethod]
-    public void AddDarkKitchenDependencies_RegistersShippingTypeRepository()
-    {
-        var services = new ServiceCollection();
-        var configuration = new ConfigurationBuilder().Build();
-
-        services.AddDarkKitchenDependencies(configuration);
-
-        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(IShippingTypeRepository));
-
-        Assert.IsNotNull(descriptor);
-        Assert.AreEqual(typeof(ShippingTypeRepository), descriptor.ImplementationType);
-        Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
-    }
 }

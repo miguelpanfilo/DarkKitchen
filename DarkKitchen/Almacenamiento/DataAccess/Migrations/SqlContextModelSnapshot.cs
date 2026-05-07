@@ -271,27 +271,6 @@ namespace DataAccess.Migrations
                     b.ToTable("Sessions", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.ShippingType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Cost")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ShippingTypes");
-                });
-
             modelBuilder.Entity("Domain.User", b =>
                 {
                     b.Property<int>("Id")

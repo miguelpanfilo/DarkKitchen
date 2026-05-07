@@ -72,7 +72,7 @@ public sealed class OrderDomainTests
 
         var act = order.Prepare;
 
-        act.Should().Throw<InvalidOperationException>();
+        act.Should().Throw<OrderException>();
     }
 
     [TestMethod]
@@ -83,7 +83,7 @@ public sealed class OrderDomainTests
 
         var act = order.Cancel;
 
-        act.Should().Throw<InvalidOperationException>();
+        act.Should().Throw<OrderException>();
     }
 
     [TestMethod]
@@ -93,7 +93,7 @@ public sealed class OrderDomainTests
 
         var act = order.Dispatch;
 
-        act.Should().Throw<InvalidOperationException>();
+        act.Should().Throw<OrderException>();
     }
 
     [TestMethod]
@@ -103,7 +103,7 @@ public sealed class OrderDomainTests
 
         var act = order.Deliver;
 
-        act.Should().Throw<InvalidOperationException>();
+        act.Should().Throw<OrderException>();
     }
 
     [TestMethod]
@@ -113,7 +113,7 @@ public sealed class OrderDomainTests
 
         var act = order.MarkNotDelivered;
 
-        act.Should().Throw<InvalidOperationException>();
+        act.Should().Throw<OrderException>();
     }
     #endregion
     #endregion
