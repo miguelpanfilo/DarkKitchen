@@ -41,8 +41,6 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddAuditServices(this IServiceCollection
         services)
     {
-        services.AddHttpContextAccessor();
-        services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IAuditLogRepository, AuditLogRepository>();
         services.AddScoped<IAuditLogService, AuditLogService>();
 
