@@ -92,7 +92,7 @@ public class ProductService : IProductService
         return ProductMapper.ToResponseDto(product);
     }
 
-    public ProductResponseDto Create(ProductDTO productDto)
+    public ProductResponseDto Create(ProductDTO productDto, string responsibleUser)
     {
         var savedPhotos = ServiceExceptionHandler.ExecuteWithValidationHandling<List<ProductPhoto>,ProductException>(() =>
             _productPhotoService.SavePhotos(productDto.Photos));
@@ -100,31 +100,31 @@ public class ProductService : IProductService
 
         var createdProduct = _repository.Create(product);
         _auditLogService.Register(AuditedEntities.Product, createdProduct.Id,
-            AuditDescriptions.ProductCreated, string.Empty);
+            AuditDescriptions.ProductCreated, responsibleUser);
 
         return ProductMapper.ToResponseDto(createdProduct);
     }
 
-    public ProductResponseDto Update(int productId, ProductPatchDto patchDto)
+    public ProductResponseDto Update(int productId, ProductPatchDto patchDto, string responsibleUser)
     {
         var product = GetExistingProduct(productId);
 
         ApplyPatch(product, patchDto);
         var updatedProduct = _repository.Update(product);
         _auditLogService.Register(AuditedEntities.Product, updatedProduct.Id,
-            AuditDescriptions.ProductModified, string.Empty);
+            AuditDescriptions.ProductModified, responsibleUser);
 
         return ProductMapper.ToResponseDto(updatedProduct);
     }
 
-    public void Delete(int productId)
+    public void Delete(int productId, string responsibleUser)
     {
         var product = GetExistingProduct(productId);
 
         ServiceExceptionHandler.ExecuteWithConflictHandling<ProductException>(() => product.Delete());
         _repository.Update(product);
         _auditLogService.Register(AuditedEntities.Product, product.Id,
-            AuditDescriptions.ProductDeleted, string.Empty);
+            AuditDescriptions.ProductDeleted, responsibleUser);
     }
 
     private void ApplyPatch(Product product, ProductPatchDto patchDto)

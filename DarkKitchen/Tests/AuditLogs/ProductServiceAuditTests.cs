@@ -133,7 +133,7 @@ public class ProductServiceAuditTests
             auditMock.Object);
 
         service.Delete(5, "admin@dark.com");
-        
+
         auditMock.Verify(a =>  a.Register(AuditedEntities.Product, It.IsAny<int>(),
             AuditDescriptions.ProductDeleted, It.IsAny<string>()));
     }
