@@ -37,7 +37,7 @@ public class PromotionServiceAuditTests
             DiscountPercentage = 10,
             StartDate = new DateOnly(2026, 1, 25),
             EndDate = new DateOnly(2026, 1, 30)
-        });
+        }, "admin@dark.com");
 
         auditMock.Verify(a => a.Register(AuditedEntities.Promotion,
             It.IsAny<int>(), AuditDescriptions.PromotionCreated, It.IsAny<string>()));
@@ -74,10 +74,7 @@ public class PromotionServiceAuditTests
             productRepoMock.Object, auditMock.Object);
 
         service.Update(1, new PromotionPatchDto
-        {
-            Name = "Nuevo nombre"
-        });
-
+        { Name = "Nuevo nombre" }, "admin@dark.com");
         auditMock.Verify(a => a.Register(AuditedEntities.Promotion,
             It.IsAny<int>(), AuditDescriptions.PromotionModified, It.IsAny<string>()));
     }
@@ -112,8 +109,7 @@ public class PromotionServiceAuditTests
         var service = new PromotionService(promotionRepoMock.Object,
             productRepoMock.Object, auditMock.Object);
 
-        service.Delete(1);
-
+            service.Delete(1, "admin@dark.com");
         auditMock.Verify(a => a.Register(AuditedEntities.Promotion,
             It.IsAny<int>(), AuditDescriptions.PromotionDeleted, It.IsAny<string>()));
     }
