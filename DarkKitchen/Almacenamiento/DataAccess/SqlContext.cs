@@ -15,7 +15,7 @@ public class SqlContext : DbContext
     public DbSet<Order> Orders { get; set; } = null!;
     public DbSet<OrderItem> OrderItems { get; set; } = null!;
     public DbSet<AuditLog> AuditLogs { get; set; } = null!;
-    public DbSet<ShippingType> ShippingTypes { get; set; } = null!;
+
     public SqlContext(DbContextOptions<SqlContext> options)
         : base(options)
     {
