@@ -31,8 +31,8 @@ public class ProductServiceAuditTests
             .Returns((Product p) => p);
 
         auditMock
-            .Setup(a => a.Register(AuditedEntities.Product,
-                It.IsAny<int>(), AuditDescriptions.ProductCreated));
+            .Setup(a => a.Register(AuditedEntities.Product, It.IsAny<int>(),
+                AuditDescriptions.ProductCreated, It.IsAny<string>()));
 
         var photoService = new
             ProductPhotoService(storageMock.Object);
@@ -48,8 +48,8 @@ public class ProductServiceAuditTests
             new List<PhotoDTO> { new PhotoDTO("photo", ".jpg", 1024, "dGVzdA==") }
         ));
 
-        auditMock.Verify(a => a.Register(AuditedEntities.Product,
-            It.IsAny<int>(), AuditDescriptions.ProductCreated), Times.Once);
+        auditMock.Verify(a =>  a.Register(AuditedEntities.Product, It.IsAny<int>(),
+            AuditDescriptions.ProductCreated, It.IsAny<string>()));
     }
 
     [TestMethod]
@@ -84,7 +84,7 @@ public class ProductServiceAuditTests
 
         auditMock
             .Setup(a => a.Register(AuditedEntities.Product, It.IsAny<int>(),
-                AuditDescriptions.ProductModified));
+                AuditDescriptions.ProductModified, It.IsAny<string>()));
 
         var photoService = new ProductPhotoService(storageMock.Object);
         var service = new ProductService(repoMock.Object, photoService,
@@ -92,8 +92,8 @@ public class ProductServiceAuditTests
 
         service.Update(7, new ProductPatchDto { Name = "Nuevo nombre valido" });
 
-        auditMock.Verify(a => a.Register(AuditedEntities.Product,
-            It.IsAny<int>(), AuditDescriptions.ProductModified), Times.Once);
+        auditMock.Verify(a => a.Register(AuditedEntities.Product, It.IsAny<int>(),
+            AuditDescriptions.ProductModified, It.IsAny<string>()));
     }
 
     [TestMethod]
@@ -127,16 +127,15 @@ public class ProductServiceAuditTests
             .Returns((Product p) => p);
 
         auditMock
-            .Setup(a => a.Register(AuditedEntities.Product,
-                It.IsAny<int>(), AuditDescriptions.ProductDeleted));
-
+            .Setup(a =>  a.Register(AuditedEntities.Product, It.IsAny<int>(),
+                AuditDescriptions.ProductDeleted, It.IsAny<string>()));
         var photoService = new ProductPhotoService(storageMock.Object);
         var service = new ProductService(repoMock.Object, photoService,
             auditMock.Object);
 
         service.Delete(5);
 
-        auditMock.Verify(a => a.Register(AuditedEntities.Product,
-            It.IsAny<int>(), AuditDescriptions.ProductDeleted), Times.Once);
+        auditMock.Verify(a =>  a.Register(AuditedEntities.Product, It.IsAny<int>(),
+            AuditDescriptions.ProductDeleted, It.IsAny<string>()));
     }
 }

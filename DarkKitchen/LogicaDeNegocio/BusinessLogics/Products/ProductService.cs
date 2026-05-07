@@ -100,7 +100,7 @@ public class ProductService : IProductService
 
         var createdProduct = _repository.Create(product);
         _auditLogService.Register(AuditedEntities.Product, createdProduct.Id,
-            AuditDescriptions.ProductCreated);
+            AuditDescriptions.ProductCreated, string.Empty);
 
         return ProductMapper.ToResponseDto(createdProduct);
     }
@@ -112,7 +112,7 @@ public class ProductService : IProductService
         ApplyPatch(product, patchDto);
         var updatedProduct = _repository.Update(product);
         _auditLogService.Register(AuditedEntities.Product, updatedProduct.Id,
-            AuditDescriptions.ProductModified);
+            AuditDescriptions.ProductModified, string.Empty);
 
         return ProductMapper.ToResponseDto(updatedProduct);
     }
@@ -124,7 +124,7 @@ public class ProductService : IProductService
         ServiceExceptionHandler.ExecuteWithConflictHandling<ProductException>(() => product.Delete());
         _repository.Update(product);
         _auditLogService.Register(AuditedEntities.Product, product.Id,
-            AuditDescriptions.ProductDeleted);
+            AuditDescriptions.ProductDeleted, string.Empty);
     }
 
     private void ApplyPatch(Product product, ProductPatchDto patchDto)

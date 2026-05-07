@@ -27,7 +27,7 @@ public class PromotionServiceAuditTests
 
         auditMock
             .Setup(a => a.Register(AuditedEntities.Promotion,
-                It.IsAny<int>(), AuditDescriptions.PromotionCreated));
+                It.IsAny<int>(), AuditDescriptions.PromotionCreated, It.IsAny<string>()));
 
         var service = new PromotionService(promotionRepoMock.Object, productRepoMock.Object, auditMock.Object);
 
@@ -40,7 +40,7 @@ public class PromotionServiceAuditTests
         });
 
         auditMock.Verify(a => a.Register(AuditedEntities.Promotion,
-            It.IsAny<int>(), AuditDescriptions.PromotionCreated), Times.Once);
+            It.IsAny<int>(), AuditDescriptions.PromotionCreated, It.IsAny<string>()));
     }
 
     [TestMethod]
@@ -68,7 +68,7 @@ public class PromotionServiceAuditTests
 
         auditMock
             .Setup(a => a.Register(AuditedEntities.Promotion,
-                It.IsAny<int>(), AuditDescriptions.PromotionModified));
+                It.IsAny<int>(), AuditDescriptions.PromotionModified, It.IsAny<string>()));
 
         var service = new PromotionService(promotionRepoMock.Object,
             productRepoMock.Object, auditMock.Object);
@@ -79,7 +79,7 @@ public class PromotionServiceAuditTests
         });
 
         auditMock.Verify(a => a.Register(AuditedEntities.Promotion,
-            It.IsAny<int>(), AuditDescriptions.PromotionModified), Times.Once);
+            It.IsAny<int>(), AuditDescriptions.PromotionModified, It.IsAny<string>()));
     }
 
     [TestMethod]
@@ -107,7 +107,7 @@ public class PromotionServiceAuditTests
 
         auditMock
             .Setup(a => a.Register(AuditedEntities.Promotion,
-                It.IsAny<int>(), AuditDescriptions.PromotionDeleted));
+                It.IsAny<int>(), AuditDescriptions.PromotionDeleted, It.IsAny<string>()));
 
         var service = new PromotionService(promotionRepoMock.Object,
             productRepoMock.Object, auditMock.Object);
@@ -115,6 +115,6 @@ public class PromotionServiceAuditTests
         service.Delete(1);
 
         auditMock.Verify(a => a.Register(AuditedEntities.Promotion,
-            It.IsAny<int>(), AuditDescriptions.PromotionDeleted), Times.Once);
+            It.IsAny<int>(), AuditDescriptions.PromotionDeleted, It.IsAny<string>()));
     }
 }

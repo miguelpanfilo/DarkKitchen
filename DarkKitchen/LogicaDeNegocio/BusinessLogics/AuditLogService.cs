@@ -6,18 +6,17 @@ using Domain;
 
 namespace BusinessLogics;
 
-public class AuditLogService(IAuditLogRepository repository,
-    ICurrentUserService currentUserService) : IAuditLogService
+public class AuditLogService(IAuditLogRepository repository) : IAuditLogService
 {
-    public void Register(string entityName, int entityId, string
-        description)
+   public void Register(string entityName, int entityId, string
+        description, string responsibleUser)
     {
         var auditLog = new AuditLog
         {
             EntityName = entityName,
             EntityId = entityId,
             ChangeDescription = description,
-            ResponsibleUser = currentUserService.GetEmail()
+            ResponsibleUser = responsibleUser
         };
 
         repository.Add(auditLog);

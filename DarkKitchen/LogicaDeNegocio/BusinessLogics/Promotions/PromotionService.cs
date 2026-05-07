@@ -32,7 +32,7 @@ public class PromotionService : IPromotionService
 
         var createdPromotion = _promotionRepository.Create(promotion);
         _auditLogService.Register(AuditedEntities.Promotion,
-            createdPromotion.Id, AuditDescriptions.PromotionCreated);
+            createdPromotion.Id, AuditDescriptions.PromotionCreated, string.Empty);
 
         return MapPromotionWithProducts(createdPromotion);
     }
@@ -65,7 +65,7 @@ public class PromotionService : IPromotionService
 
         _promotionRepository.Update(promotion);
         _auditLogService.Register(AuditedEntities.Promotion, promotion.Id,
-            AuditDescriptions.PromotionDeleted);
+            AuditDescriptions.PromotionDeleted, string.Empty);
     }
 
     public List<PromotionResponseDto> GetPromotions(PromotionSearchRequestDto request)
@@ -92,7 +92,7 @@ public class PromotionService : IPromotionService
 
         var updatedPromotion = _promotionRepository.Update(promotion);
         _auditLogService.Register(AuditedEntities.Promotion,
-            updatedPromotion.Id, AuditDescriptions.PromotionModified);
+            updatedPromotion.Id, AuditDescriptions.PromotionModified, string.Empty);
 
         return MapPromotionWithProducts(updatedPromotion);
     }

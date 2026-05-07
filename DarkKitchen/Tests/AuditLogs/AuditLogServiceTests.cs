@@ -32,11 +32,7 @@ public class AuditLogServiceTests
     public void GetByFilters_MissingDateFrom_ThrowsValidationException()
     {
         var repoMock = new Mock<IAuditLogRepository>(MockBehavior.Strict);
-        var currentUserMock = new
-            Mock<ICurrentUserService>(MockBehavior.Strict);
-
-        var service = new AuditLogService(repoMock.Object,
-            currentUserMock.Object);
+        var service = new AuditLogService(repoMock.Object);
 
         var request = new AuditLogFilterRequest
         {
@@ -56,11 +52,8 @@ public class AuditLogServiceTests
     public void GetByFilters_MissingDateTo_ThrowsValidationException()
     {
         var repoMock = new Mock<IAuditLogRepository>(MockBehavior.Strict);
-        var currentUserMock = new
-            Mock<ICurrentUserService>(MockBehavior.Strict);
 
-        var service = new AuditLogService(repoMock.Object,
-            currentUserMock.Object);
+        var service = new AuditLogService(repoMock.Object);
 
         var request = new AuditLogFilterRequest
         {
@@ -81,11 +74,8 @@ public class AuditLogServiceTests
         GetByFilters_DateFromGreaterThanDateTo_ThrowsValidationException()
     {
         var repoMock = new Mock<IAuditLogRepository>(MockBehavior.Strict);
-        var currentUserMock = new
-            Mock<ICurrentUserService>(MockBehavior.Strict);
 
-        var service = new AuditLogService(repoMock.Object,
-            currentUserMock.Object);
+        var service = new AuditLogService(repoMock.Object);
 
         var request = new AuditLogFilterRequest
         {
@@ -105,11 +95,8 @@ public class AuditLogServiceTests
     public void GetByFilters_MissingEntityName_ThrowsValidationException()
     {
         var repoMock = new Mock<IAuditLogRepository>(MockBehavior.Strict);
-        var currentUserMock = new
-            Mock<ICurrentUserService>(MockBehavior.Strict);
 
-        var service = new AuditLogService(repoMock.Object,
-            currentUserMock.Object);
+        var service = new AuditLogService(repoMock.Object);
 
         var request = new AuditLogFilterRequest
         {
@@ -129,11 +116,7 @@ public class AuditLogServiceTests
     public void GetByFilters_MissingEntityId_ThrowsValidationException()
     {
         var repoMock = new Mock<IAuditLogRepository>(MockBehavior.Strict);
-        var currentUserMock = new
-            Mock<ICurrentUserService>(MockBehavior.Strict);
-
-        var service = new AuditLogService(repoMock.Object,
-            currentUserMock.Object);
+        var service = new AuditLogService(repoMock.Object);
 
         var request = new AuditLogFilterRequest
         {
@@ -154,9 +137,6 @@ public class AuditLogServiceTests
     public void GetByFilters_ValidRequest_ReturnsLogsFromRepository()
     {
         var repoMock = new Mock<IAuditLogRepository>(MockBehavior.Strict);
-        var currentUserMock = new
-            Mock<ICurrentUserService>(MockBehavior.Strict);
-
         var from = new DateTime(2026, 1, 1, 8, 0, 0);
         var to = new DateTime(2026, 1, 1, 10, 0, 0);
 
@@ -178,8 +158,7 @@ public class AuditLogServiceTests
                 5))
             .Returns(logsFromRepo);
 
-        var service = new AuditLogService(repoMock.Object,
-            currentUserMock.Object);
+        var service = new AuditLogService(repoMock.Object);
 
         var request = new AuditLogFilterRequest
         {
@@ -512,24 +491,16 @@ public class AuditLogServiceTests
     public void Register_ValidData_SavesResponsibleUserFromCurrentUser()
     {
         var repoMock = new Mock<IAuditLogRepository>(MockBehavior.Strict);
-        var currentUserMock = new
-            Mock<ICurrentUserService>(MockBehavior.Strict);
 
         AuditLog? savedLog = null;
-
-        currentUserMock
-            .Setup(s => s.GetEmail())
-            .Returns("admin@dark.com");
 
         repoMock
             .Setup(r => r.Add(It.IsAny<AuditLog>()))
             .Callback<AuditLog>(log => savedLog = log);
 
-        var service = new AuditLogService(repoMock.Object,
-            currentUserMock.Object);
+        var service = new AuditLogService(repoMock.Object);
 
-        service.Register(AuditedEntities.Product, 5,
-            AuditDescriptions.ProductCreated);
+        service.Register(AuditedEntities.Product, 5,AuditDescriptions.ProductCreated, "admin@dark.com");
 
         Assert.IsNotNull(savedLog);
         Assert.AreEqual("admin@dark.com", savedLog.ResponsibleUser);
