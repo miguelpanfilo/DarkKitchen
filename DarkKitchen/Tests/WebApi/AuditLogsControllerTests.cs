@@ -29,7 +29,7 @@ public class AuditLogsControllerTests
         {
             new AuditLogResponse
             {
-                Id = 1, EntityName = "PRODUCTO",
+                EntityName = "PRODUCTO",
                 EntityId = 5
             }
         };

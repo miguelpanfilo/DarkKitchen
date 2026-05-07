@@ -171,7 +171,6 @@ public class AuditLogServiceTests
         var result = service.GetByFilters(request);
 
         Assert.AreEqual(1, result.Count);
-        Assert.AreEqual(1, result[0].Id);
         Assert.AreEqual(AuditedEntities.Product, result[0].EntityName);
         Assert.AreEqual(5, result[0].EntityId);
         Assert.AreEqual(AuditDescriptions.ProductCreated,

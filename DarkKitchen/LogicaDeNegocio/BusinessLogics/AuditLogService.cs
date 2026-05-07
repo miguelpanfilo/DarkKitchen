@@ -57,7 +57,6 @@ public class AuditLogService(IAuditLogRepository repository) : IAuditLogService
                 request.EntityId!.Value)
             .Select(log => new AuditLogResponse
             {
-                Id = log.Id,
                 DateTime = log.DateTime,
                 EntityName = log.EntityName,
                 EntityId = log.EntityId,

@@ -7,7 +7,6 @@ using DataAccessAbstractions;
 using Domain;
 using Domain.Exceptions;
 using Mappers;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 namespace BusinessLogics.Promotions;
 
