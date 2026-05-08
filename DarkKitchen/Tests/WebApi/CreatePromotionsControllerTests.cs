@@ -23,28 +23,25 @@ public class CreatePromotionsControllerTests
         _controller = new PromotionsController(_promotionServiceMock.Object);
     }
 
-    private void SetCurrentUser(CurrentUserDto user)
+    private void SetCurrentUser(string email)
     {
-        var httpContext = new DefaultHttpContext();
-        httpContext.Items["CurrentUser"] = user;
-
+        var claims = new List<System.Security.Claims.Claim>
+        {
+            new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Email,
+                email)
+        };
+        var httpContext = new DefaultHttpContext
+        {
+            User = new System.Security.Claims.ClaimsPrincipal(
+                new System.Security.Claims.ClaimsIdentity(claims))
+        };
         _controller.ControllerContext = new ControllerContext
         {
             HttpContext = httpContext
         };
     }
 
-    private static CurrentUserDto MakeAdmin()
-    {
-        return new CurrentUserDto
-        {
-            Id = 1,
-            Email = "admin@test.com",
-            Role = UserRolesDto.Administrative
-        };
-    }
-
-    [TestMethod]
+   [TestMethod]
     public void Create_WhenAdmin_ShouldReturn201()
     {
         var request = new PromotionRequestDto
@@ -68,10 +65,10 @@ public class CreatePromotionsControllerTests
         );
 
         _promotionServiceMock
-            .Setup(x => x.Create(request))
+            .Setup(x => x.Create(request, It.IsAny<string>()))
             .Returns(response);
 
-        SetCurrentUser(MakeAdmin());
+        SetCurrentUser("admin@test.com");
 
         var result = _controller.Create(request) as CreatedResult;
 
@@ -79,7 +76,8 @@ public class CreatePromotionsControllerTests
         Assert.AreEqual(StatusCodes.Status201Created, result.StatusCode);
         Assert.AreEqual(response, result.Value);
 
-        _promotionServiceMock.Verify(x => x.Create(request), Times.Once);
+        _promotionServiceMock.Verify(x => x.Create(request, It.IsAny<string>()),
+            Times.Once);
     }
 
     [TestMethod]

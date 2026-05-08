@@ -1,4 +1,5 @@
 using BusinessLogics.Shared;
+using BusinessLogicsAbstractions;
 using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.Promotions;
 using Contract.Promotions;
@@ -13,20 +14,25 @@ public class PromotionService : IPromotionService
 {
     private readonly IPromotionRepository _promotionRepository;
     private readonly IProductRepository _productRepository;
+    private readonly IAuditLogService _auditLogService;
 
-    public PromotionService(IPromotionRepository promotionRepository, IProductRepository productRepository)
+    public PromotionService(IPromotionRepository promotionRepository, IProductRepository productRepository, IAuditLogService
+        auditLogService)
     {
         _promotionRepository = promotionRepository;
         _productRepository = productRepository;
+        _auditLogService = auditLogService;
     }
 
-    public PromotionResponseDto Create(PromotionRequestDto promotionRequestDto)
+    public PromotionResponseDto Create(PromotionRequestDto promotionRequestDto,  string responsibleUser)
     {
         var promotion = ServiceExceptionHandler.ExecuteWithValidationHandling<Promotion, PromotionException>(() =>
             PromotionMapper.ToEntity(promotionRequestDto)
         );
 
         var createdPromotion = _promotionRepository.Create(promotion);
+        _auditLogService.Register(AuditedEntities.Promotion,
+            createdPromotion.Id, AuditDescriptions.PromotionCreated, responsibleUser);
 
         return MapPromotionWithProducts(createdPromotion);
     }
@@ -51,13 +57,15 @@ public class PromotionService : IPromotionService
         return applicablePromotions.Max(p => p.DiscountPercentage) / 100m;
     }
 
-    public void Delete(int promotionId)
+    public void Delete(int promotionId,  string responsibleUser)
     {
         var promotion = GetExistingPromotion(promotionId);
 
         promotion.Delete();
 
         _promotionRepository.Update(promotion);
+        _auditLogService.Register(AuditedEntities.Promotion, promotion.Id,
+            AuditDescriptions.PromotionDeleted, responsibleUser);
     }
 
     public List<PromotionResponseDto> GetPromotions(PromotionSearchRequestDto request)
@@ -74,7 +82,7 @@ public class PromotionService : IPromotionService
             .ToList();
     }
 
-    public PromotionResponseDto Update(int promotionId, PromotionPatchDto promotionPatchDto)
+    public PromotionResponseDto Update(int promotionId, PromotionPatchDto promotionPatchDto,  string responsibleUser)
     {
         var promotion = GetExistingPromotion(promotionId);
 
@@ -83,6 +91,8 @@ public class PromotionService : IPromotionService
         UpdateDatesIfProvided(promotion, promotionPatchDto.StartDate, promotionPatchDto.EndDate);
 
         var updatedPromotion = _promotionRepository.Update(promotion);
+        _auditLogService.Register(AuditedEntities.Promotion,
+            updatedPromotion.Id, AuditDescriptions.PromotionModified, responsibleUser);
 
         return MapPromotionWithProducts(updatedPromotion);
     }

@@ -1,4 +1,5 @@
 using BusinessLogics.Promotions;
+using BusinessLogicsAbstractions;
 using BusinessLogicsAbstractions.Exceptions;
 using Contract.Promotions;
 using DataAccessAbstractions;
@@ -48,9 +49,10 @@ public class PromotionServiceTest
             .Setup(r => r.Create(It.IsAny<Promotion>()))
             .Returns((Promotion promotion) => promotion);
 
-        var service = new PromotionService(repositoryMock.Object, productRepositoryMock.Object);
-
-        var result = service.Create(promotionDto);
+        var auditMock = new Mock<IAuditLogService>();
+        var service = new PromotionService(repositoryMock.Object,
+            productRepositoryMock.Object, auditMock.Object);
+        var result = service.Create(promotionDto, "admin@dark.com");;
 
         Assert.IsNotNull(result);
         Assert.AreEqual(promotionDto.Name, result.Name);
@@ -77,9 +79,10 @@ public class PromotionServiceTest
         var repositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
         var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
 
-        var service = new PromotionService(repositoryMock.Object, productRepositoryMock.Object);
-
-        var ex = Assert.ThrowsException<ValidationException>(() => service.Create(promotionDto));
+        var auditMock = new Mock<IAuditLogService>();
+        var service = new PromotionService(repositoryMock.Object,
+            productRepositoryMock.Object, auditMock.Object);
+        var ex = Assert.ThrowsException<ValidationException>(() => service.Create(promotionDto, "admin@dark.com"));
 
         Assert.AreEqual("El nombre de la promoción no puede ser vacío", ex.Message);
     }
@@ -102,9 +105,10 @@ public class PromotionServiceTest
         var repositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
         var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
 
-        var service = new PromotionService(repositoryMock.Object, productRepositoryMock.Object);
-
-        var ex = Assert.ThrowsException<ValidationException>(() => service.Create(promotionDto));
+        var auditMock = new Mock<IAuditLogService>();
+        var service = new PromotionService(repositoryMock.Object,
+            productRepositoryMock.Object, auditMock.Object);
+        var ex = Assert.ThrowsException<ValidationException>(() => service.Create(promotionDto, "admin@dark.com"));
 
         Assert.AreEqual("El porcentaje de descuento debe estar entre 1 y 100", ex.Message);
     }
@@ -130,9 +134,10 @@ public class PromotionServiceTest
         var repositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
         var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
 
-        var service = new PromotionService(repositoryMock.Object, productRepositoryMock.Object);
-
-        var ex = Assert.ThrowsException<ValidationException>(() => service.Create(promotionDto));
+        var auditMock = new Mock<IAuditLogService>();
+        var service = new PromotionService(repositoryMock.Object,
+            productRepositoryMock.Object, auditMock.Object);
+        var ex = Assert.ThrowsException<ValidationException>(() => service.Create(promotionDto, "admin@dark.com"));
 
         Assert.AreEqual("La fecha de inicio no puede ser mayor a la fecha de fin", ex.Message);
     }
@@ -164,9 +169,10 @@ public class PromotionServiceTest
             .Setup(r => r.Update(promotion))
             .Returns(promotion);
 
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
 
         service.AssociateProduct(1, 100);
@@ -187,10 +193,9 @@ public class PromotionServiceTest
             .Setup(r => r.GetById(1))
             .Returns((Promotion)null!);
 
-        var service = new PromotionService(
-            promotionRepositoryMock.Object,
-            productRepositoryMock.Object
-        );
+        var auditMock = new Mock<IAuditLogService>();
+        var service = new PromotionService(promotionRepositoryMock.Object,
+            productRepositoryMock.Object, auditMock.Object);
 
         var ex = Assert.ThrowsException<NotFoundException>(() => service.AssociateProduct(1, 100)
         );
@@ -225,9 +230,10 @@ public class PromotionServiceTest
             .Setup(r => r.GetById(100))
             .Returns((Product)null!);
 
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object, auditMock.Object
         );
 
         var ex = Assert.ThrowsException<NotFoundException>(() => service.AssociateProduct(1, 100)
@@ -266,7 +272,8 @@ public class PromotionServiceTest
             .Setup(r => r.Update(promotion))
             .Returns(promotion);
 
-        var servicePromotion = new PromotionService(promotionRepositoryMock.Object, productRepositoryMock.Object);
+        var auditMock = new Mock<IAuditLogService>();
+        var servicePromotion = new PromotionService(promotionRepositoryMock.Object, productRepositoryMock.Object,auditMock.Object);
 
         servicePromotion.AssociateProduct(1, 100);
 
@@ -287,10 +294,10 @@ public class PromotionServiceTest
         promotionRepositoryMock
             .Setup(r => r.GetById(1))
             .Returns((Promotion)null!);
-
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
 
         var ex = Assert.ThrowsException<NotFoundException>(() => service.DisassociateProduct(1, 100)
@@ -325,10 +332,10 @@ public class PromotionServiceTest
         productRepositoryMock
             .Setup(r => r.GetById(100))
             .Returns((Product)null!);
-
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
 
         var ex = Assert.ThrowsException<NotFoundException>(() => service.DisassociateProduct(1, 100)
@@ -368,12 +375,12 @@ public class PromotionServiceTest
             .Setup(r => r.Update(promotion))
             .Returns(promotion);
 
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
-
-        var result = service.Update(1, patchDto);
+        var result = service.Update(1, patchDto, "admin@dark.com");
 
         Assert.IsNotNull(result);
         Assert.AreEqual("Cyber Monday", result.Name);
@@ -404,12 +411,13 @@ public class PromotionServiceTest
             .Setup(r => r.GetById(1))
             .Returns(promotion);
 
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
 
-        var ex = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto));
+        var ex = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto, "admin@dark.com"));
 
         Assert.AreEqual("El nombre de la promoción no puede ser vacío", ex.Message);
 
@@ -446,12 +454,13 @@ public class PromotionServiceTest
             .Setup(r => r.Update(promotion))
             .Returns(promotion);
 
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
 
-        var result = service.Update(1, patchDto);
+        var result = service.Update(1, patchDto, "admin@dark.com");
 
         Assert.IsNotNull(result);
         Assert.AreEqual(25, result.DiscountPercentage);
@@ -487,12 +496,13 @@ public class PromotionServiceTest
             .Setup(r => r.GetById(1))
             .Returns(promotion);
 
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
 
-        var ex = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto));
+        var ex = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto, "admin@dark.com"));
 
         Assert.AreEqual("El porcentaje de descuento debe estar entre 1 y 100", ex.Message);
 
@@ -530,12 +540,13 @@ public class PromotionServiceTest
             .Setup(r => r.Update(promotion))
             .Returns(promotion);
 
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
 
-        var result = service.Update(1, patchDto);
+        var result = service.Update(1, patchDto, "admin@dark.com");
 
         Assert.IsNotNull(result);
         Assert.AreEqual(newStartDate, result.StartDate);
@@ -573,12 +584,13 @@ public class PromotionServiceTest
             .Setup(r => r.Update(promotion))
             .Returns(promotion);
 
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
 
-        var result = service.Update(1, patchDto);
+        var result = service.Update(1, patchDto, "admin@dark.com");
 
         Assert.IsNotNull(result);
         Assert.AreEqual(new DateOnly(2026, 1, 25), result.StartDate);
@@ -618,12 +630,13 @@ public class PromotionServiceTest
             .Setup(r => r.Update(promotion))
             .Returns(promotion);
 
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
 
-        var result = service.Update(1, patchDto);
+        var result = service.Update(1, patchDto, "admin@dark.com");
 
         Assert.IsNotNull(result);
         Assert.AreEqual(newStartDate, result.StartDate);
@@ -655,12 +668,13 @@ public class PromotionServiceTest
             .Setup(r => r.GetById(1))
             .Returns(promotion);
 
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
 
-        var ex = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto));
+        var ex = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto, "admin@dark.com"));
 
         Assert.AreEqual("La fecha de inicio no puede ser mayor a la fecha de fin", ex.Message);
 
@@ -692,12 +706,13 @@ public class PromotionServiceTest
             .Setup(r => r.GetById(1))
             .Returns(promotion);
 
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
 
-        var ex = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto));
+        var ex = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto, "admin@dark.com"));
 
         Assert.AreEqual("La fecha de inicio no puede ser mayor a la fecha de fin", ex.Message);
 
@@ -730,12 +745,13 @@ public class PromotionServiceTest
             .Setup(r => r.GetById(1))
             .Returns(promotion);
 
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
 
-        var ex = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto));
+        var ex = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto, "admin@dark.com"));
 
         Assert.AreEqual("La fecha de inicio no puede ser mayor a la fecha de fin", ex.Message);
 
@@ -760,13 +776,13 @@ public class PromotionServiceTest
             .Setup(r => r.GetById(1))
             .Returns((Promotion)null!);
 
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
 
-        var ex = Assert.ThrowsException<NotFoundException>(() => service.Update(1, patchDto)
-        );
+        var ex = Assert.ThrowsException<NotFoundException>(() => service.Update(1, patchDto, "admin@dark.com"));
 
         Assert.AreEqual("La promoción no existe", ex.Message);
 
@@ -797,12 +813,13 @@ public class PromotionServiceTest
             .Setup(r => r.Update(It.Is<Promotion>(p => p.IsDeleted)))
             .Returns(promotion);
 
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
 
-        service.Delete(1);
+        service.Delete(1, "admin@dark.com");
 
         promotionRepositoryMock.Verify(r => r.GetById(1), Times.Once);
         promotionRepositoryMock.Verify(r => r.Update(It.Is<Promotion>(
@@ -822,12 +839,13 @@ public class PromotionServiceTest
             .Setup(r => r.GetById(1))
             .Returns((Promotion)null!);
 
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
 
-        var ex = Assert.ThrowsException<NotFoundException>(() => service.Delete(1));
+        var ex = Assert.ThrowsException<NotFoundException>(() => service.Delete(1, "admin@dark.com"));
 
         Assert.AreEqual("La promoción no existe", ex.Message);
 
@@ -857,12 +875,12 @@ public class PromotionServiceTest
             .Setup(r => r.GetById(1))
             .Returns(promotion);
 
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
-
-        var exception = Assert.ThrowsException<NotFoundException>(() => service.Delete(1));
+        var exception = Assert.ThrowsException<NotFoundException>(() => service.Delete(1, "admin@dark.com"));
 
         Assert.AreEqual("La promoción no existe", exception.Message);
 
@@ -895,14 +913,13 @@ public class PromotionServiceTest
         promotionRepositoryMock
             .Setup(r => r.GetById(1))
             .Returns(promotion);
-
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
-
         var ex = Assert.ThrowsException<NotFoundException>(() =>
-            service.Update(1, patchDto)
+            service.Update(1, patchDto, "admin@dark.com")
         );
 
         Assert.AreEqual("La promoción no existe", ex.Message);
@@ -925,9 +942,10 @@ public class PromotionServiceTest
             Date = null
         };
 
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
 
         var ex = Assert.ThrowsException<ValidationException>(() => service.GetPromotions(request));
@@ -969,9 +987,10 @@ public class PromotionServiceTest
             Date = date
         };
 
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
 
         var result = service.GetPromotions(request);
@@ -1016,9 +1035,11 @@ public class PromotionServiceTest
             .Setup(r => r.GetAll())
             .Returns([promo10, promo25, promoOtherProduct]);
 
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object);
+            productRepositoryMock.Object,auditMock.Object
+        );
 
         var result = service.GetHighestCurrentDiscountForProduct(100);
 
@@ -1090,9 +1111,10 @@ public class PromotionServiceTest
             ProductId = 100
         };
 
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
 
         var result = service.GetPromotions(request);
@@ -1167,9 +1189,10 @@ public class PromotionServiceTest
             CommercialLine = "Línea A"
         };
 
+        var auditMock = new Mock<IAuditLogService>();
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object
+            productRepositoryMock.Object,auditMock.Object
         );
 
         var result = service.GetPromotions(request);

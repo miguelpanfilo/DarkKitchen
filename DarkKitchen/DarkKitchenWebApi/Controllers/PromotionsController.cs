@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using BusinessLogicsAbstractions.Promotions;
 using Contract.Promotions;
 using Contract.Users;
@@ -16,7 +17,8 @@ public class PromotionsController(IPromotionService promotionService) : Controll
     [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult Create([FromBody] PromotionRequestDto request)
     {
-        var response = _promotionService.Create(request);
+        var email = User.FindFirst(ClaimTypes.Email)!.Value;
+        var response = _promotionService.Create(request, email);
         return Created($"/api/v1/promotions/{response.Id}", response);
     }
 
@@ -24,7 +26,8 @@ public class PromotionsController(IPromotionService promotionService) : Controll
     [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult Update([FromRoute] int id, [FromBody] PromotionPatchDto request)
     {
-        var response = _promotionService.Update(id, request);
+        var email = User.FindFirst(ClaimTypes.Email)!.Value;
+        var response = _promotionService.Update(id, request, email);
         return Ok(response);
     }
 
@@ -32,7 +35,8 @@ public class PromotionsController(IPromotionService promotionService) : Controll
     [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult Delete([FromRoute] int id)
     {
-        _promotionService.Delete(id);
+        var email = User.FindFirst(ClaimTypes.Email)!.Value;
+        _promotionService.Delete(id, email);
         return NoContent();
     }
 

@@ -1,0 +1,79 @@
+using BusinessLogicsAbstractions;
+using Contract;
+using Contract.Users;
+using DarkKitchen.Controllers;
+using DarkKitchen.Filters;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+
+namespace Tests.WebApi;
+
+[TestClass]
+public class AuditLogsControllerTests
+{
+    [TestMethod]
+    public void GetByFilters_ValidRequest_Returns200WithLogs()
+    {
+        var auditServiceMock = new
+            Mock<IAuditLogService>(MockBehavior.Strict);
+
+        var request = new AuditLogFilterRequest
+        {
+            DateTimeFrom = new DateTime(2026, 1, 1, 8, 0, 0),
+            DateTimeTo = new DateTime(2026, 1, 1, 10, 0, 0),
+            EntityName = "PRODUCTO",
+            EntityId = 5
+        };
+
+        var logs = new List<AuditLogResponse>
+        {
+            new AuditLogResponse
+            {
+                EntityName = "PRODUCTO",
+                EntityId = 5
+            }
+        };
+
+        auditServiceMock
+            .Setup(s => s.GetByFilters(request))
+            .Returns(logs);
+
+        var controller = new
+            AuditLogsController(auditServiceMock.Object);
+
+        var result = controller.GetByFilters(request) as
+            OkObjectResult;
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(200, result.StatusCode);
+
+        auditServiceMock.Verify(s => s.GetByFilters(request),
+            Times.Once);
+    }
+
+    [TestMethod]
+    public void GetByFilters_ShouldHaveHttpGetAttribute()
+    {
+        var method = typeof(AuditLogsController)
+            .GetMethod("GetByFilters");
+
+        var attribute = method!
+            .GetCustomAttributes(typeof(HttpGetAttribute), false)
+            .FirstOrDefault();
+
+        Assert.IsNotNull(attribute);
+    }
+
+    [TestMethod]
+    public void GetByFilters_ShouldHaveRoleAuthorizationAttribute()
+    {
+        var method = typeof(AuditLogsController)
+            .GetMethod("GetByFilters");
+
+        var attribute = method!
+            .GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
+            .FirstOrDefault() as RoleAuthorizationAttribute;
+
+        Assert.IsNotNull(attribute);
+    }
+}

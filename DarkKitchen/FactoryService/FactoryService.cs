@@ -1,3 +1,4 @@
+using BusinessLogics;
 using BusinessLogics.Initialization;
 using BusinessLogics.Orders;
 using BusinessLogics.Products;
@@ -7,6 +8,7 @@ using BusinessLogics.Sessions;
 using BusinessLogics.Shared;
 using BusinessLogics.ShippingTypes;
 using BusinessLogics.Users;
+using BusinessLogicsAbstractions;
 using BusinessLogicsAbstractions.Orders;
 using BusinessLogicsAbstractions.Products;
 using BusinessLogicsAbstractions.Promotions;
@@ -33,6 +35,16 @@ public static class ServiceCollectionExtensions
         services.AddOrderServices();
         services.AddSharedServices();
         services.AddInitializationServices();
+        services.AddAuditServices();
+
+        return services;
+    }
+
+    private static IServiceCollection AddAuditServices(this IServiceCollection
+        services)
+    {
+        services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+        services.AddScoped<IAuditLogService, AuditLogService>();
 
         return services;
     }
