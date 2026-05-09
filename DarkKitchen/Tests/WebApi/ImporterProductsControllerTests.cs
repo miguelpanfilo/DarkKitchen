@@ -29,7 +29,7 @@ public class ImporterProductsControllerTests
             }
         };
 
-        var serviceMock = new Mock<IProductImportService>();
+        var serviceMock = new Mock<IProductImporterQueryService>();
 
         serviceMock
             .Setup(s => s.GetImporters())
