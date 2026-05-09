@@ -1,3 +1,4 @@
+using BusinessLogics;
 using BusinessLogics.Initialization;
 using BusinessLogics.Orders;
 using BusinessLogics.Products;
@@ -5,11 +6,14 @@ using BusinessLogics.Promotions;
 using BusinessLogics.Reports;
 using BusinessLogics.Sessions;
 using BusinessLogics.Shared;
+using BusinessLogics.ShippingTypes;
 using BusinessLogics.Users;
+using BusinessLogicsAbstractions;
 using BusinessLogicsAbstractions.Orders;
 using BusinessLogicsAbstractions.Products;
 using BusinessLogicsAbstractions.Promotions;
 using BusinessLogicsAbstractions.Reports;
+using BusinessLogicsAbstractions.ShippingTypes;
 using BusinessLogicsAbstractions.Users;
 using DataAccess;
 using DataAccess.Repositories;
@@ -31,6 +35,16 @@ public static class ServiceCollectionExtensions
         services.AddOrderServices();
         services.AddSharedServices();
         services.AddInitializationServices();
+        services.AddAuditServices();
+
+        return services;
+    }
+
+    private static IServiceCollection AddAuditServices(this IServiceCollection
+        services)
+    {
+        services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+        services.AddScoped<IAuditLogService, AuditLogService>();
 
         return services;
     }
@@ -47,6 +61,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IPromotionRepository, PromotionRepository>();
+        services.AddScoped<IShippingTypeRepository, ShippingTypeRepository>();
 
         services.AddScoped<IProductPhotoStorage>(_ => new ProductPhotoStorage("C:\\temp\\photos"));
 
@@ -77,6 +92,7 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IPromotionService, PromotionService>();
+        services.AddScoped<IShippingTypeService, ShippingTypeService>();
         services.AddScoped<ProductPhotoService>();
 
         return services;

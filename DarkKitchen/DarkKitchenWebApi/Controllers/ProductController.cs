@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using BusinessLogicsAbstractions.Products;
 using Contract.Products;
 using Contract.Users;
@@ -14,7 +15,8 @@ public class ProductController(IProductService productService) : ControllerBase
     [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult Create([FromBody] ProductDTO request)
     {
-        var response = productService.Create(request);
+        var email = User.FindFirst(ClaimTypes.Email)!.Value;
+        var response = productService.Create(request, email);
         return Created($"/api/v1/products/{response.Id}", response);
     }
 
@@ -30,7 +32,8 @@ public class ProductController(IProductService productService) : ControllerBase
     [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult Update(int productId, ProductPatchDto request)
     {
-        var result = productService.Update(productId, request);
+        var email = User.FindFirst(ClaimTypes.Email)!.Value;
+        var result = productService.Update(productId, request, email);
         return Ok(result);
     }
 
@@ -38,7 +41,8 @@ public class ProductController(IProductService productService) : ControllerBase
     [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult Delete(int productId)
     {
-        productService.Delete(productId);
+        var email = User.FindFirst(ClaimTypes.Email)!.Value;
+        productService.Delete(productId, email);
         return NoContent();
     }
 }

@@ -1,4 +1,5 @@
 using BusinessLogics.Shared;
+using BusinessLogicsAbstractions;
 using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.Products;
 using Contract.Products;
@@ -13,11 +14,15 @@ public class ProductService : IProductService
 {
     private readonly IProductRepository _repository;
     private readonly ProductPhotoService _productPhotoService;
+    private readonly IAuditLogService _auditLogService;
 
-    public ProductService(IProductRepository repository, ProductPhotoService productPhotoService)
+    public ProductService(IProductRepository repository,
+        ProductPhotoService productPhotoService, IAuditLogService
+            auditLogService)
     {
         _repository = repository;
         _productPhotoService = productPhotoService;
+        _auditLogService = auditLogService;
     }
 
     public List<ProductResponseDto> GetProducts(ProductSearchRequestDto request)
@@ -87,33 +92,39 @@ public class ProductService : IProductService
         return ProductMapper.ToResponseDto(product);
     }
 
-    public ProductResponseDto Create(ProductDTO productDto)
+    public ProductResponseDto Create(ProductDTO productDto, string responsibleUser)
     {
         var savedPhotos = ServiceExceptionHandler.ExecuteWithValidationHandling<List<ProductPhoto>,ProductException>(() =>
             _productPhotoService.SavePhotos(productDto.Photos));
         var product = ServiceExceptionHandler.ExecuteWithValidationHandling<Product,ProductException>(() => ProductMapper.ToEntity(productDto, savedPhotos));
 
         var createdProduct = _repository.Create(product);
+        _auditLogService.Register(AuditedEntities.Product, createdProduct.Id,
+            AuditDescriptions.ProductCreated, responsibleUser);
 
         return ProductMapper.ToResponseDto(createdProduct);
     }
 
-    public ProductResponseDto Update(int productId, ProductPatchDto patchDto)
+    public ProductResponseDto Update(int productId, ProductPatchDto patchDto, string responsibleUser)
     {
         var product = GetExistingProduct(productId);
 
         ApplyPatch(product, patchDto);
         var updatedProduct = _repository.Update(product);
+        _auditLogService.Register(AuditedEntities.Product, updatedProduct.Id,
+            AuditDescriptions.ProductModified, responsibleUser);
 
         return ProductMapper.ToResponseDto(updatedProduct);
     }
 
-    public void Delete(int productId)
+    public void Delete(int productId, string responsibleUser)
     {
         var product = GetExistingProduct(productId);
 
         ServiceExceptionHandler.ExecuteWithConflictHandling<ProductException>(() => product.Delete());
         _repository.Update(product);
+        _auditLogService.Register(AuditedEntities.Product, product.Id,
+            AuditDescriptions.ProductDeleted, responsibleUser);
     }
 
     private void ApplyPatch(Product product, ProductPatchDto patchDto)
