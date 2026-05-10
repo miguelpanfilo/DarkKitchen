@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DarkKitchen.Controllers;
 
+[ApiController]
+[Route("api/v1/product-imports")]
 public class ProductImportsController(IProductImportService productImportService) : ControllerBase
 {
     [HttpPost]
