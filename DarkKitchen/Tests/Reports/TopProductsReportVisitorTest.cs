@@ -16,8 +16,7 @@ public sealed class TopProductsReportVisitorTests
     [TestInitialize]
     public void Initialize()
     {
-        _context = SqliteTestContextFactory.CreateContext(out
-            _connection);
+        _context = SqliteTestContextFactory.CreateContext(out _connection);
     }
 
     [TestCleanup]
