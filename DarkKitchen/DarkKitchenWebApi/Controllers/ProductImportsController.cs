@@ -1,5 +1,7 @@
 using BusinessLogicsAbstractions.Imports;
 using Contract.Importers;
+using Contract.Users;
+using DarkKitchen.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DarkKitchen.Controllers;
@@ -7,6 +9,7 @@ namespace DarkKitchen.Controllers;
 public class ProductImportsController(IProductImportService productImportService) : ControllerBase
 {
     [HttpPost]
+    [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult ImportProducts(
         [FromForm] string importerName,
         [FromForm] IFormFile file)
