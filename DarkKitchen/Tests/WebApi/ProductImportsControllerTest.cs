@@ -12,7 +12,7 @@ namespace Tests.WebApi;
 public class ProductImportsControllerTest
 {
     [TestMethod]
-    public void CreateImport_ShouldCallService()
+    public void ImportProducts_ShouldCallService()
     {
         var serviceMock = new Mock<IProductImportService>();
 
@@ -20,7 +20,7 @@ public class ProductImportsControllerTest
 
         var fileMock = new Mock<IFormFile>();
 
-        controller.CreateImport(
+        controller.ImportProducts(
             "CsvProductImporter",
             fileMock.Object);
 
@@ -30,10 +30,10 @@ public class ProductImportsControllerTest
     }
 
     [TestMethod]
-    public void CreateImport_ShouldHaveHttpPostAttribute()
+    public void ImportProducts_ShouldHaveHttpPostAttribute()
     {
         var method = typeof(ProductImportsController)
-            .GetMethod("CreateImport");
+            .GetMethod("ImportProducts");
 
         method.Should().NotBeNull();
 

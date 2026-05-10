@@ -7,7 +7,7 @@ namespace DarkKitchen.Controllers;
 public class ProductImportsController(IProductImportService productImportService) : ControllerBase
 {
     [HttpPost]
-    public IActionResult CreateImport(
+    public IActionResult ImportProducts(
         [FromForm] string importerName,
         [FromForm] IFormFile file)
     {
