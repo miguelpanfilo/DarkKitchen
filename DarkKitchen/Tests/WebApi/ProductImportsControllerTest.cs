@@ -1,7 +1,9 @@
 using BusinessLogicsAbstractions.Imports;
 using Contract.Importers;
 using DarkKitchen.Controllers;
+using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 
 namespace Tests.WebApi;
@@ -25,5 +27,21 @@ public class ProductImportsControllerTest
         serviceMock.Verify(
             s => s.ImportProducts(It.IsAny<ProductImportRequestDto>()),
             Times.Once);
+    }
+
+    [TestMethod]
+    public void CreateImport_ShouldHaveHttpPostAttribute()
+    {
+        var method = typeof(ProductImportsController)
+            .GetMethod("CreateImport");
+
+        method.Should().NotBeNull();
+
+        var attribute = method!
+            .GetCustomAttributes(typeof(HttpPostAttribute), false)
+            .Cast<HttpPostAttribute>()
+            .FirstOrDefault();
+
+        attribute.Should().NotBeNull();
     }
 }
