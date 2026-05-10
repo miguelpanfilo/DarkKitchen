@@ -1,5 +1,6 @@
  using System.Data.Common;
-  using DataAccess;
+ using BusinessLogics.Reports;
+ using DataAccess;
   using DataAccess.Repositories;
   using Domain;
   using Tests.Persistence;
