@@ -33,12 +33,11 @@ public sealed class TopProductsReportVisitorTests
         return User.MakeClient("Juan", "Perez", "juan@test.com", phone, "PasswordSeguraee3!").Value!;
     }
 
-    private static Product MakeProduct(string code, string name,
-        decimal price)
+    private static Product MakeProduct(string code, string name, decimal
+        price)
     {
-        return Product.MakeProduct(code, name, "Descripción válida",
-            "Línea", "Categoría", price,
-            [new ProductPhoto("img.jpg")]);
+        return Product.MakeProduct(code, name, "Descripción válida de prueba", "Línea", "Categoría", price,
+        [new ProductPhoto("img.jpg")]);
     }
 
     private static Order MakeOrder(int clientId, int productId, int
