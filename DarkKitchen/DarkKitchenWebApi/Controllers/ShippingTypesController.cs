@@ -29,6 +29,7 @@ public class ShippingTypesController(IShippingTypeService shippingTypeService) :
     }
 
     [HttpGet]
+    [RoleAuthorization(UserRolesDto.Administrative, UserRolesDto.Client)]
     public IActionResult GetAll()
     {
         var response = _shippingTypeService.GetAllShippingTypes();
