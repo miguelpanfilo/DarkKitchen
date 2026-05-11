@@ -2,6 +2,7 @@ using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.Reports;
 using Contract.Reports;
 using DataAccessAbstractions;
+using Domain;
 using Mappers;
 
 namespace BusinessLogics.Reports;
@@ -10,28 +11,40 @@ public class ReportService(IOrderRepository orderRepository) : IReportService
 {
     private readonly IOrderRepository _orderRepository = orderRepository;
 
-    public List<TopProductReportItemDto> GetTopProducts(DateTime? dateFrom, DateTime? dateTo)
+    public List<TopProductReportItemDto> GetTopProducts(DateTime?
+        dateFrom, DateTime? dateTo)
     {
         ValidateDateRange(dateFrom, dateTo);
 
         var from = dateFrom ?? DateTime.MinValue;
         var to = dateTo ?? DateTime.MaxValue;
 
-        var orders = _orderRepository.GetByFilters(from, to, null, null);
+        var orders = _orderRepository.GetByFilters(from, to, null,
+            null);
+        var data = new OrderReportData(orders);
+        var visitor = new TopProductsReportVisitor();
 
-        return orders.ToTopProductsReport();
+        data.Accept(visitor);
+
+        return visitor.Result;
     }
 
-    public SalesReportDto GetSalesReport(DateTime? dateFrom, DateTime? dateTo)
+    public SalesReportDto GetSalesReport(DateTime? dateFrom, DateTime?
+        dateTo)
     {
         ValidateDateRange(dateFrom, dateTo);
 
         var from = dateFrom ?? DateTime.MinValue;
         var to = dateTo ?? DateTime.MaxValue;
 
-        var orders = _orderRepository.GetByFilters(from, to, null, null);
+        var orders = _orderRepository.GetByFilters(from, to, null,
+            null);
+        var data = new OrderReportData(orders);
+        var visitor = new SalesReportVisitor();
 
-        return orders.ToSalesReport();
+        data.Accept(visitor);
+
+        return visitor.Result;
     }
 
     public static void ValidateDateRange(DateTime? dateFrom, DateTime? dateTo)

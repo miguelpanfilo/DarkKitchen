@@ -25,9 +25,7 @@ public class ShippingTypesControllerTests
 
     private static CurrentUserDto MakeAdmin() => new CurrentUserDto
     {
-        Id = 1,
-        Email = "admin@test.com",
-        Role = UserRolesDto.Administrative
+        Id = 1, Email = "admin@test.com", Role = UserRolesDto.Administrative
     };
 
     private void SetCurrentUser(CurrentUserDto user)
@@ -176,13 +174,14 @@ public class ShippingTypesControllerTests
     }
 
     [TestMethod]
-    public void GetAll_DoesNotHaveRoleAuthorizationAttribute()
+    public void GetAll_HasRoleAuthorizationForAdministrativeAndClient()
     {
         var method = typeof(ShippingTypesController).GetMethod(nameof(ShippingTypesController.GetAll));
 
-        var attribute = method!.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
-            .SingleOrDefault();
+        var attribute =
+            method!.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
+                .SingleOrDefault() as RoleAuthorizationAttribute;
 
-        Assert.IsNull(attribute);
+        Assert.IsNotNull(attribute);
     }
 }
