@@ -1,4 +1,5 @@
 using BusinessLogics;
+using BusinessLogicsAbstractions.Imports;
 using FluentAssertions;
 
 namespace Tests.imports;
@@ -29,5 +30,32 @@ public class ProductImporterProviderTest
         var result = provider.GetImporters();
 
         result.Should().BeEmpty();
+    }
+
+    [TestMethod]
+    public void GetImporters_WhenDllContainsProductImporter_ShouldLoadImporter()
+    {
+        var pluginsPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        Directory.CreateDirectory(pluginsPath);
+
+        var sourceDll = typeof(TestProductImporter).Assembly.Location;
+        var targetDll = Path.Combine(pluginsPath, "TestProductImporter.dll");
+
+        File.Copy(sourceDll, targetDll);
+
+        var provider = new ProductImporterProvider(pluginsPath);
+
+        var result = provider.GetImporters();
+
+        result.Should().ContainSingle();
+        result[0].Id.Should().Be("TestProductImporter");
+        result[0].Name.Should().Be("Importador de prueba");
+    }
+
+    private class TestProductImporter : IProductImporter
+    {
+        public string Id => "TestProductImporter";
+
+        public string Name => "Importador de prueba";
     }
 }
