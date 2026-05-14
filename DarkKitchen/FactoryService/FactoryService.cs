@@ -49,7 +49,7 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static IServiceCollection AddPersistence(
+   private static IServiceCollection AddPersistence(
         this IServiceCollection services,
         IConfiguration configuration)
     {

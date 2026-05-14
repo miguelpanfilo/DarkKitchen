@@ -1,0 +1,18 @@
+<div class="users-container">
+    <div class="users-header">
+        <h2>Usuarios</h2>
+        <app-add-button label="Agregar usuario" (clicked)="onAdd()" />
+    </div>
+    @if (errorMessage) {
+    <p class="error-message">{{ errorMessage }}</p>
+    }
+    @if (users.length === 0) {
+    <p class="empty">No hay usuarios para mostrar.</p>
+    } @else {
+    <div class="users-list">
+        @for (user of users; track user.id) {
+        <app-user-card [user]="user" (edit)="onEdit($event)" (delete)="onDelete($event)" />
+        }
+    </div>
+    }
+</div>

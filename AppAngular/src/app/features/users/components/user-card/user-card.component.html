@@ -1,0 +1,12 @@
+<div class="user-card">
+    <div class="user-info">
+      <h3>{{ user.name }} {{ user.lastName }}</h3>
+      <p>{{ user.email }}</p>
+      <p>{{ user.phone }}</p>
+      <span class="role">{{ user.role }}</span>
+    </div>
+    <div class="user-actions">
+      <app-edit-button (clicked)="onEdit()" />
+      <app-delete-button (clicked)="onDelete()" />
+    </div>
+  </div>
