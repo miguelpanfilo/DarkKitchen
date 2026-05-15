@@ -1,0 +1,15 @@
+.btn-filtrar {
+    padding: 0.65rem 1.5rem;
+    background-color: #2c2c54;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
+  }
+
+  .btn-filtrar:hover {
+    background-color: #1a1a2e;
+  }

@@ -1,0 +1,15 @@
+.btn-edit {
+    padding: 0.4rem 0.9rem;
+    background-color: #2c2c54;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
+  }
+
+  .btn-edit:hover {
+    background-color: #1a1a2e;
+  }

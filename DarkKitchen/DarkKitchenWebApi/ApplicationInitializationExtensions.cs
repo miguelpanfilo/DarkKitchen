@@ -20,4 +20,10 @@ public static class ApplicationInitializationExtensions
 
         return app;
     }
+
+    public static WebApplication UseCorsPolicy(this WebApplication app)
+    {
+        app.UseCors("AllowAngular");
+        return app;
+    }
 }

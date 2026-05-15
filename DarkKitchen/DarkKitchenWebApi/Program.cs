@@ -30,6 +30,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 builder.Services.AddCustomSwagger();
 builder.Services.AddDarkKitchenDependencies(builder.Configuration);
+builder.Services.AddCorsPolicy();
 
 builder.Services.AddScoped<ExceptionFilter>();
 builder.Services.AddScoped<AuthenticationFilter>();
@@ -37,7 +38,7 @@ builder.Services.AddScoped<AuthenticationFilter>();
 var app = builder.Build();
 
 app.InitializeDatabase();
-
+app.UseCorsPolicy();
 if(app.Environment.IsDevelopment())
 {
     app.UseSwagger();
