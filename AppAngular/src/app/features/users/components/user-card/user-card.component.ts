@@ -1,4 +1,4 @@
- import { Component, Input, Output, EventEmitter } from
+import { Component, Input, Output, EventEmitter } from
   '@angular/core';
   import { EditButtonComponent } from
   '../../../../shared/components/edit-button/edit-button.component';
@@ -15,6 +15,7 @@
     @Input() user: any;
     @Output() edit = new EventEmitter<any>();
     @Output() delete = new EventEmitter<any>();
+    @Output() changePassword = new EventEmitter<any>();
 
     onEdit() {
       this.edit.emit(this.user);
@@ -22,5 +23,9 @@
 
     onDelete() {
       this.delete.emit(this.user);
+    }
+
+    onChangePassword() {
+      this.changePassword.emit(this.user);
     }
   }

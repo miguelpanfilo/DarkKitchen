@@ -9,15 +9,25 @@ import { Component, OnInit } from '@angular/core';
   })
   export class MainLayoutComponent implements OnInit {
     email = '';
+    role = '';
 
     constructor(private router: Router) {}
 
     ngOnInit() {
       this.email = localStorage.getItem('email') || '';
+      this.role = localStorage.getItem('role') || '';
+    }
+
+    get isAdmin(): boolean {
+      return this.role === 'Administrative';
+    }
+
+    get isAdminOrClient(): boolean {
+      return this.role === 'Administrative' || this.role === 'Client';
     }
 
     onLogout() {
       localStorage.clear();
-      this.router.navigate(['/login']);
+      this.router.navigate(['/welcome']);
     }
   }

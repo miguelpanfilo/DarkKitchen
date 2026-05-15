@@ -1,0 +1,15 @@
+ .btn-clear {
+    padding: 0.65rem 1.5rem;
+    background-color: #c62828;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
+  }
+
+  .btn-clear:hover {
+    background-color: #b71c1c;
+  }

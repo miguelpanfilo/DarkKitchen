@@ -65,12 +65,12 @@ export class RegisterClientPageComponent {
 
     this.userService.registerClient(this.nombre, this.apellido, this.email, this.telefono, this.contrasena).subscribe({
       next: () => {
-        this.successMessage = '¡Registro exitoso!';
-        this.nombre = '';
-        this.apellido = '';
-        this.email = '';
-        this.telefono = '';
-        this.contrasena = '';
+        this.router.navigate(['/login'], {
+          state: {
+            successMessage:
+              '¡Registro exitoso! Iniciá sesión para continuar.'
+          }
+        });
       },
       error: (error) => {
         this.errorMessage = error.error?.message || 'Ocurrió un error al registrarse.';
@@ -79,12 +79,7 @@ export class RegisterClientPageComponent {
   }
 
   onCancelled() {
-    this.router.navigate(['/login']);
+    this.router.navigate(['/welcome']);
   }
-  showError(message: string) {
-    this.errorMessage = message;
-    setTimeout(() => {
-      this.errorMessage = '';
-    }, 5);
-  }
+  
 }

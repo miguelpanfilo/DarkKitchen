@@ -73,3 +73,12 @@
     color: #999;
     padding: 2rem;
   }
+  .form-group input[type="number"] {
+    width: 80px;
+  }
+
+ .form-group input,
+  .form-group select {
+    width: 200px;
+    box-sizing: border-box;
+  }

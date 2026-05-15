@@ -1,19 +1,26 @@
- <nav class="navbar">
-    <span class="brand">Dark Kitchen</span>
-    <div class="nav-links">
-      <a routerLink="/orders" routerLinkActive="active">Órdenes</a>
-      <a routerLink="/products" routerLinkActive="active">Productos</a>
-      <a routerLink="/users" routerLinkActive="active">Usuarios</a>
-      <a routerLink="/audit-logs"
-  routerLinkActive="active">Auditorías</a>
-      <a routerLink="/reports" routerLinkActive="active">Reportes</a>
-    </div>
-    <div class="user-info">
-      <span>{{ email }}</span>
-      <button (click)="onLogout()">Cerrar sesión</button>
-    </div>
-  </nav>
+<nav class="navbar">
+  <span class="brand">Dark Kitchen</span>
+  <div class="nav-links">
+    <a routerLink="/app/orders" routerLinkActive="active">Órdenes</a>
+    @if (isAdminOrClient) {
+    <a routerLink="/app/products" routerLinkActive="active">Productos</a>
+    <a routerLink="/app/promotions" routerLinkActive="active">Promociones</a>
+    }
+    @if (isAdmin) {
+    <a routerLink="/app/users" routerLinkActive="active">Usuarios</a>
+    <a routerLink="/app/audit-logs" routerLinkActive="active">Auditorías</a>
+    <a routerLink="/app/reports" routerLinkActive="active">Reportes</a>
+    }
+  </div>
+  <div class="user-info">
+    <span>{{ email }}</span>
+    <button class="btn-logout" (click)="onLogout()" title="Cerrar
+  sesión">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i>
+    </button>
+  </div>
+</nav>
 
-  <main class="content">
-    <router-outlet />
-  </main>
+<main class="content">
+  <router-outlet />
+</main>
