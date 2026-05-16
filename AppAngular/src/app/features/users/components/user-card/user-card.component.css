@@ -1,0 +1,37 @@
+ .user-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .user-info h3 {
+    color: #1a1a2e;
+    margin-bottom: 0.25rem;
+    font-size: 1rem;
+  }
+
+  .user-info p {
+    color: #666;
+    font-size: 0.85rem;
+    margin: 0.15rem 0;
+  }
+
+  .role {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.2rem 0.6rem;
+    background-color: #2c2c54;
+    color: #fff;
+    border-radius: 20px;
+    font-size: 0.75rem;
+  }
+
+  .user-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
