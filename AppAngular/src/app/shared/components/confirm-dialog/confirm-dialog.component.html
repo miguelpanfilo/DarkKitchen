@@ -1,0 +1,14 @@
+ @if (visible) {
+    <div class="overlay">
+      <div class="dialog">
+        <span class="icon">⚠️</span>
+        <p class="message">{{ message }}</p>
+        <div class="actions">
+          <button class="btn-cancel"
+  (click)="onCancel()">Cancelar</button>
+          <button class="btn-confirm"
+  (click)="onConfirm()">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  }

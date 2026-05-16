@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CancelButtonComponent } from
@@ -11,18 +11,27 @@ import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login-page',
-  imports: [FormsModule, CancelButtonComponent, SubmitButtonComponent,
-    FormCardComponent],
+  imports: [FormsModule, CancelButtonComponent, SubmitButtonComponent, FormCardComponent],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.css'
 })
-export class LoginPageComponent {
-  email = '';
-  contrasena = '';
-  errorMessage = '';
 
-  constructor(private authService: AuthService, private router:
-    Router) { }
+export class LoginPageComponent implements OnInit {
+    email = '';
+    contrasena = '';
+    errorMessage = '';
+    successMessage = '';
+
+    constructor(private authService: AuthService, private router:
+  Router) {}
+
+    ngOnInit() {
+      const nav = this.router.getCurrentNavigation()?.extras.state
+        ?? history.state;
+      if (nav?.successMessage) {
+        this.successMessage = nav.successMessage;
+      }
+    }
 
   onSubmit() {
     this.errorMessage = '';
@@ -31,7 +40,7 @@ export class LoginPageComponent {
         localStorage.setItem('sessionId', response.sessionId);
         localStorage.setItem('role', response.role);
         localStorage.setItem('email', this.email);
-        this.router.navigate(['/']);
+        this.router.navigate(['/app']);
       },
       error: (error) => {
         if (error.status === 401) {
@@ -44,8 +53,6 @@ export class LoginPageComponent {
   }
 
   onCancelled() {
-    this.email = '';
-    this.contrasena = '';
-    this.errorMessage = '';
+    this.router.navigate(['/welcome']);
   }
 }
