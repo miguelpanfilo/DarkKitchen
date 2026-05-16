@@ -22,8 +22,8 @@ export class UserService {
     });
   }
 
-   registerInternalUser(name: string, lastName: string, email: string,
-  phone: string, password: string, role: string): Observable<any> {
+  registerInternalUser(name: string, lastName: string, email: string,
+    phone: string, password: string, role: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/api/v1/users`, {
       Name: name,
       LastName: lastName,
@@ -32,13 +32,43 @@ export class UserService {
       Password: password,
       Role: role
     }, {
-      headers: { 'X-Session-Id': localStorage.getItem('sessionId') || ''
-   }
+      headers: {
+        'X-Session-Id': localStorage.getItem('sessionId') || ''
+      }
     });
   }
 
-   getUsers(): Observable<any[]> {
+  getUsers(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/api/v1/users`, {
+      headers: {
+        'X-Session-Id': localStorage.getItem('sessionId') || ''
+      }
+    });
+  }
+
+  updateUser(id: number, data: {
+    Name?: string; LastName?: string;
+    Email?: string; Phone?: string; Role?: string
+  }): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/api/v1/users/${id}`, data, {
+      headers: {
+        'X-Session-Id': localStorage.getItem('sessionId') || ''
+      }
+    });
+  }
+  deleteUser(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/api/v1/users/${id}`, {
+      headers: {'X-Session-Id':localStorage.getItem('sessionId') || ''
+      }
+    });
+  }
+
+  changePassword(id: number, oldPassword: string, newPassword: string):
+  Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/api/v1/users/${id}/password`, {
+      OldPassword: oldPassword,
+      NewPassword: newPassword
+    }, {
       headers: { 'X-Session-Id': localStorage.getItem('sessionId') || ''
    }
     });

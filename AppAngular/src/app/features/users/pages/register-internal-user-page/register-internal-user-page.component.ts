@@ -8,7 +8,8 @@ import { SubmitButtonComponent } from
 import { FormCardComponent } from
   '../../../../shared/components/form-card/form-card.component';
 import { UserService } from '../../services/user.service';
-
+ import { ROLES } from
+  '../../../../shared/constants/roles';
 @Component({
   selector: 'app-register-internal-user-page',
   imports: [FormsModule, CancelButtonComponent, SubmitButtonComponent,
@@ -29,12 +30,7 @@ export class RegisterInternalUserPageComponent {
   constructor(private userService: UserService, private router:
     Router) { }
 
-  roles = [
-    { value: 'Administrative', label: 'Administrador' },
-    { value: 'Preparer', label: 'Preparador' },
-    { value: 'Client', label: 'Cliente' }
-  ];
-    
+  roles = ROLES;
 
 
   onSubmit() {
@@ -66,6 +62,6 @@ export class RegisterInternalUserPageComponent {
   }
 
   onCancelled() {
-    this.router.navigate(['/']);
+    this.router.navigate(['/app']);
   }
 }

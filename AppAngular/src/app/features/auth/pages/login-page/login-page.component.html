@@ -3,6 +3,9 @@
       <h2>Iniciar sesión</h2>
       <form (ngSubmit)="onSubmit()">
         <div class="form-group">
+          @if (successMessage) {
+    <p class="success-message">{{ successMessage }}</p>
+  }
           <label>Email</label>
           <input type="email" [(ngModel)]="email" name="email"
   placeholder="tu@email.com" />
