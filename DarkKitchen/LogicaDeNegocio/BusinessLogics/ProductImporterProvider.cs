@@ -7,10 +7,7 @@ public class ProductImporterProvider(string pluginsPath) : IProductImporterProvi
 {
     public List<IProductImporter> GetImporters()
     {
-        if (!Directory.Exists(pluginsPath))
-        {
-            return [];
-        }
+        Directory.CreateDirectory(pluginsPath);
 
         return Directory
             .GetFiles(pluginsPath, "*.dll")

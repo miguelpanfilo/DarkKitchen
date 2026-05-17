@@ -9,6 +9,7 @@ using BusinessLogics.Shared;
 using BusinessLogics.ShippingTypes;
 using BusinessLogics.Users;
 using BusinessLogicsAbstractions;
+using BusinessLogicsAbstractions.Imports;
 using BusinessLogicsAbstractions.Orders;
 using BusinessLogicsAbstractions.Products;
 using BusinessLogicsAbstractions.Promotions;
@@ -36,6 +37,7 @@ public static class ServiceCollectionExtensions
         services.AddSharedServices();
         services.AddInitializationServices();
         services.AddAuditServices();
+        services.AddImportServices();
 
         return services;
     }
@@ -109,6 +111,20 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddInitializationServices(this IServiceCollection services)
     {
         services.AddScoped<IInitializationService, InitializationService>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddImportServices(this IServiceCollection services)
+    {
+        services.AddScoped<IProductImporterProvider>(_ =>
+        {
+            var pluginsPath = Path.Combine(AppContext.BaseDirectory, "plugins");
+
+            return new ProductImporterProvider(pluginsPath);
+        });
+
+        services.AddScoped<IProductImporterQueryService, ProductImporterQueryService>();
 
         return services;
     }
