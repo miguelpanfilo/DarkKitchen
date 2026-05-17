@@ -1,5 +1,6 @@
 using BusinessLogics;
 using BusinessLogicsAbstractions.Imports;
+using Contract.Importers;
 using FluentAssertions;
 
 namespace Tests.imports;
@@ -57,5 +58,9 @@ public class ProductImporterProviderTest
         public string Id => "TestProductImporter";
 
         public string Name => "Importador de prueba";
+        public List<ImportedProductDto> Import(Stream fileStream)
+        {
+            return [];
+        }
     }
 }

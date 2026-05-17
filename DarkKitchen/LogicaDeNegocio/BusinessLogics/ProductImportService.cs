@@ -8,6 +8,12 @@ public class ProductImportService(IProductImporterProvider importerProvider) : I
 {
     public List<ProductResponseDto> ImportProducts(ProductImportRequestDto request)
     {
-        throw new NotImplementedException();
+        var importer = importerProvider
+            .GetImporters()
+            .First(i => i.Name == request.ImporterName);
+
+        importer.Import(request.FileStream);
+
+        return [];
     }
 }
