@@ -7,5 +7,6 @@ public class ImportedProductDto
     public string Description { get; set; } = null!;
     public string CommercialLine { get; set; } = null!;
     public string Category { get; set; } = null!;
+    public decimal Price { get; set; }
     public List<string> PhotoPaths { get; set; } = [];
 }

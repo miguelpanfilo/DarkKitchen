@@ -1,10 +1,14 @@
+using BusinessLogicsAbstractions;
 using BusinessLogicsAbstractions.Imports;
+using BusinessLogicsAbstractions.Products;
 using Contract.Importers;
 using Contract.Products;
 
 namespace BusinessLogics;
 
-public class ProductImportService(IProductImporterProvider importerProvider) : IProductImportService
+public class ProductImportService(
+    IProductImporterProvider importerProvider,
+    IImportedProductCreatorService importedProductCreatorService) : IProductImportService
 {
     public List<ProductResponseDto> ImportProducts(ProductImportRequestDto request)
     {
@@ -12,8 +16,10 @@ public class ProductImportService(IProductImporterProvider importerProvider) : I
             .GetImporters()
             .First(i => i.Name == request.ImporterName);
 
-        importer.Import(request.FileStream);
+        var importedProducts = importer.Import(request.FileStream);
 
-        return [];
+        return importedProducts
+            .Select(importedProductCreatorService.CreateImportedProduct)
+            .ToList();
     }
 }
