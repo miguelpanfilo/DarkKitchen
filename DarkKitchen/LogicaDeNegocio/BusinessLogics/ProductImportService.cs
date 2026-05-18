@@ -1,4 +1,5 @@
 using BusinessLogicsAbstractions;
+using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.Imports;
 using BusinessLogicsAbstractions.Products;
 using Contract.Importers;
@@ -14,7 +15,11 @@ public class ProductImportService(
     {
         var importer = importerProvider
             .GetImporters()
-            .First(i => i.Name == request.ImporterName);
+            .FirstOrDefault(i => i.Name == request.ImporterName);
+        if(importer == null)
+        {
+            throw new NotFoundException($"No existe el importador {request.ImporterName}");
+        }
 
         var importedProducts = importer.Import(request.FileStream);
 
