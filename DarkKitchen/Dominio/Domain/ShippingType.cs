@@ -8,7 +8,7 @@ public class ShippingType
     public int Id { get; private set; }
     public string Name { get; private set; } = string.Empty;
     public decimal Cost { get; private set; }
-
+    private const decimal MinCost = 0;
     public static ShippingType MakeShippingType(string name, decimal cost)
     {
         return new ShippingType(name, cost);
@@ -40,7 +40,7 @@ public class ShippingType
 
     private static void ValidateName(string name)
     {
-        if (string.IsNullOrWhiteSpace(name))
+        if(string.IsNullOrWhiteSpace(name))
         {
             throw new ShippingTypeException("El nombre del tipo de envío no puede estar vacío.");
         }
@@ -48,7 +48,7 @@ public class ShippingType
 
     private static void ValidateCost(decimal cost)
     {
-        if (cost < 0)
+        if(cost < MinCost)
         {
             throw new ShippingTypeException("El costo del tipo de envío no puede ser negativo.");
         }

@@ -31,46 +31,29 @@ export class UserService {
       Phone: phone,
       Password: password,
       Role: role
-    }, {
-      headers: {
-        'X-Session-Id': localStorage.getItem('sessionId') || ''
-      }
     });
   }
 
   getUsers(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/api/v1/users`, {
-      headers: {
-        'X-Session-Id': localStorage.getItem('sessionId') || ''
-      }
-    });
+    return this.http.get<any[]>(`${this.apiUrl}/api/v1/users`);
   }
 
   updateUser(id: number, data: {
     Name?: string; LastName?: string;
     Email?: string; Phone?: string; Role?: string
   }): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/api/v1/users/${id}`, data, {
-      headers: {
-        'X-Session-Id': localStorage.getItem('sessionId') || ''
-      }
-    });
-  }
-  deleteUser(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/api/v1/users/${id}`, {
-      headers: {'X-Session-Id':localStorage.getItem('sessionId') || ''
-      }
-    });
+    return this.http.patch(`${this.apiUrl}/api/v1/users/${id}`, data);
   }
 
-  changePassword(id: number, oldPassword: string, newPassword: string):
-  Observable<void> {
+  deleteUser(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/api/v1/users/${id}`);
+  }
+
+  changePassword(id: number, oldPassword: string, newPassword:
+    string): Observable<void> {
     return this.http.patch<void>(`${this.apiUrl}/api/v1/users/${id}/password`, {
       OldPassword: oldPassword,
       NewPassword: newPassword
-    }, {
-      headers: { 'X-Session-Id': localStorage.getItem('sessionId') || ''
-   }
     });
   }
 }

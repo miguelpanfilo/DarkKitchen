@@ -12,7 +12,7 @@ export class AuditLogService {
   constructor(private http: HttpClient) { }
 
   getAuditLogs(entityName: string, dateFrom: string, dateTo: string,
-  entityId: string): Observable<any[]> {
+    entityId: string): Observable<any[]> {
     let params = new HttpParams();
 
     if (entityName) params = params.set('EntityName', entityName);
@@ -21,8 +21,6 @@ export class AuditLogService {
     if (entityId) params = params.set('EntityId', entityId);
 
     return this.http.get<any[]>(`${this.apiUrl}/api/v1/audits`, {
-      headers: { 'X-Session-Id': localStorage.getItem('sessionId') || ''
-   },
       params
     });
   }

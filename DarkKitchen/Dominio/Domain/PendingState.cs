@@ -1,3 +1,5 @@
+using Domain.Exceptions;
+
 namespace Domain;
 
 public class PendingState : IOrderState
@@ -13,11 +15,11 @@ public class PendingState : IOrderState
     }
 
     public IOrderState Dispatch() =>
-        throw new InvalidOperationException("Solo se puede poner en camino un pedido preparado");
+        throw new OrderException("Solo se puede poner en camino un pedido preparado");
 
     public IOrderState Deliver() =>
-        throw new InvalidOperationException("Solo se puede entregar un pedido en camino");
+        throw new OrderException("Solo se puede entregar un pedido en camino");
 
     public IOrderState MarkNotDelivered() =>
-        throw new InvalidOperationException("Solo se puede marcar como no entregado un pedido en camino");
+        throw new OrderException("Solo se puede marcar como no entregado un pedido en camino");
 }

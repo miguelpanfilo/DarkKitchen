@@ -1,3 +1,5 @@
+using Domain.Exceptions;
+
 namespace Tests.Orders;
 
 using Domain;
@@ -45,7 +47,7 @@ public class OrderStateTests
         Action act = () => state.Cancel();
 
         act.Should()
-            .Throw<InvalidOperationException>()
+            .Throw<OrderException>()
             .WithMessage("Solo se puede cancelar un pedido pendiente");
     }
 
@@ -86,7 +88,7 @@ public class OrderStateTests
 
         Action act = () => state.Delay();
 
-        act.Should().Throw<InvalidOperationException>();
+        act.Should().Throw<OrderException>();
     }
 
     [TestMethod]
@@ -117,7 +119,7 @@ public class OrderStateTests
         Action act = () => state.Dispatch();
 
         act.Should()
-            .Throw<InvalidOperationException>()
+            .Throw<OrderException>()
             .WithMessage("Solo se puede poner en camino un pedido preparado");
     }
 
@@ -129,7 +131,7 @@ public class OrderStateTests
         Action act = () => state.Dispatch();
 
         act.Should()
-            .Throw<InvalidOperationException>()
+            .Throw<OrderException>()
             .WithMessage("Primero se debe preparar el pedido");
     }
 
@@ -141,7 +143,7 @@ public class OrderStateTests
         Action act = () => state.Cancel();
 
         act.Should()
-            .Throw<InvalidOperationException>()
+            .Throw<OrderException>()
             .WithMessage("No es posible cancelar un pedido que ya esta en camino");
     }
 
@@ -168,7 +170,7 @@ public class OrderStateTests
         Action act = () => state.Delay();
 
         act.Should()
-            .Throw<InvalidOperationException>()
+            .Throw<OrderException>()
             .WithMessage("El pedido ya esta demorado");
     }
 
@@ -180,7 +182,7 @@ public class OrderStateTests
         Action act = () => state.Deliver();
 
         act.Should()
-            .Throw<InvalidOperationException>()
+            .Throw<OrderException>()
             .WithMessage("Solo se puede entregar un pedido en camino");
     }
 
@@ -192,7 +194,7 @@ public class OrderStateTests
         Action act = () => state.Dispatch();
 
         act.Should()
-            .Throw<InvalidOperationException>()
+            .Throw<OrderException>()
             .WithMessage("El pedido ya se encuentra en camino");
     }
 
@@ -204,7 +206,7 @@ public class OrderStateTests
         Action act = () => state.Deliver();
 
         act.Should()
-            .Throw<InvalidOperationException>()
+            .Throw<OrderException>()
             .WithMessage("El pedido ya se encuentra entregado");
     }
 
@@ -216,7 +218,7 @@ public class OrderStateTests
         Action act = () => state.Cancel();
 
         act.Should()
-            .Throw<InvalidOperationException>()
+            .Throw<OrderException>()
             .WithMessage("El pedido ya esta cancelado");
     }
 
@@ -228,7 +230,7 @@ public class OrderStateTests
         Action act = () => state.MarkNotDelivered();
 
         act.Should()
-            .Throw<InvalidOperationException>()
+            .Throw<OrderException>()
             .WithMessage("El pedido ya se encuentra como no entregado");
     }
 
@@ -240,7 +242,7 @@ public class OrderStateTests
         Action act = () => state.Prepare();
 
         act.Should()
-            .Throw<InvalidOperationException>()
+            .Throw<OrderException>()
             .WithMessage("El pedido ya se encuentra preparado");
     }
 
@@ -252,7 +254,7 @@ public class OrderStateTests
         Action act = () => state.Deliver();
 
         act.Should()
-            .Throw<InvalidOperationException>()
+            .Throw<OrderException>()
             .WithMessage("Primero hay que despachar el pedido");
     }
 
@@ -264,7 +266,7 @@ public class OrderStateTests
         Action act = () => state.Delay();
 
         act.Should()
-            .Throw<InvalidOperationException>()
+            .Throw<OrderException>()
             .WithMessage("No se puede demorar un pedido que ya esta en camino");
     }
 
@@ -276,7 +278,7 @@ public class OrderStateTests
         Action act = () => state.MarkNotDelivered();
 
         act.Should()
-            .Throw<InvalidOperationException>()
+            .Throw<OrderException>()
             .WithMessage("Solo se puede marcar como no entregado un pedido en camino");
     }
 
@@ -287,6 +289,6 @@ public class OrderStateTests
 
         Action act = () => state.Cancel();
 
-        act.Should().Throw<InvalidOperationException>();
+        act.Should().Throw<OrderException>();
     }
 }

@@ -74,7 +74,7 @@ public class OrderService(IOrderRepository orderRepository) : IOrderService
         {
             transition(order);
         }
-        catch(InvalidOperationException ex)
+        catch(OrderException ex)
         {
             throw new ConflictException(ex.Message);
         }
