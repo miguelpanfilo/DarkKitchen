@@ -1,12 +1,9 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { CancelButtonComponent } from
-  '../../../../shared/components/cancel-button/cancel-button.component';
-import { SubmitButtonComponent } from
-  '../../../../shared/components/submit-button/submit-button.component';
-import { FormCardComponent } from
-  '../../../../shared/components/form-card/form-card.component';
+import { CancelButtonComponent } from '../../../../shared/components/cancel-button/cancel-button.component';
+import { SubmitButtonComponent } from '../../../../shared/components/submit-button/submit-button.component';
+import { FormCardComponent } from '../../../../shared/components/form-card/form-card.component';
 import { UserService } from '../../services/user.service';
 
 @Component({
@@ -50,7 +47,7 @@ export class RegisterClientPageComponent {
       return;
     }
 
-    const phoneRegex = /^\+?[0-9]{8,15}$/;
+    const phoneRegex = /^09[1-9][0-9]{6}$/;
     if (!phoneRegex.test(this.telefono)) {
       this.errorMessage = 'El teléfono no es válido.';
       return;
@@ -81,5 +78,5 @@ export class RegisterClientPageComponent {
   onCancelled() {
     this.router.navigate(['/welcome']);
   }
-  
+
 }

@@ -30,8 +30,7 @@ export class RegisterInternalUserPageComponent {
   constructor(private userService: UserService, private router:
     Router) { }
 
-  roles = ROLES;
-
+roles = ROLES.filter(r => r.value !== 'Client');
 
   onSubmit() {
     this.errorMessage = '';
