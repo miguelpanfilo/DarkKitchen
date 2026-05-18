@@ -1,14 +1,13 @@
 using BusinessLogicsAbstractions.Promotions;
 using Contract.Products;
 using Contract.Promotions;
-using Contract.Users;
 using DarkKitchen.Controllers;
 using DarkKitchen.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace Pruebas.WebApi;
+namespace Tests.WebApi;
 
 [TestClass]
 public class CreatePromotionsControllerTests

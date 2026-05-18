@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace Pruebas.WebApi;
+namespace Tests.WebApi;
 
 [TestClass]
 public class SessionsControllerTests
