@@ -1,7 +1,9 @@
 using BusinessLogics;
 using BusinessLogicsAbstractions;
+using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.Imports;
 using Contract.Importers;
+using FluentAssertions;
 using Moq;
 
 namespace Tests.imports;
@@ -102,5 +104,30 @@ public class ProductImportServiceTest
                     dto.Price == 250 &&
                     dto.PhotoPaths.Count == 1)),
             Times.Once);
+    }
+
+    [TestMethod]
+    public void ImportProducts_WhenImporterDoesNotExist_ShouldThrowNotFoundException()
+    {
+        var importerProviderMock = new Mock<IProductImporterProvider>();
+        var productCreatorServiceMock = new Mock<IImportedProductCreatorService>();
+
+        importerProviderMock.Setup(p => p.GetImporters())
+            .Returns([]);
+
+        var service = new ProductImportService(
+            importerProviderMock.Object,
+            productCreatorServiceMock.Object);
+
+        var request = new ProductImportRequestDto
+        {
+            ImporterName = "CsvProductImporter",
+            FileName = "products.csv",
+            FileStream = new MemoryStream()
+        };
+
+        Action act = () => service.ImportProducts(request);
+
+        act.Should().Throw<NotFoundException>();
     }
 }
