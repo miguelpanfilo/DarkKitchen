@@ -26,10 +26,9 @@
         </select>
       </div>
 
-      <app-submit-button label="Guardar cambios" />
+      <app-submit-button label="Guardar cambios" [disabled]="isLoading" />
       <app-cancel-button (cancelled)="onCancelled()" />
     </form>
-    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
-
+    <app-status-messages [errorMessage]="errorMessage" />
   </app-form-card>
 </div>

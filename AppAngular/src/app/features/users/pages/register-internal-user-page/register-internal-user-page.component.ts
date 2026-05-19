@@ -11,10 +11,12 @@ import { FormCardComponent } from
 import { UserService } from '../../services/user.service';
 import { ROLES } from '../../../../shared/constants/roles';
 import { RegisterUserRequest } from '../../models/register-user-request.model';
+import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
+
 @Component({
   selector: 'app-register-internal-user-page',
   imports: [CommonModule, FormsModule, CancelButtonComponent, SubmitButtonComponent,
-    FormCardComponent],
+    FormCardComponent, StatusMessagesComponent],
   templateUrl: './register-internal-user-page.component.html',
   styleUrl: './register-internal-user-page.component.css'
 })
@@ -25,13 +27,13 @@ export class RegisterInternalUserPageComponent {
   telefono = '';
   contrasena = '';
   rol = '';
+  isLoading: boolean = false;
   errorMessage = '';
   successMessage = '';
+  roles = ROLES.filter(r => r.value !== 'Client');
 
   constructor(private userService: UserService, private router:
     Router) { }
-
-roles = ROLES.filter(r => r.value !== 'Client');
 
   onSubmit() {
     this.errorMessage = '';
@@ -53,8 +55,10 @@ roles = ROLES.filter(r => r.value !== 'Client');
       Role: this.rol
     };
 
+    this.isLoading = true;
     this.userService.registerInternalUser(request).subscribe({
       next: () => {
+        this.isLoading = false;
         this.successMessage = '¡Usuario registrado exitosamente!';
         this.nombre = '';
         this.apellido = '';
@@ -64,6 +68,7 @@ roles = ROLES.filter(r => r.value !== 'Client');
         this.rol = '';
       },
       error: (error) => {
+        this.isLoading = false;
         this.errorMessage = error.error?.message || 'Ocurrió un error al registrar el usuario.';
       }
     });

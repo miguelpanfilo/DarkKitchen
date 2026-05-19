@@ -29,10 +29,9 @@
           <option *ngFor="let role of roles" [value]="role.value">{{ role.label }}</option>
         </select>
       </div>
-      <app-submit-button label="Registrar" />
+      <app-submit-button label="Registrar" [disabled]="isLoading" />
       <app-cancel-button (cancelled)="onCancelled()" />
     </form>
-    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
-    <p *ngIf="successMessage" class="success-message">{{ successMessage }}</p>
+    <app-status-messages [errorMessage]="errorMessage" [successMessage]="successMessage" />
   </app-form-card>
 </div>

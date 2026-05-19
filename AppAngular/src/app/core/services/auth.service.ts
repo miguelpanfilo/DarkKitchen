@@ -25,7 +25,7 @@ export class AuthService {
     localStorage.setItem('email', email);
   }
 
-   hasSession(): boolean {
+  hasSession(): boolean {
     return !!localStorage.getItem('sessionId');
   }
 

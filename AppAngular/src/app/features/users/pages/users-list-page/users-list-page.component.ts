@@ -12,17 +12,20 @@ import { FilterButtonComponent } from '../../../../shared/components/filter-butt
 import { ClearButtonComponent } from '../../../../shared/components/clear-button/clear-button.component';
 import { User } from '../../models/user.model';
 import { FindUserRequest } from '../../models/find-user-request.model';
+import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
 
 @Component({
   selector: 'app-users-list-page',
   imports: [CommonModule, FormsModule, UserCardComponent, AddButtonComponent,
-    ConfirmDialogComponent, FilterButtonComponent, ClearButtonComponent],
+    ConfirmDialogComponent, FilterButtonComponent, ClearButtonComponent, StatusMessagesComponent],
   templateUrl: './users-list-page.component.html',
   styleUrl: './users-list-page.component.css'
 })
 export class UsersListPageComponent implements OnInit {
   users: User[] = [];
+  isLoading: boolean = false;
   errorMessage = '';
+  successMessage = '';
   showConfirmDialog = false;
   userToDelete: User | null = null;
   filterName = '';
@@ -30,7 +33,6 @@ export class UsersListPageComponent implements OnInit {
 
   constructor(private userService: UserService, private router: Router) { }
 
-  successMessage = '';
   ngOnInit() {
     const nav = this.router.getCurrentNavigation()?.extras.state ?? history.state;
     if (nav?.successMessage) {
@@ -40,6 +42,8 @@ export class UsersListPageComponent implements OnInit {
   }
 
   loadUsers() {
+    this.isLoading = true;
+    this.errorMessage = '';
     const filters: FindUserRequest = {
       name: this.filterName || undefined,
       lastName: this.filterLastName || undefined
@@ -47,10 +51,12 @@ export class UsersListPageComponent implements OnInit {
 
     this.userService.getUsers(filters).subscribe({
       next: (response) => {
+        this.isLoading = false;
         this.users = response;
       },
       error: (error) => {
-        this.errorMessage = error.error?.message || 'Error al cargar los usuarios.';
+        this.isLoading = false;
+        this.errorMessage = error.error?.message || 'Error al cargar los  usuarios.';
       }
     });
   }

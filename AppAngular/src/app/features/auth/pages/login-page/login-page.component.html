@@ -3,7 +3,6 @@
     <h2>Iniciar sesión</h2>
     <form (ngSubmit)="onSubmit()">
       <div class="form-group">
-        <p *ngIf="successMessage" class="success-message">{{ successMessage }}</p>
         <label>Email</label>
         <input type="email" [(ngModel)]="email" name="email" placeholder="tu@email.com" />
       </div>
@@ -11,10 +10,8 @@
         <label>Contraseña</label>
         <input type="password" [(ngModel)]="contrasena" name="contrasena" placeholder="••••••••" />
       </div>
-      <app-submit-button label="Entrar" />
-      <app-cancel-button (cancelled)="onCancelled()" />
+      <app-submit-button label="Entrar" [disabled]="isLoading" /> <app-cancel-button (cancelled)="onCancelled()" />
     </form>
-    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+    <app-status-messages [errorMessage]="errorMessage" [successMessage]="successMessage" />
   </app-form-card>
 </div>
-

@@ -17,21 +17,15 @@
     <app-clear-button (cleared)="onLimpiar()" />
   </div>
 
-  <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
-  <p *ngIf="successMessage" class="success-message">{{ successMessage }}</p>
-  <p *ngIf="users.length === 0" class="empty">No hay usuarios para mostrar.</p>
+  <app-status-messages [errorMessage]="errorMessage" [successMessage]="successMessage"
+    [isLoading]="isLoading" loadingText="Cargando usuarios..." />
+  <p *ngIf="!isLoading && users.length === 0 && !errorMessage" class="empty">No hay usuarios para mostrar.</p>
   <div *ngIf="users.length > 0" class="users-list">
-    <app-user-card
-      *ngFor="let user of users"
-      [user]="user"
-      (edit)="onEdit($event)"
-      (delete)="onDelete($event)"
+    <app-user-card *ngFor="let user of users" [user]="user" (edit)="onEdit($event)" (delete)="onDelete($event)"
       (changePassword)="onChangePassword($event)" />
   </div>
 
   <app-confirm-dialog
     [message]="'¿Estás seguro que querés eliminar al usuario ' + userToDelete?.name + ' ' + userToDelete?.lastName + '?'"
-    [visible]="showConfirmDialog"
-    (confirmed)="onConfirmDelete()"
-    (cancelled)="onCancelDelete()" />
+    [visible]="showConfirmDialog" (confirmed)="onConfirmDelete()" (cancelled)="onCancelDelete()" />
 </div>

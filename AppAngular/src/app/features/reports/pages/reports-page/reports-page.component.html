@@ -14,8 +14,7 @@
         <app-clear-button (cleared)="onLimpiar()" />
     </div>
 
-    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
-
+    <app-status-messages [errorMessage]="errorMessage" [isLoading]="isLoading" loadingText="Cargando reportes..." />
     <h3>Productos más vendidos</h3>
     <table class="report-table">
         <thead>

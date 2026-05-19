@@ -11,11 +11,12 @@ import { FormCardComponent } from
 import { UserService } from '../../services/user.service';
 import { ROLES } from '../../../../shared/constants/roles';
 import { UpdateUserRequest } from '../../models/update-user-request.model';
+import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
 
 @Component({
   selector: 'app-edit-user-page',
   imports: [CommonModule, FormsModule, CancelButtonComponent, SubmitButtonComponent,
-    FormCardComponent],
+    FormCardComponent, StatusMessagesComponent],
   templateUrl: './edit-user-page.component.html',
   styleUrl: './edit-user-page.component.css'
 })
@@ -27,9 +28,9 @@ export class EditUserPageComponent implements OnInit {
   email = '';
   telefono = '';
   rol = '';
+  isLoading: boolean = false;
   errorMessage = '';
   roles = ROLES;
-  
 
   constructor(private router: Router, private userService:
     UserService) { }
@@ -58,9 +59,14 @@ export class EditUserPageComponent implements OnInit {
       Role: this.rol
     };
 
+    this.isLoading = true;
     this.userService.updateUser(this.userId, request).subscribe({
-      next: () => this.router.navigate(['/app/users']),
+      next: () => {
+        this.isLoading = false;
+        this.router.navigate(['/app/users']);
+      },
       error: (err) => {
+        this.isLoading = false;
         this.errorMessage = err.error?.message || 'Error al modificar el usuario.';
       }
     });

@@ -22,10 +22,9 @@
         <label>Contraseña</label>
         <input type="password" [(ngModel)]="contrasena" name="contrasena" placeholder="••••••••" />
       </div>
-      <app-submit-button label="Registrarse" />
+      <app-submit-button label="Registrarse" [disabled]="isLoading" />
       <app-cancel-button (cancelled)="onCancelled()" />
     </form>
-    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
-    <p *ngIf="successMessage" class="success-message">{{ successMessage }}</p>
+    <app-status-messages [errorMessage]="errorMessage" [successMessage]="successMessage" />
   </app-form-card>
 </div>

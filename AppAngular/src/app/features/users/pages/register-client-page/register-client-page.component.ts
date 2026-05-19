@@ -7,11 +7,12 @@ import { SubmitButtonComponent } from '../../../../shared/components/submit-butt
 import { FormCardComponent } from '../../../../shared/components/form-card/form-card.component';
 import { UserService } from '../../services/user.service';
 import { RegisterClientRequest } from '../../models/register-client-request.model';
+import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
 
 @Component({
   selector: 'app-register-client-page',
   imports: [CommonModule, FormsModule, CancelButtonComponent, SubmitButtonComponent,
-    FormCardComponent],
+    FormCardComponent, StatusMessagesComponent],
   templateUrl: './register-client-page.component.html',
   styleUrl: './register-client-page.component.css'
 })
@@ -27,12 +28,13 @@ export class RegisterClientPageComponent {
   constructor(private userService: UserService, private router:
     Router) { }
 
+  isLoading: boolean = false;
+
   onSubmit() {
     this.errorMessage = '';
     this.successMessage = '';
-
-    if (!this.nombre.trim() || !this.apellido.trim() || !this.email.trim()
-      || !this.telefono.trim() || !this.contrasena.trim()) {
+    if (!this.nombre.trim() || !this.apellido.trim() ||
+      !this.email.trim() || !this.telefono.trim() || !this.contrasena.trim()) {
       this.errorMessage = 'Todos los campos son obligatorios.';
       return;
     }
@@ -70,13 +72,16 @@ export class RegisterClientPageComponent {
       Password: this.contrasena
     };
 
+    this.isLoading = true;
     this.userService.registerClient(request).subscribe({
       next: () => {
+        this.isLoading = false;
         this.router.navigate(['/login'], {
           state: { successMessage: '¡Registro exitoso! Iniciá sesión para continuar.' }
         });
       },
       error: (error) => {
+        this.isLoading = false;
         this.errorMessage = error.error?.message || 'Ocurrió un error al registrarse.';
       }
     });

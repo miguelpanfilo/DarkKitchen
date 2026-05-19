@@ -10,11 +10,12 @@ import { FormCardComponent } from
   '../../../../shared/components/form-card/form-card.component';
 import { UserService } from '../../services/user.service';
 import { ChangePasswordRequest } from '../../models/change-password-request.model';
+import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
 
 @Component({
   selector: 'app-change-password-page',
   imports: [CommonModule, FormsModule, CancelButtonComponent, SubmitButtonComponent,
-    FormCardComponent],
+    FormCardComponent, StatusMessagesComponent],
   templateUrl: './change-password-page.component.html',
   styleUrl: './change-password-page.component.css'
 })
@@ -24,6 +25,7 @@ export class ChangePasswordPageComponent implements OnInit {
   contrasenaActual = '';
   contrasenaNueva = '';
   confirmarContrasena = '';
+  isLoading: boolean = false;
   errorMessage = '';
   successMessage = '';
 
@@ -55,18 +57,20 @@ export class ChangePasswordPageComponent implements OnInit {
       NewPassword: this.contrasenaNueva
     };
 
+    this.isLoading = true;
     this.userService.changePassword(this.userId, request).subscribe({
       next: () => {
+        this.isLoading = false;
         this.router.navigate(['/app/users'], {
           state: { successMessage: 'Contraseña cambiada exitosamente.' }
         });
       },
       error: (err) => {
+        this.isLoading = false;
         this.errorMessage = err.error?.message || 'Error al cambiar la contraseña.';
       }
     });
   }
-
   onCancelled() {
     this.router.navigate(['/app/users']);
   }
