@@ -77,7 +77,7 @@ public class InitializationServiceTests
             UserRoles.Client);
 
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Internal role is not valid", result.ErrorMessage);
+        Assert.AreEqual("El rol no es válido para usuario interno", result.ErrorMessage);
     }
 
     [TestMethod]

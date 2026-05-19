@@ -3,7 +3,7 @@ using BusinessLogicsAbstractions.Users;
 using Contract.Users;
 using Moq;
 
-namespace Pruebas.Usuarios;
+namespace Tests.Users;
 
 [TestClass]
 public class UserServiceIntegrationTests

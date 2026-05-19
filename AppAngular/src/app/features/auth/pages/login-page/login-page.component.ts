@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CancelButtonComponent } from
@@ -7,39 +7,38 @@ import { SubmitButtonComponent } from
   '../../../../shared/components/submit-button/submit-button.component';
 import { FormCardComponent } from
   '../../../../shared/components/form-card/form-card.component';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login-page',
-  imports: [FormsModule, CancelButtonComponent, SubmitButtonComponent, FormCardComponent],
+  imports: [FormsModule, CancelButtonComponent, SubmitButtonComponent,
+    FormCardComponent],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.css'
 })
-
 export class LoginPageComponent implements OnInit {
-    email = '';
-    contrasena = '';
-    errorMessage = '';
-    successMessage = '';
+  email = '';
+  contrasena = '';
+  errorMessage = '';
+  successMessage = '';
 
-    constructor(private authService: AuthService, private router:
-  Router) {}
+  constructor(private authService: AuthService, private router:
+    Router) { }
 
-    ngOnInit() {
-      const nav = this.router.getCurrentNavigation()?.extras.state
-        ?? history.state;
-      if (nav?.successMessage) {
-        this.successMessage = nav.successMessage;
-      }
+  ngOnInit() {
+    const nav = this.router.getCurrentNavigation()?.extras.state ??
+      history.state;
+    if (nav?.successMessage) {
+      this.successMessage = nav.successMessage;
     }
+  }
 
   onSubmit() {
     this.errorMessage = '';
     this.authService.login(this.email, this.contrasena).subscribe({
       next: (response) => {
-        localStorage.setItem('sessionId', response.sessionId);
-        localStorage.setItem('role', response.role);
-        localStorage.setItem('email', this.email);
+        this.authService.saveSession(response.sessionId,
+          response.role, this.email);
         this.router.navigate(['/app']);
       },
       error: (error) => {

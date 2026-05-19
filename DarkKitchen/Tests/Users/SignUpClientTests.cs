@@ -7,7 +7,7 @@ using Domain;
 using Mappers;
 using Moq;
 
-namespace Tests.Usuarios;
+namespace Tests.Users;
 
 [TestClass]
 public class UserServiceTests

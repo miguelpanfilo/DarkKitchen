@@ -2,15 +2,11 @@
   <span class="brand">Dark Kitchen</span>
   <div class="nav-links">
     <a routerLink="/app/orders" routerLinkActive="active">Órdenes</a>
-    @if (isAdminOrClient) {
-    <a routerLink="/app/products" routerLinkActive="active">Productos</a>
-    <a routerLink="/app/promotions" routerLinkActive="active">Promociones</a>
-    }
-    @if (isAdmin) {
-    <a routerLink="/app/users" routerLinkActive="active">Usuarios</a>
-    <a routerLink="/app/audit-logs" routerLinkActive="active">Auditorías</a>
-    <a routerLink="/app/reports" routerLinkActive="active">Reportes</a>
-    }
+    <a *appHasRole="['Administrative', 'Client']" routerLink="/app/products" routerLinkActive="active">Productos</a>
+    <a *appHasRole="['Administrative', 'Client']" routerLink="/app/promotions" routerLinkActive="active">Promociones</a>
+    <a *appHasRole="['Administrative']" routerLink="/app/users" routerLinkActive="active">Usuarios</a>
+    <a *appHasRole="['Administrative']" routerLink="/app/audit-logs" routerLinkActive="active">Auditorías</a>
+    <a *appHasRole="['Administrative']" routerLink="/app/reports" routerLinkActive="active">Reportes</a>
   </div>
   <div class="user-info">
     <span>{{ email }}</span>

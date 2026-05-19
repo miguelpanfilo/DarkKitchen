@@ -5,7 +5,7 @@ using Domain;
 using Moq;
 using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
-namespace Tests.Usuarios;
+namespace Tests.Users;
 
 [TestClass]
 public class AdminValidationServiceTests

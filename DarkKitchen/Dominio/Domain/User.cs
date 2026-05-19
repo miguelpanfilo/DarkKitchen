@@ -10,6 +10,7 @@ public class User
     public Password Password { get; private set; }
     public UserRoles Role { get; private set; }
     public UserStatus Status { get; private set; }
+
     private User()
     {
         Email = null!;
@@ -21,90 +22,57 @@ public class User
     private const int MaxLastNameLength = 25;
 
     private static readonly string LastNameEmptyMessage = "El apellido no puede estar vacío";
-    private static readonly string LastNameLengthMessage = $"El apellido debe tener entre {MinLastNameLength} y {MaxLastNameLength} caracteres";
-    public static Result<User> MakeClient(string name, string lastName, string email, Phone phone, string password)
+
+    private static readonly string LastNameLengthMessage =
+        $"El apellido debe tener entre {MinLastNameLength} y {MaxLastNameLength} caracteres";
+
+    public static Result<User> MakeClient(string name, string lastName,
+        string email, Phone phone, string password) => BuildUser(name, lastName, email, phone, password, UserRoles.Client);
+
+    public static Result<User> MakeIntern(string name, string lastName,
+        string email, Phone phone, string password, UserRoles role)
     {
-        var nameResult = ValidateName(name);
-        if(!nameResult.Success)
+        if(role == UserRoles.Client)
         {
-            return Result<User>.Fail(nameResult.ErrorMessage!);
+            return Result<User>.Fail("El rol no es válido para usuario interno");
         }
 
-        var lastNameResult = ValidateLastName(lastName);
-        if(!lastNameResult.Success)
-        {
-            return Result<User>.Fail(lastNameResult.ErrorMessage!);
-        }
-
-        var emailResult = Email.TryMakeEmail(email);
-        if(!emailResult.Success)
-        {
-            return Result<User>.Fail(emailResult.ErrorMessage!);
-        }
-
-        var passwordResult = Password.TryMakePassword(password);
-        if(!passwordResult.Success)
-        {
-            return Result<User>.Fail(passwordResult.ErrorMessage!);
-        }
-
-        return Result<User>.Ok(
-            new User(
-                name,
-                lastName,
-                emailResult.Value!,
-                phone,
-                passwordResult.Value!,
-                UserRoles.Client));
+        return BuildUser(name, lastName, email, phone, password, role);
     }
 
-    public static Result<User> MakeIntern(
-        string name,
-        string lastName,
-        string email,
-        Phone phone,
-        string password,
+    private static Result<User> BuildUser(string name, string lastName, string email, Phone phone, string password,
         UserRoles role)
     {
-        var itsValidRole = role == UserRoles.Preparer || role == UserRoles.Administrative;
-
-        if(!itsValidRole)
-        {
-            return Result<User>.Fail("Internal role is not valid");
-        }
-
         var nameResult = ValidateName(name);
         if(!nameResult.Success)
         {
-            return Result<User>.Fail(nameResult.ErrorMessage!);
+            return
+                Result<User>.Fail(nameResult.ErrorMessage!);
         }
 
         var lastNameResult = ValidateLastName(lastName);
         if(!lastNameResult.Success)
         {
-            return Result<User>.Fail(lastNameResult.ErrorMessage!);
+            return
+                Result<User>.Fail(lastNameResult.ErrorMessage!);
         }
 
         var emailResult = Email.TryMakeEmail(email);
         if(!emailResult.Success)
         {
-            return Result<User>.Fail(emailResult.ErrorMessage!);
+            return
+                Result<User>.Fail(emailResult.ErrorMessage!);
         }
 
         var passwordResult = Password.TryMakePassword(password);
         if(!passwordResult.Success)
         {
-            return Result<User>.Fail(passwordResult.ErrorMessage!);
+            return
+                Result<User>.Fail(passwordResult.ErrorMessage!);
         }
 
-        return Result<User>.Ok(
-            new User(
-                name,
-                lastName,
-                emailResult.Value!,
-                phone,
-                passwordResult.Value!,
-                role));
+        return Result<User>.Ok(new User(name, lastName,
+            emailResult.Value!, phone, passwordResult.Value!, role));
     }
 
     private User(string name, string lastName, Email email, Phone phone, Password password, UserRoles role)
@@ -138,16 +106,16 @@ public class User
         return Result<bool>.Ok(true);
     }
 
-  private static Result<bool> ValidateLastName(string lastName)
+    private static Result<bool> ValidateLastName(string lastName)
     {
-        if (string.IsNullOrWhiteSpace(lastName))
+        if(string.IsNullOrWhiteSpace(lastName))
         {
             return Result<bool>.Fail(LastNameEmptyMessage);
         }
 
         var trimmedLastName = lastName.Trim();
 
-        if (trimmedLastName.Length < MinLastNameLength || trimmedLastName.Length > MaxLastNameLength)
+        if(trimmedLastName.Length < MinLastNameLength || trimmedLastName.Length > MaxLastNameLength)
         {
             return Result<bool>.Fail(LastNameLengthMessage);
         }

@@ -1,6 +1,6 @@
 using Domain;
 
-namespace Pruebas.Usuarios;
+namespace Tests.Users;
 
 [TestClass]
 public class PhoneTests
