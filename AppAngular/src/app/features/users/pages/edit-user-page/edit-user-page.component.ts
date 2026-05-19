@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CancelButtonComponent } from
@@ -8,12 +9,12 @@ import { SubmitButtonComponent } from
 import { FormCardComponent } from
   '../../../../shared/components/form-card/form-card.component';
 import { UserService } from '../../services/user.service';
-  import { ROLES } from
-  '../../../../shared/constants/roles';
+import { ROLES } from '../../../../shared/constants/roles';
+import { UpdateUserRequest } from '../../models/update-user-request.model';
 
 @Component({
   selector: 'app-edit-user-page',
-  imports: [FormsModule, CancelButtonComponent, SubmitButtonComponent,
+  imports: [CommonModule, FormsModule, CancelButtonComponent, SubmitButtonComponent,
     FormCardComponent],
   templateUrl: './edit-user-page.component.html',
   styleUrl: './edit-user-page.component.css'
@@ -49,13 +50,15 @@ export class EditUserPageComponent implements OnInit {
   }
 
   onSubmit() {
-    this.userService.updateUser(this.userId, {
+    const request: UpdateUserRequest = {
       Name: this.nombre,
       LastName: this.apellido,
       Email: this.email,
       Phone: this.telefono,
       Role: this.rol
-    }).subscribe({
+    };
+
+    this.userService.updateUser(this.userId, request).subscribe({
       next: () => this.router.navigate(['/app/users']),
       error: (err) => {
         this.errorMessage = err.error?.message || 'Error al modificar el usuario.';

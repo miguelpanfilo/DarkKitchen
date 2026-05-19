@@ -21,19 +21,17 @@ import { WelcomePageComponent } from
   './features/auth/pages/welcome-page/welcome-page.component';
 import { ReportsPageComponent } from
   './features/reports/pages/reports-page/reports-page.component';
+import { NotFoundComponent } from
+  './shared/components/not-found/not-found.component';
 
 export const routes: Routes = [
   {
-    path: '',
-    component: AuthLayoutComponent,
+    path: '', component: AuthLayoutComponent,
     children: [
       { path: '', redirectTo: 'welcome', pathMatch: 'full' },
       { path: 'welcome', component: WelcomePageComponent },
       { path: 'login', component: LoginPageComponent },
-      {
-        path: 'register-client', component:
-          RegisterClientPageComponent
-      },
+      { path: 'register-client', component:RegisterClientPageComponent},
     ]
   },
   {
@@ -70,5 +68,6 @@ export const routes: Routes = [
         canActivate: [roleGuard(['Administrative'])]
       },
     ]
-  }
+  },
+  { path: '**', component: NotFoundComponent }
 ];

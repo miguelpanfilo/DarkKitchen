@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReportService } from '../../services/report.service';
+import { TopProduct, SalesReport } from '../../models/report.model';
 import { FilterButtonComponent } from
   '../../../../shared/components/filter-button/filter-button.component';
 import { ClearButtonComponent } from
@@ -8,15 +10,15 @@ import { ClearButtonComponent } from
 
 @Component({
   selector: 'app-reports-page',
-  imports: [FormsModule, FilterButtonComponent, ClearButtonComponent],
+  imports: [CommonModule, FormsModule, FilterButtonComponent, ClearButtonComponent],
   templateUrl: './reports-page.component.html',
   styleUrl: './reports-page.component.css'
 })
 export class ReportsPageComponent {
   dateFrom = '';
   dateTo = '';
-  topProducts: any[] = [];
-  salesReport: any = null;
+  topProducts: TopProduct[] = [];
+  salesReport: SalesReport | null = null;
   errorMessage = '';
 
   constructor(private reportService: ReportService) { }

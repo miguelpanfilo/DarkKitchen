@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CancelButtonComponent } from
@@ -8,10 +9,11 @@ import { SubmitButtonComponent } from
 import { FormCardComponent } from
   '../../../../shared/components/form-card/form-card.component';
 import { AuthService } from '../../../../core/services/auth.service';
+import { LoginRequest } from '../../models/login-request.model';
 
 @Component({
   selector: 'app-login-page',
-  imports: [FormsModule, CancelButtonComponent, SubmitButtonComponent,
+  imports: [CommonModule, FormsModule, CancelButtonComponent, SubmitButtonComponent,
     FormCardComponent],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.css'
@@ -35,10 +37,15 @@ export class LoginPageComponent implements OnInit {
 
   onSubmit() {
     this.errorMessage = '';
-    this.authService.login(this.email, this.contrasena).subscribe({
+
+    const request: LoginRequest = {
+      Email: this.email,
+      Password: this.contrasena
+    };
+
+    this.authService.login(request).subscribe({
       next: (response) => {
-        this.authService.saveSession(response.sessionId,
-          response.role, this.email);
+        this.authService.saveSession(response.sessionId, response.role, this.email);
         this.router.navigate(['/app']);
       },
       error: (error) => {

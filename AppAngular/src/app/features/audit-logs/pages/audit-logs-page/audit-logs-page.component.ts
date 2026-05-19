@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DatePipe } from '@angular/common';
 import { FilterButtonComponent } from
   '../../../../shared/components/filter-button/filter-button.component';
 import { AuditLogService } from '../../services/audit-log.service';
+import { AuditLog } from '../../models/audit-log.model';
 import { ClearButtonComponent } from
   '../../../../shared/components/clear-button/clear-button.component';
 @Component({
   selector: 'app-audit-logs-page',
-  imports: [FormsModule, FilterButtonComponent, DatePipe, ClearButtonComponent],
+  imports: [CommonModule, FormsModule, FilterButtonComponent, ClearButtonComponent],
   templateUrl: './audit-logs-page.component.html',
   styleUrl: './audit-logs-page.component.css'
 })
@@ -17,7 +18,7 @@ export class AuditLogsPageComponent {
   fechaHasta = '';
   entidad = '';
   entityId = '';
-  auditLogs: any[] = [];
+  auditLogs: AuditLog[] = [];
   errorMessage = '';
 
   constructor(private auditLogService: AuditLogService) { }

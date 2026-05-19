@@ -26,9 +26,7 @@
         <app-clear-button (cleared)="onLimpiar()" />
     </div>
 
-    @if (errorMessage) {
-    <p class="error-message">{{ errorMessage }}</p>
-    }
+    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
 
     <table class="audit-table">
         <thead>
@@ -41,22 +39,16 @@
             </tr>
         </thead>
         <tbody>
-            @if (auditLogs.length === 0) {
-            <tr>
-                <td colspan="5" class="empty">No hay registros para
-                    mostrar.</td>
+            <tr *ngIf="auditLogs.length === 0">
+                <td colspan="5" class="empty">No hay registros para mostrar.</td>
             </tr>
-            } @else {
-            @for (log of auditLogs; track log.entityId) {
-            <tr>
+            <tr *ngFor="let log of auditLogs">
                 <td>{{ log.dateTime | date:'dd/MM/yyyy HH:mm' }}</td>
                 <td>{{ log.entityName }}</td>
                 <td>{{ log.entityId }}</td>
                 <td>{{ log.changeDescription }}</td>
                 <td>{{ log.responsibleUser }}</td>
             </tr>
-            }
-            }
         </tbody>
     </table>
 </div>

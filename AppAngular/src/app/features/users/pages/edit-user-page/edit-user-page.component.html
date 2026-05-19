@@ -22,19 +22,14 @@
         <label>Rol</label>
         <select [(ngModel)]="rol" name="rol">
           <option value="">Seleccioná un rol</option>
-          @for (r of roles; track r.value) {
-          <option [value]="r.value">{{ r.label
-            }}</option>
-          }
+          <option *ngFor="let r of roles" [value]="r.value">{{ r.label }}</option>
         </select>
       </div>
 
       <app-submit-button label="Guardar cambios" />
       <app-cancel-button (cancelled)="onCancelled()" />
     </form>
-    @if (errorMessage) {
-    <p class="error-message">{{ errorMessage }}</p>
-    }
+    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
 
   </app-form-card>
 </div>
