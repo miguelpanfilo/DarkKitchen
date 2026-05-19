@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
-import { HasRoleDirective } from
-  '../../shared/directives/has-role.directive';
+import { HasRoleDirective } from '../../shared/directives/has-role.directive';
 
 @Component({
   selector: 'app-main-layout',

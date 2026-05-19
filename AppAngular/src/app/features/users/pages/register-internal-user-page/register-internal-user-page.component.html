@@ -26,19 +26,12 @@
         <label>Rol</label>
         <select [(ngModel)]="rol" name="rol">
           <option value="">Seleccioná un rol</option>
-          @for (role of roles; track role.value) {
-          <option [value]="role.value">{{ role.label }}</option>
-          }
+          <option *ngFor="let role of roles" [value]="role.value">{{ role.label }}</option>
         </select>
       </div>
-      <app-submit-button label="Registrar" />
+      <app-submit-button label="Registrar" [disabled]="isLoading" />
       <app-cancel-button (cancelled)="onCancelled()" />
     </form>
-    @if (errorMessage) {
-    <p class="error-message">{{ errorMessage }}</p>
-    }
-    @if (successMessage) {
-    <p class="success-message">{{ successMessage }}</p>
-    }
+    <app-status-messages [errorMessage]="errorMessage" [successMessage]="successMessage" />
   </app-form-card>
 </div>

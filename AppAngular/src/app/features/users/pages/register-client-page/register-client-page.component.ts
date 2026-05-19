@@ -1,15 +1,18 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CancelButtonComponent } from '../../../../shared/components/cancel-button/cancel-button.component';
 import { SubmitButtonComponent } from '../../../../shared/components/submit-button/submit-button.component';
 import { FormCardComponent } from '../../../../shared/components/form-card/form-card.component';
 import { UserService } from '../../services/user.service';
+import { RegisterClientRequest } from '../../models/register-client-request.model';
+import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
 
 @Component({
   selector: 'app-register-client-page',
-  imports: [FormsModule, CancelButtonComponent, SubmitButtonComponent,
-    FormCardComponent],
+  imports: [CommonModule, FormsModule, CancelButtonComponent, SubmitButtonComponent,
+    FormCardComponent, StatusMessagesComponent],
   templateUrl: './register-client-page.component.html',
   styleUrl: './register-client-page.component.css'
 })
@@ -25,12 +28,13 @@ export class RegisterClientPageComponent {
   constructor(private userService: UserService, private router:
     Router) { }
 
+  isLoading: boolean = false;
+
   onSubmit() {
     this.errorMessage = '';
     this.successMessage = '';
-
-    if (!this.nombre.trim() || !this.apellido.trim() || !this.email.trim()
-      || !this.telefono.trim() || !this.contrasena.trim()) {
+    if (!this.nombre.trim() || !this.apellido.trim() ||
+      !this.email.trim() || !this.telefono.trim() || !this.contrasena.trim()) {
       this.errorMessage = 'Todos los campos son obligatorios.';
       return;
     }
@@ -60,16 +64,24 @@ export class RegisterClientPageComponent {
       return;
     }
 
-    this.userService.registerClient(this.nombre, this.apellido, this.email, this.telefono, this.contrasena).subscribe({
+    const request: RegisterClientRequest = {
+      Name: this.nombre,
+      LastName: this.apellido,
+      Email: this.email,
+      Phone: this.telefono,
+      Password: this.contrasena
+    };
+
+    this.isLoading = true;
+    this.userService.registerClient(request).subscribe({
       next: () => {
+        this.isLoading = false;
         this.router.navigate(['/login'], {
-          state: {
-            successMessage:
-              '¡Registro exitoso! Iniciá sesión para continuar.'
-          }
+          state: { successMessage: '¡Registro exitoso! Iniciá sesión para continuar.' }
         });
       },
       error: (error) => {
+        this.isLoading = false;
         this.errorMessage = error.error?.message || 'Ocurrió un error al registrarse.';
       }
     });

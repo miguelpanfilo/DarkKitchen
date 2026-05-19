@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CancelButtonComponent } from
@@ -8,13 +9,14 @@ import { SubmitButtonComponent } from
 import { FormCardComponent } from
   '../../../../shared/components/form-card/form-card.component';
 import { UserService } from '../../services/user.service';
-  import { ROLES } from
-  '../../../../shared/constants/roles';
+import { ROLES } from '../../../../shared/constants/roles';
+import { UpdateUserRequest } from '../../models/update-user-request.model';
+import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
 
 @Component({
   selector: 'app-edit-user-page',
-  imports: [FormsModule, CancelButtonComponent, SubmitButtonComponent,
-    FormCardComponent],
+  imports: [CommonModule, FormsModule, CancelButtonComponent, SubmitButtonComponent,
+    FormCardComponent, StatusMessagesComponent],
   templateUrl: './edit-user-page.component.html',
   styleUrl: './edit-user-page.component.css'
 })
@@ -26,9 +28,9 @@ export class EditUserPageComponent implements OnInit {
   email = '';
   telefono = '';
   rol = '';
+  isLoading: boolean = false;
   errorMessage = '';
   roles = ROLES;
-  
 
   constructor(private router: Router, private userService:
     UserService) { }
@@ -49,15 +51,22 @@ export class EditUserPageComponent implements OnInit {
   }
 
   onSubmit() {
-    this.userService.updateUser(this.userId, {
+    const request: UpdateUserRequest = {
       Name: this.nombre,
       LastName: this.apellido,
       Email: this.email,
       Phone: this.telefono,
       Role: this.rol
-    }).subscribe({
-      next: () => this.router.navigate(['/app/users']),
+    };
+
+    this.isLoading = true;
+    this.userService.updateUser(this.userId, request).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.router.navigate(['/app/users']);
+      },
       error: (err) => {
+        this.isLoading = false;
         this.errorMessage = err.error?.message || 'Error al modificar el usuario.';
       }
     });

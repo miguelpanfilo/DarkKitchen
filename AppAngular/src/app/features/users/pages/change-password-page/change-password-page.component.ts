@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CancelButtonComponent } from
@@ -8,11 +9,13 @@ import { SubmitButtonComponent } from
 import { FormCardComponent } from
   '../../../../shared/components/form-card/form-card.component';
 import { UserService } from '../../services/user.service';
+import { ChangePasswordRequest } from '../../models/change-password-request.model';
+import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
 
 @Component({
   selector: 'app-change-password-page',
-  imports: [FormsModule, CancelButtonComponent, SubmitButtonComponent,
-    FormCardComponent],
+  imports: [CommonModule, FormsModule, CancelButtonComponent, SubmitButtonComponent,
+    FormCardComponent, StatusMessagesComponent],
   templateUrl: './change-password-page.component.html',
   styleUrl: './change-password-page.component.css'
 })
@@ -22,6 +25,7 @@ export class ChangePasswordPageComponent implements OnInit {
   contrasenaActual = '';
   contrasenaNueva = '';
   confirmarContrasena = '';
+  isLoading: boolean = false;
   errorMessage = '';
   successMessage = '';
 
@@ -48,22 +52,25 @@ export class ChangePasswordPageComponent implements OnInit {
       return;
     }
 
-    this.userService.changePassword(this.userId,
-      this.contrasenaActual, this.contrasenaNueva).subscribe({
-        next: () => {
-          this.router.navigate(['/app/users'], {
-            state: {
-              successMessage:
-                'Contraseña cambiada exitosamente.'
-            }
-          });
-        },  
-        error: (err) => {
-          this.errorMessage = err.error?.message || 'Error al cambiar la contraseña.';
-        }
-      });
-  }
+    const request: ChangePasswordRequest = {
+      OldPassword: this.contrasenaActual,
+      NewPassword: this.contrasenaNueva
+    };
 
+    this.isLoading = true;
+    this.userService.changePassword(this.userId, request).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.router.navigate(['/app/users'], {
+          state: { successMessage: 'Contraseña cambiada exitosamente.' }
+        });
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.errorMessage = err.error?.message || 'Error al cambiar la contraseña.';
+      }
+    });
+  }
   onCancelled() {
     this.router.navigate(['/app/users']);
   }
