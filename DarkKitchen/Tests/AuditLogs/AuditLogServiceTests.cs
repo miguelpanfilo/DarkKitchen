@@ -21,7 +21,8 @@ public class AuditLogServiceTests
 
         repoMock.Setup(r => r.Add(It.IsAny<AuditLog>()));
 
-        var service = new AuditLogService(repoMock.Object);
+        var watchMock = new Mock<IWatch>();
+        var service = new AuditLogService(repoMock.Object, watchMock.Object);
 
         service.Register(AuditedEntities.Product, 5,AuditDescriptions.ProductCreated, "admin@dark.com");
 
@@ -32,7 +33,8 @@ public class AuditLogServiceTests
     public void GetByFilters_MissingDateFrom_ThrowsValidationException()
     {
         var repoMock = new Mock<IAuditLogRepository>(MockBehavior.Strict);
-        var service = new AuditLogService(repoMock.Object);
+        var watchMock = new Mock<IWatch>();
+        var service = new AuditLogService(repoMock.Object, watchMock.Object);
 
         var request = new AuditLogFilterRequest
         {
@@ -53,7 +55,8 @@ public class AuditLogServiceTests
     {
         var repoMock = new Mock<IAuditLogRepository>(MockBehavior.Strict);
 
-        var service = new AuditLogService(repoMock.Object);
+        var watchMock = new Mock<IWatch>();
+        var service = new AuditLogService(repoMock.Object, watchMock.Object);
 
         var request = new AuditLogFilterRequest
         {
@@ -75,7 +78,8 @@ public class AuditLogServiceTests
     {
         var repoMock = new Mock<IAuditLogRepository>(MockBehavior.Strict);
 
-        var service = new AuditLogService(repoMock.Object);
+        var watchMock = new Mock<IWatch>();
+        var service = new AuditLogService(repoMock.Object, watchMock.Object);
 
         var request = new AuditLogFilterRequest
         {
@@ -96,7 +100,8 @@ public class AuditLogServiceTests
     {
         var repoMock = new Mock<IAuditLogRepository>(MockBehavior.Strict);
 
-        var service = new AuditLogService(repoMock.Object);
+        var watchMock = new Mock<IWatch>();
+        var service = new AuditLogService(repoMock.Object, watchMock.Object);
 
         var request = new AuditLogFilterRequest
         {
@@ -116,7 +121,8 @@ public class AuditLogServiceTests
     public void GetByFilters_MissingEntityId_ThrowsValidationException()
     {
         var repoMock = new Mock<IAuditLogRepository>(MockBehavior.Strict);
-        var service = new AuditLogService(repoMock.Object);
+        var watchMock = new Mock<IWatch>();
+        var service = new AuditLogService(repoMock.Object, watchMock.Object);
 
         var request = new AuditLogFilterRequest
         {
@@ -158,7 +164,8 @@ public class AuditLogServiceTests
                 5))
             .Returns(logsFromRepo);
 
-        var service = new AuditLogService(repoMock.Object);
+        var watchMock = new Mock<IWatch>();
+        var service = new AuditLogService(repoMock.Object, watchMock.Object);
 
         var request = new AuditLogFilterRequest
         {
@@ -497,7 +504,8 @@ public class AuditLogServiceTests
             .Setup(r => r.Add(It.IsAny<AuditLog>()))
             .Callback<AuditLog>(log => savedLog = log);
 
-        var service = new AuditLogService(repoMock.Object);
+        var watchMock = new Mock<IWatch>();
+        var service = new AuditLogService(repoMock.Object, watchMock.Object);
 
         service.Register(AuditedEntities.Product, 5,AuditDescriptions.ProductCreated, "admin@dark.com");
 
