@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -19,7 +20,7 @@ import { StatusMessagesComponent } from '../../../../shared/components/status-me
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.css'
 })
-export class LoginPageComponent implements OnInit {
+export class LoginPageComponent implements OnInit, OnDestroy {
   email = '';
   contrasena = '';
   isLoading: boolean = false;
@@ -27,6 +28,12 @@ export class LoginPageComponent implements OnInit {
   successMessage = '';
 
   constructor(private authService: AuthService, private router: Router) { }
+
+  private subs = new Subscription();
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
 
   ngOnInit() {
     const nav = this.router.getCurrentNavigation()?.extras.state ??
@@ -45,11 +52,17 @@ export class LoginPageComponent implements OnInit {
       Password: this.contrasena
     };
 
-    this.authService.login(request).subscribe({
+    this.subs.add(this.authService.login(request).subscribe({
       next: (response) => {
         this.isLoading = false;
         this.authService.saveSession(response.sessionId, response.role, this.email);
-        this.router.navigate(['/app']);
+        const redirectUrl = localStorage.getItem('redirectUrl');
+        if (redirectUrl) {
+          localStorage.removeItem('redirectUrl');
+          this.router.navigate([redirectUrl]);
+        } else {
+          this.router.navigate(['/app']);
+        }
       },
       error: (error) => {
         this.isLoading = false;
@@ -59,7 +72,7 @@ export class LoginPageComponent implements OnInit {
           this.errorMessage = 'Ocurrió un error. Intentá de nuevo.';
         }
       }
-    });
+    }));
   }
 
   onCancelled() {

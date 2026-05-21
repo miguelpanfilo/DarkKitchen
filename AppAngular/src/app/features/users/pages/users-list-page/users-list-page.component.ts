@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -21,7 +22,7 @@ import { StatusMessagesComponent } from '../../../../shared/components/status-me
   templateUrl: './users-list-page.component.html',
   styleUrl: './users-list-page.component.css'
 })
-export class UsersListPageComponent implements OnInit {
+export class UsersListPageComponent implements OnInit, OnDestroy {
   users: User[] = [];
   isLoading: boolean = false;
   errorMessage = '';
@@ -30,8 +31,13 @@ export class UsersListPageComponent implements OnInit {
   userToDelete: User | null = null;
   filterName = '';
   filterLastName = '';
+  private subs = new Subscription();
 
   constructor(private userService: UserService, private router: Router) { }
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
 
   ngOnInit() {
     this.loadNavigationState();
@@ -53,7 +59,7 @@ export class UsersListPageComponent implements OnInit {
       lastName: this.filterLastName || undefined
     };
 
-    this.userService.getUsers(filters).subscribe({
+    this.subs.add(this.userService.getUsers(filters).subscribe({
       next: (response) => {
         this.isLoading = false;
         this.users = response;
@@ -62,7 +68,7 @@ export class UsersListPageComponent implements OnInit {
         this.isLoading = false;
         this.errorMessage = error.error?.message || 'Error al cargar los  usuarios.';
       }
-    });
+    }));
   }
 
   onAdd() {
@@ -92,7 +98,7 @@ export class UsersListPageComponent implements OnInit {
     if (!this.userToDelete) return;
 
     const id = this.userToDelete.id;
-    this.userService.deleteUser(id).subscribe({
+    this.subs.add(this.userService.deleteUser(id).subscribe({
       next: () => {
         this.users = this.users.filter(u => u.id !== id);
         this.showConfirmDialog = false;
@@ -102,7 +108,7 @@ export class UsersListPageComponent implements OnInit {
         this.errorMessage = error.error?.message || 'Error al eliminar el usuario.';
         this.showConfirmDialog = false;
       }
-    });
+    }));
   }
 
   onCancelDelete() {

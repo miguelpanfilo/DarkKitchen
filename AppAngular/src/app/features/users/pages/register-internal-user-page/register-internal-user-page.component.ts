@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -20,7 +21,7 @@ import { StatusMessagesComponent } from '../../../../shared/components/status-me
   templateUrl: './register-internal-user-page.component.html',
   styleUrl: './register-internal-user-page.component.css'
 })
-export class RegisterInternalUserPageComponent {
+export class RegisterInternalUserPageComponent implements OnDestroy {
   nombre = '';
   apellido = '';
   email = '';
@@ -35,6 +36,12 @@ export class RegisterInternalUserPageComponent {
 
   constructor(private userService: UserService, private router:
     Router) { }
+
+  private subs = new Subscription();
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
 
   onSubmit() {
     this.submitted = true;
@@ -57,7 +64,7 @@ export class RegisterInternalUserPageComponent {
     };
 
     this.isLoading = true;
-    this.userService.registerInternalUser(request).subscribe({
+    this.subs.add(this.userService.registerInternalUser(request).subscribe({
       next: () => {
         this.isLoading = false;
         this.submitted = false;
@@ -73,7 +80,7 @@ export class RegisterInternalUserPageComponent {
         this.isLoading = false;
         this.errorMessage = error.error?.message || 'Ocurrió un error al registrar el usuario.';
       }
-    });
+    }));
   }
 
   onCancelled() {

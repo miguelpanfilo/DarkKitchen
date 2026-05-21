@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -19,7 +20,7 @@ import { StatusMessagesComponent } from '../../../../shared/components/status-me
   templateUrl: './change-password-page.component.html',
   styleUrl: './change-password-page.component.css'
 })
-export class ChangePasswordPageComponent implements OnInit {
+export class ChangePasswordPageComponent implements OnInit, OnDestroy {
   userId = 0;
   userName = '';
   contrasenaActual = '';
@@ -29,9 +30,14 @@ export class ChangePasswordPageComponent implements OnInit {
   errorMessage = '';
   successMessage = '';
   submitted = false;
+  private subs = new Subscription();
 
   constructor(private router: Router, private userService:
     UserService) { }
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
 
   ngOnInit() {
     this.loadUserFromState();
@@ -68,7 +74,7 @@ export class ChangePasswordPageComponent implements OnInit {
     };
 
     this.isLoading = true;
-    this.userService.changePassword(this.userId, request).subscribe({
+    this.subs.add(this.userService.changePassword(this.userId, request).subscribe({
       next: () => {
         this.isLoading = false;
         this.router.navigate(['/app/users'], {
@@ -79,7 +85,7 @@ export class ChangePasswordPageComponent implements OnInit {
         this.isLoading = false;
         this.errorMessage = err.error?.message || 'Error al cambiar la contraseña.';
       }
-    });
+    }));
   }
   onCancelled() {
     this.router.navigate(['/app/users']);
