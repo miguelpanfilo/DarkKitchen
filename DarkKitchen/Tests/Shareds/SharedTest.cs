@@ -29,10 +29,13 @@ public class SharedTest
     public void GivenWatchSystem_WhenGettingNow_ThenReturnsCurrentDateTime()
     {
         var watch = new WatchSystem();
+        var uruguayZone = TimeZoneInfo.FindSystemTimeZoneById("America/Montevideo");
 
-        var before = DateTime.Now;
+        var before = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow,
+            uruguayZone);
         var result = watch.Now();
-        var after = DateTime.Now;
+        var after = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow,
+            uruguayZone);
 
         Assert.IsTrue(result >= before);
         Assert.IsTrue(result <= after);
