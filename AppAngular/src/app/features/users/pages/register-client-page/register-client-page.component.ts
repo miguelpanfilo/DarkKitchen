@@ -24,6 +24,7 @@ export class RegisterClientPageComponent {
   contrasena = '';
   errorMessage = '';
   successMessage = '';
+  submitted = false;
 
   constructor(private userService: UserService, private router:
     Router) { }
@@ -31,11 +32,11 @@ export class RegisterClientPageComponent {
   isLoading: boolean = false;
 
   onSubmit() {
+    this.submitted = true;
     this.errorMessage = '';
     this.successMessage = '';
     if (!this.nombre.trim() || !this.apellido.trim() ||
       !this.email.trim() || !this.telefono.trim() || !this.contrasena.trim()) {
-      this.errorMessage = 'Todos los campos son obligatorios.';
       return;
     }
 

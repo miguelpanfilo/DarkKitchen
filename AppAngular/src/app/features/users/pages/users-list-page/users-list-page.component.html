@@ -1,17 +1,17 @@
 <div class="users-container">
   <div class="users-header">
-    <h2>Usuarios</h2>
+    <h1>Usuarios</h1>
     <app-add-button label="Agregar usuario" (clicked)="onAdd()" />
   </div>
 
   <div class="filters">
     <div class="form-group">
-      <label>Nombre</label>
-      <input type="text" [(ngModel)]="filterName" name="filterName" placeholder="Buscar por nombre" />
+      <label for="filterName">Nombre</label>
+      <input id="filterName" type="text" [(ngModel)]="filterName" name="filterName" placeholder="Buscar por nombre" />
     </div>
     <div class="form-group">
-      <label>Apellido</label>
-      <input type="text" [(ngModel)]="filterLastName" name="filterLastName" placeholder="Buscar por apellido" />
+      <label for="filterLastName">Apellido</label>
+      <input id="filterLastName" type="text" [(ngModel)]="filterLastName" name="filterLastName" placeholder="Buscar por apellido" />
     </div>
     <app-filter-button (filtered)="onFiltrar()" />
     <app-clear-button (cleared)="onLimpiar()" />

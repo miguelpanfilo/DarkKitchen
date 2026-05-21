@@ -1,26 +1,26 @@
 <div class="audit-container">
-    <h2>Auditorías</h2>
+    <h1>Auditorías</h1>
 
     <div class="filters">
         <div class="form-group">
-            <label>Entidad</label>
-            <select [(ngModel)]="entidad" name="entidad">
+            <label for="entidad">Entidad</label>
+            <select id="entidad" [(ngModel)]="entidad" name="entidad">
                 <option value="">Seleccioná una entidad</option>
                 <option value="PRODUCTO">Producto</option>
                 <option value="PROMOCION">Promoción</option>
             </select>
         </div>
         <div class="form-group">
-            <label>ID Entidad</label>
-            <input type="number" [(ngModel)]="entityId" name="entityId" placeholder="Ej: 1" />
+            <label for="entityId">ID Entidad</label>
+            <input id="entityId" type="number" [(ngModel)]="entityId" name="entityId" placeholder="Ej: 1" />
         </div>
         <div class="form-group">
-            <label>Fecha desde</label>
-            <input type="datetime-local" [(ngModel)]="fechaDesde" name="fechaDesde" />
+            <label for="fechaDesde">Fecha desde</label>
+            <input id="fechaDesde" type="datetime-local" [(ngModel)]="fechaDesde" name="fechaDesde" />
         </div>
         <div class="form-group">
-            <label>Fecha hasta</label>
-            <input type="datetime-local" [(ngModel)]="fechaHasta" name="fechaHasta" />
+            <label for="fechaHasta">Fecha hasta</label>
+            <input id="fechaHasta" type="datetime-local" [(ngModel)]="fechaHasta" name="fechaHasta" />
         </div>
         <app-filter-button (filtered)="onFiltrar()" />
         <app-clear-button (cleared)="onLimpiar()" />
@@ -28,6 +28,7 @@
 
     <app-status-messages [errorMessage]="errorMessage" [isLoading]="isLoading" loadingText="Cargando auditorías..." />
     <table class="audit-table">
+        <caption>Registros de auditoría</caption>
         <thead>
             <tr>
                 <th>Fecha y hora</th>

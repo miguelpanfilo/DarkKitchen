@@ -1,18 +1,20 @@
 using BusinessLogicsAbstractions;
 using BusinessLogicsAbstractions.Exceptions;
+using BusinessLogicsAbstractions.Users;
 using Contract;
 using DataAccessAbstractions;
 using Domain;
 
 namespace BusinessLogics;
 
-public class AuditLogService(IAuditLogRepository repository) : IAuditLogService
+public class AuditLogService(IAuditLogRepository repository, IWatch watch) : IAuditLogService
 {
    public void Register(string entityName, int entityId, string
         description, string responsibleUser)
     {
         var auditLog = new AuditLog
         {
+            DateTime = watch.Now(),
             EntityName = entityName,
             EntityId = entityId,
             ChangeDescription = description,

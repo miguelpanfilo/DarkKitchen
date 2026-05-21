@@ -28,11 +28,16 @@ export class ChangePasswordPageComponent implements OnInit {
   isLoading: boolean = false;
   errorMessage = '';
   successMessage = '';
+  submitted = false;
 
   constructor(private router: Router, private userService:
     UserService) { }
 
   ngOnInit() {
+    this.loadUserFromState();
+  }
+
+  private loadUserFromState(): void {
     const user =
       this.router.getCurrentNavigation()?.extras.state?.['user']
       ?? history.state?.user;
@@ -44,8 +49,13 @@ export class ChangePasswordPageComponent implements OnInit {
   }
 
   onSubmit() {
+    this.submitted = true;
     this.errorMessage = '';
     this.successMessage = '';
+
+    if (!this.contrasenaActual.trim() || !this.contrasenaNueva.trim() || !this.confirmarContrasena.trim()) {
+      return;
+    }
 
     if (this.contrasenaNueva !== this.confirmarContrasena) {
       this.errorMessage = 'Las contraseñas nuevas no coinciden.';

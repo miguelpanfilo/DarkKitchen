@@ -30,12 +30,17 @@ export class EditUserPageComponent implements OnInit {
   rol = '';
   isLoading: boolean = false;
   errorMessage = '';
+  submitted = false;
   roles = ROLES;
 
   constructor(private router: Router, private userService:
     UserService) { }
 
   ngOnInit() {
+    this.loadUserFromState();
+  }
+
+  private loadUserFromState(): void {
     const user =
       this.router.getCurrentNavigation()?.extras.state?.['user']
       ?? history.state?.user;
@@ -51,6 +56,10 @@ export class EditUserPageComponent implements OnInit {
   }
 
   onSubmit() {
+    this.submitted = true;
+    if (!this.nombre.trim() || !this.apellido.trim() || !this.email.trim() || !this.telefono.trim() || !this.rol) {
+      return;
+    }
     const request: UpdateUserRequest = {
       Name: this.nombre,
       LastName: this.apellido,

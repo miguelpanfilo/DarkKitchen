@@ -30,19 +30,20 @@ export class RegisterInternalUserPageComponent {
   isLoading: boolean = false;
   errorMessage = '';
   successMessage = '';
+  submitted = false;
   roles = ROLES.filter(r => r.value !== 'Client');
 
   constructor(private userService: UserService, private router:
     Router) { }
 
   onSubmit() {
+    this.submitted = true;
     this.errorMessage = '';
     this.successMessage = '';
 
     if (!this.nombre.trim() || !this.apellido.trim() ||
       !this.email.trim() || !this.telefono.trim() || !this.contrasena.trim()
       || !this.rol) {
-      this.errorMessage = 'Todos los campos son obligatorios.';
       return;
     }
 
@@ -59,6 +60,7 @@ export class RegisterInternalUserPageComponent {
     this.userService.registerInternalUser(request).subscribe({
       next: () => {
         this.isLoading = false;
+        this.submitted = false;
         this.successMessage = '¡Usuario registrado exitosamente!';
         this.nombre = '';
         this.apellido = '';
@@ -75,6 +77,6 @@ export class RegisterInternalUserPageComponent {
   }
 
   onCancelled() {
-    this.router.navigate(['/app']);
+    this.router.navigate(['/app/users']);
   }
 }

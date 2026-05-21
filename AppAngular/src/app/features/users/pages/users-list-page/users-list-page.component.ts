@@ -34,11 +34,15 @@ export class UsersListPageComponent implements OnInit {
   constructor(private userService: UserService, private router: Router) { }
 
   ngOnInit() {
+    this.loadNavigationState();
+    this.loadUsers();
+  }
+
+  private loadNavigationState(): void {
     const nav = this.router.getCurrentNavigation()?.extras.state ?? history.state;
     if (nav?.successMessage) {
       this.successMessage = nav.successMessage;
     }
-    this.loadUsers();
   }
 
   loadUsers() {

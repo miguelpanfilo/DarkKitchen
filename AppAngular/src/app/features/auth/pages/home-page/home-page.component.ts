@@ -10,6 +10,10 @@ import { Component, OnInit } from '@angular/core';
     email = '';
 
     ngOnInit() {
+      this.loadEmail();
+    }
+
+    private loadEmail(): void {
       this.email = localStorage.getItem('email') || '';
     }
   }
