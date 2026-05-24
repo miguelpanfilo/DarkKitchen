@@ -5,5 +5,5 @@ namespace BusinessLogicsAbstractions;
 
 public interface IImportedProductCreatorService
 {
-    ProductResponseDto CreateImportedProduct(ImportedProductDto importedProduct);
+    ProductResponseDto CreateImportedProduct(ImportedProductDto importedProduct, string email);
 }
