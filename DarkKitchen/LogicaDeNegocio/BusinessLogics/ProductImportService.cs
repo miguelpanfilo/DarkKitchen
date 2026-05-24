@@ -28,6 +28,12 @@ public class ProductImportService(
                 "El archivo de importación es requerido");
         }
 
+        if(string.IsNullOrWhiteSpace(request.FileName))
+        {
+            throw new ValidationException(
+                "El nombre del archivo es requerido");
+        }
+
         var importer = FindImporter(request.ImporterName);
 
         var importedProducts = importer.Import(request.FileStream);
