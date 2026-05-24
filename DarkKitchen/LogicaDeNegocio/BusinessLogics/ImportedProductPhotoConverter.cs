@@ -15,15 +15,20 @@ public class ImportedProductPhotoConverter : IImportedProductPhotoConverter
 
     private static PhotoDTO ConvertPathToPhotoDto(string path)
     {
+        var bytes = ReadPhotoBytes(path);
+
+        return new PhotoDTO(
+            Path.GetFileName(path),
+            Path.GetExtension(path),
+            bytes.Length,
+            System.Convert.ToBase64String(bytes));
+    }
+
+    private static byte[] ReadPhotoBytes(string path)
+    {
         try
         {
-            var bytes = File.ReadAllBytes(path);
-
-            return new PhotoDTO(
-                Path.GetFileName(path),
-                Path.GetExtension(path),
-                bytes.Length,
-                System.Convert.ToBase64String(bytes));
+            return File.ReadAllBytes(path);
         }
         catch(FileNotFoundException)
         {
