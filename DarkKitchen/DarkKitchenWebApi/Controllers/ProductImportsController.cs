@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using BusinessLogicsAbstractions.Imports;
 using Contract.Importers;
 using Contract.Users;
@@ -21,7 +22,9 @@ public class ProductImportsController(IProductImportService productImportService
             ImporterName = importerName, FileName = file.FileName, FileStream = file.OpenReadStream()
         };
 
-        var result = productImportService.ImportProducts(request);
+        var email = User.FindFirst(ClaimTypes.Email)!.Value;
+
+        var result = productImportService.ImportProducts(request, email);
 
         return Ok(result);
     }
