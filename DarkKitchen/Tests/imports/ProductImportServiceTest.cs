@@ -21,7 +21,8 @@ public class ProductImportServiceTest
 
         var importerProviderMock = new Mock<IProductImporterProvider>();
 
-        var productCreatorServiceMock = new Mock<IImportedProductCreatorService>();
+        var productCreatorServiceMock =
+            new Mock<IImportedProductCreatorService>();
 
         importerProviderMock.Setup(p => p.GetImporters())
             .Returns([importerMock.Object]);
@@ -42,7 +43,7 @@ public class ProductImportServiceTest
             FileStream = stream
         };
 
-        service.ImportProducts(request);
+        service.ImportProducts(request, "admin@test.com");
 
         importerMock.Verify(
             i => i.Import(stream),
@@ -81,7 +82,8 @@ public class ProductImportServiceTest
         importerProviderMock.Setup(p => p.GetImporters())
             .Returns([importerMock.Object]);
 
-        var productCreatorServiceMock = new Mock<IImportedProductCreatorService>();
+        var productCreatorServiceMock =
+            new Mock<IImportedProductCreatorService>();
 
         var service = new ProductImportService(
             importerProviderMock.Object,
@@ -94,7 +96,7 @@ public class ProductImportServiceTest
             FileStream = stream
         };
 
-        service.ImportProducts(request);
+        service.ImportProducts(request, "admin@test.com");
 
         productCreatorServiceMock.Verify(
             p => p.CreateImportedProduct(
@@ -113,7 +115,9 @@ public class ProductImportServiceTest
     public void ImportProducts_WhenImporterDoesNotExist_ShouldThrowNotFoundException()
     {
         var importerProviderMock = new Mock<IProductImporterProvider>();
-        var productCreatorServiceMock = new Mock<IImportedProductCreatorService>();
+
+        var productCreatorServiceMock =
+            new Mock<IImportedProductCreatorService>();
 
         importerProviderMock.Setup(p => p.GetImporters())
             .Returns([]);
@@ -129,7 +133,9 @@ public class ProductImportServiceTest
             FileStream = new MemoryStream()
         };
 
-        Action act = () => service.ImportProducts(request);
+        Action act = () => service.ImportProducts(
+            request,
+            "admin@test.com");
 
         act.Should().Throw<NotFoundException>();
     }
@@ -149,7 +155,9 @@ public class ProductImportServiceTest
 
         ProductImportRequestDto request = null!;
 
-        var act = () => service.ImportProducts(request);
+        var act = () => service.ImportProducts(
+            request,
+            "admin@test.com");
 
         act.Should().Throw<ValidationException>()
             .WithMessage("*importación*");
@@ -174,7 +182,9 @@ public class ProductImportServiceTest
             FileStream = new MemoryStream()
         };
 
-        var act = () => service.ImportProducts(request);
+        var act = () => service.ImportProducts(
+            request,
+            "admin@test.com");
 
         act.Should().Throw<ValidationException>()
             .WithMessage("*importador*");
@@ -199,7 +209,9 @@ public class ProductImportServiceTest
             FileStream = null!
         };
 
-        var act = () => service.ImportProducts(request);
+        var act = () => service.ImportProducts(
+            request,
+            "admin@test.com");
 
         act.Should().Throw<ValidationException>()
             .WithMessage("*archivo*");
@@ -225,7 +237,9 @@ public class ProductImportServiceTest
             FileName = string.Empty
         };
 
-        var act = () => service.ImportProducts(request);
+        var act = () => service.ImportProducts(
+            request,
+            "admin@test.com");
 
         act.Should().Throw<ValidationException>()
             .WithMessage("*archivo*");
