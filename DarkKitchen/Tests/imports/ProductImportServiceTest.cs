@@ -151,4 +151,29 @@ public class ProductImportServiceTest
         act.Should().Throw<ValidationException>()
             .WithMessage("*importación*");
     }
+
+    [TestMethod]
+    public void ImportProducts_WhenImporterNameIsEmpty_ShouldThrowValidationException()
+    {
+        var importerProviderMock =
+            new Mock<IProductImporterProvider>(MockBehavior.Strict);
+
+        var productCreatorServiceMock =
+            new Mock<IImportedProductCreatorService>(MockBehavior.Strict);
+
+        var service = new ProductImportService(
+            importerProviderMock.Object,
+            productCreatorServiceMock.Object);
+
+        var request = new ProductImportRequestDto
+        {
+            ImporterName = string.Empty,
+            FileStream = new MemoryStream()
+        };
+
+        var act = () => service.ImportProducts(request);
+
+        act.Should().Throw<ValidationException>()
+            .WithMessage("*importador*");
+    }
 }
