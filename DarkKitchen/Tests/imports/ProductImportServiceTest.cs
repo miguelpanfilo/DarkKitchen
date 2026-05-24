@@ -32,6 +32,9 @@ public class ProductImportServiceTest
 
         var stream = new MemoryStream();
 
+        importerMock.Setup(i => i.Import(stream))
+            .Returns([]);
+
         var request = new ProductImportRequestDto
         {
             ImporterName = "CsvProductImporter",

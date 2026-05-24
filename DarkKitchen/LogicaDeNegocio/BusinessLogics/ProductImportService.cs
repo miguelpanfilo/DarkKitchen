@@ -16,6 +16,23 @@ public class ProductImportService(
     {
         ValidateRequest(request);
 
+        var importer = FindImporter(request.ImporterName);
+
+        var importedProducts = importer.Import(request.FileStream);
+
+        return importedProducts
+            .Select(importedProductCreatorService.CreateImportedProduct)
+            .ToList();
+    }
+
+    private static void ValidateRequest(ProductImportRequestDto request)
+    {
+        if(request == null)
+        {
+            throw new ValidationException(
+                "La solicitud de importación es requerida");
+        }
+
         if(string.IsNullOrWhiteSpace(request.ImporterName))
         {
             throw new ValidationException(
@@ -32,23 +49,6 @@ public class ProductImportService(
         {
             throw new ValidationException(
                 "El nombre del archivo es requerido");
-        }
-
-        var importer = FindImporter(request.ImporterName);
-
-        var importedProducts = importer.Import(request.FileStream);
-
-        return importedProducts
-            .Select(importedProductCreatorService.CreateImportedProduct)
-            .ToList();
-    }
-
-    private static void ValidateRequest(ProductImportRequestDto request)
-    {
-        if(request == null)
-        {
-            throw new ValidationException(
-                "La solicitud de importación es requerida");
         }
     }
 
