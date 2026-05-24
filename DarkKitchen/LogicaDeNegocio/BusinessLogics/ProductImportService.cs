@@ -13,24 +13,36 @@ public class ProductImportService(
 {
     public List<ProductResponseDto> ImportProducts(ProductImportRequestDto request)
     {
-        if(request == null)
-        {
-            throw new ValidationException(
-                "La solicitud de importación es requerida");
-        }
+        ValidateRequest(request);
 
-        var importer = importerProvider
-            .GetImporters()
-            .FirstOrDefault(i => i.Name == request.ImporterName);
-        if(importer == null)
-        {
-            throw new NotFoundException($"No existe el importador {request.ImporterName}");
-        }
+        var importer = FindImporter(request.ImporterName);
 
         var importedProducts = importer.Import(request.FileStream);
 
         return importedProducts
             .Select(importedProductCreatorService.CreateImportedProduct)
             .ToList();
+    }
+
+    private static void ValidateRequest(ProductImportRequestDto request)
+    {
+        if(request == null)
+        {
+            throw new ValidationException(
+                "La solicitud de importación es requerida");
+        }
+    }
+
+    private IProductImporter FindImporter(string importerName)
+    {
+        var importer = importerProvider
+            .GetImporters()
+            .FirstOrDefault(i => i.Name == importerName);
+        if(importer == null)
+        {
+            throw new NotFoundException($"No existe el importador {importerName}");
+        }
+
+        return importer;
     }
 }
