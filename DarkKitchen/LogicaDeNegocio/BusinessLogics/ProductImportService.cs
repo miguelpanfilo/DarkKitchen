@@ -12,7 +12,7 @@ public class ProductImportService(
     IProductImporterProvider importerProvider,
     IImportedProductCreatorService importedProductCreatorService) : IProductImportService
 {
-    public List<ProductResponseDto> ImportProducts(ProductImportRequestDto request)
+    public List<ProductResponseDto> ImportProducts(ProductImportRequestDto request, string email)
     {
         ValidateRequest(request);
 
