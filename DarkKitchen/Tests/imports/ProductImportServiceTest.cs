@@ -201,4 +201,30 @@ public class ProductImportServiceTest
         act.Should().Throw<ValidationException>()
             .WithMessage("*archivo*");
     }
+
+    [TestMethod]
+    public void ImportProducts_WhenFileNameIsEmpty_ShouldThrowValidationException()
+    {
+        var importerProviderMock =
+            new Mock<IProductImporterProvider>(MockBehavior.Strict);
+
+        var productCreatorServiceMock =
+            new Mock<IImportedProductCreatorService>(MockBehavior.Strict);
+
+        var service = new ProductImportService(
+            importerProviderMock.Object,
+            productCreatorServiceMock.Object);
+
+        var request = new ProductImportRequestDto
+        {
+            ImporterName = "JsonImporter",
+            FileStream = new MemoryStream(),
+            FileName = string.Empty
+        };
+
+        var act = () => service.ImportProducts(request);
+
+        act.Should().Throw<ValidationException>()
+            .WithMessage("*archivo*");
+    }
 }
