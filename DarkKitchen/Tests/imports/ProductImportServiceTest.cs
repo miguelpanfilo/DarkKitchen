@@ -130,4 +130,25 @@ public class ProductImportServiceTest
 
         act.Should().Throw<NotFoundException>();
     }
+
+    [TestMethod]
+    public void ImportProducts_WhenRequestIsNull_ShouldThrowValidationException()
+    {
+        var importerProviderMock =
+            new Mock<IProductImporterProvider>(MockBehavior.Strict);
+
+        var productCreatorServiceMock =
+            new Mock<IImportedProductCreatorService>(MockBehavior.Strict);
+
+        var service = new ProductImportService(
+            importerProviderMock.Object,
+            productCreatorServiceMock.Object);
+
+        ProductImportRequestDto request = null!;
+
+        var act = () => service.ImportProducts(request);
+
+        act.Should().Throw<ValidationException>()
+            .WithMessage("*importación*");
+    }
 }
