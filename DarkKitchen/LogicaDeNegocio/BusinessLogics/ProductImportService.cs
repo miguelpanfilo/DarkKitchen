@@ -4,6 +4,7 @@ using BusinessLogicsAbstractions.Imports;
 using BusinessLogicsAbstractions.Products;
 using Contract.Importers;
 using Contract.Products;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BusinessLogics;
 
@@ -14,6 +15,12 @@ public class ProductImportService(
     public List<ProductResponseDto> ImportProducts(ProductImportRequestDto request)
     {
         ValidateRequest(request);
+
+        if(string.IsNullOrWhiteSpace(request.ImporterName))
+        {
+            throw new ValidationException(
+                "El nombre del importador es requerido");
+        }
 
         var importer = FindImporter(request.ImporterName);
 
