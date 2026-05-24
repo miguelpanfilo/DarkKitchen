@@ -11,7 +11,7 @@ using Mappers;
 
 namespace BusinessLogics.Products;
 
-public class ProductService : IProductService , IImportedProductCreatorService
+public class ProductService : IProductService, IProductCreatorService
 {
     private readonly IProductRepository _repository;
     private readonly ProductPhotoService _productPhotoService;
@@ -231,10 +231,5 @@ public class ProductService : IProductService , IImportedProductCreatorService
         }
 
         return product;
-    }
-
-    public ProductResponseDto CreateImportedProduct(ImportedProductDto importedProduct)
-    {
-        throw new NotImplementedException();
     }
 }
