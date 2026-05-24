@@ -1,3 +1,4 @@
+using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.Imports;
 using Contract.Products;
 
@@ -14,12 +15,20 @@ public class ImportedProductPhotoConverter : IImportedProductPhotoConverter
 
     private static PhotoDTO ConvertPathToPhotoDto(string path)
     {
-        var bytes = File.ReadAllBytes(path);
+        try
+        {
+            var bytes = File.ReadAllBytes(path);
 
-        return new PhotoDTO(
-            Path.GetFileName(path),
-            Path.GetExtension(path),
-            bytes.Length,
-            System.Convert.ToBase64String(bytes));
+            return new PhotoDTO(
+                Path.GetFileName(path),
+                Path.GetExtension(path),
+                bytes.Length,
+                System.Convert.ToBase64String(bytes));
+        }
+        catch(FileNotFoundException)
+        {
+            throw new ValidationException(
+                $"La imagen '{path}' no existe");
+        }
     }
 }
