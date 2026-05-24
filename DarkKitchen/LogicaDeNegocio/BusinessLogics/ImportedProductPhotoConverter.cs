@@ -7,19 +7,19 @@ public class ImportedProductPhotoConverter : IImportedProductPhotoConverter
 {
     public List<PhotoDTO> Convert(List<string> photoPaths)
     {
-        var photos = new List<PhotoDTO>();
+        return photoPaths
+            .Select(ConvertPathToPhotoDto)
+            .ToList();
+    }
 
-        foreach(var path in photoPaths)
-        {
-            var bytes = File.ReadAllBytes(path);
+    private static PhotoDTO ConvertPathToPhotoDto(string path)
+    {
+        var bytes = File.ReadAllBytes(path);
 
-            photos.Add(new PhotoDTO(
-                Path.GetFileName(path),
-                Path.GetExtension(path),
-                bytes.Length,
-                System.Convert.ToBase64String(bytes)));
-        }
-
-        return photos;
+        return new PhotoDTO(
+            Path.GetFileName(path),
+            Path.GetExtension(path),
+            bytes.Length,
+            System.Convert.ToBase64String(bytes));
     }
 }
