@@ -13,6 +13,12 @@ public class ProductImportService(
 {
     public List<ProductResponseDto> ImportProducts(ProductImportRequestDto request)
     {
+        if(request == null)
+        {
+            throw new ValidationException(
+                "La solicitud de importación es requerida");
+        }
+
         var importer = importerProvider
             .GetImporters()
             .FirstOrDefault(i => i.Name == request.ImporterName);
