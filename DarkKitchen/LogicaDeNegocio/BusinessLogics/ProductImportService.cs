@@ -22,6 +22,12 @@ public class ProductImportService(
                 "El nombre del importador es requerido");
         }
 
+        if(request.FileStream == null)
+        {
+            throw new ValidationException(
+                "El archivo de importación es requerido");
+        }
+
         var importer = FindImporter(request.ImporterName);
 
         var importedProducts = importer.Import(request.FileStream);
