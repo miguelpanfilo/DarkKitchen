@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using BusinessLogicsAbstractions.Imports;
 using Contract.Importers;
 using DarkKitchen.Controllers;
@@ -13,20 +14,41 @@ namespace Tests.WebApi;
 public class ProductImportsControllerTest
 {
     [TestMethod]
-    public void ImportProducts_ShouldCallService()
+    public void ImportProducts_ShouldCallServiceWithResponsibleUser()
     {
-        var serviceMock = new Mock<IProductImportService>();
+        var serviceMock =
+            new Mock<IProductImportService>(MockBehavior.Strict);
 
         var controller = new ProductImportsController(serviceMock.Object);
 
         var fileMock = new Mock<IFormFile>();
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(
+        [
+            new Claim(ClaimTypes.Email, "admin@test.com")
+        ], "TestAuth"));
+
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = user
+            }
+        };
+
+        serviceMock.Setup(s => s.ImportProducts(
+                It.IsAny<ProductImportRequestDto>(),
+                "admin@test.com"))
+            .Returns([]);
 
         controller.ImportProducts(
             "CsvProductImporter",
             fileMock.Object);
 
         serviceMock.Verify(
-            s => s.ImportProducts(It.IsAny<ProductImportRequestDto>()),
+            s => s.ImportProducts(
+                It.IsAny<ProductImportRequestDto>(),
+                "admin@test.com"),
             Times.Once);
     }
 
