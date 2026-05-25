@@ -1,4 +1,5 @@
 using System.Text;
+using FluentAssertions;
 
 namespace ProductImporters.Tests;
 
@@ -40,5 +41,23 @@ public class XmlProductImporterTest
         result[0].Price.Should().Be(250);
         result[0].PhotoPaths.Should().ContainSingle()
             .Which.Should().Be(@"C:\photos\burger.jpg");
+    }
+
+    [TestMethod]
+    public void Import_WhenXmlIsEmptyList_ShouldReturnEmptyList()
+    {
+        var xml = """
+                  <ArrayOfImportedProductDto>
+                  </ArrayOfImportedProductDto>
+                  """;
+
+        using var stream = new MemoryStream(
+            Encoding.UTF8.GetBytes(xml));
+
+        var importer = new XmlProductImporter();
+
+        var result = importer.Import(stream);
+
+        result.Should().BeEmpty();
     }
 }
