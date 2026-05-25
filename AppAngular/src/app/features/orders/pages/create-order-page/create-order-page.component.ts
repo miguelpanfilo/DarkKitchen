@@ -26,7 +26,7 @@ export class CreateOrderPageComponent implements OnInit {
   shippingTypes: ShippingType[] = [];
   cartItems: CartItem[] = [];
 
-  deliveryType = 'Express';
+  deliveryType = '';
   street = '';
   doorNumber = '';
   apartment = '';
@@ -45,8 +45,13 @@ export class CreateOrderPageComponent implements OnInit {
   ngOnInit() {
     this.loadProducts();
     this.shippingTypeService.getAll().subscribe({
-      next: (types) => this.shippingTypes = types,
-      error: () => {}
+      next: (types) => {
+        this.shippingTypes = types;
+        if (types.length > 0) this.deliveryType = types[0].name;
+      },
+      error: () => {
+        this.errorMessage = 'Error al cargar los tipos de envío.';
+      }
     });
   }
 

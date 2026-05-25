@@ -53,13 +53,12 @@
     <div class="section-card">
       <h3>2. Tipo de envío</h3>
       <div class="delivery-options">
-        <label class="radio-option" [class.selected]="deliveryType === 'Express'">
-          <input type="radio" [(ngModel)]="deliveryType" name="deliveryType" value="Express" />
-          <span>Express</span>
-        </label>
-        <label class="radio-option" [class.selected]="deliveryType === 'TwentyFourHours'">
-          <input type="radio" [(ngModel)]="deliveryType" name="deliveryType" value="TwentyFourHours" />
-          <span>En 24 horas</span>
+        <label
+          *ngFor="let type of shippingTypes"
+          class="radio-option"
+          [class.selected]="deliveryType === type.name">
+          <input type="radio" [(ngModel)]="deliveryType" name="deliveryType" [value]="type.name" />
+          <span>{{ type.name }} — ${{ type.cost | number:'1.2-2' }}</span>
         </label>
       </div>
     </div>
