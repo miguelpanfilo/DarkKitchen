@@ -68,6 +68,27 @@ public class InitializationServiceTests
     }
 
     [TestMethod]
+    public void EnsureInitialized_WhenShippingTypesAlreadyExist_DoesNotCreateShippingTypes()
+    {
+        _repositoryUserMock
+            .Setup(x => x.EmailExist("admin@gmail.com"))
+            .Returns(true);
+
+        _shippingTypeRepositoryMock
+            .Setup(x => x.GetAll())
+            .Returns(new List<ShippingType>
+            {
+                ShippingType.MakeShippingType("Express", 100)
+            });
+
+        _service.EnsureInitialized();
+
+        _shippingTypeRepositoryMock.Verify(
+            x => x.Create(It.IsAny<ShippingType>()),
+            Times.Never);
+    }
+
+    [TestMethod]
     public void EnsureInitialized_WhenAdminDoesNotExist_CreatesAdminUser()
     {
         _repositoryUserMock
