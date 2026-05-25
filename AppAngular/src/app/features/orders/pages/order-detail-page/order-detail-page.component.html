@@ -12,7 +12,7 @@
   <div *ngIf="order && !isLoading" class="detail-content">
     <div class="section-card">
       <div class="order-title-row">
-        <h3>{{ order.orderNumber }}</h3>
+        <h3>{{ order.orderNumber.slice(0, 10) }}</h3>
         <span class="status-badge status-{{ order.status.toLowerCase() }}">
           {{ getStatusLabel(order.status) }}
         </span>

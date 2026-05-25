@@ -1,6 +1,6 @@
 <div class="order-card" [ngClass]="'border-' + order.status.toLowerCase()" (click)="onView()">
   <div class="order-header">
-    <span class="order-number">{{ order.orderNumber }}</span>
+    <span class="order-number">{{ order.orderNumber.slice(0, 10) }}</span>
     <span class="status-badge status-{{ order.status.toLowerCase() }}">
       {{ getStatusLabel(order.status) }}
     </span>
