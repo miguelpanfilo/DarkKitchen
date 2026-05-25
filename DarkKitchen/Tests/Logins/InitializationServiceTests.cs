@@ -99,6 +99,14 @@ public class InitializationServiceTests
             .Setup(x => x.Add(It.IsAny<User>()))
             .Returns((User user) => user);
 
+        _shippingTypeRepositoryMock
+            .Setup(x => x.GetAll())
+            .Returns(new List<ShippingType>());
+
+        _shippingTypeRepositoryMock
+            .Setup(x => x.Create(It.IsAny<ShippingType>()))
+            .Returns((ShippingType s) => s);
+
         _service.EnsureInitialized();
 
         _repositoryUserMock.Verify(
@@ -116,6 +124,14 @@ public class InitializationServiceTests
         _repositoryUserMock
             .Setup(x => x.EmailExist("admin@gmail.com"))
             .Returns(true);
+
+        _shippingTypeRepositoryMock
+            .Setup(x => x.GetAll())
+            .Returns(new List<ShippingType>());
+
+        _shippingTypeRepositoryMock
+            .Setup(x => x.Create(It.IsAny<ShippingType>()))
+            .Returns((ShippingType s) => s);
 
         _service.EnsureInitialized();
 
@@ -157,6 +173,14 @@ public class InitializationServiceTests
             .Callback<User>(user => _addedUser = user)
             .Returns((User user) => user);
 
+        _shippingTypeRepositoryMock
+            .Setup(x => x.GetAll())
+            .Returns(new List<ShippingType>());
+
+        _shippingTypeRepositoryMock
+            .Setup(x => x.Create(It.IsAny<ShippingType>()))
+            .Returns((ShippingType s) => s);
+
         _service.EnsureInitialized();
 
         Assert.IsNotNull(_addedUser);
@@ -174,6 +198,14 @@ public class InitializationServiceTests
             .Setup(x => x.Add(It.IsAny<User>()))
             .Callback<User>(user => _addedUser = user)
             .Returns((User user) => user);
+
+        _shippingTypeRepositoryMock
+            .Setup(x => x.GetAll())
+            .Returns(new List<ShippingType>());
+
+        _shippingTypeRepositoryMock
+            .Setup(x => x.Create(It.IsAny<ShippingType>()))
+            .Returns((ShippingType s) => s);
 
         _service.EnsureInitialized();
 
@@ -193,6 +225,14 @@ public class InitializationServiceTests
             .Callback<User>(user => _addedUser = user)
             .Returns((User user) => user);
 
+        _shippingTypeRepositoryMock
+            .Setup(x => x.GetAll())
+            .Returns(new List<ShippingType>());
+
+        _shippingTypeRepositoryMock
+            .Setup(x => x.Create(It.IsAny<ShippingType>()))
+            .Returns((ShippingType s) => s);
+
         _service.EnsureInitialized();
 
         Assert.IsNotNull(_addedUser);
@@ -211,6 +251,14 @@ public class InitializationServiceTests
         _repositoryUserMock
             .Setup(x => x.Add(It.IsAny<User>()))
             .Returns((User user) => user);
+
+        _shippingTypeRepositoryMock
+            .Setup(x => x.GetAll())
+            .Returns(new List<ShippingType>());
+
+        _shippingTypeRepositoryMock
+            .Setup(x => x.Create(It.IsAny<ShippingType>()))
+            .Returns((ShippingType s) => s);
 
         _service.EnsureInitialized();
         _service.EnsureInitialized();
