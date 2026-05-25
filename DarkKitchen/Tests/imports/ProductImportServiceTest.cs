@@ -95,8 +95,9 @@ public class ProductImportServiceTest
             FileName = "products.csv",
             FileStream = stream
         };
+        var email = "admin@test.com";
 
-        service.ImportProducts(request, "admin@test.com");
+        service.ImportProducts(request, email);
 
         productCreatorServiceMock.Verify(
             p => p.CreateImportedProduct(
@@ -107,7 +108,9 @@ public class ProductImportServiceTest
                     dto.CommercialLine == "Fast Food" &&
                     dto.Category == "Food" &&
                     dto.Price == 250 &&
-                    dto.PhotoPaths.Count == 1)),
+                    dto.PhotoPaths.Count == 1),
+                email
+                ),
             Times.Once);
     }
 

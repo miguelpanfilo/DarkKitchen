@@ -21,7 +21,10 @@ public class ProductImportService(
         var importedProducts = importer.Import(request.FileStream);
 
         return importedProducts
-            .Select(importedProductCreatorService.CreateImportedProduct)
+            .Select(importedProduct =>
+                importedProductCreatorService.CreateImportedProduct(
+                    importedProduct,
+                    email))
             .ToList();
     }
 
