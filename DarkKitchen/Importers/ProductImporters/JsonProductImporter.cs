@@ -31,7 +31,7 @@ public class JsonProductImporter : IProductImporter
 
             return products ?? [];
         }
-        catch(Exception)
+        catch(JsonException)
         {
             throw new ValidationException(
                 "El archivo JSON tiene un formato inválido");
