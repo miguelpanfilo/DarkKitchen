@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FilterButtonComponent } from
@@ -15,7 +16,7 @@ import { StatusMessagesComponent } from '../../../../shared/components/status-me
   templateUrl: './audit-logs-page.component.html',
   styleUrl: './audit-logs-page.component.css'
 })
-export class AuditLogsPageComponent {
+export class AuditLogsPageComponent implements OnDestroy {
   fechaDesde = '';
   fechaHasta = '';
   entidad = '';
@@ -26,10 +27,16 @@ export class AuditLogsPageComponent {
 
   constructor(private auditLogService: AuditLogService) { }
 
+  private subs = new Subscription();
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
+
   onFiltrar() {
     this.errorMessage = '';
     this.isLoading = true;
-    this.auditLogService.getAuditLogs(this.entidad, this.fechaDesde, this.fechaHasta, this.entityId).subscribe({
+    this.subs.add(this.auditLogService.getAuditLogs(this.entidad, this.fechaDesde, this.fechaHasta, this.entityId).subscribe({
       next: (response) => {
         this.auditLogs = response;
         this.isLoading = false;
@@ -39,7 +46,7 @@ export class AuditLogsPageComponent {
         this.errorMessage = err.error?.message ||
           'Error al cargar las auditorías.';
       }
-    });
+    }));
   }
   onLimpiar() {
     this.fechaDesde = '';

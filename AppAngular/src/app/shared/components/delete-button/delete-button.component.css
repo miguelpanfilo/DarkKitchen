@@ -1,8 +1,8 @@
 .btn-delete {
     padding: 0.4rem 0.9rem;
     background-color: transparent;
-    color: #e74c3c;
-    border: 1px solid #e74c3c;
+    color: #c0392b;
+    border: 1px solid #c0392b;
     border-radius: 6px;
     font-size: 0.85rem;
     cursor: pointer;
@@ -11,6 +11,6 @@
   }
 
   .btn-delete:hover {
-    background-color: #e74c3c;
+    background-color: #c0392b;
     color: white;
   }

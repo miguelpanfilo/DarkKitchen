@@ -1,4 +1,5 @@
- <div class="home-container">
-    <h1>¡Bienvenido!</h1>
-    <p>{{ email }}</p>
-  </div>
+<div class="home-container">
+  <h1>¡Bienvenido!</h1>
+  <p>{{ email }}</p>
+  <app-status-messages [errorMessage]="errorMessage" />
+</div>

@@ -1,7 +1,7 @@
 .btn-submit {
     width: 100%;
     padding: 0.75rem;
-    background-color: #2ecc71;
+    background-color: #1a7a3c;
     color: white;
     border: none;
     border-radius: 6px;
@@ -11,5 +11,5 @@
   }
 
   .btn-submit:hover {
-    background-color: #27ae60;
+    background-color: #145c2d;
   }
