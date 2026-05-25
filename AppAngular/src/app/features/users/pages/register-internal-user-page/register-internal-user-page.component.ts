@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -20,7 +21,7 @@ import { StatusMessagesComponent } from '../../../../shared/components/status-me
   templateUrl: './register-internal-user-page.component.html',
   styleUrl: './register-internal-user-page.component.css'
 })
-export class RegisterInternalUserPageComponent {
+export class RegisterInternalUserPageComponent implements OnDestroy {
   nombre = '';
   apellido = '';
   email = '';
@@ -30,19 +31,26 @@ export class RegisterInternalUserPageComponent {
   isLoading: boolean = false;
   errorMessage = '';
   successMessage = '';
+  submitted = false;
   roles = ROLES.filter(r => r.value !== 'Client');
 
   constructor(private userService: UserService, private router:
     Router) { }
 
+  private subs = new Subscription();
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
+
   onSubmit() {
+    this.submitted = true;
     this.errorMessage = '';
     this.successMessage = '';
 
     if (!this.nombre.trim() || !this.apellido.trim() ||
       !this.email.trim() || !this.telefono.trim() || !this.contrasena.trim()
       || !this.rol) {
-      this.errorMessage = 'Todos los campos son obligatorios.';
       return;
     }
 
@@ -56,9 +64,10 @@ export class RegisterInternalUserPageComponent {
     };
 
     this.isLoading = true;
-    this.userService.registerInternalUser(request).subscribe({
+    this.subs.add(this.userService.registerInternalUser(request).subscribe({
       next: () => {
         this.isLoading = false;
+        this.submitted = false;
         this.successMessage = '¡Usuario registrado exitosamente!';
         this.nombre = '';
         this.apellido = '';
@@ -71,10 +80,10 @@ export class RegisterInternalUserPageComponent {
         this.isLoading = false;
         this.errorMessage = error.error?.message || 'Ocurrió un error al registrar el usuario.';
       }
-    });
+    }));
   }
 
   onCancelled() {
-    this.router.navigate(['/app']);
+    this.router.navigate(['/app/users']);
   }
 }

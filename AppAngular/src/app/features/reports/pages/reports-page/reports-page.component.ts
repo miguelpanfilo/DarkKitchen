@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReportService } from '../../services/report.service';
@@ -15,7 +16,7 @@ import { StatusMessagesComponent } from '../../../../shared/components/status-me
   templateUrl: './reports-page.component.html',
   styleUrl: './reports-page.component.css'
 })
-export class ReportsPageComponent {
+export class ReportsPageComponent implements OnDestroy {
   dateFrom = '';
   dateTo = '';
   isLoading: boolean = false;
@@ -24,6 +25,12 @@ export class ReportsPageComponent {
   errorMessage = '';
 
   constructor(private reportService: ReportService) { }
+
+  private subs = new Subscription();
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
 
   onFiltrar() {
     this.errorMessage = '';
@@ -34,26 +41,28 @@ export class ReportsPageComponent {
     }
     this.isLoading = true;
 
-    this.reportService.getTopProducts(this.dateFrom,
+    this.subs.add(this.reportService.getTopProducts(this.dateFrom,
       this.dateTo).subscribe({
-        next: (response) => { 
+        next: (response) => {
           this.topProducts = response;
           this.isLoading = false;
         },
         error: (err) => {
           this.isLoading = false;
-          this.errorMessage = err.error?.message || 'Error al cargar el reporte.'; }
-        });
-    this.reportService.getSalesReport(this.dateFrom,
+          this.errorMessage = err.error?.message || 'Error al cargar el reporte.';
+        }
+      }));
+    this.subs.add(this.reportService.getSalesReport(this.dateFrom,
       this.dateTo).subscribe({
-        next: (response) => { 
+        next: (response) => {
           this.salesReport = response;
           this.isLoading = false;
         },
         error: (err) => {
           this.isLoading = false;
-          this.errorMessage = err.error?.message || 'Error al cargar el reporte.'; }
-        });
+          this.errorMessage = err.error?.message || 'Error al cargar el reporte.';
+        }
+      }));
   }
 
   onLimpiar() {

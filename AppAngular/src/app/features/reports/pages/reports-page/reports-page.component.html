@@ -1,22 +1,23 @@
 <div class="reports-container">
-    <h2>Reportes</h2>
+    <h1>Reportes</h1>
 
     <div class="filters">
         <div class="form-group">
-            <label>Fecha desde</label>
-            <input type="datetime-local" [(ngModel)]="dateFrom" name="dateFrom" />
+            <label for="dateFrom">Fecha desde</label>
+            <input id="dateFrom" type="datetime-local" [(ngModel)]="dateFrom" name="dateFrom" />
         </div>
         <div class="form-group">
-            <label>Fecha hasta</label>
-            <input type="datetime-local" [(ngModel)]="dateTo" name="dateTo" />
+            <label for="dateTo">Fecha hasta</label>
+            <input id="dateTo" type="datetime-local" [(ngModel)]="dateTo" name="dateTo" />
         </div>
         <app-filter-button (filtered)="onFiltrar()" />
         <app-clear-button (cleared)="onLimpiar()" />
     </div>
 
     <app-status-messages [errorMessage]="errorMessage" [isLoading]="isLoading" loadingText="Cargando reportes..." />
-    <h3>Productos más vendidos</h3>
+    <h2>Productos más vendidos</h2>
     <table class="report-table">
+        <caption>Productos más vendidos</caption>
         <thead>
             <tr>
                 <th>Código</th>
@@ -36,8 +37,9 @@
         </tbody>
     </table>
 
-    <h3>Ventas por período</h3>
+    <h2>Ventas por período</h2>
     <table class="report-table">
+        <caption>Ventas por período</caption>
         <thead>
             <tr>
                 <th>Período</th>

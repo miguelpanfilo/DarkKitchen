@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -19,7 +20,7 @@ import { StatusMessagesComponent } from '../../../../shared/components/status-me
   templateUrl: './change-password-page.component.html',
   styleUrl: './change-password-page.component.css'
 })
-export class ChangePasswordPageComponent implements OnInit {
+export class ChangePasswordPageComponent implements OnInit, OnDestroy {
   userId = 0;
   userName = '';
   contrasenaActual = '';
@@ -28,11 +29,21 @@ export class ChangePasswordPageComponent implements OnInit {
   isLoading: boolean = false;
   errorMessage = '';
   successMessage = '';
+  submitted = false;
+  private subs = new Subscription();
 
   constructor(private router: Router, private userService:
     UserService) { }
 
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
+
   ngOnInit() {
+    this.loadUserFromState();
+  }
+
+  private loadUserFromState(): void {
     const user =
       this.router.getCurrentNavigation()?.extras.state?.['user']
       ?? history.state?.user;
@@ -44,8 +55,13 @@ export class ChangePasswordPageComponent implements OnInit {
   }
 
   onSubmit() {
+    this.submitted = true;
     this.errorMessage = '';
     this.successMessage = '';
+
+    if (!this.contrasenaActual.trim() || !this.contrasenaNueva.trim() || !this.confirmarContrasena.trim()) {
+      return;
+    }
 
     if (this.contrasenaNueva !== this.confirmarContrasena) {
       this.errorMessage = 'Las contraseñas nuevas no coinciden.';
@@ -58,7 +74,7 @@ export class ChangePasswordPageComponent implements OnInit {
     };
 
     this.isLoading = true;
-    this.userService.changePassword(this.userId, request).subscribe({
+    this.subs.add(this.userService.changePassword(this.userId, request).subscribe({
       next: () => {
         this.isLoading = false;
         this.router.navigate(['/app/users'], {
@@ -69,7 +85,7 @@ export class ChangePasswordPageComponent implements OnInit {
         this.isLoading = false;
         this.errorMessage = err.error?.message || 'Error al cambiar la contraseña.';
       }
-    });
+    }));
   }
   onCancelled() {
     this.router.navigate(['/app/users']);

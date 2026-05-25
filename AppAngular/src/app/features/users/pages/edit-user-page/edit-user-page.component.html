@@ -1,29 +1,35 @@
 <div class="edit-container">
   <app-form-card>
-    <h2>Modificar Usuario</h2>
+    <h1>Modificar Usuario</h1>
     <form (ngSubmit)="onSubmit()">
       <div class="form-group">
-        <label>Nombre</label>
-        <input type="text" [(ngModel)]="nombre" name="nombre" placeholder="Tu nombre" />
+        <label for="nombre">Nombre</label>
+        <input id="nombre" type="text" [(ngModel)]="nombre" name="nombre" placeholder="Tu nombre" [class.input-error]="submitted && !nombre.trim()" />
+        <small *ngIf="submitted && !nombre.trim()" class="field-error">El nombre es obligatorio.</small>
       </div>
       <div class="form-group">
-        <label>Apellido</label>
-        <input type="text" [(ngModel)]="apellido" name="apellido" placeholder="Tu apellido" />
+        <label for="apellido">Apellido</label>
+        <input id="apellido" type="text" [(ngModel)]="apellido" name="apellido" placeholder="Tu apellido" [class.input-error]="submitted && !apellido.trim()" />
+        <small *ngIf="submitted && !apellido.trim()" class="field-error">El apellido es obligatorio.</small>
       </div>
       <div class="form-group">
-        <label>Email</label>
-        <input type="email" [(ngModel)]="email" name="email" placeholder="tu@email.com" />
+        <label for="email">Email</label>
+        <input id="email" type="email" [(ngModel)]="email" name="email" placeholder="tu@email.com" [class.input-error]="submitted && !email.trim()" />
+        <small *ngIf="submitted && !email.trim()" class="field-error">El email es obligatorio.</small>
       </div>
       <div class="form-group">
-        <label>Teléfono</label>
-        <input type="text" [(ngModel)]="telefono" name="telefono" placeholder="+598 09X XXX XXX" />
+        <label for="telefono">Teléfono</label>
+        <input id="telefono" type="text" [(ngModel)]="telefono" name="telefono" placeholder="+598 09X XXX XXX" [class.input-error]="submitted && !telefono.trim()" />
+        <small *ngIf="submitted && !telefono.trim()" class="field-error">El teléfono es obligatorio.</small>
+        <small class="field-hint">Formato uruguayo: 09X XXX XXX (ej: 099123456)</small>
       </div>
       <div class="form-group">
-        <label>Rol</label>
-        <select [(ngModel)]="rol" name="rol">
+        <label for="rol">Rol</label>
+        <select id="rol" [(ngModel)]="rol" name="rol" [class.input-error]="submitted && !rol">
           <option value="">Seleccioná un rol</option>
           <option *ngFor="let r of roles" [value]="r.value">{{ r.label }}</option>
         </select>
+        <small *ngIf="submitted && !rol" class="field-error">El rol es obligatorio.</small>
       </div>
 
       <app-submit-button label="Guardar cambios" [disabled]="isLoading" />

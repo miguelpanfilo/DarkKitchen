@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -16,7 +17,7 @@ import { StatusMessagesComponent } from '../../../../shared/components/status-me
   templateUrl: './register-client-page.component.html',
   styleUrl: './register-client-page.component.css'
 })
-export class RegisterClientPageComponent {
+export class RegisterClientPageComponent implements OnDestroy {
   nombre = '';
   apellido = '';
   email = '';
@@ -24,18 +25,24 @@ export class RegisterClientPageComponent {
   contrasena = '';
   errorMessage = '';
   successMessage = '';
+  submitted = false;
 
   constructor(private userService: UserService, private router:
     Router) { }
 
   isLoading: boolean = false;
+  private subs = new Subscription();
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
 
   onSubmit() {
+    this.submitted = true;
     this.errorMessage = '';
     this.successMessage = '';
     if (!this.nombre.trim() || !this.apellido.trim() ||
       !this.email.trim() || !this.telefono.trim() || !this.contrasena.trim()) {
-      this.errorMessage = 'Todos los campos son obligatorios.';
       return;
     }
 
@@ -73,7 +80,7 @@ export class RegisterClientPageComponent {
     };
 
     this.isLoading = true;
-    this.userService.registerClient(request).subscribe({
+    this.subs.add(this.userService.registerClient(request).subscribe({
       next: () => {
         this.isLoading = false;
         this.router.navigate(['/login'], {
@@ -84,7 +91,7 @@ export class RegisterClientPageComponent {
         this.isLoading = false;
         this.errorMessage = error.error?.message || 'Ocurrió un error al registrarse.';
       }
-    });
+    }));
   }
 
   onCancelled() {
