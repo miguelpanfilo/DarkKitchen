@@ -14,8 +14,8 @@ export class ReportService {
 
   getTopProducts(dateFrom: string, dateTo: string): Observable<TopProduct[]> {
     let params = new HttpParams();
-    if (dateFrom) params = params.set('dateFrom', dateFrom);
-    if (dateTo) params = params.set('dateTo', dateTo);
+    if (dateFrom) params = params.set('dateFrom', new Date(dateFrom).toISOString());
+    if (dateTo) params = params.set('dateTo', new Date(dateTo).toISOString());
     return this.http.get<any[]>(`${this.apiUrl}/api/v1/reports/top-products`, { params }).pipe(
       map(response => response.map(item => ({
         code: item.code,
@@ -27,8 +27,8 @@ export class ReportService {
 
   getSalesReport(dateFrom: string, dateTo: string): Observable<SalesReport> {
     let params = new HttpParams();
-    if (dateFrom) params = params.set('dateFrom', dateFrom);
-    if (dateTo) params = params.set('dateTo', dateTo);
+    if (dateFrom) params = params.set('dateFrom', new Date(dateFrom).toISOString());
+    if (dateTo) params = params.set('dateTo', new Date(dateTo).toISOString());
     return this.http.get<any>(`${this.apiUrl}/api/v1/reports/sales`, { params }).pipe(
       map(item => ({
         periods: item.periods.map((p: any) => ({

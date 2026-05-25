@@ -51,8 +51,8 @@ export class OrderService {
 
   getOrders(filters?: OrderFilters): Observable<Order[]> {
     let params = new HttpParams();
-    if (filters?.dateFrom) params = params.set('dateFrom', filters.dateFrom);
-    if (filters?.dateTo) params = params.set('dateTo', filters.dateTo);
+    if (filters?.dateFrom) params = params.set('dateFrom', new Date(filters.dateFrom).toISOString());
+    if (filters?.dateTo) params = params.set('dateTo', new Date(filters.dateTo).toISOString());
     if (filters?.status) params = params.set('status', filters.status);
     if (filters?.street) params = params.set('street', filters.street);
     return this.http.get<any[]>(`${this.apiUrl}/api/v1/orders`, { params }).pipe(

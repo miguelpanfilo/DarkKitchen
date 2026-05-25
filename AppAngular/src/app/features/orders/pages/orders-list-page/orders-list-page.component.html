@@ -20,7 +20,7 @@
         <option *ngFor="let s of statuses" [value]="s">{{ getStatusLabel(s) }}</option>
       </select>
     </div>
-    <div class="form-group">
+    <div class="form-group" *appHasRole="['Preparer', 'Administrative']">
       <label for="filterStreet">Calle</label>
       <input id="filterStreet" type="text" [(ngModel)]="filterStreet" name="filterStreet" placeholder="Buscar por calle" />
     </div>

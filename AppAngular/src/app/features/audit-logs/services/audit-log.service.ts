@@ -17,8 +17,8 @@ export class AuditLogService {
     let params = new HttpParams();
 
     if (entityName) params = params.set('EntityName', entityName);
-    if (dateFrom) params = params.set('DateTimeFrom', dateFrom);
-    if (dateTo) params = params.set('DateTimeTo', dateTo);
+    if (dateFrom) params = params.set('DateTimeFrom', new Date(dateFrom).toISOString());
+    if (dateTo) params = params.set('DateTimeTo', new Date(dateTo).toISOString());
     if (entityId) params = params.set('EntityId', entityId);
 
     return this.http.get<any[]>(`${this.apiUrl}/api/v1/audits`, { params }).pipe(
