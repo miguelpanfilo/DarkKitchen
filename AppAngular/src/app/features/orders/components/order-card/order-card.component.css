@@ -1,0 +1,86 @@
+.order-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  border-left: 5px solid #ccc;
+}
+
+.order-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.13);
+  transform: translateY(-2px);
+}
+
+.border-pending      { border-left-color: #ffc107; }
+.border-prepared     { border-left-color: #0d6efd; }
+.border-ontheway     { border-left-color: #fd7e14; }
+.border-delivered    { border-left-color: #198754; }
+.border-notdelivered { border-left-color: #dc3545; }
+.border-cancelled    { border-left-color: #6c757d; }
+.border-delayed      { border-left-color: #6f42c1; }
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.order-number { font-weight: 700; color: #888; }
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.status-pending      { background: #fff3cd; color: #856404; }
+.status-prepared     { background: #cfe2ff; color: #084298; }
+.status-ontheway     { background: #ffe5d0; color: #7c3c00; }
+.status-delivered    { background: #d1e7dd; color: #0a3622; }
+.status-notdelivered { background: #f8d7da; color: #842029; }
+.status-cancelled    { background: #e2e3e5; color: #41464b; }
+.status-delayed      { background: #e8d5f5; color: #5a2d82; }
+
+.order-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.client-name { font-size: 1.05rem; font-weight: 700; color: #1a1a2e; }
+
+.delivery-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #555;
+  background: #f0f0f5;
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin-top: 6px;
+}
+
+.order-totals {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.order-total { font-size: 1.25rem; font-weight: 800; color: #1a1a2e; }
+.order-items { font-size: 0.8rem; color: #999; }
+
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 10px;
+}
+
+.order-date { font-size: 0.82rem; color: #aaa; }
+.view-link  { font-size: 0.85rem; color: #e94560; font-weight: 600; }

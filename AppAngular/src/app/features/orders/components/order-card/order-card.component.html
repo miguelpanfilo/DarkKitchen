@@ -1,0 +1,23 @@
+<div class="order-card" [ngClass]="'border-' + order.status.toLowerCase()" (click)="onView()">
+  <div class="order-header">
+    <span class="order-number">{{ order.orderNumber.slice(0, 10) }}</span>
+    <span class="status-badge status-{{ order.status.toLowerCase() }}">
+      {{ getStatusLabel(order.status) }}
+    </span>
+  </div>
+
+  <div class="order-body">
+    <div class="order-client-info">
+      <span class="delivery-tag">{{ order.deliveryType === 'Express' ? 'Express' : 'En 24 horas' }}</span>
+    </div>
+    <div class="order-totals">
+      <span class="order-total">${{ order.total | number:'1.2-2' }}</span>
+      <span class="order-items">{{ order.itemsCount }} {{ order.itemsCount === 1 ? 'ítem' : 'ítems' }}</span>
+    </div>
+  </div>
+
+  <div class="order-footer">
+    <span class="order-date">{{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+    <span class="view-link">Ver detalle →</span>
+  </div>
+</div>
