@@ -11,16 +11,37 @@ public class InitializationServiceTests
     private Mock<IRepositoryUser> _repositoryUserMock = null!;
     private InitializationService _service = null!;
     private User? _addedUser;
+    private Mock<IShippingTypeRepository> _shippingTypeRepositoryMock = null!;
 
     [TestInitialize]
     public void TestInitialize()
     {
         _repositoryUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-
-        _service = new InitializationService(
-            _repositoryUserMock.Object);
-
+        _shippingTypeRepositoryMock = new Mock<IShippingTypeRepository>(MockBehavior.Strict);
+        _service = new InitializationService(_repositoryUserMock.Object, _shippingTypeRepositoryMock.Object);
         _addedUser = null;
+    }
+
+    [TestMethod]
+    public void EnsureInitialized_WhenNoShippingTypesExist_CreatesExpressShippingType()
+    {
+        _repositoryUserMock
+            .Setup(x => x.EmailExist("admin@gmail.com"))
+            .Returns(true);
+
+        _shippingTypeRepositoryMock
+            .Setup(x => x.GetAll())
+            .Returns(new List<ShippingType>());
+
+        _shippingTypeRepositoryMock
+            .Setup(x => x.Create(It.IsAny<ShippingType>()))
+            .Returns((ShippingType s) => s);
+
+        _service.EnsureInitialized();
+
+        _shippingTypeRepositoryMock.Verify(
+            x => x.Create(It.Is<ShippingType>(s => s.Name == "Express")),
+            Times.Once);
     }
 
     [TestMethod]
