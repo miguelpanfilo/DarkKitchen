@@ -36,7 +36,7 @@ public sealed class OrderServiceTests
             }
         };
 
-        return Order.MakeOrder(1, DeliveryType.Express, address, items, 200m);
+        return Order.MakeOrder(1, "Express", address, items, 200m);
     }
 
     #region CreateOrder
@@ -64,7 +64,7 @@ public sealed class OrderServiceTests
         var data = new CreateOrderData
         {
             ClientId = 1,
-            DeliveryType = DeliveryType.Express,
+            DeliveryType = "Express",
             Address = Address.MakeAddress("Rivera", "1234"),
             Items = items,
             ShippingCost = 200m

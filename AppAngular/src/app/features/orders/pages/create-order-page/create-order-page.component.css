@@ -4,7 +4,7 @@
   margin: 0 auto;
 }
 
-.create-container h2 {
+.create-container h1 {
   color: #1a1a2e;
   font-size: 1.6rem;
   margin: 0 0 24px;
@@ -18,10 +18,11 @@
   margin-bottom: 16px;
 }
 
-.section-card h3 {
+.section-card h2 {
   margin: 0 0 18px;
   color: #2c2c54;
   font-weight: 700;
+  font-size: 1rem;
 }
 
 .product-grid {
@@ -69,8 +70,8 @@
 }
 
 .product-name { font-weight: 700; color: #1a1a2e; }
-.product-line { font-size: 0.78rem; color: #888; }
-.product-price { font-size: 1.1rem; font-weight: 700; color: #e94560; margin-top: 6px; }
+.product-line { font-size: 0.78rem; color: #666; }
+.product-price { font-size: 1.1rem; font-weight: 700; color: #b71c3c; margin-top: 6px; }
 
 .product-card-footer {
   padding: 10px 14px 14px;
@@ -169,8 +170,26 @@
 .radio-option.selected {
   border-color: #e94560;
   background: #fff5f7;
-  color: #e94560;
+  color: #b71c3c;
   font-weight: 600;
+}
+
+.radio-fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .radio-option input[type="radio"] { accent-color: #e94560; }

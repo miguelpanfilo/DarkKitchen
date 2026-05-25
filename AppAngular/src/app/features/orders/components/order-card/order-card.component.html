@@ -8,7 +8,7 @@
 
   <div class="order-body">
     <div class="order-client-info">
-      <span class="delivery-tag">{{ order.deliveryType === 'Express' ? 'Express' : 'En 24 horas' }}</span>
+      <span class="delivery-tag">{{ order.deliveryType }}</span>
     </div>
     <div class="order-totals">
       <span class="order-total">${{ order.total | number:'1.2-2' }}</span>

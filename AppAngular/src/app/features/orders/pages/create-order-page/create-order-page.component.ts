@@ -9,6 +9,8 @@ import { ShippingType } from '../../../shipping-types/models/shipping-type.model
 import { Product } from '../../../products/models/product.model';
 import { CreateOrderItemRequest } from '../../models/create-order-request.model';
 import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
+import { SubmitButtonComponent } from '../../../../shared/components/submit-button/submit-button.component';
+import { CancelButtonComponent } from '../../../../shared/components/cancel-button/cancel-button.component';
 
 interface CartItem {
   product: Product;
@@ -17,7 +19,7 @@ interface CartItem {
 
 @Component({
   selector: 'app-create-order-page',
-  imports: [CommonModule, FormsModule, StatusMessagesComponent],
+  imports: [CommonModule, FormsModule, StatusMessagesComponent, SubmitButtonComponent, CancelButtonComponent],
   templateUrl: './create-order-page.component.html',
   styleUrl: './create-order-page.component.css'
 })

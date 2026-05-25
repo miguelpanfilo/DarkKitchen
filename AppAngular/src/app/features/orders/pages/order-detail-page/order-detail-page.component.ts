@@ -181,6 +181,6 @@ export class OrderDetailPageComponent implements OnInit {
   }
 
   getDeliveryLabel(type: string): string {
-    return type === 'Express' ? 'Express' : 'En 24 horas';
+    return type;
   }
 }

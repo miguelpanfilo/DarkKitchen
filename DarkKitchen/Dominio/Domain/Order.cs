@@ -8,7 +8,7 @@ public class Order
     public string OrderNumber { get; private set; } = string.Empty;
     public int ClientId { get; private set; }
     public User? Client { get; private set; }
-    public DeliveryType DeliveryType { get; private set; }
+    public string DeliveryType { get; private set; } = string.Empty;
     public Address Address { get; private set; } = null!;
     public List<OrderItem> Items { get; private set; } = [];
     public OrderStatus Status { get; private set; }
@@ -35,7 +35,7 @@ public class Order
 
     public static Order MakeOrder(
         int clientId,
-        DeliveryType deliveryType,
+        string deliveryType,
         Address address,
         List<OrderItemData> items,
         decimal shippingCost)

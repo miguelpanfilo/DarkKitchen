@@ -59,7 +59,7 @@ public sealed class OrderDomainTests
     {
         var address = Address.MakeAddress("Rivera", "1234");
 
-        var act = () => Order.MakeOrder(1, DeliveryType.Express, address, [], 200m);
+        var act = () => Order.MakeOrder(1, "Express", address, [], 200m);
 
         act.Should().Throw<OrderException>().WithMessage("El pedido debe tener al menos un producto");
     }
@@ -67,7 +67,7 @@ public sealed class OrderDomainTests
     [TestMethod]
     public void Prepare_WhenOrderIsNotPending_ShouldThrowOrderException()
     {
-        var order = Order.MakeOrder(1, DeliveryType.Express, Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m);
+        var order = Order.MakeOrder(1, "Express", Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m);
         order.Prepare();
 
         var act = order.Prepare;
@@ -78,7 +78,7 @@ public sealed class OrderDomainTests
     [TestMethod]
     public void Cancel_WhenOrderIsNotPending_ShouldThrowOrderException()
     {
-        var order = Order.MakeOrder(1, DeliveryType.Express, Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m);
+        var order = Order.MakeOrder(1, "Express", Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m);
         order.Prepare();
 
         var act = order.Cancel;
@@ -89,7 +89,7 @@ public sealed class OrderDomainTests
     [TestMethod]
     public void Dispatch_WhenOrderIsNotPrepared_ShouldThrowOrderException()
     {
-        var order = Order.MakeOrder(1, DeliveryType.Express, Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m);
+        var order = Order.MakeOrder(1, "Express", Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m);
 
         var act = order.Dispatch;
 
@@ -99,7 +99,7 @@ public sealed class OrderDomainTests
     [TestMethod]
     public void Deliver_WhenOrderIsNotOnTheWay_ShouldThrowOrderException()
     {
-        var order = Order.MakeOrder(1, DeliveryType.Express, Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m);
+        var order = Order.MakeOrder(1, "Express", Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m);
 
         var act = order.Deliver;
 
@@ -109,7 +109,7 @@ public sealed class OrderDomainTests
     [TestMethod]
     public void MarkNotDelivered_WhenOrderIsNotOnTheWay_ShouldThrowOrderException()
     {
-        var order = Order.MakeOrder(1, DeliveryType.Express, Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m);
+        var order = Order.MakeOrder(1, "Express", Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m);
 
         var act = order.MarkNotDelivered;
 

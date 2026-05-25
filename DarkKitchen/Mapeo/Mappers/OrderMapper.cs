@@ -15,7 +15,7 @@ public static class OrderMapper
             Id = order.Id,
             OrderNumber = order.OrderNumber,
             Client = MapClient(user),
-            DeliveryType = order.DeliveryType.ToString(),
+            DeliveryType = order.DeliveryType,
             Address = order.Address.ToAddressResponse(),
             Items = order.Items.Select(i => i.ToOrderItemResponse()).ToList(),
 

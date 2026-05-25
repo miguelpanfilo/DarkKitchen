@@ -21,7 +21,7 @@ public sealed class OrderMapperTests
             })
             .ToList();
 
-        return Order.MakeOrder(clientId, DeliveryType.Express, address, items, 200m);
+        return Order.MakeOrder(clientId, "Express", address, items, 200m);
     }
 
     private static User MakeUser(int id = 1)
@@ -70,7 +70,7 @@ public sealed class OrderMapperTests
         result.Client.Name.Should().Be("Miguel");
         result.Client.LastName.Should().Be("Panfilo");
         result.Client.Email.Should().Be("miguel1@test.com");
-        result.DeliveryType.Should().Be(nameof(DeliveryType.Express));
+        result.DeliveryType.Should().Be("Express");
         result.Status.Should().Be(nameof(OrderStatus.Pending));
         result.Items.Should().HaveCount(1);
         result.ItemsCount.Should().Be(1);

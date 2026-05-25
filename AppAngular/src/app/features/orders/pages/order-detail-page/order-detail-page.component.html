@@ -1,7 +1,7 @@
 <div class="detail-container">
   <div class="detail-header">
     <button class="btn-back" (click)="onBack()">← Volver</button>
-    <h2>Detalle de Orden</h2>
+    <h1>Detalle de Orden</h1>
   </div>
 
   <app-status-messages
@@ -12,7 +12,7 @@
   <div *ngIf="order && !isLoading" class="detail-content">
     <div class="section-card">
       <div class="order-title-row">
-        <h3>{{ order.orderNumber.slice(0, 10) }}</h3>
+        <h2>{{ order.orderNumber.slice(0, 10) }}</h2>
         <span class="status-badge status-{{ order.status.toLowerCase() }}">
           {{ getStatusLabel(order.status) }}
         </span>
@@ -23,13 +23,13 @@
 
     <div class="two-col">
       <div class="section-card">
-        <h4>Cliente</h4>
+        <h3>Cliente</h3>
         <p>{{ order.client.name }} {{ order.client.lastName }}</p>
         <p class="text-muted">{{ order.client.email }}</p>
       </div>
 
       <div class="section-card">
-        <h4>Dirección de entrega</h4>
+        <h3>Dirección de entrega</h3>
         <p>{{ order.address.street }} {{ order.address.doorNumber }}
           <span *ngIf="order.address.apartment">, Apto {{ order.address.apartment }}</span>
         </p>
@@ -38,7 +38,7 @@
     </div>
 
     <div class="section-card">
-      <h4>Items</h4>
+      <h3>Items</h3>
       <table class="items-table">
         <thead>
           <tr>
@@ -69,7 +69,7 @@
     </div>
 
     <div class="actions-card" *ngIf="canPrepare() || canDelay() || canCancel() || canDispatch() || canDeliver() || canMarkNotDelivered()">
-      <h4>Acciones</h4>
+      <h3>Acciones</h3>
       <div class="action-buttons">
         <button *ngIf="canPrepare()" class="btn btn-primary" (click)="onPrepare()" [disabled]="actionLoading">
           Marcar como Preparado

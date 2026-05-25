@@ -52,7 +52,7 @@ public sealed class SalesReportVisitorTests
         {
             new() { ProductId = productId, Quantity = quantity, UnitPrice = price, DiscountApplied = 0m }
         };
-        return Order.MakeOrder(clientId, DeliveryType.Express,
+        return Order.MakeOrder(clientId, "Express",
             Address.MakeAddress("Rivera", "1234"), items, 200m);
     }
 

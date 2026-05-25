@@ -1,5 +1,4 @@
 using BusinessLogics.Shared;
-using BusinessLogics.Shipping;
 using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.Orders;
 using Contract.Orders;
@@ -13,34 +12,32 @@ namespace BusinessLogics.Orders;
 public class OrderFacade(
     IOrderService orderService,
     IOrderItemResolver orderItemResolver,
-    IRepositoryUser repositoryUser) : IOrderFacade
+    IRepositoryUser repositoryUser,
+    IShippingTypeRepository shippingTypeRepository) : IOrderFacade
 {
     private readonly IOrderItemResolver _orderItemResolver = orderItemResolver;
     private readonly IOrderService _orderService = orderService;
     private readonly IRepositoryUser _repositoryUser = repositoryUser;
+    private readonly IShippingTypeRepository _shippingTypeRepository = shippingTypeRepository;
     public OrderResponse CreateOrder(int clientId, CreateOrderRequest request)
     {
         return ServiceExceptionHandler.ExecuteWithValidationHandling<OrderResponse, OrderException>(() =>
         {
-            var deliveryType = GetValidDeliveryType(request.DeliveryType);
+            var shippingType = GetValidShippingType(request.DeliveryType);
 
             ValidateItems(request.Items);
 
             var address = BuildAddress(request);
-
-            var shippingCost = ShippingStrategyFactory
-                .Create(deliveryType)
-                .Calculate(0m);
 
             var resolvedItems = _orderItemResolver.Resolve(request.Items);
 
             var order = _orderService.CreateOrder(new CreateOrderData
             {
                 ClientId = clientId,
-                DeliveryType = deliveryType,
+                DeliveryType = shippingType.Name,
                 Address = address,
                 Items = resolvedItems,
-                ShippingCost = shippingCost
+                ShippingCost = shippingType.Cost
             });
 
             return ToOrderResponseWithClient(order);
@@ -105,24 +102,22 @@ public class OrderFacade(
         }
     }
 
-    private static DeliveryType GetValidDeliveryType(string? deliveryType)
+    private ShippingType GetValidShippingType(string? deliveryType)
     {
         if (string.IsNullOrWhiteSpace(deliveryType))
         {
             throw new ValidationException("El tipo de entrega es obligatorio");
         }
 
-        if (!Enum.TryParse<DeliveryTypeDto>(deliveryType, ignoreCase: true, out var dto))
+        var shippingType = _shippingTypeRepository.GetAll()
+            .FirstOrDefault(s => s.Name.Equals(deliveryType, StringComparison.OrdinalIgnoreCase));
+
+        if (shippingType == null)
         {
             throw new ValidationException("El tipo de entrega no es válido");
         }
 
-        return dto switch
-        {
-            DeliveryTypeDto.Express => DeliveryType.Express,
-            DeliveryTypeDto.TwentyFourHours => DeliveryType.TwentyFourHours,
-            _ => throw new ValidationException("El tipo de entrega no es válido")
-        };
+        return shippingType;
     }
 
     private static OrderStatus? ToOrderStatus(OrderStatusDto? dto) =>
