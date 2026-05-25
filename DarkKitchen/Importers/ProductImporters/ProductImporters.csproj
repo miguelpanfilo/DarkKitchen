@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Contratos\Contract\Contract.csproj" />
+    <ProjectReference Include="..\..\LogicaDeNegocioAbstracciones\BusinessLogicsAbstractions\BusinessLogicsAbstractions.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -125,6 +125,9 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddScoped<IProductImporterQueryService, ProductImporterQueryService>();
+        services.AddScoped<IProductImportService, ProductImportService>();
+        services.AddScoped<IImportedProductCreatorService, ImportedProductCreatorService>();
+        services.AddScoped<IImportedProductPhotoConverter, ImportedProductPhotoConverter>();
 
         return services;
     }
