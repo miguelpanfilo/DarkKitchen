@@ -1,4 +1,5 @@
 using System.Text;
+using BusinessLogicsAbstractions.Exceptions;
 using FluentAssertions;
 
 namespace ProductImporters.Tests;
@@ -59,5 +60,20 @@ public class XmlProductImporterTest
         var result = importer.Import(stream);
 
         result.Should().BeEmpty();
+    }
+
+    [TestMethod]
+    public void Import_WhenXmlIsInvalid_ShouldThrowValidationException()
+    {
+        var xml = "<invalid>";
+
+        using var stream = new MemoryStream(
+            Encoding.UTF8.GetBytes(xml));
+
+        var importer = new XmlProductImporter();
+
+        Action act = () => importer.Import(stream);
+
+        act.Should().Throw<ValidationException>();
     }
 }
