@@ -64,5 +64,6 @@ public class InitializationService : IInitializationService
         }
 
         _shippingTypeRepository.Create(ShippingType.MakeShippingType("Express", 100));
+        _shippingTypeRepository.Create(ShippingType.MakeShippingType("TwentyFourHours", 50));
     }
 }
