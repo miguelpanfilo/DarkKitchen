@@ -1,0 +1,25 @@
+<div class="product-card" [class.inactive]="!product.isActive">
+    <div class="product-card-header">
+        <span class="product-code">{{ product.code }}</span>
+        <span class="product-status" [class.active]="product.isActive">
+            {{ product.isActive ? 'Disponible' : 'No disponible' }}
+        </span>
+    </div>
+
+    <div *ngIf="product.photos.length > 0" class="product-photo">
+    <img [src]="product.photos[0].path" alt="" />
+  </div>
+
+  <div class="product-card-body">
+        <h2 class="product-name">{{ product.name }}</h2>
+        <p class="product-line">{{ product.commercialLine }} — {{
+            product.category }}</p>
+        <p class="product-description">{{ product.description }}</p>
+        <p class="product-price">${{ product.price | number:'1.2-2' }}</p>
+    </div>
+
+    <div class="product-card-actions" *appHasRole="['Administrative']">
+        <app-edit-button (clicked)="onEdit()" />
+        <app-delete-button (clicked)="onDelete()" />
+    </div>
+</div>
