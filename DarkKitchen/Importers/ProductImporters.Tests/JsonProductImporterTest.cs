@@ -40,4 +40,19 @@ public class JsonProductImporterTest
         result[0].PhotoPaths.Should().ContainSingle()
             .Which.Should().Be("C:\\photos\\burger.jpg");
     }
+
+    [TestMethod]
+    public void Import_WhenJsonIsEmptyArray_ShouldReturnEmptyList()
+    {
+        var json = "[]";
+
+        using var stream = new MemoryStream(
+            Encoding.UTF8.GetBytes(json));
+
+        var importer = new JsonProductImporter();
+
+        var result = importer.Import(stream);
+
+        result.Should().BeEmpty();
+    }
 }
