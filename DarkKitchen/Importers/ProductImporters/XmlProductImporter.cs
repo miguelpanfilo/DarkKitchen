@@ -1,4 +1,5 @@
 using System.Xml.Serialization;
+using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.Imports;
 using Contract.Importers;
 
@@ -12,13 +13,21 @@ public class XmlProductImporter : IProductImporter
 
     public List<ImportedProductDto> Import(Stream fileStream)
     {
-        var serializer =
-            new XmlSerializer(typeof(List<ImportedProductDto>));
+        try
+        {
+            var serializer =
+                new XmlSerializer(typeof(List<ImportedProductDto>));
 
-        var products =
-            serializer.Deserialize(fileStream)
-                as List<ImportedProductDto>;
+            var products =
+                serializer.Deserialize(fileStream)
+                    as List<ImportedProductDto>;
 
-        return products ?? [];
+            return products ?? [];
+        }
+        catch(InvalidOperationException)
+        {
+            throw new ValidationException(
+                "El archivo XML tiene un formato inválido");
+        }
     }
 }
