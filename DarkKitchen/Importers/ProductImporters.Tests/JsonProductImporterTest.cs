@@ -1,4 +1,5 @@
 using System.Text;
+using BusinessLogicsAbstractions.Exceptions;
 using FluentAssertions;
 
 namespace ProductImporters.Tests;
@@ -54,5 +55,21 @@ public class JsonProductImporterTest
         var result = importer.Import(stream);
 
         result.Should().BeEmpty();
+    }
+
+    [TestMethod]
+    public void Import_WhenJsonIsInvalid_ShouldThrowValidationException()
+    {
+        var json = "{ invalid json }";
+
+        using var stream = new MemoryStream(
+            Encoding.UTF8.GetBytes(json));
+
+        var importer = new JsonProductImporter();
+
+        Action act = () => importer.Import(stream);
+
+        act.Should().Throw<ValidationException>()
+            .WithMessage("*formato inválido*");
     }
 }
