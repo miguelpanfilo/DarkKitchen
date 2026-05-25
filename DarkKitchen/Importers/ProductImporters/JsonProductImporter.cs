@@ -1,4 +1,5 @@
 using System.Text.Json;
+using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.Imports;
 using Contract.Importers;
 
@@ -12,18 +13,28 @@ public class JsonProductImporter : IProductImporter
 
     public List<ImportedProductDto> Import(Stream fileStream)
     {
-        using var reader = new StreamReader(fileStream);
-
-        var json = reader.ReadToEnd();
-
-        var options = new JsonSerializerOptions
+        try
         {
-            PropertyNameCaseInsensitive = true
-        };
+            using var reader = new StreamReader(fileStream);
 
-        var products =
-            JsonSerializer.Deserialize<List<ImportedProductDto>>(json, options);
+            var json = reader.ReadToEnd();
 
-        return products ?? [];
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            var products =
+                JsonSerializer.Deserialize<List<ImportedProductDto>>(
+                    json,
+                    options);
+
+            return products ?? [];
+        }
+        catch(Exception)
+        {
+            throw new ValidationException(
+                "El archivo JSON tiene un formato inválido");
+        }
     }
 }
