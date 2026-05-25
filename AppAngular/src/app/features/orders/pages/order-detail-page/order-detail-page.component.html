@@ -1,0 +1,102 @@
+<div class="detail-container">
+  <div class="detail-header">
+    <button class="btn-back" (click)="onBack()">← Volver</button>
+    <h2>Detalle de Orden</h2>
+  </div>
+
+  <app-status-messages
+    [errorMessage]="errorMessage"
+    [isLoading]="isLoading"
+    loadingText="Cargando orden..." />
+
+  <div *ngIf="order && !isLoading" class="detail-content">
+    <div class="section-card">
+      <div class="order-title-row">
+        <h3>{{ order.orderNumber }}</h3>
+        <span class="status-badge status-{{ order.status.toLowerCase() }}">
+          {{ getStatusLabel(order.status) }}
+        </span>
+      </div>
+      <p class="meta">Creada: {{ order.createdAt | date:'dd/MM/yyyy HH:mm' }} &nbsp;|&nbsp;
+        Actualizada: {{ order.statusUpdatedAt | date:'dd/MM/yyyy HH:mm' }}</p>
+    </div>
+
+    <div class="two-col">
+      <div class="section-card">
+        <h4>Cliente</h4>
+        <p>{{ order.client.name }} {{ order.client.lastName }}</p>
+        <p class="text-muted">{{ order.client.email }}</p>
+      </div>
+
+      <div class="section-card">
+        <h4>Dirección de entrega</h4>
+        <p>{{ order.address.street }} {{ order.address.doorNumber }}
+          <span *ngIf="order.address.apartment">, Apto {{ order.address.apartment }}</span>
+        </p>
+        <p class="text-muted">Envío: {{ getDeliveryLabel(order.deliveryType) }}</p>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h4>Items</h4>
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>Producto ID</th>
+            <th>Cantidad</th>
+            <th>Precio unit.</th>
+            <th>Descuento</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of order.items">
+            <td>#{{ item.productId }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>${{ item.unitPrice | number:'1.2-2' }}</td>
+            <td>{{ item.discountApplied * 100 | number:'1.0-0' }}%</td>
+            <td>${{ item.lineTotal | number:'1.2-2' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-card totals">
+      <div class="total-row"><span>Subtotal</span><span>${{ order.subtotal | number:'1.2-2' }}</span></div>
+      <div class="total-row"><span>Costo de envío</span><span>${{ order.shippingCost | number:'1.2-2' }}</span></div>
+      <div class="total-row"><span>IVA ({{ order.ivaPercentage }}%)</span><span>${{ order.iva | number:'1.2-2' }}</span></div>
+      <div class="total-row total-final"><span>Total</span><span>${{ order.total | number:'1.2-2' }}</span></div>
+    </div>
+
+    <div class="actions-card" *ngIf="canPrepare() || canDelay() || canCancel() || canDispatch() || canDeliver() || canMarkNotDelivered()">
+      <h4>Acciones</h4>
+      <div class="action-buttons">
+        <button *ngIf="canPrepare()" class="btn btn-primary" (click)="onPrepare()" [disabled]="actionLoading">
+          Marcar como Preparado
+        </button>
+        <button *ngIf="canDelay()" class="btn btn-warning" (click)="onDelay()" [disabled]="actionLoading">
+          Marcar como Demorado
+        </button>
+        <button *ngIf="canDispatch()" class="btn btn-primary" (click)="onDispatch()" [disabled]="actionLoading">
+          Despachar
+        </button>
+        <button *ngIf="canDeliver()" class="btn btn-success" (click)="onDeliver()" [disabled]="actionLoading">
+          Marcar como Entregado
+        </button>
+        <button *ngIf="canMarkNotDelivered()" class="btn btn-danger" (click)="onMarkNotDelivered()" [disabled]="actionLoading">
+          No Entregado
+        </button>
+        <button *ngIf="canCancel()" class="btn btn-danger" (click)="onCancel()" [disabled]="actionLoading">
+          Cancelar Orden
+        </button>
+      </div>
+      <p *ngIf="actionLoading" class="action-loading">Procesando...</p>
+    </div>
+  </div>
+
+  <app-confirm-dialog
+    [message]="confirmMessage"
+    [visible]="showConfirmDialog"
+    (confirmed)="onConfirmDialog()"
+    (cancelled)="onCancelDialog()" />
+</div>

@@ -1,0 +1,95 @@
+<div class="create-container">
+  <div class="create-header">
+    <h2>Nueva Orden</h2>
+  </div>
+
+  <app-status-messages
+    [errorMessage]="errorMessage"
+    [isLoading]="isLoadingProducts"
+    loadingText="Cargando productos..." />
+
+  <div *ngIf="!isLoadingProducts" class="form-sections">
+
+    <!-- Parte de productos -->
+    <div class="section-card">
+      <h3>1. Seleccioná tus productos</h3>
+      <div class="product-grid">
+        <div
+          *ngFor="let p of products"
+          class="product-card"
+          [class.in-cart]="getCartQty(p.id) > 0">
+
+          <div *ngIf="getCartQty(p.id) > 0" class="qty-badge">{{ getCartQty(p.id) }}</div>
+
+          <div class="product-card-body">
+            <span class="product-name">{{ p.name }}</span>
+            <span class="product-line">{{ p.commercialLine }}</span>
+            <span class="product-price">${{ p.price | number:'1.2-2' }}</span>
+          </div>
+
+          <div class="product-card-footer">
+            <button *ngIf="getCartQty(p.id) === 0" class="btn-add-card" type="button" (click)="onIncrement(p)">+ Agregar</button>
+            <div *ngIf="getCartQty(p.id) > 0" class="qty-controls">
+              <button class="qty-btn" type="button" (click)="onDecrement(p)">−</button>
+              <span class="qty-value">{{ getCartQty(p.id) }}</span>
+              <button class="qty-btn" type="button" (click)="onIncrement(p)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="cartItems.length > 0" class="cart-summary">
+        <span class="cart-summary-text">
+          {{ cartItems.length }} producto{{ cartItems.length !== 1 ? 's' : '' }} en el carrito
+        </span>
+        <div class="cart-summary-breakdown">
+          <span>Subtotal: <strong>${{ cartSubtotal | number:'1.2-2' }}</strong></span>
+          <span>Envío ({{ deliveryType === 'Express' ? 'Express' : 'En 24hs' }}): <strong>${{ cartShippingCost | number:'1.2-2' }}</strong></span>
+          <span class="cart-summary-total">Total estimado: <strong>${{ cartTotal | number:'1.2-2' }}</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h3>2. Tipo de envío</h3>
+      <div class="delivery-options">
+        <label class="radio-option" [class.selected]="deliveryType === 'Express'">
+          <input type="radio" [(ngModel)]="deliveryType" name="deliveryType" value="Express" />
+          <span>Express</span>
+        </label>
+        <label class="radio-option" [class.selected]="deliveryType === 'TwentyFourHours'">
+          <input type="radio" [(ngModel)]="deliveryType" name="deliveryType" value="TwentyFourHours" />
+          <span>En 24 horas</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h3>3. Dirección de entrega</h3>
+      <div class="address-fields">
+        <div class="form-group">
+          <label>Calle *</label>
+          <input type="text" [(ngModel)]="street" name="street" placeholder="Ej: Av. 18 de Julio" />
+        </div>
+        <div class="form-group">
+          <label>Número de puerta *</label>
+          <input type="text" [(ngModel)]="doorNumber" name="doorNumber" placeholder="Ej: 1234" />
+        </div>
+        <div class="form-group">
+          <label>Apartamento</label>
+          <input type="text" [(ngModel)]="apartment" name="apartment" placeholder="Opcional" />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn btn-secondary" type="button" (click)="onCancel()" [disabled]="isSubmitting">
+        Cancelar
+      </button>
+      <button class="btn btn-primary" type="button" (click)="onSubmit()" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Creando...' : 'Crear Orden' }}
+      </button>
+    </div>
+
+  </div>
+</div>
