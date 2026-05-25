@@ -7,7 +7,7 @@ using Domain;
 using Domain.Exceptions;
 using Mappers;
 
-namespace BusinessLogics.ShippingTypes;
+namespace BusinessLogics.Shipping;
 
 public class ShippingTypeService(IShippingTypeRepository shippingTypeRepository) : IShippingTypeService
 {
