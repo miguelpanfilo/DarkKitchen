@@ -52,7 +52,7 @@ public sealed class OrderMapperTests
         var order = MakeOrder(itemCount: 3);
         var user = MakeUser(1);
 
-        var result = order.ToOrderResponse(user);
+        var result = order.ToOrderResponse(user, new Dictionary<int, string>());
 
         result.ItemsCount.Should().Be(3);
     }
@@ -63,7 +63,7 @@ public sealed class OrderMapperTests
         var order = MakeOrder(clientId: 1, itemCount: 1);
         var user = MakeUser(1);
 
-        var result = order.ToOrderResponse(user);
+        var result = order.ToOrderResponse(user, new Dictionary<int, string>());
 
         result.Should().NotBeNull();
         result.Client.Id.Should().Be(1);
@@ -84,7 +84,7 @@ public sealed class OrderMapperTests
         var order = MakeOrder();
         var user = MakeUser();
 
-        var result = order.ToOrderResponse(user);
+        var result = order.ToOrderResponse(user, new Dictionary<int, string>());
 
         result.Address.Street.Should().Be("Rivera");
         result.Address.DoorNumber.Should().Be("1234");
@@ -96,7 +96,7 @@ public sealed class OrderMapperTests
         var order = MakeOrder(itemCount: 2);
         var user = MakeUser();
 
-        var result = order.ToOrderResponse(user);
+        var result = order.ToOrderResponse(user, new Dictionary<int, string>());
 
         result.Items.Should().HaveCount(2);
         result.Items[0].ProductId.Should().Be(1);

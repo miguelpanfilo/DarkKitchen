@@ -13,12 +13,14 @@ public class OrderFacade(
     IOrderService orderService,
     IOrderItemResolver orderItemResolver,
     IRepositoryUser repositoryUser,
-    IShippingTypeRepository shippingTypeRepository) : IOrderFacade
+    IShippingTypeRepository shippingTypeRepository,
+    IProductRepository productRepository) : IOrderFacade
 {
     private readonly IOrderItemResolver _orderItemResolver = orderItemResolver;
     private readonly IOrderService _orderService = orderService;
     private readonly IRepositoryUser _repositoryUser = repositoryUser;
     private readonly IShippingTypeRepository _shippingTypeRepository = shippingTypeRepository;
+    private readonly IProductRepository _productRepository = productRepository;
     public OrderResponse CreateOrder(int clientId, CreateOrderRequest request)
     {
         return ServiceExceptionHandler.ExecuteWithValidationHandling<OrderResponse, OrderException>(() =>
@@ -80,13 +82,18 @@ public class OrderFacade(
     private OrderResponse ToOrderResponseWithClient(Order order)
     {
         var user = _repositoryUser.FindByIdIncludingInactive(order.ClientId);
-
-        if(user == null)
+        if (user == null)
         {
             throw new NotFoundException($"No se encontró el cliente con id {order.ClientId}");
         }
 
-        return order.ToOrderResponse(user);
+        var productIds = order.Items.Select(i =>
+            i.ProductId).Distinct().ToList();
+        var productNames = _productRepository.GetAll()
+            .Where(p => productIds.Contains(p.Id))
+            .ToDictionary(p => p.Id, p => p.Name);
+
+        return order.ToOrderResponse(user, productNames);
     }
 
     private static void ValidateItems(List<CreateOrderItemRequest> requestItems)

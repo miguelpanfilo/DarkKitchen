@@ -17,6 +17,7 @@ public sealed class OrderFacadeTests
     private Mock<IRepositoryUser> _repositoryUserMock = null!;
     private Mock<IOrderItemResolver> _orderItemResolverMock = null!;
     private Mock<IShippingTypeRepository> _shippingTypeRepositoryMock = null!;
+    private Mock<IProductRepository> _productRepositoryMock = null!;
     private OrderFacade _orderFacade = null!;
 
     [TestInitialize]
@@ -26,12 +27,14 @@ public sealed class OrderFacadeTests
         _repositoryUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         _orderItemResolverMock = new Mock<IOrderItemResolver>(MockBehavior.Strict);
         _shippingTypeRepositoryMock = new Mock<IShippingTypeRepository>(MockBehavior.Strict);
+        _productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
 
         _orderFacade = new OrderFacade(
             _orderServiceMock.Object,
             _orderItemResolverMock.Object,
             _repositoryUserMock.Object,
-            _shippingTypeRepositoryMock.Object);
+            _shippingTypeRepositoryMock.Object,
+            _productRepositoryMock.Object);
     }
 
     private static CreateOrderRequest MakeCreateOrderRequest(string deliveryType = "Express") => new()
@@ -125,6 +128,10 @@ public sealed class OrderFacadeTests
             .Setup(r => r.FindByIdIncludingInactive(1))
             .Returns(MakeTestUser(1));
 
+        _productRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([]);
+
         var result = _orderFacade.CreateOrder(1, MakeCreateOrderRequest());
 
         result.Should().NotBeNull();
@@ -134,6 +141,7 @@ public sealed class OrderFacadeTests
         _orderItemResolverMock.VerifyAll();
         _orderServiceMock.VerifyAll();
         _repositoryUserMock.VerifyAll();
+        _productRepositoryMock.VerifyAll();
     }
 
     [TestMethod]
@@ -159,6 +167,10 @@ public sealed class OrderFacadeTests
             .Setup(r => r.FindByIdIncludingInactive(1))
             .Returns(MakeTestUser(1));
 
+        _productRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([]);
+
         var result = _orderFacade.CreateOrder(1, MakeCreateOrderRequest("TwentyFourHours"));
 
         result.Should().NotBeNull();
@@ -168,6 +180,7 @@ public sealed class OrderFacadeTests
         _orderItemResolverMock.VerifyAll();
         _orderServiceMock.VerifyAll();
         _repositoryUserMock.VerifyAll();
+        _productRepositoryMock.VerifyAll();
     }
 
     [TestMethod]
@@ -428,6 +441,10 @@ public sealed class OrderFacadeTests
             .Setup(r => r.FindByIdIncludingInactive(1))
             .Returns(MakeTestUser(1));
 
+        _productRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([]);
+
         var result = _orderFacade.GetById(1);
 
         result.Should().NotBeNull();
@@ -435,6 +452,7 @@ public sealed class OrderFacadeTests
 
         _orderServiceMock.VerifyAll();
         _repositoryUserMock.Verify(r => r.FindByIdIncludingInactive(1), Times.Once);
+        _productRepositoryMock.VerifyAll();
     }
 
     [TestMethod]
@@ -448,12 +466,17 @@ public sealed class OrderFacadeTests
             .Setup(r => r.FindByIdIncludingInactive(1))
             .Returns(MakeTestUser(1));
 
+        _productRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([]);
+
         var result = _orderFacade.GetClientOrders(1, null, null, null);
 
         result.Should().HaveCount(2);
 
         _orderServiceMock.VerifyAll();
         _repositoryUserMock.Verify(r => r.FindByIdIncludingInactive(1), Times.Exactly(2));
+        _productRepositoryMock.Verify(r => r.GetAll(), Times.Exactly(2));
     }
 
     [TestMethod]
@@ -484,12 +507,17 @@ public sealed class OrderFacadeTests
             .Setup(r => r.FindByIdIncludingInactive(1))
             .Returns(MakeTestUser(1));
 
+        _productRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([]);
+
         var result = _orderFacade.GetOrdersByFilters(dateFrom, dateTo, null, null);
 
         result.Should().HaveCount(2);
 
         _orderServiceMock.VerifyAll();
         _repositoryUserMock.Verify(r => r.FindByIdIncludingInactive(1), Times.Exactly(2));
+        _productRepositoryMock.Verify(r => r.GetAll(), Times.Exactly(2));
     }
 
     [TestMethod]
@@ -607,12 +635,17 @@ public sealed class OrderFacadeTests
             .Setup(r => r.FindByIdIncludingInactive(1))
             .Returns(MakeTestUser(1));
 
+        _productRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([]);
+
         _orderFacade.CreateOrder(1, MakeCreateOrderRequest("Rapido"));
 
         _shippingTypeRepositoryMock.VerifyAll();
         _orderItemResolverMock.VerifyAll();
         _orderServiceMock.VerifyAll();
         _repositoryUserMock.VerifyAll();
+        _productRepositoryMock.VerifyAll();
         capturedData!.ShippingCost.Should().Be(350m);
     }
 }

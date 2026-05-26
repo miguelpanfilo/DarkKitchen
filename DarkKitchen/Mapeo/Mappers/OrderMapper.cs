@@ -6,7 +6,7 @@ namespace Mappers;
 
 public static class OrderMapper
 {
-    public static OrderResponse ToOrderResponse(this Order order, User user)
+    public static OrderResponse ToOrderResponse(this Order order, User user, Dictionary<int, string> productNames)
     {
         var iva = CalculateIva(order);
 
@@ -17,7 +17,7 @@ public static class OrderMapper
             Client = MapClient(user),
             DeliveryType = order.DeliveryType,
             Address = order.Address.ToAddressResponse(),
-            Items = order.Items.Select(i => i.ToOrderItemResponse()).ToList(),
+            Items = order.Items.Select(i => i.ToOrderItemResponse(productNames)).ToList(),
 
             ItemsCount = CalculateItemsCount(order),
 
@@ -71,11 +71,12 @@ public static class OrderMapper
         };
     }
 
-    private static OrderItemResponse ToOrderItemResponse(this OrderItem item)
+    private static OrderItemResponse ToOrderItemResponse(this OrderItem item, Dictionary<int, string> productNames)
     {
         return new OrderItemResponse
         {
             ProductId = item.ProductId,
+            ProductName = productNames.TryGetValue(item.ProductId, out var name) ? name : string.Empty,
             Quantity = item.Quantity,
             UnitPrice = Math.Round(item.UnitPrice, 2),
             DiscountApplied = Math.Round(item.DiscountApplied, 2),
