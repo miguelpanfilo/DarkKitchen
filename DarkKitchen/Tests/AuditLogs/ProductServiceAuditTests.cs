@@ -234,4 +234,50 @@ public class ProductServiceAuditTests
         auditMock.Verify(a => a.Register(AuditedEntities.Product,
             It.IsAny<int>(), AuditDescriptions.ProductModified, "admin@dark.com"), Times.Once);
     }
+
+    [TestMethod]
+    public void
+        Delete_ValidProduct_GetsResponsibleUserFromCurrentUserService()
+    {
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new
+            Mock<IProductPhotoStorage>(MockBehavior.Strict);
+        var auditMock = new Mock<IAuditLogService>(MockBehavior.Strict);
+        var currentUserMock = new
+            Mock<ICurrentUserService>(MockBehavior.Strict);
+
+        currentUserMock
+            .Setup(s => s.GetEmail())
+            .Returns("admin@dark.com");
+
+        var existingProduct = new ProductBuilder()
+            .WithCode("CODE12345")
+            .WithName("Producto valido 1")
+            .WithDescription("Descripcion valida con mas de veinte caracteres")
+            .WithCommercialLine("Linea")
+            .WithCategory("Categoria")
+            .WithPrice(100)
+            .WithPhotos(new List<ProductPhoto> { new
+                ProductPhoto("photo.jpg") })
+            .Build();
+
+        repoMock.Setup(r => r.GetById(5)).Returns(existingProduct);
+        repoMock.Setup(r =>
+            r.Update(It.IsAny<Product>())).Returns((Product p) => p);
+        auditMock.Setup(a => a.Register(AuditedEntities.Product,
+            It.IsAny<int>(),
+            AuditDescriptions.ProductDeleted, "admin@dark.com"));
+
+        var photoService = new ProductPhotoService(storageMock.Object);
+        var service = new ProductService(repoMock.Object, photoService,
+            auditMock.Object, currentUserMock.Object);
+
+        service.Delete(5);
+
+        currentUserMock.Verify(s => s.GetEmail(), Times.Once);
+        auditMock.Verify(a => a.Register(AuditedEntities.Product,
+                It.IsAny<int>(),
+                AuditDescriptions.ProductDeleted, "admin@dark.com"),
+            Times.Once);
+    }
 }
