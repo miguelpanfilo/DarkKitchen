@@ -1,4 +1,4 @@
-import { PhotoRequest } from './product-photo.model';
+import { PatchPhotoRequest } from './product-photo.model';
 
 export interface UpdateProductRequest {
   code?: string;
@@ -8,5 +8,5 @@ export interface UpdateProductRequest {
   category?: string;
   price?: number;
   isActive?: boolean;
-  photos?: PhotoRequest[];
+  photos?: PatchPhotoRequest[];
 }
