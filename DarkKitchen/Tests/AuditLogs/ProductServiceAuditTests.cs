@@ -34,9 +34,11 @@ public class ProductServiceAuditTests
             .Setup(a => a.Register(AuditedEntities.Product, It.IsAny<int>(),
                 AuditDescriptions.ProductCreated, It.IsAny<string>()));
 
-        var photoService = new
-            ProductPhotoService(storageMock.Object);
-        var service = new ProductService(repoMock.Object, photoService, auditMock.Object);
+        var currentUserMock = new Mock<ICurrentUserService>(MockBehavior.Strict);
+        currentUserMock.Setup(s => s.GetEmail()).Returns("admin@dark.com");
+
+        var photoService = new ProductPhotoService(storageMock.Object);
+        var service = new ProductService(repoMock.Object, photoService, auditMock.Object, currentUserMock.Object);
 
         service.Create(new ProductDTO(
             "CODE12345",
@@ -46,7 +48,7 @@ public class ProductServiceAuditTests
             "Categoria",
             100,
             new List<PhotoDTO> { new PhotoDTO("photo", ".jpg", 1024, "dGVzdA==") }
-        ), "admin@dark.com");
+        ));
 
         auditMock.Verify(a => a.Register(AuditedEntities.Product, It.IsAny<int>(),
             AuditDescriptions.ProductCreated, It.IsAny<string>()));
@@ -86,9 +88,10 @@ public class ProductServiceAuditTests
             .Setup(a => a.Register(AuditedEntities.Product, It.IsAny<int>(),
                 AuditDescriptions.ProductModified, It.IsAny<string>()));
 
+        var currentUserMock = new Mock<ICurrentUserService>(MockBehavior.Strict);
         var photoService = new ProductPhotoService(storageMock.Object);
         var service = new ProductService(repoMock.Object, photoService,
-            auditMock.Object);
+            auditMock.Object, currentUserMock.Object);
 
         service.Update(7, new ProductPatchDto { Name = "Nuevo nombre valido" }, "admin@dark.com");
         auditMock.Verify(a => a.Register(AuditedEntities.Product, It.IsAny<int>(),
@@ -128,9 +131,10 @@ public class ProductServiceAuditTests
         auditMock
             .Setup(a => a.Register(AuditedEntities.Product, It.IsAny<int>(),
                 AuditDescriptions.ProductDeleted, It.IsAny<string>()));
+        var currentUserMock = new Mock<ICurrentUserService>(MockBehavior.Strict);
         var photoService = new ProductPhotoService(storageMock.Object);
         var service = new ProductService(repoMock.Object, photoService,
-            auditMock.Object);
+            auditMock.Object, currentUserMock.Object);
 
         service.Delete(5, "admin@dark.com");
 

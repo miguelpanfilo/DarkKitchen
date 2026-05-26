@@ -15,8 +15,7 @@ public class ProductController(IProductService productService) : ControllerBase
     [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult Create([FromBody] ProductDTO request)
     {
-        var email = User.FindFirst(ClaimTypes.Email)!.Value;
-        var response = productService.Create(request, email);
+        var response = productService.Create(request);
         return Created($"/api/v1/products/{response.Id}", response);
     }
 

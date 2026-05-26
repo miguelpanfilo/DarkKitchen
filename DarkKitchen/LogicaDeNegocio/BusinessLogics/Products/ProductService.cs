@@ -15,14 +15,17 @@ public class ProductService : IProductService
     private readonly IProductRepository _repository;
     private readonly ProductPhotoService _productPhotoService;
     private readonly IAuditLogService _auditLogService;
+    private readonly ICurrentUserService _currentUserService;
 
     public ProductService(IProductRepository repository,
-        ProductPhotoService productPhotoService, IAuditLogService
-            auditLogService)
+        ProductPhotoService productPhotoService,
+        IAuditLogService auditLogService,
+        ICurrentUserService currentUserService)
     {
         _repository = repository;
         _productPhotoService = productPhotoService;
         _auditLogService = auditLogService;
+        _currentUserService = currentUserService;
     }
 
     public List<ProductResponseDto> GetProducts(ProductSearchRequestDto request)
@@ -92,15 +95,16 @@ public class ProductService : IProductService
         return ProductMapper.ToResponseDto(product);
     }
 
-    public ProductResponseDto Create(ProductDTO productDto, string responsibleUser)
+    public ProductResponseDto Create(ProductDTO productDto)
     {
-        var savedPhotos = ServiceExceptionHandler.ExecuteWithValidationHandling<List<ProductPhoto>,ProductException>(() =>
+        var savedPhotos = ServiceExceptionHandler.ExecuteWithValidationHandling<List<ProductPhoto>, ProductException>(() =>
             _productPhotoService.SavePhotos(productDto.Photos));
-        var product = ServiceExceptionHandler.ExecuteWithValidationHandling<Product,ProductException>(() => ProductMapper.ToEntity(productDto, savedPhotos));
+        var product = ServiceExceptionHandler.ExecuteWithValidationHandling<Product,
+                ProductException>(() => ProductMapper.ToEntity(productDto, savedPhotos));
 
         var createdProduct = _repository.Create(product);
-        _auditLogService.Register(AuditedEntities.Product, createdProduct.Id,
-            AuditDescriptions.ProductCreated, responsibleUser);
+        _auditLogService.Register(AuditedEntities.Product, createdProduct.Id, AuditDescriptions.ProductCreated,
+            _currentUserService.GetEmail());
 
         return ProductMapper.ToResponseDto(createdProduct);
     }

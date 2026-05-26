@@ -21,8 +21,10 @@ public class ProductServiceTest
     {
         var photoService = new ProductPhotoService(storageMock.Object);
         var auditMock = new Mock<IAuditLogService>();
+        var currentUserMock = new Mock<ICurrentUserService>(MockBehavior.Strict);
+        currentUserMock.Setup(s => s.GetEmail()).Returns("admin@dark.com");
         return new ProductService(repoMock.Object, photoService,
-            auditMock.Object);
+            auditMock.Object, currentUserMock.Object);
     }
 
     private Product CreateValidProduct(
@@ -91,7 +93,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var result = service.Create(productDto, "admin@dark.com");
+        var result = service.Create(productDto);
 
         Assert.IsNotNull(result);
         Assert.AreEqual(productDto.Name, result.Name);
@@ -116,7 +118,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        Assert.ThrowsException<ValidationException>(() => service.Create(dto, "admin@dark.com"));
+        Assert.ThrowsException<ValidationException>(() => service.Create(dto));
 
         repoMock.Verify(repository => repository.Create(It.IsAny<Product>()), Times.Never);
     }
@@ -152,7 +154,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var result = service.Create(productDto, "admin@dark.com");
+        var result = service.Create(productDto);
 
         Assert.IsNotNull(result);
 
@@ -191,7 +193,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var result = service.Create(productDto, "admin@dark.com");
+        var result = service.Create(productDto);
 
         Assert.IsNotNull(result);
 
@@ -243,7 +245,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var result = service.Create(productDto, "admin@dark.com");
+        var result = service.Create(productDto);
 
         Assert.IsNotNull(result);
         Assert.AreEqual(cantidadFotos, result.Photos.Count);
@@ -287,7 +289,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ValidationException>(() => service.Create(productDto, "admin@dark.com"));
+        var exception = Assert.ThrowsException<ValidationException>(() => service.Create(productDto));
 
         Assert.AreEqual("El producto debe tener entre 1 y 3 fotos", exception.Message);
         storageMock.Verify(s => s.Save(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
@@ -327,7 +329,7 @@ public class ProductServiceTest
         var service = CreateService(repoMock, storageMock);
 
         var exception = Assert.ThrowsException<ValidationException>(() =>
-            service.Create(productDto, "admin@dark.com")
+            service.Create(productDto)
         );
 
         Assert.AreEqual("Las fotos deben estar en formato JPG", exception.Message);
@@ -364,7 +366,7 @@ public class ProductServiceTest
         var service = CreateService(repoMock, storageMock);
 
         var exception = Assert.ThrowsException<ValidationException>(() =>
-            service.Create(productDto, "admin@dark.com"));
+            service.Create(productDto));
 
         Assert.AreEqual("Las fotos deben estar en formato JPG", exception.Message);
 
@@ -844,7 +846,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ValidationException>(() => service.Create(productDto, "admin@dark.com"));
+        var exception = Assert.ThrowsException<ValidationException>(() => service.Create(productDto));
 
         Assert.AreEqual("La foto no puede superar los 500 KB", exception.Message);
     }
@@ -1220,8 +1222,9 @@ public class ProductServiceTest
             .Returns(products);
 
         var auditMock = new Mock<IAuditLogService>();
+        var currentUserMock = new Mock<ICurrentUserService>(MockBehavior.Strict);
         var service = new ProductService(repositoryMock.Object, null!,
-            auditMock.Object);
+            auditMock.Object, currentUserMock.Object);
         var result = service.GetProducts(new ProductSearchRequestDto());
 
         Assert.AreEqual(2, result.Count);

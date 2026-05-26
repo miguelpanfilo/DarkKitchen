@@ -39,7 +39,7 @@ public class ProductControllerTest
         var serviceMock = new Mock<IProductService>(MockBehavior.Strict);
 
         serviceMock
-            .Setup(s => s.Create(request, It.IsAny<string>()))
+            .Setup(s => s.Create(request))
             .Returns(response);
 
         var controller = new ProductController(serviceMock.Object);
@@ -61,7 +61,7 @@ public class ProductControllerTest
         Assert.IsNotNull(value);
         Assert.AreEqual(request.Name, value.Name);
 
-        serviceMock.Verify(s => s.Create(request, It.IsAny<string>()), Times.Once);
+        serviceMock.Verify(s => s.Create(request), Times.Once);
     }
 
     [TestMethod]
