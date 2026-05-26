@@ -88,11 +88,11 @@ export class ProductsListPageComponent implements OnInit, OnDestroy {
   }
 
   onAdd() {
-    this.router.navigate(['/app/products/create']);
+    this.router.navigate(['/home/products/create']);
   }
 
   onEdit(product: Product) {
-    this.router.navigate(['/app/products/edit', product.id]);
+    this.router.navigate(['/home/products/edit', product.id]);
   }
 
   onDelete(product: Product) {

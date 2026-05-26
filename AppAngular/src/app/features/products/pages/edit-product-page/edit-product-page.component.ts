@@ -141,7 +141,7 @@ export class EditProductPageComponent implements OnInit {
     }).subscribe({
       next: () => {
         this.isSubmitting = false;
-        this.router.navigate(['/app/products'], { state: { successMessage: 'Producto actualizado correctamente.' } });
+        this.router.navigate(['/home/products'], { state: { successMessage: 'Producto actualizado correctamente.' } });
       },
       error: (error) => {
         this.isSubmitting = false;
@@ -151,6 +151,6 @@ export class EditProductPageComponent implements OnInit {
   }
 
   onCancel() {
-    this.router.navigate(['/app/products']);
+    this.router.navigate(['/home/products']);
   }
 }

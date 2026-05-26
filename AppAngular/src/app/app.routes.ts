@@ -33,7 +33,7 @@ export const routes: Routes = [
     ]
   },
   {
-    path: 'app',
+    path: 'home',
     component: MainLayoutComponent,
     canActivate: [authGuard],
     canActivateChild: [authGuard],

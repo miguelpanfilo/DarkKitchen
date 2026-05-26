@@ -103,11 +103,11 @@ export class OrdersListPageComponent implements OnInit {
   }
 
   onAdd() {
-    this.router.navigate(['/app/orders/create']);
+    this.router.navigate(['/home/orders/create']);
   }
 
   onViewDetail(order: Order) {
-    this.router.navigate(['/app/orders', order.id]);
+    this.router.navigate(['/home/orders', order.id]);
   }
 
   getStatusLabel(status: string): string {

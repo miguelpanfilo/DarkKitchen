@@ -134,7 +134,7 @@ export class CreateOrderPageComponent implements OnInit {
     }).subscribe({
       next: () => {
         this.isSubmitting = false;
-        this.router.navigate(['/app/orders'], { state: { successMessage: 'Orden creada exitosamente.' } });
+        this.router.navigate(['/home/orders'], { state: { successMessage: 'Orden creada exitosamente.' } });
       },
       error: (error) => {
         this.isSubmitting = false;
@@ -144,6 +144,6 @@ export class CreateOrderPageComponent implements OnInit {
   }
 
   onCancel() {
-    this.router.navigate(['/app/orders']);
+    this.router.navigate(['/home/orders']);
   }
 }

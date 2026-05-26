@@ -20,13 +20,6 @@
 .border-cancelled    { border-left-color: #6c757d; }
 .border-delayed      { border-left-color: #6f42c1; }
 
-.order-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-}
-
 .order-number { font-weight: 700; color: #666; }
 
 .status-badge {
@@ -45,15 +38,6 @@
 .status-cancelled    { background: #e2e3e5; color: #41464b; }
 .status-delayed      { background: #e8d5f5; color: #5a2d82; }
 
-.order-body {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 14px;
-}
-
-.client-name { font-size: 1.05rem; font-weight: 700; color: #1a1a2e; }
-
 .delivery-tag {
   display: inline-block;
   font-size: 0.75rem;
@@ -65,19 +49,10 @@
   margin-top: 6px;
 }
 
-.order-totals {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
 .order-total { font-size: 1.25rem; font-weight: 800; color: #1a1a2e; }
 .order-items { font-size: 0.8rem; color: #666; }
 
 .order-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   border-top: 1px solid #f0f0f0;
   padding-top: 10px;
 }

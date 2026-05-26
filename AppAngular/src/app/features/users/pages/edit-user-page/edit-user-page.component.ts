@@ -78,7 +78,7 @@ export class EditUserPageComponent implements OnInit, OnDestroy {
     this.subs.add(this.userService.updateUser(this.userId, request).subscribe({
       next: () => {
         this.isLoading = false;
-        this.router.navigate(['/app/users']);
+        this.router.navigate(['/home/users']);
       },
       error: (err) => {
         this.isLoading = false;
@@ -88,6 +88,6 @@ export class EditUserPageComponent implements OnInit, OnDestroy {
   }
 
   onCancelled() {
-    this.router.navigate(['/app/users']);
+    this.router.navigate(['/home/users']);
   }
 }

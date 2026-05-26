@@ -168,7 +168,7 @@ export class OrderDetailPageComponent implements OnInit {
   }
 
   onBack() {
-    this.router.navigate(['/app/orders']);
+    this.router.navigate(['/home/orders']);
   }
 
   getStatusLabel(status: string): string {

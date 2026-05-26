@@ -1,10 +1,10 @@
 <div class="orders-container">
-  <div class="orders-header">
+  <div class="d-flex justify-content-between align-items-center mb-3">
     <h1>Órdenes</h1>
     <app-add-button *appHasRole="['Client']" label="Nueva orden" (clicked)="onAdd()" />
   </div>
 
-  <div class="filters">
+  <div class="filters d-flex flex-wrap gap-3 align-items-end">
     <div class="form-group">
       <label for="filterDateFrom">Desde</label>
       <input id="filterDateFrom" type="datetime-local" [(ngModel)]="filterDateFrom" name="filterDateFrom" />
@@ -28,20 +28,12 @@
     <app-clear-button (cleared)="onLimpiar()" />
   </div>
 
-  <app-status-messages
-    [errorMessage]="errorMessage"
-    [successMessage]="successMessage"
-    [isLoading]="isLoading"
-    loadingText="Cargando órdenes..." />
+  <app-status-messages [errorMessage]="errorMessage" [successMessage]="successMessage"
+    [isLoading]="isLoading" loadingText="Cargando órdenes..." />
 
-  <p *ngIf="!isLoading && orders.length === 0 && !errorMessage" class="empty">
-    No hay órdenes para mostrar.
-  </p>
+  <p *ngIf="!isLoading && orders.length === 0 && !errorMessage" class="empty">No hay órdenes para mostrar.</p>
 
-  <div *ngIf="orders.length > 0" class="orders-list">
-    <app-order-card
-      *ngFor="let order of orders"
-      [order]="order"
-      (viewDetail)="onViewDetail($event)" />
+  <div *ngIf="orders.length > 0" class="orders-grid">
+    <app-order-card *ngFor="let order of orders" [order]="order" (viewDetail)="onViewDetail($event)" />
   </div>
 </div>

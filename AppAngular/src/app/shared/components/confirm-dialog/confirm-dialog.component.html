@@ -1,10 +1,14 @@
-<div *ngIf="visible" class="overlay">
-  <div class="dialog">
-    <span class="icon">⚠️</span>
-    <p class="message">{{ message }}</p>
-    <div class="actions">
-      <button class="btn-cancel" (click)="onCancel()">Cancelar</button>
-      <button class="btn-confirm" (click)="onConfirm()">Confirmar</button>
+<div *ngIf="visible" class="modal d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center p-3">
+      <div class="modal-body">
+        <span style="font-size: 2.5rem;">⚠️</span>
+        <p class="my-3">{{ message }}</p>
+        <div class="d-flex justify-content-center gap-2">
+          <button class="btn btn-outline-secondary" (click)="onCancel()">Cancelar</button>
+          <button class="btn btn-danger btn-confirm" (click)="onConfirm()">Confirmar</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

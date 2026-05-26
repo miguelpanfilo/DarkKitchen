@@ -1,54 +1,54 @@
 <div class="audit-container">
-    <h1>Auditorías</h1>
+  <h1>Auditorías</h1>
 
-    <div class="filters">
-        <div class="form-group">
-            <label for="entidad">Entidad</label>
-            <select id="entidad" [(ngModel)]="entidad" name="entidad">
-                <option value="">Seleccioná una entidad</option>
-                <option value="PRODUCTO">Producto</option>
-                <option value="PROMOCION">Promoción</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="entityId">ID Entidad</label>
-            <input id="entityId" type="number" [(ngModel)]="entityId" name="entityId" placeholder="Ej: 1" />
-        </div>
-        <div class="form-group">
-            <label for="fechaDesde">Fecha desde</label>
-            <input id="fechaDesde" type="datetime-local" [(ngModel)]="fechaDesde" name="fechaDesde" />
-        </div>
-        <div class="form-group">
-            <label for="fechaHasta">Fecha hasta</label>
-            <input id="fechaHasta" type="datetime-local" [(ngModel)]="fechaHasta" name="fechaHasta" />
-        </div>
-        <app-filter-button (filtered)="onFiltrar()" />
-        <app-clear-button (cleared)="onLimpiar()" />
+  <div class="filters d-flex gap-3 align-items-end flex-wrap">
+    <div class="form-group">
+      <label for="entidad">Entidad</label>
+      <select id="entidad" [(ngModel)]="entidad" name="entidad">
+        <option value="">Seleccioná una entidad</option>
+        <option value="PRODUCTO">Producto</option>
+        <option value="PROMOCION">Promoción</option>
+      </select>
     </div>
+    <div class="form-group">
+      <label for="entityId">ID Entidad</label>
+      <input id="entityId" type="number" [(ngModel)]="entityId" name="entityId" placeholder="Ej: 1" />
+    </div>
+    <div class="form-group">
+      <label for="fechaDesde">Fecha desde</label>
+      <input id="fechaDesde" type="datetime-local" [(ngModel)]="fechaDesde" name="fechaDesde" />
+    </div>
+    <div class="form-group">
+      <label for="fechaHasta">Fecha hasta</label>
+      <input id="fechaHasta" type="datetime-local" [(ngModel)]="fechaHasta" name="fechaHasta" />
+    </div>
+    <app-filter-button (filtered)="onFiltrar()" />
+    <app-clear-button (cleared)="onLimpiar()" />
+  </div>
 
-    <app-status-messages [errorMessage]="errorMessage" [isLoading]="isLoading" loadingText="Cargando auditorías..." />
-    <table class="audit-table">
-        <caption>Registros de auditoría</caption>
-        <thead>
-            <tr>
-                <th>Fecha y hora</th>
-                <th>Entidad</th>
-                <th>ID Entidad</th>
-                <th>Descripción</th>
-                <th>Usuario</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngIf="auditLogs.length === 0">
-                <td colspan="5" class="empty">No hay registros para mostrar.</td>
-            </tr>
-            <tr *ngFor="let log of auditLogs">
-                <td>{{ log.dateTime | date:'dd/MM/yyyy HH:mm' }}</td>
-                <td>{{ log.entityName }}</td>
-                <td>{{ log.entityId }}</td>
-                <td>{{ log.changeDescription }}</td>
-                <td>{{ log.responsibleUser }}</td>
-            </tr>
-        </tbody>
-    </table>
+  <app-status-messages [errorMessage]="errorMessage" [isLoading]="isLoading" loadingText="Cargando auditorías..." />
+
+  <table class="audit-table">
+    <thead>
+      <tr>
+        <th>Fecha y hora</th>
+        <th>Entidad</th>
+        <th>ID Entidad</th>
+        <th>Descripción</th>
+        <th>Usuario</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="auditLogs.length === 0">
+        <td colspan="5" class="empty">No hay registros para mostrar.</td>
+      </tr>
+      <tr *ngFor="let log of auditLogs">
+        <td>{{ log.dateTime | date:'dd/MM/yyyy HH:mm' }}</td>
+        <td>{{ log.entityName }}</td>
+        <td>{{ log.entityId }}</td>
+        <td>{{ log.changeDescription }}</td>
+        <td>{{ log.responsibleUser }}</td>
+      </tr>
+    </tbody>
+  </table>
 </div>

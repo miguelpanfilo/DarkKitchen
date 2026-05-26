@@ -12,7 +12,7 @@ export const roleGuard = (allowedRoles: string[]): CanActivateFn => {
       return true;
     }
 
-    router.navigate(['/app'], { state: { errorMessage: 'No tenés permisos para acceder a esa sección.' } });
+    router.navigate(['/home'], { state: { errorMessage: 'No tenés permisos para acceder a esa sección.' } });
     return false;
   };
 };

@@ -1,26 +1,7 @@
-.edit-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 2rem;
-}
-
-.edit-header {
-  margin-bottom: 1.5rem;
-}
-
-.edit-header h2 {
+h1 {
+  font-size: 1.4rem;
+  margin-bottom: 1.25rem;
   color: #1a1a2e;
-  margin: 0;
-}
-
-.form-card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  width: 100%;
-  max-width: 480px;
 }
 
 .form-group {

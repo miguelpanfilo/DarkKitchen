@@ -99,7 +99,7 @@ export class CreateProductPageComponent {
     }).subscribe({
       next: () => {
         this.isSubmitting = false;
-        this.router.navigate(['/app/products'], { state: { successMessage: 'Producto creado correctamente.' } });
+        this.router.navigate(['/home/products'], { state: { successMessage: 'Producto creado correctamente.' } });
       },
       error: (error) => {
         this.isSubmitting = false;
@@ -109,6 +109,6 @@ export class CreateProductPageComponent {
   }
 
   onCancel() {
-    this.router.navigate(['/app/products']);
+    this.router.navigate(['/home/products']);
   }
 }

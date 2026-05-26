@@ -84,6 +84,6 @@ export class RegisterInternalUserPageComponent implements OnDestroy {
   }
 
   onCancelled() {
-    this.router.navigate(['/app/users']);
+    this.router.navigate(['/home/users']);
   }
 }
