@@ -61,16 +61,7 @@ public class OrderService(IOrderRepository orderRepository) : IOrderService
     private void ApplyStateChange(int orderId, Action<Order> transition)
     {
         var order = GetById(orderId);
-
-        try
-        {
-            transition(order);
-        }
-        catch(OrderException ex)
-        {
-            throw new ConflictException(ex.Message);
-        }
-
+        transition(order);
         _orderRepository.Update(order);
     }
 }

@@ -3,6 +3,7 @@ using BusinessLogicsAbstractions.Exceptions;
 using Contract.Orders;
 using DataAccessAbstractions;
 using Domain;
+using Domain.Exceptions;
 using FluentAssertions;
 using Moq;
 
@@ -220,7 +221,7 @@ public sealed class OrderServiceTests
     }
 
     [TestMethod]
-    public void Dispatch_WhenOrderIsPending_ShouldThrowConflictExceptionAndNotUpdate()
+    public void Dispatch_WhenOrderIsPending_ShouldThrowOrderExceptionAndNotUpdate()
     {
         var order = MakeOrder();
 
@@ -231,7 +232,7 @@ public sealed class OrderServiceTests
         var act = () => _orderService.Dispatch(1);
 
         act.Should()
-            .Throw<ConflictException>();
+            .Throw<OrderException>();
 
         _orderRepositoryMock.Verify(r => r.GetById(1), Times.Once);
         _orderRepositoryMock.Verify(r => r.Update(It.IsAny<Order>()), Times.Never);
