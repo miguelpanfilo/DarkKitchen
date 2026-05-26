@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using DarkKitchen.Services;
 using Microsoft.AspNetCore.Http;
 using Moq;
 

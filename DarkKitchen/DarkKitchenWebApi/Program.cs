@@ -1,6 +1,8 @@
 using System.Text.Json.Serialization;
+using BusinessLogicsAbstractions;
 using DarkKitchen;
 using DarkKitchen.Filters;
+using DarkKitchen.Services;
 using FactoryService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,6 +32,8 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 builder.Services.AddCustomSwagger();
 builder.Services.AddDarkKitchenDependencies(builder.Configuration);
+
+builder.Services.AddWebApiServices();
 builder.Services.AddCorsPolicy();
 
 builder.Services.AddScoped<ExceptionFilter>();

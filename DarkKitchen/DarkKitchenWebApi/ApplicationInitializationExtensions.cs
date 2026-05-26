@@ -1,5 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
+using BusinessLogicsAbstractions;
 using BusinessLogicsAbstractions.Users;
+using DarkKitchen.Services;
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +21,14 @@ public static class ApplicationInitializationExtensions
         initializationService.EnsureInitialized();
 
         return app;
+    }
+
+    public static IServiceCollection AddWebApiServices(this
+        IServiceCollection services)
+    {
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+        return services;
     }
 
     public static WebApplication UseCorsPolicy(this WebApplication app)
