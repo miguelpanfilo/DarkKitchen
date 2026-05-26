@@ -32,6 +32,7 @@ export class OrderService {
       } as OrderAddress,
       items: item.items.map((i: any) => ({
         productId: i.productId,
+        productName: i.productName,
         quantity: i.quantity,
         unitPrice: i.unitPrice,
         discountApplied: i.discountApplied,
