@@ -64,7 +64,7 @@ public class CreatePromotionsControllerTests
         );
 
         _promotionServiceMock
-            .Setup(x => x.Create(request, It.IsAny<string>()))
+            .Setup(x => x.Create(request))
             .Returns(response);
 
         SetCurrentUser("admin@test.com");
@@ -75,7 +75,7 @@ public class CreatePromotionsControllerTests
         Assert.AreEqual(StatusCodes.Status201Created, result.StatusCode);
         Assert.AreEqual(response, result.Value);
 
-        _promotionServiceMock.Verify(x => x.Create(request, It.IsAny<string>()),
+        _promotionServiceMock.Verify(x => x.Create(request),
             Times.Once);
     }
 

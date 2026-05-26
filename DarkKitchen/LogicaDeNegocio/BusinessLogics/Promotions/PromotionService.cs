@@ -15,25 +15,27 @@ public class PromotionService : IPromotionService
     private readonly IPromotionRepository _promotionRepository;
     private readonly IProductRepository _productRepository;
     private readonly IAuditLogService _auditLogService;
+    private readonly ICurrentUserService _currentUserService;
 
-    public PromotionService(IPromotionRepository promotionRepository, IProductRepository productRepository, IAuditLogService
-        auditLogService)
+    public PromotionService(IPromotionRepository promotionRepository,
+        IProductRepository productRepository,
+        IAuditLogService auditLogService,
+        ICurrentUserService currentUserService)
     {
         _promotionRepository = promotionRepository;
         _productRepository = productRepository;
         _auditLogService = auditLogService;
+        _currentUserService = currentUserService;
     }
 
-    public PromotionResponseDto Create(PromotionRequestDto promotionRequestDto,  string responsibleUser)
+    public PromotionResponseDto Create(PromotionRequestDto promotionRequestDto)
     {
         var promotion = ServiceExceptionHandler.ExecuteWithValidationHandling<Promotion, PromotionException>(() =>
             PromotionMapper.ToEntity(promotionRequestDto)
         );
 
         var createdPromotion = _promotionRepository.Create(promotion);
-        _auditLogService.Register(AuditedEntities.Promotion,
-            createdPromotion.Id, AuditDescriptions.PromotionCreated, responsibleUser);
-
+        _auditLogService.Register(AuditedEntities.Promotion, createdPromotion.Id, AuditDescriptions.PromotionCreated, _currentUserService.GetEmail());
         return MapPromotionWithProducts(createdPromotion);
     }
 

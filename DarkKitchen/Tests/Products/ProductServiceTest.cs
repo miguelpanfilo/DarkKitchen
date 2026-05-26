@@ -1193,10 +1193,11 @@ public class ProductServiceTest
         };
 
         var auditMock = new Mock<IAuditLogService>();
+        var currentUserMock = new Mock<ICurrentUserService>(MockBehavior.Strict);
         var service = new PromotionService(
             promotionRepositoryMock.Object,
-            productRepositoryMock.Object,auditMock.Object
-        );
+            productRepositoryMock.Object, auditMock.Object,
+            currentUserMock.Object);
 
         var result = service.GetPromotions(request);
 
