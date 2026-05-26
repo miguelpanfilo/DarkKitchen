@@ -16,11 +16,11 @@
     </div>
     <div class="form-group">
       <label for="fechaDesde">Fecha desde</label>
-      <input id="fechaDesde" type="datetime-local" [(ngModel)]="fechaDesde" name="fechaDesde" />
+      <input id="fechaDesde" type="date" [(ngModel)]="fechaDesde" name="fechaDesde" />
     </div>
     <div class="form-group">
       <label for="fechaHasta">Fecha hasta</label>
-      <input id="fechaHasta" type="datetime-local" [(ngModel)]="fechaHasta" name="fechaHasta" />
+      <input id="fechaHasta" type="date" [(ngModel)]="fechaHasta" name="fechaHasta" />
     </div>
     <app-filter-button (filtered)="onFiltrar()" />
     <app-clear-button (cleared)="onLimpiar()" />

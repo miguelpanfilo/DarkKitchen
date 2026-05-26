@@ -53,3 +53,17 @@ input:focus { border-color: #2c2c54; }
 .period-total td { background-color: #f0f0f5; font-weight: bold; color: #2c2c54; }
 .grand-total td { background-color: #2c2c54; color: white; font-weight: bold; }
 .empty { text-align: center; color: #999; padding: 2rem; }
+
+.report-photos { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+
+.report-photo {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.report-photo:hover { opacity: 0.85; }
+
+.no-photos { font-size: 0.8rem; color: #999; }

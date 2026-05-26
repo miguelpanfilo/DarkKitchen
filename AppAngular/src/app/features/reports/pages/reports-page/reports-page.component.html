@@ -4,11 +4,11 @@
   <div class="filters d-flex gap-3 align-items-end flex-wrap">
     <div class="form-group">
       <label for="dateFrom">Fecha desde</label>
-      <input id="dateFrom" type="datetime-local" [(ngModel)]="dateFrom" name="dateFrom" />
+      <input id="dateFrom" type="date" [(ngModel)]="dateFrom" name="dateFrom" />
     </div>
     <div class="form-group">
       <label for="dateTo">Fecha hasta</label>
-      <input id="dateTo" type="datetime-local" [(ngModel)]="dateTo" name="dateTo" />
+      <input id="dateTo" type="date" [(ngModel)]="dateTo" name="dateTo" />
     </div>
     <app-filter-button (filtered)="onFiltrar()" />
     <app-clear-button (cleared)="onLimpiar()" />
@@ -23,16 +23,25 @@
         <th>Código</th>
         <th>Nombre</th>
         <th>Cantidad vendida</th>
+        <th>Imágenes</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngIf="topProducts.length === 0">
-        <td colspan="3" class="empty">No hay datos para mostrar.</td>
+        <td colspan="4" class="empty">No hay datos para mostrar.</td>
       </tr>
       <tr *ngFor="let product of topProducts">
         <td>{{ product.code }}</td>
         <td>{{ product.name }}</td>
         <td>{{ product.quantitySold }}</td>
+        <td>
+          <div class="report-photos">
+            <a *ngFor="let img of product.images" [href]="img" target="_blank" class="report-photo-link">
+              <img [src]="img" alt="{{ product.name }}" class="report-photo" />
+            </a>
+            <span *ngIf="product.images.length === 0" class="no-photos">Sin fotos</span>
+          </div>
+        </td>
       </tr>
     </tbody>
   </table>

@@ -40,7 +40,15 @@ h1 { color: #1a1a2e; font-size: 1.6rem; margin: 0 0 24px; text-align: center; }
 }
 
 .product-card-body { padding: 14px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
-.product-name { font-weight: 700; color: #1a1a2e; }
+.product-name {
+  font-weight: 700;
+  color: #1a1a2e;
+  overflow-wrap: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 .product-line { font-size: 0.78rem; color: #666; }
 .product-price { font-size: 1.1rem; font-weight: 700; color: #b71c3c; margin-top: 6px; }
 

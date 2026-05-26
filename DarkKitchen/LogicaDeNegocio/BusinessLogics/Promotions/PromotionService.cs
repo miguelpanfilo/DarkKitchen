@@ -209,7 +209,7 @@ public class PromotionService : IPromotionService
     private static List<Promotion> FilterByDate(List<Promotion> promotions, DateOnly date)
     {
         return promotions
-            .Where(p => p.StartDate <= date && p.EndDate >= date)
+            .Where(p => !p.IsDeleted && p.StartDate <= date && p.EndDate >= date)
             .ToList();
     }
 

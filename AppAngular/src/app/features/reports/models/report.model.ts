@@ -2,6 +2,7 @@ export interface TopProduct {
     code: string;
     name: string;
     quantitySold: number;
+    images: string[];
   }
 
   export interface SalesCustomer {

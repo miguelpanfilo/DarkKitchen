@@ -1,0 +1,63 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.promotion-card {
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: box-shadow 0.2s;
+  height: 100%;
+}
+
+.promotion-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.promotion-id {
+  font-size: 0.8rem;
+  color: #666;
+  font-weight: 600;
+}
+
+.promotion-discount {
+  font-size: 0.85rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  background-color: #b71c3c;
+  color: #fff;
+  font-weight: 700;
+}
+
+.promotion-name {
+  color: #1a1a2e;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.promotion-dates {
+  font-size: 0.8rem;
+  color: #2c2c54;
+  margin: 0;
+}
+
+.products-label {
+  font-size: 0.8rem;
+  color: #555;
+  margin: 0 0 0.25rem;
+  font-weight: 600;
+}
+
+.products-list {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.no-products {
+  font-size: 0.8rem;
+  color: #666;
+  margin: 0;
+  font-style: italic;
+}
