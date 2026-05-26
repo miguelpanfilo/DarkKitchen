@@ -940,7 +940,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        service.Delete(productId, "admin@dark.com");
+        service.Delete(productId);
 
         Assert.IsTrue(product.IsDeleted);
 
@@ -962,7 +962,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<NotFoundException>(() => service.Delete(productId, "admin@dark.com"));
+        var exception = Assert.ThrowsException<NotFoundException>(() => service.Delete(productId));
 
         Assert.AreEqual("El producto no existe", exception.Message);
     }

@@ -39,8 +39,7 @@ public class ProductController(IProductService productService) : ControllerBase
     [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult Delete(int productId)
     {
-        var email = User.FindFirst(ClaimTypes.Email)!.Value;
-        productService.Delete(productId, email);
+        productService.Delete(productId);
         return NoContent();
     }
 }

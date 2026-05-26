@@ -133,11 +133,12 @@ public class ProductServiceAuditTests
             .Setup(a => a.Register(AuditedEntities.Product, It.IsAny<int>(),
                 AuditDescriptions.ProductDeleted, It.IsAny<string>()));
         var currentUserMock = new Mock<ICurrentUserService>(MockBehavior.Strict);
+        currentUserMock.Setup(s => s.GetEmail()).Returns("admin@dark.com");
         var photoService = new ProductPhotoService(storageMock.Object);
         var service = new ProductService(repoMock.Object, photoService,
             auditMock.Object, currentUserMock.Object);
 
-        service.Delete(5, "admin@dark.com");
+        service.Delete(5);
 
         auditMock.Verify(a => a.Register(AuditedEntities.Product, It.IsAny<int>(),
             AuditDescriptions.ProductDeleted, It.IsAny<string>()));
@@ -236,8 +237,7 @@ public class ProductServiceAuditTests
     }
 
     [TestMethod]
-    public void
-        Delete_ValidProduct_GetsResponsibleUserFromCurrentUserService()
+    public void Delete_ValidProduct_GetsResponsibleUserFromCurrentUserService()
     {
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new
@@ -257,8 +257,11 @@ public class ProductServiceAuditTests
             .WithCommercialLine("Linea")
             .WithCategory("Categoria")
             .WithPrice(100)
-            .WithPhotos(new List<ProductPhoto> { new
-                ProductPhoto("photo.jpg") })
+            .WithPhotos(new List<ProductPhoto>
+            {
+                new
+                ProductPhoto("photo.jpg")
+            })
             .Build();
 
         repoMock.Setup(r => r.GetById(5)).Returns(existingProduct);

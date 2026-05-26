@@ -120,14 +120,13 @@ public class ProductService : IProductService
         return ProductMapper.ToResponseDto(updatedProduct);
     }
 
-    public void Delete(int productId, string responsibleUser)
+    public void Delete(int productId)
     {
         var product = GetExistingProduct(productId);
 
         ServiceExceptionHandler.ExecuteWithConflictHandling<ProductException>(() => product.Delete());
         _repository.Update(product);
-        _auditLogService.Register(AuditedEntities.Product, product.Id,
-            AuditDescriptions.ProductDeleted, responsibleUser);
+        _auditLogService.Register(AuditedEntities.Product, product.Id, AuditDescriptions.ProductDeleted, _currentUserService.GetEmail());
     }
 
     private void ApplyPatch(Product product, ProductPatchDto patchDto)

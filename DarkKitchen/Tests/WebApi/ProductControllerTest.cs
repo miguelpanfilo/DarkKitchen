@@ -243,7 +243,7 @@ public class ProductControllerTest
         var productId = 1;
 
         serviceMock
-            .Setup(s => s.Delete(productId, It.IsAny<string>()));
+            .Setup(s => s.Delete(productId));
 
         var controller = new ProductController(serviceMock.Object);
         var claims = new List<Claim> { new Claim(ClaimTypes.Email, "admin@dark.com") };
@@ -259,7 +259,7 @@ public class ProductControllerTest
 
         Assert.IsInstanceOfType(result, typeof(NoContentResult));
 
-        serviceMock.Verify(s => s.Delete(productId, It.IsAny<string>()), Times.Once);
+        serviceMock.Verify(s => s.Delete(productId), Times.Once);
         serviceMock.VerifyAll();
     }
 
