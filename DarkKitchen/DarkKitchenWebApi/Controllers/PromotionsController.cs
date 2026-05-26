@@ -25,8 +25,7 @@ public class PromotionsController(IPromotionService promotionService) : Controll
     [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult Update([FromRoute] int id, [FromBody] PromotionPatchDto request)
     {
-        var email = User.FindFirst(ClaimTypes.Email)!.Value;
-        var response = _promotionService.Update(id, request, email);
+        var response = _promotionService.Update(id, request);
         return Ok(response);
     }
 

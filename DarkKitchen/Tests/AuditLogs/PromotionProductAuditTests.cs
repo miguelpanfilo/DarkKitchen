@@ -74,11 +74,11 @@ public class PromotionServiceAuditTests
                 It.IsAny<int>(), AuditDescriptions.PromotionModified, It.IsAny<string>()));
 
         var currentUserMock = new Mock<ICurrentUserService>(MockBehavior.Strict);
+        currentUserMock.Setup(s => s.GetEmail()).Returns("admin@dark.com");
         var service = new PromotionService(promotionRepoMock.Object,
             productRepoMock.Object, auditMock.Object, currentUserMock.Object);
 
-        service.Update(1, new PromotionPatchDto
-        { Name = "Nuevo nombre" }, "admin@dark.com");
+        service.Update(1, new PromotionPatchDto { Name = "Nuevo nombre" });
         auditMock.Verify(a => a.Register(AuditedEntities.Promotion,
             It.IsAny<int>(), AuditDescriptions.PromotionModified, It.IsAny<string>()));
     }
@@ -161,6 +161,7 @@ public class PromotionServiceAuditTests
             It.IsAny<int>(), AuditDescriptions.PromotionCreated,
             "admin@dark.com"), Times.Once);
     }
+
     [TestMethod]
     public void
         Update_ValidPromotion_GetsResponsibleUserFromCurrentUserService()

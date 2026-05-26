@@ -75,7 +75,7 @@ public class UpdatePromotionsControllerTests
         );
 
         _promotionServiceMock
-            .Setup(x => x.Update(1, request, It.IsAny<string>()))
+            .Setup(x => x.Update(1, request))
             .Returns(response);
 
         SetCurrentUser("admin@test.com");
@@ -85,7 +85,7 @@ public class UpdatePromotionsControllerTests
         Assert.AreEqual(StatusCodes.Status200OK, result.StatusCode);
         Assert.AreEqual(response, result.Value);
 
-        _promotionServiceMock.Verify(x => x.Update(1, request, It.IsAny<string>()),
+        _promotionServiceMock.Verify(x => x.Update(1, request),
             Times.Once);
     }
 

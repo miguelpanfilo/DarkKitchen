@@ -84,7 +84,7 @@ public class PromotionService : IPromotionService
             .ToList();
     }
 
-    public PromotionResponseDto Update(int promotionId, PromotionPatchDto promotionPatchDto,  string responsibleUser)
+    public PromotionResponseDto Update(int promotionId, PromotionPatchDto promotionPatchDto)
     {
         var promotion = GetExistingPromotion(promotionId);
 
@@ -93,8 +93,8 @@ public class PromotionService : IPromotionService
         UpdateDatesIfProvided(promotion, promotionPatchDto.StartDate, promotionPatchDto.EndDate);
 
         var updatedPromotion = _promotionRepository.Update(promotion);
-        _auditLogService.Register(AuditedEntities.Promotion,
-            updatedPromotion.Id, AuditDescriptions.PromotionModified, responsibleUser);
+        _auditLogService.Register(AuditedEntities.Promotion, updatedPromotion.Id, AuditDescriptions.PromotionModified,
+            _currentUserService.GetEmail());
 
         return MapPromotionWithProducts(updatedPromotion);
     }
