@@ -190,7 +190,7 @@ public class ProductControllerTest
         };
 
         serviceMock
-            .Setup(s => s.Update(productId, request, It.IsAny<string>()))
+            .Setup(s => s.Update(productId, request))
             .Returns(response);
 
         var controller = new ProductController(serviceMock.Object);
@@ -209,7 +209,7 @@ public class ProductControllerTest
         Assert.IsNotNull(okResult);
         Assert.AreEqual(response, okResult.Value);
 
-        serviceMock.Verify(s => s.Update(productId, request, It.IsAny<string>()), Times.Once);
+        serviceMock.Verify(s => s.Update(productId, request), Times.Once);
         serviceMock.VerifyAll();
     }
 

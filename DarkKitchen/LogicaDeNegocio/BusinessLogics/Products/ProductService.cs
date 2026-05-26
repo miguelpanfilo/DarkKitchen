@@ -109,14 +109,13 @@ public class ProductService : IProductService
         return ProductMapper.ToResponseDto(createdProduct);
     }
 
-    public ProductResponseDto Update(int productId, ProductPatchDto patchDto, string responsibleUser)
+    public ProductResponseDto Update(int productId, ProductPatchDto patchDto)
     {
         var product = GetExistingProduct(productId);
 
         ApplyPatch(product, patchDto);
         var updatedProduct = _repository.Update(product);
-        _auditLogService.Register(AuditedEntities.Product, updatedProduct.Id,
-            AuditDescriptions.ProductModified, responsibleUser);
+        _auditLogService.Register(AuditedEntities.Product, updatedProduct.Id, AuditDescriptions.ProductModified, _currentUserService.GetEmail());
 
         return ProductMapper.ToResponseDto(updatedProduct);
     }

@@ -89,11 +89,12 @@ public class ProductServiceAuditTests
                 AuditDescriptions.ProductModified, It.IsAny<string>()));
 
         var currentUserMock = new Mock<ICurrentUserService>(MockBehavior.Strict);
+        currentUserMock.Setup(s => s.GetEmail()).Returns("admin@dark.com");
         var photoService = new ProductPhotoService(storageMock.Object);
         var service = new ProductService(repoMock.Object, photoService,
             auditMock.Object, currentUserMock.Object);
 
-        service.Update(7, new ProductPatchDto { Name = "Nuevo nombre valido" }, "admin@dark.com");
+        service.Update(7, new ProductPatchDto { Name = "Nuevo nombre valido" });
         auditMock.Verify(a => a.Register(AuditedEntities.Product, It.IsAny<int>(),
             AuditDescriptions.ProductModified, It.IsAny<string>()));
     }
@@ -143,8 +144,7 @@ public class ProductServiceAuditTests
     }
 
     [TestMethod]
-    public void
-        Create_ValidProduct_GetsResponsibleUserFromCurrentUserService()
+    public void Create_ValidProduct_GetsResponsibleUserFromCurrentUserService()
     {
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
@@ -192,9 +192,9 @@ public class ProductServiceAuditTests
                 AuditDescriptions.ProductCreated, "admin@dark.com"),
             Times.Once);
     }
+
     [TestMethod]
-    public void
-        Update_ValidProduct_GetsResponsibleUserFromCurrentUserService()
+    public void Update_ValidProduct_GetsResponsibleUserFromCurrentUserService()
     {
         var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
         var storageMock = new
@@ -228,13 +228,10 @@ public class ProductServiceAuditTests
         var service = new ProductService(repoMock.Object, photoService,
             auditMock.Object, currentUserMock.Object);
 
-        service.Update(7, new ProductPatchDto { Name = "Nuevo nombre
-            valido" });
+        service.Update(7, new ProductPatchDto { Name = "Nuevo nombre valido" });
 
-            currentUserMock.Verify(s => s.GetEmail(), Times.Once);
-            auditMock.Verify(a => a.Register(AuditedEntities.Product,
-            It.IsAny<int>(),
-            AuditDescriptions.ProductModified, "admin@dark.com"),
-            Times.Once);
-        }
+        currentUserMock.Verify(s => s.GetEmail(), Times.Once);
+        auditMock.Verify(a => a.Register(AuditedEntities.Product,
+            It.IsAny<int>(), AuditDescriptions.ProductModified, "admin@dark.com"), Times.Once);
+    }
 }

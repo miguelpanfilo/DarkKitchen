@@ -31,8 +31,7 @@ public class ProductController(IProductService productService) : ControllerBase
     [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult Update(int productId, ProductPatchDto request)
     {
-        var email = User.FindFirst(ClaimTypes.Email)!.Value;
-        var result = productService.Update(productId, request, email);
+        var result = productService.Update(productId, request);
         return Ok(result);
     }
 

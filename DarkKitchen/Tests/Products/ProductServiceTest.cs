@@ -407,7 +407,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var result = service.Update(1, patchDto, "admin@dark.com");
+        var result = service.Update(1, patchDto);
 
         Assert.IsNotNull(result);
         Assert.AreEqual("Chivito al pan", result.Name);
@@ -450,7 +450,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var result = service.Update(1, patchDto, "admin@dark.com");
+        var result = service.Update(1, patchDto);
 
         Assert.IsNotNull(result);
         Assert.AreEqual("COD1234", result.Code);
@@ -493,7 +493,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var result = service.Update(1, patchDto, "admin@dark.com");
+        var result = service.Update(1, patchDto);
 
         Assert.IsNotNull(result);
         Assert.AreEqual("Milanesa al plato completa con fritas", result.Description);
@@ -536,7 +536,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var result = service.Update(1, patchDto, "admin@dark.com");
+        var result = service.Update(1, patchDto);
 
         Assert.IsNotNull(result);
         Assert.AreEqual("Comida Rapida", result.CommercialLine);
@@ -579,7 +579,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var result = service.Update(1, patchDto, "admin@dark.com");
+        var result = service.Update(1, patchDto);
 
         Assert.IsNotNull(result);
         Assert.AreEqual("Milanesas al pan", result.Category);
@@ -622,7 +622,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var result = service.Update(1, patchDto, "admin@dark.com");
+        var result = service.Update(1, patchDto);
 
         Assert.IsNotNull(result);
         Assert.AreEqual(1000, result.Price);
@@ -686,7 +686,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var result = service.Update(1, patchDto, "admin@dark.com");
+        var result = service.Update(1, patchDto);
 
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Photos.Count);
@@ -721,7 +721,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<NotFoundException>(() => service.Update(1, patchDto, "admin@dark.com"));
+        var exception = Assert.ThrowsException<NotFoundException>(() => service.Update(1, patchDto));
 
         Assert.AreEqual("El producto no existe", exception.Message);
 
@@ -765,7 +765,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto, "admin@dark.com"));
+        var exception = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto));
 
         Assert.AreEqual("La foto no pertenece al producto", exception.Message);
 
@@ -813,7 +813,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto, "admin@dark.com"));
+        var exception = Assert.ThrowsException<ValidationException>(() => service.Update(1, patchDto));
 
         Assert.AreEqual("Datos de foto inválidos", exception.Message);
 
@@ -881,7 +881,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var result = service.Update(product.Id, patchDto, "admin@dark.com");
+        var result = service.Update(product.Id, patchDto);
 
         Assert.IsTrue(result.IsActive);
         repoMock.Verify(r => r.GetById(product.Id), Times.Once);
@@ -916,7 +916,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var result = service.Update(product.Id, patchDto, "admin@dark.com");
+        var result = service.Update(product.Id, patchDto);
 
         Assert.IsFalse(result.IsActive);
         repoMock.Verify(r => r.GetById(product.Id), Times.Once);
@@ -1128,7 +1128,7 @@ public class ProductServiceTest
 
         var service = CreateService(repoMock, storageMock);
 
-        var exception = Assert.ThrowsException<NotFoundException>(() => service.Update(1, patchDto, "admin@dark.com"));
+        var exception = Assert.ThrowsException<NotFoundException>(() => service.Update(1, patchDto));
 
         Assert.AreEqual("El producto no existe", exception.Message);
 
