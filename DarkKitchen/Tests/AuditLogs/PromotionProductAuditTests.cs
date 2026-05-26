@@ -111,10 +111,11 @@ public class PromotionServiceAuditTests
                 It.IsAny<int>(), AuditDescriptions.PromotionDeleted, It.IsAny<string>()));
 
         var currentUserMock = new Mock<ICurrentUserService>(MockBehavior.Strict);
+        currentUserMock.Setup(s => s.GetEmail()).Returns("admin@dark.com");
         var service = new PromotionService(promotionRepoMock.Object,
             productRepoMock.Object, auditMock.Object, currentUserMock.Object);
 
-        service.Delete(1, "admin@dark.com");
+        service.Delete(1);
         auditMock.Verify(a => a.Register(AuditedEntities.Promotion,
             It.IsAny<int>(), AuditDescriptions.PromotionDeleted, It.IsAny<string>()));
     }

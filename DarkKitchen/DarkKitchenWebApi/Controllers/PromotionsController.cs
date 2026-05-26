@@ -33,8 +33,7 @@ public class PromotionsController(IPromotionService promotionService) : Controll
     [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult Delete([FromRoute] int id)
     {
-        var email = User.FindFirst(ClaimTypes.Email)!.Value;
-        _promotionService.Delete(id, email);
+        _promotionService.Delete(id);
         return NoContent();
     }
 

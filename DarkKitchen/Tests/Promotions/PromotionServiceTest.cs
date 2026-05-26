@@ -814,7 +814,7 @@ public class PromotionServiceTest
             promotionRepositoryMock,
             productRepositoryMock, auditMock);
 
-        service.Delete(1, "admin@dark.com");
+        service.Delete(1);
 
         promotionRepositoryMock.Verify(r => r.GetById(1), Times.Once);
         promotionRepositoryMock.Verify(r => r.Update(It.Is<Promotion>(
@@ -839,7 +839,7 @@ public class PromotionServiceTest
             promotionRepositoryMock,
             productRepositoryMock, auditMock);
 
-        var ex = Assert.ThrowsException<NotFoundException>(() => service.Delete(1, "admin@dark.com"));
+        var ex = Assert.ThrowsException<NotFoundException>(() => service.Delete(1));
 
         Assert.AreEqual("La promoción no existe", ex.Message);
 
@@ -873,7 +873,7 @@ public class PromotionServiceTest
         var service = CreateService(
             promotionRepositoryMock,
             productRepositoryMock, auditMock);
-        var exception = Assert.ThrowsException<NotFoundException>(() => service.Delete(1, "admin@dark.com"));
+        var exception = Assert.ThrowsException<NotFoundException>(() => service.Delete(1));
 
         Assert.AreEqual("La promoción no existe", exception.Message);
 

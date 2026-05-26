@@ -59,15 +59,15 @@ public class PromotionService : IPromotionService
         return applicablePromotions.Max(p => p.DiscountPercentage) / 100m;
     }
 
-    public void Delete(int promotionId,  string responsibleUser)
+    public void Delete(int promotionId)
     {
         var promotion = GetExistingPromotion(promotionId);
 
         promotion.Delete();
 
         _promotionRepository.Update(promotion);
-        _auditLogService.Register(AuditedEntities.Promotion, promotion.Id,
-            AuditDescriptions.PromotionDeleted, responsibleUser);
+        _auditLogService.Register(AuditedEntities.Promotion, promotion.Id, AuditDescriptions.PromotionDeleted,
+            _currentUserService.GetEmail());
     }
 
     public List<PromotionResponseDto> GetPromotions(PromotionSearchRequestDto request)
