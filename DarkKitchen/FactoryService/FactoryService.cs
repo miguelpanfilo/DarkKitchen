@@ -93,6 +93,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IReportService, ReportService>();
 
         services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<IProductCreatorService, ProductService>();
         services.AddScoped<IPromotionService, PromotionService>();
         services.AddScoped<IShippingTypeService, ShippingTypeService>();
         services.AddScoped<ProductPhotoService>();
