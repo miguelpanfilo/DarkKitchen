@@ -113,4 +113,47 @@ public class PromotionServiceAuditTests
         auditMock.Verify(a => a.Register(AuditedEntities.Promotion,
             It.IsAny<int>(), AuditDescriptions.PromotionDeleted, It.IsAny<string>()));
     }
+
+    [TestMethod]
+    public void
+        Create_ValidPromotion_GetsResponsibleUserFromCurrentUserService()
+    {
+        var promotionRepoMock = new
+            Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepoMock = new
+            Mock<IProductRepository>(MockBehavior.Strict);
+        var auditMock = new Mock<IAuditLogService>(MockBehavior.Strict);
+        var currentUserMock = new
+            Mock<ICurrentUserService>(MockBehavior.Strict);
+
+        currentUserMock
+            .Setup(s => s.GetEmail())
+            .Returns("admin@dark.com");
+
+        promotionRepoMock
+            .Setup(r => r.Create(It.IsAny<Promotion>()))
+            .Returns((Promotion p) => p);
+
+        auditMock
+            .Setup(a => a.Register(AuditedEntities.Promotion,
+                It.IsAny<int>(), AuditDescriptions.PromotionCreated,
+                "admin@dark.com"));
+
+        var service = new PromotionService(promotionRepoMock.Object,
+            productRepoMock.Object,
+            auditMock.Object, currentUserMock.Object);
+
+        service.Create(new PromotionRequestDto
+        {
+            Name = "Black Friday",
+            DiscountPercentage = 10,
+            StartDate = new DateOnly(2026, 1, 25),
+            EndDate = new DateOnly(2026, 1, 30)
+        });
+
+        currentUserMock.Verify(s => s.GetEmail(), Times.Once);
+        auditMock.Verify(a => a.Register(AuditedEntities.Promotion,
+            It.IsAny<int>(), AuditDescriptions.PromotionCreated,
+            "admin@dark.com"), Times.Once);
+    }
 }
