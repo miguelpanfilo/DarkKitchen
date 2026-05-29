@@ -1,0 +1,89 @@
+h1 {
+  font-size: 1.4rem;
+  margin-bottom: 1.25rem;
+  color: #1a1a2e;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+label {
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 0.4rem;
+}
+
+input {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  outline: none;
+  font-family: inherit;
+}
+
+input:focus {
+  border-color: #2c2c54;
+}
+
+app-cancel-button {
+  display: block;
+  margin-top: 0.75rem;
+}
+
+.products-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+}
+
+.product-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.product-option input[type="checkbox"] {
+  width: auto;
+  border: none;
+  padding: 0;
+}
+
+.product-option-name {
+  color: #1a1a2e;
+  font-weight: 500;
+}
+
+.product-option-line {
+  color: #666;
+  font-size: 0.78rem;
+}
+
+.products-fieldset {
+  border: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+}
+
+.products-legend {
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 0.4rem;
+  padding: 0;
+}
+
+.loading-hint, .no-products-hint {
+  font-size: 0.85rem;
+  color: #888;
+  margin: 0;
+}

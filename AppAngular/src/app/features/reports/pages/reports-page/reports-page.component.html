@@ -1,73 +1,81 @@
 <div class="reports-container">
-    <h1>Reportes</h1>
+  <h1>Reportes</h1>
 
-    <div class="filters">
-        <div class="form-group">
-            <label for="dateFrom">Fecha desde</label>
-            <input id="dateFrom" type="datetime-local" [(ngModel)]="dateFrom" name="dateFrom" />
-        </div>
-        <div class="form-group">
-            <label for="dateTo">Fecha hasta</label>
-            <input id="dateTo" type="datetime-local" [(ngModel)]="dateTo" name="dateTo" />
-        </div>
-        <app-filter-button (filtered)="onFiltrar()" />
-        <app-clear-button (cleared)="onLimpiar()" />
+  <div class="filters d-flex gap-3 align-items-end flex-wrap">
+    <div class="form-group">
+      <label for="dateFrom">Fecha desde</label>
+      <input id="dateFrom" type="date" [(ngModel)]="dateFrom" name="dateFrom" />
     </div>
+    <div class="form-group">
+      <label for="dateTo">Fecha hasta</label>
+      <input id="dateTo" type="date" [(ngModel)]="dateTo" name="dateTo" />
+    </div>
+    <app-filter-button (filtered)="onFiltrar()" />
+    <app-clear-button (cleared)="onLimpiar()" />
+  </div>
 
-    <app-status-messages [errorMessage]="errorMessage" [isLoading]="isLoading" loadingText="Cargando reportes..." />
-    <h2>Productos más vendidos</h2>
-    <table class="report-table">
-        <caption>Productos más vendidos</caption>
-        <thead>
-            <tr>
-                <th>Código</th>
-                <th>Nombre</th>
-                <th>Cantidad vendida</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngIf="topProducts.length === 0">
-                <td colspan="3" class="empty">No hay datos para mostrar.</td>
-            </tr>
-            <tr *ngFor="let product of topProducts">
-                <td>{{ product.code }}</td>
-                <td>{{ product.name }}</td>
-                <td>{{ product.quantitySold }}</td>
-            </tr>
-        </tbody>
-    </table>
+  <app-status-messages [errorMessage]="errorMessage" [isLoading]="isLoading" loadingText="Cargando reportes..." />
 
-    <h2>Ventas por período</h2>
-    <table class="report-table">
-        <caption>Ventas por período</caption>
-        <thead>
-            <tr>
-                <th>Período</th>
-                <th>Cliente</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngIf="!salesReport">
-                <td colspan="3" class="empty">No hay datos para mostrar.</td>
-            </tr>
-            <ng-container *ngIf="salesReport">
-                <ng-container *ngFor="let period of salesReport.periods">
-                    <tr *ngFor="let customer of period.customers">
-                        <td>{{ period.month }}/{{ period.year }}</td>
-                        <td>{{ customer.customer }}</td>
-                        <td>${{ customer.totalSales }}</td>
-                    </tr>
-                    <tr class="period-total">
-                        <td colspan="2">Total {{ period.month }}/{{ period.year }}</td>
-                        <td>${{ period.monthTotal }}</td>
-                    </tr>
-                </ng-container>
-                <tr class="grand-total">
-                    <td colspan="2">Total final</td>
-                    <td>${{ salesReport.grandTotal }}</td>
-                </tr>
-            </ng-container>
-        </tbody>
-    </table>
+  <h2>Productos más vendidos</h2>
+  <table class="report-table">
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Nombre</th>
+        <th>Cantidad vendida</th>
+        <th>Imágenes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="topProducts.length === 0">
+        <td colspan="4" class="empty">No hay datos para mostrar.</td>
+      </tr>
+      <tr *ngFor="let product of topProducts">
+        <td>{{ product.code }}</td>
+        <td>{{ product.name }}</td>
+        <td>{{ product.quantitySold }}</td>
+        <td>
+          <div class="report-photos">
+            <a *ngFor="let img of product.images" [href]="img" target="_blank" class="report-photo-link">
+              <img [src]="img" alt="{{ product.name }}" class="report-photo" />
+            </a>
+            <span *ngIf="product.images.length === 0" class="no-photos">Sin fotos</span>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Ventas por período</h2>
+  <table class="report-table">
+    <thead>
+      <tr>
+        <th>Período</th>
+        <th>Cliente</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="!salesReport">
+        <td colspan="3" class="empty">No hay datos para mostrar.</td>
+      </tr>
+      <ng-container *ngIf="salesReport">
+        <ng-container *ngFor="let period of salesReport.periods">
+          <tr *ngFor="let customer of period.customers">
+            <td>{{ period.month }}/{{ period.year }}</td>
+            <td>{{ customer.customer }}</td>
+            <td>${{ customer.totalSales }}</td>
+          </tr>
+          <tr class="period-total">
+            <td colspan="2">Total {{ period.month }}/{{ period.year }}</td>
+            <td>${{ period.monthTotal }}</td>
+          </tr>
+        </ng-container>
+        <tr class="grand-total">
+          <td colspan="2">Total final</td>
+          <td>${{ salesReport.grandTotal }}</td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
 </div>

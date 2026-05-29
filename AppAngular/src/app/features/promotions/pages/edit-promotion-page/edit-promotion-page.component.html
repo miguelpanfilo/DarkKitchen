@@ -1,0 +1,56 @@
+<div class="d-flex justify-content-center pt-4">
+  <app-form-card>
+    <h1>Editar Promoción</h1>
+
+    <app-status-messages [errorMessage]="errorMessage" [isLoading]="isSubmitting" loadingText="Guardando..." />
+
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="name">Nombre *</label>
+        <input id="name" type="text" [(ngModel)]="name" name="name"
+          [class.input-error]="submitted && !name.trim()" />
+        <small *ngIf="submitted && !name.trim()" class="field-error">El nombre es obligatorio.</small>
+      </div>
+
+      <div class="form-group">
+        <label for="discountPercentage">Descuento (%) *</label>
+        <input id="discountPercentage" type="number" [(ngModel)]="discountPercentage"
+          name="discountPercentage" min="1" max="100" step="1"
+          [class.input-error]="submitted && (discountPercentage === null || discountPercentage <= 0 || discountPercentage > 100)" />
+        <small *ngIf="submitted && (discountPercentage === null || discountPercentage <= 0 || discountPercentage > 100)"
+          class="field-error">El descuento debe ser entre 1 y 100.</small>
+      </div>
+
+      <div class="form-group">
+        <label for="startDate">Fecha de inicio *</label>
+        <input id="startDate" type="date" [(ngModel)]="startDate" name="startDate"
+          [class.input-error]="submitted && !startDate" />
+        <small *ngIf="submitted && !startDate" class="field-error">La fecha de inicio es obligatoria.</small>
+      </div>
+
+      <div class="form-group">
+        <label for="endDate">Fecha de fin *</label>
+        <input id="endDate" type="date" [(ngModel)]="endDate" name="endDate"
+          [class.input-error]="submitted && !endDate" />
+        <small *ngIf="submitted && !endDate" class="field-error">La fecha de fin es obligatoria.</small>
+      </div>
+
+      <fieldset class="form-group products-fieldset">
+        <legend class="products-legend">Productos asociados</legend>
+        <p *ngIf="isLoadingProducts" class="loading-hint">Cargando productos...</p>
+        <div *ngIf="!isLoadingProducts" class="products-selector">
+          <label *ngFor="let p of allProducts" class="product-option">
+            <input type="checkbox" [checked]="isAssociated(p.id)"
+              (change)="onToggleProduct(p.id, $any($event.target).checked)" />
+            <span class="product-option-name">{{ p.name }}</span>
+            <span class="product-option-line">{{ p.commercialLine }}</span>
+          </label>
+          <p *ngIf="allProducts.length === 0" class="no-products-hint">No hay productos disponibles.</p>
+        </div>
+      </fieldset>
+
+      <app-submit-button label="Guardar cambios" [disabled]="isSubmitting" />
+      <app-cancel-button (cancelled)="onCancel()" />
+    </form>
+  </app-form-card>
+</div>

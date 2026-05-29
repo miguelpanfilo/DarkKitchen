@@ -77,7 +77,7 @@ export class ChangePasswordPageComponent implements OnInit, OnDestroy {
     this.subs.add(this.userService.changePassword(this.userId, request).subscribe({
       next: () => {
         this.isLoading = false;
-        this.router.navigate(['/app/users'], {
+        this.router.navigate(['/home/users'], {
           state: { successMessage: 'Contraseña cambiada exitosamente.' }
         });
       },
@@ -88,6 +88,6 @@ export class ChangePasswordPageComponent implements OnInit, OnDestroy {
     }));
   }
   onCancelled() {
-    this.router.navigate(['/app/users']);
+    this.router.navigate(['/home/users']);
   }
 }

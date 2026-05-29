@@ -4,10 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { ShippingTypeService } from '../../services/shipping-type.service';
 import { ShippingType } from '../../models/shipping-type.model';
 import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
+import { EditButtonComponent } from '../../../../shared/components/edit-button/edit-button.component';
 
 @Component({
   selector: 'app-shipping-types-page',
-  imports: [CommonModule, FormsModule, StatusMessagesComponent],
+  imports: [CommonModule, FormsModule, StatusMessagesComponent, EditButtonComponent],
   templateUrl: './shipping-types-page.component.html',
   styleUrl: './shipping-types-page.component.css'
 })

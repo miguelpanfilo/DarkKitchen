@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Observable } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderService } from '../../services/order.service';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -138,7 +139,7 @@ export class OrderDetailPageComponent implements OnInit {
     ));
   }
 
-  private executeTransition(call: any, newStatus: string) {
+  private executeTransition(call: Observable<void>, newStatus: string) {
     this.actionLoading = true;
     this.errorMessage = '';
     call.subscribe({
@@ -146,9 +147,9 @@ export class OrderDetailPageComponent implements OnInit {
         this.actionLoading = false;
         this.order!.status = newStatus;
       },
-      error: (error: any) => {
+      error: (error: Error) => {
         this.actionLoading = false;
-        this.errorMessage = error.error?.message || 'Error al actualizar la orden.';
+        this.errorMessage = (error as any).error?.message || 'Error al actualizar la orden.';
       }
     });
   }
@@ -167,7 +168,7 @@ export class OrderDetailPageComponent implements OnInit {
   }
 
   onBack() {
-    this.router.navigate(['/app/orders']);
+    this.router.navigate(['/home/orders']);
   }
 
   getStatusLabel(status: string): string {
@@ -180,6 +181,6 @@ export class OrderDetailPageComponent implements OnInit {
   }
 
   getDeliveryLabel(type: string): string {
-    return type === 'Express' ? 'Express' : 'En 24 horas';
+    return type;
   }
 }

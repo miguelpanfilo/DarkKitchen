@@ -4,15 +4,11 @@ using Contract.Orders;
 using DataAccessAbstractions;
 using Domain;
 using Domain.Exceptions;
-
 namespace BusinessLogics.Orders;
-
 public class OrderService(IOrderRepository orderRepository) : IOrderService
 {
     private readonly IOrderRepository _orderRepository = orderRepository;
-
     private const string OrderNotFoundMessage = "Pedido no encontrado";
-
     public Order CreateOrder(CreateOrderData data)
     {
         var domainItems = data.Items
@@ -57,28 +53,15 @@ public class OrderService(IOrderRepository orderRepository) : IOrderService
     }
 
     public void Prepare(int orderId) => ApplyStateChange(orderId, o => o.Prepare());
-
     public void Cancel(int orderId) => ApplyStateChange(orderId, o => o.Cancel());
-
     public void Dispatch(int orderId) => ApplyStateChange(orderId, o => o.Dispatch());
-
     public void Deliver(int orderId) => ApplyStateChange(orderId, o => o.Deliver());
-
     public void MarkNotDelivered(int orderId) => ApplyStateChange(orderId, o => o.MarkNotDelivered());
     public void Delay(int orderId) => ApplyStateChange(orderId, o => o.Delay());
     private void ApplyStateChange(int orderId, Action<Order> transition)
     {
         var order = GetById(orderId);
-
-        try
-        {
-            transition(order);
-        }
-        catch(OrderException ex)
-        {
-            throw new ConflictException(ex.Message);
-        }
-
+        transition(order);
         _orderRepository.Update(order);
     }
 }

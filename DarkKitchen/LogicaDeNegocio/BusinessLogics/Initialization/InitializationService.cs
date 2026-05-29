@@ -12,17 +12,19 @@ public class InitializationService : IInitializationService
     private const string AdminPhone = "099123456";
     private const string AdminPassword = "PasswordSeguraee3!";
 
+    private readonly IShippingTypeRepository _shippingTypeRepository;
     private readonly IRepositoryUser _repositoryUser;
 
-    public InitializationService(
-        IRepositoryUser repositoryUser)
+    public InitializationService(IRepositoryUser repositoryUser, IShippingTypeRepository shippingTypeRepository)
     {
         _repositoryUser = repositoryUser;
+        _shippingTypeRepository = shippingTypeRepository;
     }
 
     public void EnsureInitialized()
     {
         EnsureAdminCreated();
+        EnsureShippingTypesCreated();
     }
 
     private void EnsureAdminCreated()
@@ -52,5 +54,16 @@ public class InitializationService : IInitializationService
         }
 
         _repositoryUser.Add(adminResult.Value!);
+    }
+
+    private void EnsureShippingTypesCreated()
+    {
+        if (_shippingTypeRepository.GetAll().Any())
+        {
+            return;
+        }
+
+        _shippingTypeRepository.Create(ShippingType.MakeShippingType("Express", 100));
+        _shippingTypeRepository.Create(ShippingType.MakeShippingType("TwentyFourHours", 50));
     }
 }

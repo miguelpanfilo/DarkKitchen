@@ -6,7 +6,7 @@ using BusinessLogics.Promotions;
 using BusinessLogics.Reports;
 using BusinessLogics.Sessions;
 using BusinessLogics.Shared;
-using BusinessLogics.ShippingTypes;
+using BusinessLogics.Shipping;
 using BusinessLogics.Users;
 using BusinessLogicsAbstractions;
 using BusinessLogicsAbstractions.Orders;

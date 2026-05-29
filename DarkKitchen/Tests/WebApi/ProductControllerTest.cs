@@ -39,7 +39,7 @@ public class ProductControllerTest
         var serviceMock = new Mock<IProductService>(MockBehavior.Strict);
 
         serviceMock
-            .Setup(s => s.Create(request, It.IsAny<string>()))
+            .Setup(s => s.Create(request))
             .Returns(response);
 
         var controller = new ProductController(serviceMock.Object);
@@ -61,7 +61,7 @@ public class ProductControllerTest
         Assert.IsNotNull(value);
         Assert.AreEqual(request.Name, value.Name);
 
-        serviceMock.Verify(s => s.Create(request, It.IsAny<string>()), Times.Once);
+        serviceMock.Verify(s => s.Create(request), Times.Once);
     }
 
     [TestMethod]
@@ -190,7 +190,7 @@ public class ProductControllerTest
         };
 
         serviceMock
-            .Setup(s => s.Update(productId, request, It.IsAny<string>()))
+            .Setup(s => s.Update(productId, request))
             .Returns(response);
 
         var controller = new ProductController(serviceMock.Object);
@@ -209,7 +209,7 @@ public class ProductControllerTest
         Assert.IsNotNull(okResult);
         Assert.AreEqual(response, okResult.Value);
 
-        serviceMock.Verify(s => s.Update(productId, request, It.IsAny<string>()), Times.Once);
+        serviceMock.Verify(s => s.Update(productId, request), Times.Once);
         serviceMock.VerifyAll();
     }
 
@@ -243,7 +243,7 @@ public class ProductControllerTest
         var productId = 1;
 
         serviceMock
-            .Setup(s => s.Delete(productId, It.IsAny<string>()));
+            .Setup(s => s.Delete(productId));
 
         var controller = new ProductController(serviceMock.Object);
         var claims = new List<Claim> { new Claim(ClaimTypes.Email, "admin@dark.com") };
@@ -259,7 +259,7 @@ public class ProductControllerTest
 
         Assert.IsInstanceOfType(result, typeof(NoContentResult));
 
-        serviceMock.Verify(s => s.Delete(productId, It.IsAny<string>()), Times.Once);
+        serviceMock.Verify(s => s.Delete(productId), Times.Once);
         serviceMock.VerifyAll();
     }
 

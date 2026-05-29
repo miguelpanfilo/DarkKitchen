@@ -41,7 +41,7 @@ public class DeletePromotionsControllerTest
     public void Delete_WhenAdmin_ShouldReturn204()
     {
         _promotionServiceMock
-            .Setup(x => x.Delete(1, It.IsAny<string>()));
+            .Setup(x => x.Delete(1));
 
         SetCurrentUser("admin@test.com");
         var result = _controller.Delete(1) as NoContentResult;
@@ -49,7 +49,7 @@ public class DeletePromotionsControllerTest
         Assert.IsNotNull(result);
         Assert.AreEqual(StatusCodes.Status204NoContent, result.StatusCode);
 
-        _promotionServiceMock.Verify(x => x.Delete(1, It.IsAny<string>()), Times.Once);
+        _promotionServiceMock.Verify(x => x.Delete(1), Times.Once);
     }
 
     [TestMethod]

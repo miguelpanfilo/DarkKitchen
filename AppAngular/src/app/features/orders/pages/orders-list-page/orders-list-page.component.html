@@ -1,47 +1,39 @@
 <div class="orders-container">
-  <div class="orders-header">
-    <h2>Órdenes</h2>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Órdenes</h1>
     <app-add-button *appHasRole="['Client']" label="Nueva orden" (clicked)="onAdd()" />
   </div>
 
-  <div class="filters">
+  <div class="filters d-flex flex-wrap gap-3 align-items-end">
     <div class="form-group">
-      <label>Desde</label>
-      <input type="datetime-local" [(ngModel)]="filterDateFrom" name="filterDateFrom" />
+      <label for="filterDateFrom">Desde</label>
+      <input id="filterDateFrom" type="date" [(ngModel)]="filterDateFrom" name="filterDateFrom" />
     </div>
     <div class="form-group">
-      <label>Hasta</label>
-      <input type="datetime-local" [(ngModel)]="filterDateTo" name="filterDateTo" />
+      <label for="filterDateTo">Hasta</label>
+      <input id="filterDateTo" type="date" [(ngModel)]="filterDateTo" name="filterDateTo" />
     </div>
     <div class="form-group">
-      <label>Estado</label>
-      <select [(ngModel)]="filterStatus" name="filterStatus">
+      <label for="filterStatus">Estado</label>
+      <select id="filterStatus" [(ngModel)]="filterStatus" name="filterStatus">
         <option value="">Todos</option>
         <option *ngFor="let s of statuses" [value]="s">{{ getStatusLabel(s) }}</option>
       </select>
     </div>
-    <div class="form-group">
-      <label>Calle</label>
-      <input type="text" [(ngModel)]="filterStreet" name="filterStreet" placeholder="Buscar por calle" />
+    <div class="form-group" *appHasRole="['Preparer', 'Administrative']">
+      <label for="filterStreet">Calle</label>
+      <input id="filterStreet" type="text" [(ngModel)]="filterStreet" name="filterStreet" placeholder="Buscar por calle" />
     </div>
     <app-filter-button (filtered)="onFiltrar()" />
     <app-clear-button (cleared)="onLimpiar()" />
   </div>
 
-  <app-status-messages
-    [errorMessage]="errorMessage"
-    [successMessage]="successMessage"
-    [isLoading]="isLoading"
-    loadingText="Cargando órdenes..." />
+  <app-status-messages [errorMessage]="errorMessage" [successMessage]="successMessage"
+    [isLoading]="isLoading" loadingText="Cargando órdenes..." />
 
-  <p *ngIf="!isLoading && orders.length === 0 && !errorMessage" class="empty">
-    No hay órdenes para mostrar.
-  </p>
+  <p *ngIf="!isLoading && orders.length === 0 && !errorMessage" class="empty">No hay órdenes para mostrar.</p>
 
-  <div *ngIf="orders.length > 0" class="orders-list">
-    <app-order-card
-      *ngFor="let order of orders"
-      [order]="order"
-      (viewDetail)="onViewDetail($event)" />
+  <div *ngIf="orders.length > 0" class="orders-grid">
+    <app-order-card *ngFor="let order of orders" [order]="order" (viewDetail)="onViewDetail($event)" />
   </div>
 </div>

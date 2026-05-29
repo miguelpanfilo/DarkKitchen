@@ -9,9 +9,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
 
   const sessionId = authService.getSessionId();
-  const authReq = sessionId
-    ? req.clone({ setHeaders: { 'X-Session-Id': sessionId } })
-    : req;
+  const authReq = sessionId? req.clone({ 
+    setHeaders: { 'X-Session-Id': sessionId } }) : req;
 
   return next(authReq).pipe(
     catchError((error) => {

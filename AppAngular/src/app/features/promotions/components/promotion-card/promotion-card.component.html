@@ -1,0 +1,24 @@
+<div class="promotion-card d-flex flex-column gap-3 p-3 rounded">
+  <div class="d-flex justify-content-between align-items-center">
+    <span class="promotion-id">#{{ promotion.id }}</span>
+    <span class="promotion-discount">{{ promotion.discountPercentage }}% OFF</span>
+  </div>
+
+  <div class="d-flex flex-column gap-1">
+    <h2 class="promotion-name">{{ promotion.name }}</h2>
+    <p class="promotion-dates">{{ promotion.startDate }} — {{ promotion.endDate }}</p>
+  </div>
+
+  <div *ngIf="promotion.products.length > 0" class="promotion-products">
+    <p class="products-label">Productos:</p>
+    <ul class="products-list">
+      <li *ngFor="let product of promotion.products">{{ product.name }} | #{{ product.id }}</li>
+    </ul>
+  </div>
+  <p *ngIf="promotion.products.length === 0" class="no-products">Sin productos asociados</p>
+
+  <div *appHasRole="['Administrative']" class="d-flex gap-2 flex-wrap mt-auto">
+    <app-edit-button (clicked)="onEdit()" />
+    <app-delete-button (clicked)="onDelete()" />
+  </div>
+</div>

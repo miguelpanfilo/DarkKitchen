@@ -61,7 +61,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
           localStorage.removeItem('redirectUrl');
           this.router.navigate([redirectUrl]);
         } else {
-          this.router.navigate(['/app']);
+          this.router.navigate(['/home']);
         }
       },
       error: (error) => {

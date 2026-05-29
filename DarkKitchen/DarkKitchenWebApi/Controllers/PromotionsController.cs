@@ -17,8 +17,7 @@ public class PromotionsController(IPromotionService promotionService) : Controll
     [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult Create([FromBody] PromotionRequestDto request)
     {
-        var email = User.FindFirst(ClaimTypes.Email)!.Value;
-        var response = _promotionService.Create(request, email);
+        var response = _promotionService.Create(request);
         return Created($"/api/v1/promotions/{response.Id}", response);
     }
 
@@ -26,8 +25,7 @@ public class PromotionsController(IPromotionService promotionService) : Controll
     [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult Update([FromRoute] int id, [FromBody] PromotionPatchDto request)
     {
-        var email = User.FindFirst(ClaimTypes.Email)!.Value;
-        var response = _promotionService.Update(id, request, email);
+        var response = _promotionService.Update(id, request);
         return Ok(response);
     }
 
@@ -35,8 +33,7 @@ public class PromotionsController(IPromotionService promotionService) : Controll
     [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult Delete([FromRoute] int id)
     {
-        var email = User.FindFirst(ClaimTypes.Email)!.Value;
-        _promotionService.Delete(id, email);
+        _promotionService.Delete(id);
         return NoContent();
     }
 

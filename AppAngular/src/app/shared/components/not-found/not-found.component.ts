@@ -11,7 +11,7 @@ export class NotFoundComponent {
 
   constructor(private router: Router, private authService: AuthService) {
     if (authService.hasSession()) {
-      router.navigate(['/app']);
+      router.navigate(['/home']);
     } else {
       router.navigate(['/welcome']);
     }

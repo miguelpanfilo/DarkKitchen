@@ -9,6 +9,8 @@ import { ShippingType } from '../../../shipping-types/models/shipping-type.model
 import { Product } from '../../../products/models/product.model';
 import { CreateOrderItemRequest } from '../../models/create-order-request.model';
 import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
+import { SubmitButtonComponent } from '../../../../shared/components/submit-button/submit-button.component';
+import { CancelButtonComponent } from '../../../../shared/components/cancel-button/cancel-button.component';
 
 interface CartItem {
   product: Product;
@@ -17,7 +19,7 @@ interface CartItem {
 
 @Component({
   selector: 'app-create-order-page',
-  imports: [CommonModule, FormsModule, StatusMessagesComponent],
+  imports: [CommonModule, FormsModule, StatusMessagesComponent, SubmitButtonComponent, CancelButtonComponent],
   templateUrl: './create-order-page.component.html',
   styleUrl: './create-order-page.component.css'
 })
@@ -26,7 +28,7 @@ export class CreateOrderPageComponent implements OnInit {
   shippingTypes: ShippingType[] = [];
   cartItems: CartItem[] = [];
 
-  deliveryType = 'Express';
+  deliveryType = '';
   street = '';
   doorNumber = '';
   apartment = '';
@@ -45,8 +47,13 @@ export class CreateOrderPageComponent implements OnInit {
   ngOnInit() {
     this.loadProducts();
     this.shippingTypeService.getAll().subscribe({
-      next: (types) => this.shippingTypes = types,
-      error: () => {}
+      next: (types) => {
+        this.shippingTypes = types;
+        if (types.length > 0) this.deliveryType = types[0].name;
+      },
+      error: () => {
+        this.errorMessage = 'Error al cargar los tipos de envío.';
+      }
     });
   }
 
@@ -127,7 +134,7 @@ export class CreateOrderPageComponent implements OnInit {
     }).subscribe({
       next: () => {
         this.isSubmitting = false;
-        this.router.navigate(['/app/orders'], { state: { successMessage: 'Orden creada exitosamente.' } });
+        this.router.navigate(['/home/orders'], { state: { successMessage: 'Orden creada exitosamente.' } });
       },
       error: (error) => {
         this.isSubmitting = false;
@@ -137,6 +144,6 @@ export class CreateOrderPageComponent implements OnInit {
   }
 
   onCancel() {
-    this.router.navigate(['/app/orders']);
+    this.router.navigate(['/home/orders']);
   }
 }

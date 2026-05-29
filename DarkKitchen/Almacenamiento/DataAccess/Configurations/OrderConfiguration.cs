@@ -21,7 +21,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
                .HasForeignKey(o => o.ClientId)
                .OnDelete(DeleteBehavior.Restrict);
 
-        builder.Property(o => o.DeliveryType).HasConversion<string>().IsRequired();
+        builder.Property(o => o.DeliveryType).IsRequired().HasMaxLength(100);
         builder.Property(o => o.Status).HasConversion<string>().IsRequired();
 
         builder.OwnsOne(o => o.Address, addr =>

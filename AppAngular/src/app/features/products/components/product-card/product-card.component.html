@@ -1,0 +1,24 @@
+<div class="product-card d-flex flex-column gap-3 p-3 rounded" [class.inactive]="!product.isActive">
+  <div class="d-flex justify-content-between align-items-center">
+    <span class="product-code">{{ product.code }} | #{{ product.id }}</span>
+    <span class="product-status" [class.active]="product.isActive">
+      {{ product.isActive ? 'Disponible' : 'No disponible' }}
+    </span>
+  </div>
+
+  <div *ngIf="product.photos.length > 0" class="product-photo">
+    <img [src]="product.photos[0].path" alt="" />
+  </div>
+
+  <div class="d-flex flex-column gap-1">
+    <h2 class="product-name">{{ product.name }}</h2>
+    <p class="product-line">{{ product.commercialLine }} — {{ product.category }}</p>
+    <p class="product-description">{{ product.description }}</p>
+    <p class="product-price">${{ product.price | number:'1.2-2' }}</p>
+  </div>
+
+  <div *appHasRole="['Administrative']" class="d-flex gap-2 flex-wrap mt-auto">
+    <app-edit-button (clicked)="onEdit()" />
+    <app-delete-button (clicked)="onDelete()" />
+  </div>
+</div>

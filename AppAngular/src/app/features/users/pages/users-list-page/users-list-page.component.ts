@@ -72,7 +72,7 @@ export class UsersListPageComponent implements OnInit, OnDestroy {
   }
 
   onAdd() {
-    this.router.navigate(['/app/register-internal-user']);
+    this.router.navigate(['/home/register-internal-user']);
   }
 
   onFiltrar() {
@@ -86,7 +86,7 @@ export class UsersListPageComponent implements OnInit, OnDestroy {
   }
 
   onEdit(user: User) {
-    this.router.navigate(['/app/edit-user'], { state: { user } });
+    this.router.navigate(['/home/edit-user'], { state: { user } });
   }
 
   onDelete(user: User) {
@@ -116,6 +116,6 @@ export class UsersListPageComponent implements OnInit, OnDestroy {
     this.userToDelete = null;
   }
   onChangePassword(user: User) {
-    this.router.navigate(['/app/change-password'], { state: { user } });
+    this.router.navigate(['/home/change-password'], { state: { user } });
   }
 }

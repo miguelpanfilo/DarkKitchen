@@ -58,7 +58,7 @@ public sealed class ReportIntegrationTests
 
         return Order.MakeOrder(
             clientId,
-            DeliveryType.Express,
+            "Express",
             address,
             items,
             200m);

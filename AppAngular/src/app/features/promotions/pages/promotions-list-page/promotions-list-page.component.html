@@ -1,0 +1,40 @@
+<div class="promotions-container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Promociones</h1>
+    <app-add-button *appHasRole="['Administrative']" label="Nueva promoción" (clicked)="onAdd()" />
+  </div>
+
+  <div class="filters d-flex gap-3 align-items-end flex-wrap">
+    <div class="form-group">
+      <label for="filterDate">Fecha</label>
+      <input id="filterDate" type="date" [(ngModel)]="filterDate" name="filterDate" />
+    </div>
+    <div class="form-group">
+      <label for="filterCommercialLine">Línea comercial</label>
+      <input id="filterCommercialLine" type="text" [(ngModel)]="filterCommercialLine"
+        name="filterCommercialLine" placeholder="Buscar por línea" />
+    </div>
+    <div class="form-group">
+      <label for="filterProductId">ID Producto</label>
+      <input id="filterProductId" type="number" [(ngModel)]="filterProductId"
+        name="filterProductId" placeholder="Ej: 1" />
+    </div>
+    <app-filter-button (filtered)="onFiltrar()" />
+    <app-clear-button (cleared)="onLimpiar()" />
+  </div>
+
+  <app-status-messages [errorMessage]="errorMessage" [successMessage]="successMessage"
+    [isLoading]="isLoading" loadingText="Cargando promociones..." />
+
+  <p *ngIf="!isLoading && promotions.length === 0 && !errorMessage" class="empty">
+    No hay promociones para mostrar.
+  </p>
+
+  <div *ngIf="promotions.length > 0" class="promotions-grid">
+    <app-promotion-card *ngFor="let promotion of promotions" [promotion]="promotion"
+      (edit)="onEdit($event)" (delete)="onDelete($event)" />
+  </div>
+</div>
+
+<app-confirm-dialog message="¿Estás seguro que querés eliminar esta promoción?"
+  [visible]="showConfirmDialog" (confirmed)="onConfirmDelete()" (cancelled)="onCancelDelete()" />

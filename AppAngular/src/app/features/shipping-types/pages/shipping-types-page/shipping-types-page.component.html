@@ -1,7 +1,5 @@
 <div class="shipping-container">
-  <div class="shipping-header">
-    <h2>Tipos de Envío</h2>
-  </div>
+  <h1 class="mb-4">Tipos de Envío</h1>
 
   <app-status-messages
     [errorMessage]="errorMessage"
@@ -9,16 +7,16 @@
     [isLoading]="isLoading"
     loadingText="Cargando tipos de envío..." />
 
-  <div class="section-card create-form">
-    <h3>Nuevo tipo de envío</h3>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Nombre</label>
-        <input type="text" [(ngModel)]="newName" name="newName" placeholder="Ej: Envío express" />
+  <div class="filters">
+    <h2 class="section-title">Nuevo tipo de envío</h2>
+    <div class="d-flex gap-3 align-items-end flex-wrap">
+      <div class="form-group flex-grow-1">
+        <label for="newName">Nombre</label>
+        <input id="newName" type="text" [(ngModel)]="newName" name="newName" placeholder="Ej: Envío express" />
       </div>
       <div class="form-group cost-group">
-        <label>Costo ($)</label>
-        <input type="number" [(ngModel)]="newCost" name="newCost" min="0" step="0.01" placeholder="0.00" />
+        <label for="newCost">Costo ($)</label>
+        <input id="newCost" type="number" [(ngModel)]="newCost" name="newCost" min="0" step="0.01" placeholder="0.00" />
       </div>
       <button class="btn btn-primary" (click)="onCreate()" [disabled]="isCreating">
         {{ isCreating ? 'Creando...' : 'Agregar' }}
@@ -26,39 +24,40 @@
     </div>
   </div>
 
-  <div *ngIf="!isLoading && shippingTypes.length === 0 && !errorMessage" class="empty">
+  <p *ngIf="!isLoading && shippingTypes.length === 0 && !errorMessage" class="empty">
     No hay tipos de envío registrados.
-  </div>
+  </p>
 
-  <div *ngIf="shippingTypes.length > 0" class="types-list">
+  <div *ngIf="shippingTypes.length > 0" class="d-flex flex-column gap-2">
     <div *ngFor="let type of shippingTypes" class="type-card">
 
-      <div *ngIf="editingId !== type.id" class="type-view">
-        <div class="type-info">
+      <div *ngIf="editingId !== type.id" class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-4">
           <span class="type-name">{{ type.name }}</span>
           <span class="type-cost">${{ type.cost | number:'1.2-2' }}</span>
         </div>
-        <button class="btn btn-outline" (click)="onEdit(type)">Editar</button>
+        <app-edit-button (clicked)="onEdit(type)" />
       </div>
 
-      <div *ngIf="editingId === type.id" class="type-edit">
-        <div class="form-row">
-          <div class="form-group">
-            <label>Nombre</label>
-            <input type="text" [(ngModel)]="editName" name="editName" />
+      <div *ngIf="editingId === type.id">
+        <div class="d-flex gap-3 align-items-end flex-wrap">
+          <div class="form-group flex-grow-1">
+            <label for="editName">Nombre</label>
+            <input id="editName" type="text" [(ngModel)]="editName" name="editName" />
           </div>
           <div class="form-group cost-group">
-            <label>Costo ($)</label>
-            <input type="number" [(ngModel)]="editCost" name="editCost" min="0" step="0.01" />
+            <label for="editCost">Costo ($)</label>
+            <input id="editCost" type="number" [(ngModel)]="editCost" name="editCost" min="0" step="0.01" />
           </div>
-          <div class="edit-actions">
+          <div class="d-flex gap-2">
             <button class="btn btn-primary" (click)="onSaveEdit(type)" [disabled]="isSaving">
               {{ isSaving ? 'Guardando...' : 'Guardar' }}
             </button>
-            <button class="btn btn-outline" (click)="onCancelEdit()" [disabled]="isSaving">Cancelar</button>
+            <button class="btn btn-outline-secondary" (click)="onCancelEdit()" [disabled]="isSaving">Cancelar</button>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </div>

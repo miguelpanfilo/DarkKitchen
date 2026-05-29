@@ -18,6 +18,12 @@ import { OrdersListPageComponent } from './features/orders/pages/orders-list-pag
 import { OrderDetailPageComponent } from './features/orders/pages/order-detail-page/order-detail-page.component';
 import { CreateOrderPageComponent } from './features/orders/pages/create-order-page/create-order-page.component';
 import { ShippingTypesPageComponent } from './features/shipping-types/pages/shipping-types-page/shipping-types-page.component';
+import { ProductsListPageComponent } from './features/products/pages/products-list-page/products-list-page.component';
+import { CreateProductPageComponent } from './features/products/pages/create-product-page/create-product-page.component';
+import { EditProductPageComponent } from './features/products/pages/edit-product-page/edit-product-page.component';
+import { PromotionsListPageComponent } from './features/promotions/pages/promotions-list-page/promotions-list-page.component';
+import { EditPromotionPageComponent } from './features/promotions/pages/edit-promotion-page/edit-promotion-page.component';
+import { CreatePromotionPageComponent } from './features/promotions/pages/create-promotion-page/create-promotion-page.component';
 
 export const routes: Routes = [
   {
@@ -30,7 +36,7 @@ export const routes: Routes = [
     ]
   },
   {
-    path: 'app',
+    path: 'home',
     component: MainLayoutComponent,
     canActivate: [authGuard],
     canActivateChild: [authGuard],
@@ -67,8 +73,26 @@ export const routes: Routes = [
         canActivate: [roleGuard(['Client'])] 
       },
       { path: 'orders/:id', component: OrderDetailPageComponent },
-      { path: 'shipping-types', component: ShippingTypesPageComponent, 
-        canActivate: [roleGuard(['Administrative'])] 
+      { path: 'shipping-types', component: ShippingTypesPageComponent,
+        canActivate: [roleGuard(['Administrative'])]
+      },
+      { path: 'products', component: ProductsListPageComponent },
+      {
+        path: 'products/create', component: CreateProductPageComponent,
+        canActivate: [roleGuard(['Administrative'])]
+      },
+      {
+        path: 'products/edit/:id', component: EditProductPageComponent,
+        canActivate: [roleGuard(['Administrative'])]
+      },
+      { path: 'promotions', component: PromotionsListPageComponent },
+      {
+        path: 'promotions/create', component: CreatePromotionPageComponent,
+        canActivate: [roleGuard(['Administrative'])]
+      },
+      {
+        path: 'promotions/edit/:id', component: EditPromotionPageComponent,
+        canActivate: [roleGuard(['Administrative'])]
       },
     ]
   },

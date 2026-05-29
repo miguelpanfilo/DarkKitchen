@@ -53,16 +53,14 @@ export class OrdersListPageComponent implements OnInit {
   }
 
   private setDefaultDateRange() {
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    const toDateStr = (d: Date) =>
+      `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
     const now = new Date();
     const monthAgo = new Date(now);
     monthAgo.setDate(monthAgo.getDate() - 30);
-    this.filterDateTo = this.toDateTimeInput(now);
-    this.filterDateFrom = this.toDateTimeInput(monthAgo);
-  }
-
-  private toDateTimeInput(date: Date): string {
-    const pad = (n: number) => n.toString().padStart(2, '0');
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    this.filterDateTo = toDateStr(now);
+    this.filterDateFrom = toDateStr(monthAgo);
   }
 
   loadOrders() {
@@ -87,6 +85,11 @@ export class OrdersListPageComponent implements OnInit {
   }
 
   onFiltrar() {
+    const role = this.authService.getRole();
+    if (role !== 'Client' && (!this.filterDateFrom || !this.filterDateTo)) {
+      this.errorMessage = 'El rango de fechas es obligatorio.';
+      return;
+    }
     this.loadOrders();
   }
 
@@ -103,11 +106,11 @@ export class OrdersListPageComponent implements OnInit {
   }
 
   onAdd() {
-    this.router.navigate(['/app/orders/create']);
+    this.router.navigate(['/home/orders/create']);
   }
 
   onViewDetail(order: Order) {
-    this.router.navigate(['/app/orders', order.id]);
+    this.router.navigate(['/home/orders', order.id]);
   }
 
   getStatusLabel(status: string): string {
