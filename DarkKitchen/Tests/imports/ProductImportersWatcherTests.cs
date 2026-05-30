@@ -1,3 +1,4 @@
+using BusinessLogics;
 using BusinessLogicsAbstractions.Imports;
 using FluentAssertions;
 using Moq;
@@ -21,6 +22,8 @@ public class ProductImportersWatcherTests
         watcher.Start();
 
         Directory.Exists(folderPath).Should().BeTrue();
+
+        notifierMock.VerifyNoOtherCalls();
 
         watcher.Dispose();
     }
