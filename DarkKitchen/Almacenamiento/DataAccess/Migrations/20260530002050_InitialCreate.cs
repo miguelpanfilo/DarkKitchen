@@ -12,6 +12,23 @@ namespace DataAccess.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "AuditLogs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EntityName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    EntityId = table.Column<int>(type: "int", nullable: false),
+                    ChangeDescription = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    ResponsibleUser = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AuditLogs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -62,13 +79,27 @@ namespace DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "ShippingTypes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Cost = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShippingTypes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -132,7 +163,7 @@ namespace DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     ClientId = table.Column<int>(type: "int", nullable: false),
-                    DeliveryType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DeliveryType = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Street = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DoorNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Apartment = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -225,6 +256,9 @@ namespace DataAccess.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "AuditLogs");
+
+            migrationBuilder.DropTable(
                 name: "OrderItems");
 
             migrationBuilder.DropTable(
@@ -235,6 +269,9 @@ namespace DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Sessions");
+
+            migrationBuilder.DropTable(
+                name: "ShippingTypes");
 
             migrationBuilder.DropTable(
                 name: "Orders");
