@@ -1,3 +1,5 @@
+using DarkKitchen.Hubs;
+using DarkKitchen.SignalR;
 using Microsoft.AspNetCore.SignalR;
 using Moq;
 
