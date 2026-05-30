@@ -132,14 +132,14 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IProductImportersChangeService, ProductImportersChangeService>();
 
-        services.AddSingleton<ProductImportersWatcher>(_ =>
+        services.AddSingleton<ProductImportersWatcher>(provider =>
         {
             var pluginsPath = Path.Combine(
                 AppContext.BaseDirectory,
                 "plugins");
 
             return new ProductImportersWatcher(
-                _.GetRequiredService<IProductImportersChangeNotifier>(),
+                provider.GetRequiredService<IProductImportersChangeNotifier>(),
                 pluginsPath);
         });
 

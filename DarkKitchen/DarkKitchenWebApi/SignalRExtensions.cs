@@ -10,7 +10,7 @@ public static class SignalRExtensions
     {
         services.AddSignalR();
 
-        services.AddScoped<IProductImportersChangeNotifier,
+        services.AddSingleton<IProductImportersChangeNotifier,
             ProductImportersSignalRNotifier>();
 
         return services;
