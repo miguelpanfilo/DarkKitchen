@@ -26,6 +26,7 @@ public class ProductImportersWatcher : IDisposable
 
         watcher.Created += OnCreated;
         watcher.Deleted += OnDeleted;
+        watcher.Renamed += OnRenamed;
 
         watcher.EnableRaisingEvents = true;
     }
@@ -40,6 +41,13 @@ public class ProductImportersWatcher : IDisposable
     private async void OnDeleted(
         object? sender,
         FileSystemEventArgs e)
+    {
+        await notifier.NotifyImportersChanged();
+    }
+
+    private async void OnRenamed(
+        object? sender,
+        RenamedEventArgs e)
     {
         await notifier.NotifyImportersChanged();
     }
