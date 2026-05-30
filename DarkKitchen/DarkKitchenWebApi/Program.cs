@@ -39,6 +39,7 @@ builder.Services.AddScoped<AuthenticationFilter>();
 
 var app = builder.Build();
 
+app.StartProductImportersWatcher();
 app.InitializeDatabase();
 app.UseCorsPolicy();
 if(app.Environment.IsDevelopment())
