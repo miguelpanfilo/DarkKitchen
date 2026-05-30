@@ -27,4 +27,39 @@ public class ProductImportersWatcherTests
 
         watcher.Dispose();
     }
+
+    [TestMethod]
+    public async Task Start_WhenDllIsAdded_ShouldNotifyImportersChanged()
+    {
+        var notifierMock = new Mock<IProductImportersChangeNotifier>(
+            MockBehavior.Strict);
+
+        notifierMock
+            .Setup(notifier => notifier.NotifyImportersChanged())
+            .Returns(Task.CompletedTask);
+
+        var folderPath = Path.Combine(
+            Path.GetTempPath(),
+            Guid.NewGuid().ToString());
+
+        var watcher = new ProductImportersWatcher(
+            notifierMock.Object,
+            folderPath);
+
+        watcher.Start();
+
+        var dllPath = Path.Combine(folderPath, "importador.dll");
+
+        await File.WriteAllTextAsync(dllPath, "contenido fake");
+
+        await Task.Delay(500);
+
+        notifierMock.Verify(
+            notifier => notifier.NotifyImportersChanged(),
+            Times.AtLeastOnce);
+
+        notifierMock.VerifyNoOtherCalls();
+
+        watcher.Dispose();
+    }
 }
