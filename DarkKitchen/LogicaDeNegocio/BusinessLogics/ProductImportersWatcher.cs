@@ -25,10 +25,19 @@ public class ProductImportersWatcher : IDisposable
             "*.dll");
 
         watcher.Created += OnCreated;
+        watcher.Deleted += OnDeleted;
+
         watcher.EnableRaisingEvents = true;
     }
 
     private async void OnCreated(
+        object? sender,
+        FileSystemEventArgs e)
+    {
+        await notifier.NotifyImportersChanged();
+    }
+
+    private async void OnDeleted(
         object? sender,
         FileSystemEventArgs e)
     {
