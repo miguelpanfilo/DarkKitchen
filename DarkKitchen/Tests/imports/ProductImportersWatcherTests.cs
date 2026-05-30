@@ -103,4 +103,51 @@ public class ProductImportersWatcherTests
 
         notifierMock.VerifyNoOtherCalls();
     }
+
+    [TestMethod]
+    public async Task Start_WhenDllIsRenamed_ShouldNotifyImportersChanged()
+    {
+        var notifierMock = new Mock<IProductImportersChangeNotifier>(
+            MockBehavior.Strict);
+
+        notifierMock
+            .Setup(notifier => notifier.NotifyImportersChanged())
+            .Returns(Task.CompletedTask);
+
+        var folderPath = Path.Combine(
+            Path.GetTempPath(),
+            Guid.NewGuid().ToString());
+
+        Directory.CreateDirectory(folderPath);
+
+        var originalDllPath = Path.Combine(
+            folderPath,
+            "importador.dll");
+
+        await File.WriteAllTextAsync(
+            originalDllPath,
+            "contenido fake");
+
+        using var watcher = new ProductImportersWatcher(
+            notifierMock.Object,
+            folderPath);
+
+        watcher.Start();
+
+        var renamedDllPath = Path.Combine(
+            folderPath,
+            "importadorNuevo.dll");
+
+        File.Move(
+            originalDllPath,
+            renamedDllPath);
+
+        await Task.Delay(500);
+
+        notifierMock.Verify(
+            notifier => notifier.NotifyImportersChanged(),
+            Times.AtLeastOnce);
+
+        notifierMock.VerifyNoOtherCalls();
+    }
 }
