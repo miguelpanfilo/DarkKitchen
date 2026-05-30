@@ -14,7 +14,7 @@ namespace Tests.WebApi;
 public class ProductImportsControllerTest
 {
     [TestMethod]
-    public void ImportProducts_ShouldCallServiceWithResponsibleUser()
+    public void ImportProducts_ShouldCallService()
     {
         var serviceMock =
             new Mock<IProductImportService>(MockBehavior.Strict);
@@ -23,22 +23,8 @@ public class ProductImportsControllerTest
 
         var fileMock = new Mock<IFormFile>();
 
-        var user = new ClaimsPrincipal(new ClaimsIdentity(
-        [
-            new Claim(ClaimTypes.Email, "admin@test.com")
-        ], "TestAuth"));
-
-        controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = new DefaultHttpContext
-            {
-                User = user
-            }
-        };
-
         serviceMock.Setup(s => s.ImportProducts(
-                It.IsAny<ProductImportRequestDto>(),
-                "admin@test.com"))
+                It.IsAny<ProductImportRequestDto>()))
             .Returns([]);
 
         controller.ImportProducts(
@@ -47,8 +33,7 @@ public class ProductImportsControllerTest
 
         serviceMock.Verify(
             s => s.ImportProducts(
-                It.IsAny<ProductImportRequestDto>(),
-                "admin@test.com"),
+                It.IsAny<ProductImportRequestDto>()),
             Times.Once);
     }
 

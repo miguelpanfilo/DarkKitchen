@@ -20,8 +20,6 @@ public class ImportedProductCreatorServiceTest
         var photoConverterMock =
             new Mock<IImportedProductPhotoConverter>(MockBehavior.Strict);
 
-        var email = "admin@test.com";
-
         var photoPaths = new List<string>
         {
             "C:\\photos\\burger.jpg"
@@ -53,8 +51,7 @@ public class ImportedProductCreatorServiceTest
             .Returns(photos);
 
         productCreatorServiceMock.Setup(p => p.Create(
-                It.IsAny<ProductDTO>(),
-                email))
+                It.IsAny<ProductDTO>()))
             .Returns(expectedResponse);
 
         var service = new ImportedProductCreatorService(
@@ -62,8 +59,7 @@ public class ImportedProductCreatorServiceTest
             photoConverterMock.Object);
 
         var result = service.CreateImportedProduct(
-            importedProduct,
-            email);
+            importedProduct);
 
         result.Should().Be(expectedResponse);
 
@@ -80,8 +76,7 @@ public class ImportedProductCreatorServiceTest
                     dto.CommercialLine == "Fast Food" &&
                     dto.Category == "Food" &&
                     dto.Price == 250 &&
-                    dto.Photos == photos),
-                email),
+                    dto.Photos == photos)),
             Times.Once);
     }
 }

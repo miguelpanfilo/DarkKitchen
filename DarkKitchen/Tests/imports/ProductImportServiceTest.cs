@@ -43,7 +43,7 @@ public class ProductImportServiceTest
             FileStream = stream
         };
 
-        service.ImportProducts(request, "admin@test.com");
+        service.ImportProducts(request);
 
         importerMock.Verify(
             i => i.Import(stream),
@@ -95,9 +95,8 @@ public class ProductImportServiceTest
             FileName = "products.csv",
             FileStream = stream
         };
-        var email = "admin@test.com";
 
-        service.ImportProducts(request, email);
+        service.ImportProducts(request);
 
         productCreatorServiceMock.Verify(
             p => p.CreateImportedProduct(
@@ -108,8 +107,7 @@ public class ProductImportServiceTest
                     dto.CommercialLine == "Fast Food" &&
                     dto.Category == "Food" &&
                     dto.Price == 250 &&
-                    dto.PhotoPaths.Count == 1),
-                email
+                    dto.PhotoPaths.Count == 1)
                 ),
             Times.Once);
     }
@@ -137,8 +135,7 @@ public class ProductImportServiceTest
         };
 
         Action act = () => service.ImportProducts(
-            request,
-            "admin@test.com");
+            request);
 
         act.Should().Throw<NotFoundException>();
     }
@@ -159,8 +156,7 @@ public class ProductImportServiceTest
         ProductImportRequestDto request = null!;
 
         var act = () => service.ImportProducts(
-            request,
-            "admin@test.com");
+            request);
 
         act.Should().Throw<ValidationException>()
             .WithMessage("*importación*");
@@ -186,8 +182,7 @@ public class ProductImportServiceTest
         };
 
         var act = () => service.ImportProducts(
-            request,
-            "admin@test.com");
+            request);
 
         act.Should().Throw<ValidationException>()
             .WithMessage("*importador*");
@@ -213,8 +208,7 @@ public class ProductImportServiceTest
         };
 
         var act = () => service.ImportProducts(
-            request,
-            "admin@test.com");
+            request);
 
         act.Should().Throw<ValidationException>()
             .WithMessage("*archivo*");
@@ -241,8 +235,7 @@ public class ProductImportServiceTest
         };
 
         var act = () => service.ImportProducts(
-            request,
-            "admin@test.com");
+            request);
 
         act.Should().Throw<ValidationException>()
             .WithMessage("*archivo*");

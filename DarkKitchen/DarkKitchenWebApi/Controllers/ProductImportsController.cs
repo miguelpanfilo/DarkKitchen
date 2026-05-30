@@ -22,9 +22,7 @@ public class ProductImportsController(IProductImportService productImportService
             ImporterName = importerName, FileName = file.FileName, FileStream = file.OpenReadStream()
         };
 
-        var email = User.FindFirst(ClaimTypes.Email)!.Value;
-
-        var result = productImportService.ImportProducts(request, email);
+        var result = productImportService.ImportProducts(request);
 
         return Ok(result);
     }

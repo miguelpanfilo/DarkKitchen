@@ -9,9 +9,7 @@ namespace BusinessLogics;
 public class ImportedProductCreatorService(IProductCreatorService productCreatorService,
     IImportedProductPhotoConverter importedProductPhotoConverter) : IImportedProductCreatorService
 {
-    public ProductResponseDto CreateImportedProduct(
-        ImportedProductDto importedProduct,
-        string email)
+    public ProductResponseDto CreateImportedProduct(ImportedProductDto importedProduct)
     {
         var photos = importedProductPhotoConverter.Convert(
             importedProduct.PhotoPaths);
@@ -25,6 +23,6 @@ public class ImportedProductCreatorService(IProductCreatorService productCreator
             importedProduct.Price,
             photos);
 
-        return productCreatorService.Create(product, email);
+        return productCreatorService.Create(product);
     }
 }
