@@ -4,5 +4,5 @@ namespace BusinessLogicsAbstractions.Products;
 
 public interface IProductCreatorService
 {
-    ProductResponseDto Create(ProductDTO productDto, string responsibleUser);
+    ProductResponseDto Create(ProductDTO productDto);
 }

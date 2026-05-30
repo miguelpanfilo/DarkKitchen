@@ -12,7 +12,7 @@ public class ProductImportService(
     IProductImporterProvider importerProvider,
     IImportedProductCreatorService importedProductCreatorService) : IProductImportService
 {
-    public List<ProductResponseDto> ImportProducts(ProductImportRequestDto request, string email)
+    public List<ProductResponseDto> ImportProducts(ProductImportRequestDto request)
     {
         ValidateRequest(request);
 
@@ -23,8 +23,7 @@ public class ProductImportService(
         return importedProducts
             .Select(importedProduct =>
                 importedProductCreatorService.CreateImportedProduct(
-                    importedProduct,
-                    email))
+                    importedProduct))
             .ToList();
     }
 

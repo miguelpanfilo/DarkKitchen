@@ -5,5 +5,5 @@ namespace BusinessLogicsAbstractions.Imports;
 
 public interface IProductImportService
 {
-    List<ProductResponseDto> ImportProducts(ProductImportRequestDto request, string email);
+    List<ProductResponseDto> ImportProducts(ProductImportRequestDto request);
 }
