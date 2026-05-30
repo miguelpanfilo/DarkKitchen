@@ -1,6 +1,9 @@
 using System.Text.Json.Serialization;
+using BusinessLogicsAbstractions.Imports;
 using DarkKitchen;
 using DarkKitchen.Filters;
+using DarkKitchen.Hubs;
+using DarkKitchen.SignalR;
 using FactoryService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,7 +33,10 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 builder.Services.AddCustomSwagger();
 builder.Services.AddDarkKitchenDependencies(builder.Configuration);
+builder.Services.AddSignalR();
 
+builder.Services.AddScoped<IProductImportersChangeNotifier,
+    ProductImportersSignalRNotifier>();
 builder.Services.AddWebApiServices();
 builder.Services.AddCorsPolicy();
 
@@ -52,5 +58,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<ProductImportersHub>("/hubs/product-importers");
 
 app.Run();

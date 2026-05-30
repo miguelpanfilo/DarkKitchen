@@ -130,6 +130,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IImportedProductCreatorService, ImportedProductCreatorService>();
         services.AddScoped<IImportedProductPhotoConverter, ImportedProductPhotoConverter>();
 
+        services.AddScoped<IProductImportersChangeService, ProductImportersChangeService>();
+
         return services;
     }
 }
