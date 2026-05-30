@@ -2,6 +2,7 @@ using BusinessLogics.Shared;
 using BusinessLogicsAbstractions;
 using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.Products;
+using Contract.Importers;
 using Contract.Products;
 using DataAccessAbstractions;
 using Domain;
@@ -10,7 +11,7 @@ using Mappers;
 
 namespace BusinessLogics.Products;
 
-public class ProductService : IProductService
+public class ProductService : IProductService, IProductCreatorService
 {
     private readonly IProductRepository _repository;
     private readonly ProductPhotoService _productPhotoService;

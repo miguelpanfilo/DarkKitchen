@@ -9,6 +9,7 @@ using BusinessLogics.Shared;
 using BusinessLogics.Shipping;
 using BusinessLogics.Users;
 using BusinessLogicsAbstractions;
+using BusinessLogicsAbstractions.Imports;
 using BusinessLogicsAbstractions.Orders;
 using BusinessLogicsAbstractions.Products;
 using BusinessLogicsAbstractions.Promotions;
@@ -36,6 +37,7 @@ public static class ServiceCollectionExtensions
         services.AddSharedServices();
         services.AddInitializationServices();
         services.AddAuditServices();
+        services.AddImportServices();
 
         return services;
     }
@@ -91,6 +93,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IReportService, ReportService>();
 
         services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<IProductCreatorService, ProductService>();
         services.AddScoped<IPromotionService, PromotionService>();
         services.AddScoped<IShippingTypeService, ShippingTypeService>();
         services.AddScoped<ProductPhotoService>();
@@ -109,6 +112,36 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddInitializationServices(this IServiceCollection services)
     {
         services.AddScoped<IInitializationService, InitializationService>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddImportServices(this IServiceCollection services)
+    {
+        services.AddScoped<IProductImporterProvider>(_ =>
+        {
+            var pluginsPath = Path.Combine(AppContext.BaseDirectory, "plugins");
+
+            return new ProductImporterProvider(pluginsPath);
+        });
+
+        services.AddScoped<IProductImporterQueryService, ProductImporterQueryService>();
+        services.AddScoped<IProductImportService, ProductImportService>();
+        services.AddScoped<IImportedProductCreatorService, ImportedProductCreatorService>();
+        services.AddScoped<IImportedProductPhotoConverter, ImportedProductPhotoConverter>();
+
+        services.AddScoped<IProductImportersChangeService, ProductImportersChangeService>();
+
+        services.AddSingleton<ProductImportersWatcher>(provider =>
+        {
+            var pluginsPath = Path.Combine(
+                AppContext.BaseDirectory,
+                "plugins");
+
+            return new ProductImportersWatcher(
+                provider.GetRequiredService<IProductImportersChangeNotifier>(),
+                pluginsPath);
+        });
 
         return services;
     }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20260506155225_AddAuditLogsNew")]
-    partial class AddAuditLogsNew
+    [Migration("20260530002050_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,7 +75,8 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("DeliveryType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("OrderNumber")
                         .IsRequired()
@@ -272,6 +273,27 @@ namespace DataAccess.Migrations
                     b.HasKey("SessionId");
 
                     b.ToTable("Sessions", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.ShippingType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Cost")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ShippingTypes");
                 });
 
             modelBuilder.Entity("Domain.User", b =>

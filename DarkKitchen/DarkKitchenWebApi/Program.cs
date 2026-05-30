@@ -30,7 +30,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 builder.Services.AddCustomSwagger();
 builder.Services.AddDarkKitchenDependencies(builder.Configuration);
-
+builder.Services.AddSignalRServices();
 builder.Services.AddWebApiServices();
 builder.Services.AddCorsPolicy();
 
@@ -39,6 +39,7 @@ builder.Services.AddScoped<AuthenticationFilter>();
 
 var app = builder.Build();
 
+app.StartProductImportersWatcher();
 app.InitializeDatabase();
 app.UseCorsPolicy();
 if(app.Environment.IsDevelopment())
@@ -51,6 +52,6 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.MapControllers();
+app.MapApplicationEndpoints();
 
 app.Run();
