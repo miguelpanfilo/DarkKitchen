@@ -24,30 +24,16 @@ public class ProductImportersWatcher : IDisposable
             pluginsPath,
             "*.dll");
 
-        watcher.Created += OnCreated;
-        watcher.Deleted += OnDeleted;
-        watcher.Renamed += OnRenamed;
+        watcher.Created += OnPluginChanged;
+        watcher.Deleted += OnPluginChanged;
+        watcher.Renamed += OnPluginChanged;
 
         watcher.EnableRaisingEvents = true;
     }
 
-    private async void OnCreated(
+    private async void OnPluginChanged(
         object? sender,
         FileSystemEventArgs e)
-    {
-        await notifier.NotifyImportersChanged();
-    }
-
-    private async void OnDeleted(
-        object? sender,
-        FileSystemEventArgs e)
-    {
-        await notifier.NotifyImportersChanged();
-    }
-
-    private async void OnRenamed(
-        object? sender,
-        RenamedEventArgs e)
     {
         await notifier.NotifyImportersChanged();
     }
