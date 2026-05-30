@@ -65,7 +65,7 @@ public class OrderRepositoryTests
     ];
 
     private Order MakeOrder(int? clientId = null) =>
-        Order.MakeOrder(clientId ?? SeededClient.Id, DeliveryType.Express, MakeAddress(), MakeItems(), 200m);
+        Order.MakeOrder(clientId ?? SeededClient.Id, "Express", MakeAddress(), MakeItems(), 200m);
 
     #region Add
     #region Success
@@ -204,8 +204,8 @@ public class OrderRepositoryTests
     [TestMethod]
     public void GetByFilters_WhenStreetFilterApplied_ShouldReturnOrdersOnStreet()
     {
-        _repository.Add(Order.MakeOrder(SeededClient.Id, DeliveryType.Express, Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m));
-        _repository.Add(Order.MakeOrder(SeededClient.Id, DeliveryType.Express, Address.MakeAddress("Bvar España", "500"), MakeItems(), 200m));
+        _repository.Add(Order.MakeOrder(SeededClient.Id, "Express", Address.MakeAddress("Rivera", "1234"), MakeItems(), 200m));
+        _repository.Add(Order.MakeOrder(SeededClient.Id, "Express", Address.MakeAddress("Bvar España", "500"), MakeItems(), 200m));
 
         var result = _repository.GetByFilters(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow.AddDays(1), "Rivera", null);
 

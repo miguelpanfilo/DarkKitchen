@@ -21,7 +21,7 @@ public sealed class OrderMapperTests
             })
             .ToList();
 
-        return Order.MakeOrder(clientId, DeliveryType.Express, address, items, 200m);
+        return Order.MakeOrder(clientId, "Express", address, items, 200m);
     }
 
     private static User MakeUser(int id = 1)
@@ -52,7 +52,7 @@ public sealed class OrderMapperTests
         var order = MakeOrder(itemCount: 3);
         var user = MakeUser(1);
 
-        var result = order.ToOrderResponse(user);
+        var result = order.ToOrderResponse(user, new Dictionary<int, string>());
 
         result.ItemsCount.Should().Be(3);
     }
@@ -63,14 +63,14 @@ public sealed class OrderMapperTests
         var order = MakeOrder(clientId: 1, itemCount: 1);
         var user = MakeUser(1);
 
-        var result = order.ToOrderResponse(user);
+        var result = order.ToOrderResponse(user, new Dictionary<int, string>());
 
         result.Should().NotBeNull();
         result.Client.Id.Should().Be(1);
         result.Client.Name.Should().Be("Miguel");
         result.Client.LastName.Should().Be("Panfilo");
         result.Client.Email.Should().Be("miguel1@test.com");
-        result.DeliveryType.Should().Be(nameof(DeliveryType.Express));
+        result.DeliveryType.Should().Be("Express");
         result.Status.Should().Be(nameof(OrderStatus.Pending));
         result.Items.Should().HaveCount(1);
         result.ItemsCount.Should().Be(1);
@@ -84,7 +84,7 @@ public sealed class OrderMapperTests
         var order = MakeOrder();
         var user = MakeUser();
 
-        var result = order.ToOrderResponse(user);
+        var result = order.ToOrderResponse(user, new Dictionary<int, string>());
 
         result.Address.Street.Should().Be("Rivera");
         result.Address.DoorNumber.Should().Be("1234");
@@ -96,7 +96,7 @@ public sealed class OrderMapperTests
         var order = MakeOrder(itemCount: 2);
         var user = MakeUser();
 
-        var result = order.ToOrderResponse(user);
+        var result = order.ToOrderResponse(user, new Dictionary<int, string>());
 
         result.Items.Should().HaveCount(2);
         result.Items[0].ProductId.Should().Be(1);

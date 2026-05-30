@@ -30,6 +30,8 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 builder.Services.AddCustomSwagger();
 builder.Services.AddDarkKitchenDependencies(builder.Configuration);
+
+builder.Services.AddWebApiServices();
 builder.Services.AddCorsPolicy();
 
 builder.Services.AddScoped<ExceptionFilter>();

@@ -15,8 +15,7 @@ public class ProductController(IProductService productService) : ControllerBase
     [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult Create([FromBody] ProductDTO request)
     {
-        var email = User.FindFirst(ClaimTypes.Email)!.Value;
-        var response = productService.Create(request, email);
+        var response = productService.Create(request);
         return Created($"/api/v1/products/{response.Id}", response);
     }
 
@@ -32,8 +31,7 @@ public class ProductController(IProductService productService) : ControllerBase
     [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult Update(int productId, ProductPatchDto request)
     {
-        var email = User.FindFirst(ClaimTypes.Email)!.Value;
-        var result = productService.Update(productId, request, email);
+        var result = productService.Update(productId, request);
         return Ok(result);
     }
 
@@ -41,8 +39,7 @@ public class ProductController(IProductService productService) : ControllerBase
     [RoleAuthorization(UserRolesDto.Administrative)]
     public IActionResult Delete(int productId)
     {
-        var email = User.FindFirst(ClaimTypes.Email)!.Value;
-        productService.Delete(productId, email);
+        productService.Delete(productId);
         return NoContent();
     }
 }

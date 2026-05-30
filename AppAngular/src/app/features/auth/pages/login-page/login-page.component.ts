@@ -1,4 +1,6 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CancelButtonComponent } from
@@ -7,49 +9,70 @@ import { SubmitButtonComponent } from
   '../../../../shared/components/submit-button/submit-button.component';
 import { FormCardComponent } from
   '../../../../shared/components/form-card/form-card.component';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../../../core/services/auth.service';
+import { LoginRequest } from '../../models/login-request.model';
+import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
 
 @Component({
   selector: 'app-login-page',
-  imports: [FormsModule, CancelButtonComponent, SubmitButtonComponent, FormCardComponent],
+  imports: [CommonModule, FormsModule, CancelButtonComponent, SubmitButtonComponent,
+    FormCardComponent, StatusMessagesComponent],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.css'
 })
+export class LoginPageComponent implements OnInit, OnDestroy {
+  email = '';
+  contrasena = '';
+  isLoading: boolean = false;
+  errorMessage = '';
+  successMessage = '';
 
-export class LoginPageComponent implements OnInit {
-    email = '';
-    contrasena = '';
-    errorMessage = '';
-    successMessage = '';
+  constructor(private authService: AuthService, private router: Router) { }
 
-    constructor(private authService: AuthService, private router:
-  Router) {}
+  private subs = new Subscription();
 
-    ngOnInit() {
-      const nav = this.router.getCurrentNavigation()?.extras.state
-        ?? history.state;
-      if (nav?.successMessage) {
-        this.successMessage = nav.successMessage;
-      }
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
+
+  ngOnInit() {
+    const nav = this.router.getCurrentNavigation()?.extras.state ??
+      history.state;
+    if (nav?.successMessage) {
+      this.successMessage = nav.successMessage;
     }
+  }
 
   onSubmit() {
     this.errorMessage = '';
-    this.authService.login(this.email, this.contrasena).subscribe({
+    this.isLoading = true;
+
+    const request: LoginRequest = {
+      Email: this.email,
+      Password: this.contrasena
+    };
+
+    this.subs.add(this.authService.login(request).subscribe({
       next: (response) => {
-        localStorage.setItem('sessionId', response.sessionId);
-        localStorage.setItem('role', response.role);
-        localStorage.setItem('email', this.email);
-        this.router.navigate(['/app']);
+        this.isLoading = false;
+        this.authService.saveSession(response.sessionId, response.role, this.email);
+        const redirectUrl = localStorage.getItem('redirectUrl');
+        if (redirectUrl) {
+          localStorage.removeItem('redirectUrl');
+          this.router.navigate([redirectUrl]);
+        } else {
+          this.router.navigate(['/home']);
+        }
       },
       error: (error) => {
+        this.isLoading = false;
         if (error.status === 401) {
           this.errorMessage = 'Email o contraseña incorrectos.';
         } else {
           this.errorMessage = 'Ocurrió un error. Intentá de nuevo.';
         }
       }
-    });
+    }));
   }
 
   onCancelled() {

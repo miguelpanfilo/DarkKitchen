@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CancelButtonComponent } from
@@ -8,32 +10,43 @@ import { SubmitButtonComponent } from
 import { FormCardComponent } from
   '../../../../shared/components/form-card/form-card.component';
 import { UserService } from '../../services/user.service';
-  import { ROLES } from
-  '../../../../shared/constants/roles';
+import { ROLES } from '../../../../shared/constants/roles';
+import { UpdateUserRequest } from '../../models/update-user-request.model';
+import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
 
 @Component({
   selector: 'app-edit-user-page',
-  imports: [FormsModule, CancelButtonComponent, SubmitButtonComponent,
-    FormCardComponent],
+  imports: [CommonModule, FormsModule, CancelButtonComponent, SubmitButtonComponent,
+    FormCardComponent, StatusMessagesComponent],
   templateUrl: './edit-user-page.component.html',
   styleUrl: './edit-user-page.component.css'
 })
 
-export class EditUserPageComponent implements OnInit {
+export class EditUserPageComponent implements OnInit, OnDestroy {
   userId = 0;
   nombre = '';
   apellido = '';
   email = '';
   telefono = '';
   rol = '';
+  isLoading: boolean = false;
   errorMessage = '';
+  submitted = false;
   roles = ROLES;
-  
+  private subs = new Subscription();
 
   constructor(private router: Router, private userService:
     UserService) { }
 
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
+
   ngOnInit() {
+    this.loadUserFromState();
+  }
+
+  private loadUserFromState(): void {
     const user =
       this.router.getCurrentNavigation()?.extras.state?.['user']
       ?? history.state?.user;
@@ -49,21 +62,32 @@ export class EditUserPageComponent implements OnInit {
   }
 
   onSubmit() {
-    this.userService.updateUser(this.userId, {
+    this.submitted = true;
+    if (!this.nombre.trim() || !this.apellido.trim() || !this.email.trim() || !this.telefono.trim() || !this.rol) {
+      return;
+    }
+    const request: UpdateUserRequest = {
       Name: this.nombre,
       LastName: this.apellido,
       Email: this.email,
       Phone: this.telefono,
       Role: this.rol
-    }).subscribe({
-      next: () => this.router.navigate(['/app/users']),
+    };
+
+    this.isLoading = true;
+    this.subs.add(this.userService.updateUser(this.userId, request).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.router.navigate(['/home/users']);
+      },
       error: (err) => {
+        this.isLoading = false;
         this.errorMessage = err.error?.message || 'Error al modificar el usuario.';
       }
-    });
+    }));
   }
 
   onCancelled() {
-    this.router.navigate(['/app/users']);
+    this.router.navigate(['/home/users']);
   }
 }

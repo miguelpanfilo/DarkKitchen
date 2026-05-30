@@ -16,6 +16,8 @@ public sealed class OrderFacadeTests
     private Mock<IOrderService> _orderServiceMock = null!;
     private Mock<IRepositoryUser> _repositoryUserMock = null!;
     private Mock<IOrderItemResolver> _orderItemResolverMock = null!;
+    private Mock<IShippingTypeRepository> _shippingTypeRepositoryMock = null!;
+    private Mock<IProductRepository> _productRepositoryMock = null!;
     private OrderFacade _orderFacade = null!;
 
     [TestInitialize]
@@ -24,11 +26,15 @@ public sealed class OrderFacadeTests
         _orderServiceMock = new Mock<IOrderService>(MockBehavior.Strict);
         _repositoryUserMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
         _orderItemResolverMock = new Mock<IOrderItemResolver>(MockBehavior.Strict);
+        _shippingTypeRepositoryMock = new Mock<IShippingTypeRepository>(MockBehavior.Strict);
+        _productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
 
         _orderFacade = new OrderFacade(
             _orderServiceMock.Object,
             _orderItemResolverMock.Object,
-            _repositoryUserMock.Object);
+            _repositoryUserMock.Object,
+            _shippingTypeRepositoryMock.Object,
+            _productRepositoryMock.Object);
     }
 
     private static CreateOrderRequest MakeCreateOrderRequest(string deliveryType = "Express") => new()
@@ -52,7 +58,7 @@ public sealed class OrderFacadeTests
 
     private static Order MakeTestOrder(
         int clientId = 1,
-        DeliveryType deliveryType = DeliveryType.Express)
+        string deliveryType = "Express")
     {
         var address = Address.MakeAddress("Rivera", "1234");
 
@@ -67,7 +73,7 @@ public sealed class OrderFacadeTests
             }
         };
 
-        var shippingCost = deliveryType == DeliveryType.TwentyFourHours ? 200m : 300m;
+        var shippingCost = deliveryType == "TwentyFourHours" ? 200m : 300m;
 
         return Order.MakeOrder(clientId, deliveryType, address, items, shippingCost);
     }
@@ -102,6 +108,10 @@ public sealed class OrderFacadeTests
     [TestMethod]
     public void CreateOrder_WhenValidRequest_ShouldReturnOrderResponse()
     {
+        _shippingTypeRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([ShippingType.MakeShippingType("Express", 300m)]);
+
         _orderItemResolverMock
             .Setup(r => r.Resolve(It.IsAny<List<CreateOrderItemRequest>>()))
             .Returns(MakeResolvedItems());
@@ -109,29 +119,38 @@ public sealed class OrderFacadeTests
         _orderServiceMock
             .Setup(s => s.CreateOrder(It.Is<CreateOrderData>(data =>
                 data.ClientId == 1 &&
-                data.DeliveryType == DeliveryType.Express &&
+                data.DeliveryType == "Express" &&
                 data.ShippingCost == 300m &&
                 data.Items.Count == 1)))
-            .Returns(MakeTestOrder(1, DeliveryType.Express));
+            .Returns(MakeTestOrder(1, "Express"));
 
         _repositoryUserMock
             .Setup(r => r.FindByIdIncludingInactive(1))
             .Returns(MakeTestUser(1));
+
+        _productRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([]);
 
         var result = _orderFacade.CreateOrder(1, MakeCreateOrderRequest());
 
         result.Should().NotBeNull();
         result.Should().BeOfType<OrderResponse>();
-        result.DeliveryType.Should().Be(nameof(DeliveryType.Express));
+        result.DeliveryType.Should().Be("Express");
 
         _orderItemResolverMock.VerifyAll();
         _orderServiceMock.VerifyAll();
         _repositoryUserMock.VerifyAll();
+        _productRepositoryMock.VerifyAll();
     }
 
     [TestMethod]
     public void CreateOrder_WhenDeliveryTypeIsTwentyFourHours_ShouldCreateOrderWithTwentyFourHoursAndShipping200()
     {
+        _shippingTypeRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([ShippingType.MakeShippingType("TwentyFourHours", 200m)]);
+
         _orderItemResolverMock
             .Setup(r => r.Resolve(It.IsAny<List<CreateOrderItemRequest>>()))
             .Returns(MakeResolvedItems());
@@ -139,29 +158,38 @@ public sealed class OrderFacadeTests
         _orderServiceMock
             .Setup(s => s.CreateOrder(It.Is<CreateOrderData>(data =>
                 data.ClientId == 1 &&
-                data.DeliveryType == DeliveryType.TwentyFourHours &&
+                data.DeliveryType == "TwentyFourHours" &&
                 data.ShippingCost == 200m &&
                 data.Items.Count == 1)))
-            .Returns(MakeTestOrder(1, DeliveryType.TwentyFourHours));
+            .Returns(MakeTestOrder(1, "TwentyFourHours"));
 
         _repositoryUserMock
             .Setup(r => r.FindByIdIncludingInactive(1))
             .Returns(MakeTestUser(1));
 
+        _productRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([]);
+
         var result = _orderFacade.CreateOrder(1, MakeCreateOrderRequest("TwentyFourHours"));
 
         result.Should().NotBeNull();
         result.Should().BeOfType<OrderResponse>();
-        result.DeliveryType.Should().Be(nameof(DeliveryType.TwentyFourHours));
+        result.DeliveryType.Should().Be("TwentyFourHours");
 
         _orderItemResolverMock.VerifyAll();
         _orderServiceMock.VerifyAll();
         _repositoryUserMock.VerifyAll();
+        _productRepositoryMock.VerifyAll();
     }
 
     [TestMethod]
     public void CreateOrder_WhenUserNotFound_ShouldThrowNotFoundException()
     {
+        _shippingTypeRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([ShippingType.MakeShippingType("Express", 300m)]);
+
         _orderItemResolverMock
             .Setup(r => r.Resolve(It.IsAny<List<CreateOrderItemRequest>>()))
             .Returns(MakeResolvedItems(1));
@@ -193,6 +221,10 @@ public sealed class OrderFacadeTests
     [TestMethod]
     public void CreateOrder_WhenDeliveryTypeIsInvalid_ShouldThrowValidationException()
     {
+        _shippingTypeRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([]);
+
         var request = new CreateOrderRequest
         {
             DeliveryType = "DeliveryTypeInvalido",
@@ -233,6 +265,10 @@ public sealed class OrderFacadeTests
     [TestMethod]
     public void CreateOrder_WhenItemsAreEmpty_ShouldThrowValidationException()
     {
+        _shippingTypeRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([ShippingType.MakeShippingType("Express", 300m)]);
+
         var request = new CreateOrderRequest
         {
             DeliveryType = "Express",
@@ -253,6 +289,10 @@ public sealed class OrderFacadeTests
     [TestMethod]
     public void CreateOrder_WhenItemsAreNull_ShouldThrowValidationException()
     {
+        _shippingTypeRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([ShippingType.MakeShippingType("Express", 300m)]);
+
         var request = new CreateOrderRequest
         {
             DeliveryType = "Express",
@@ -273,6 +313,10 @@ public sealed class OrderFacadeTests
     [TestMethod]
     public void CreateOrder_WhenItemQuantityIsZero_ShouldThrowValidationException()
     {
+        _shippingTypeRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([ShippingType.MakeShippingType("Express", 300m)]);
+
         var request = new CreateOrderRequest
         {
             DeliveryType = "Express",
@@ -293,6 +337,10 @@ public sealed class OrderFacadeTests
     [TestMethod]
     public void CreateOrder_WhenItemQuantityIsNegative_ShouldThrowValidationException()
     {
+        _shippingTypeRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([ShippingType.MakeShippingType("Express", 300m)]);
+
         var request = new CreateOrderRequest
         {
             DeliveryType = "Express",
@@ -313,6 +361,10 @@ public sealed class OrderFacadeTests
     [TestMethod]
     public void CreateOrder_WhenAddressIsNull_ShouldThrowValidationException()
     {
+        _shippingTypeRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([ShippingType.MakeShippingType("Express", 300m)]);
+
         var request = new CreateOrderRequest
         {
             DeliveryType = "Express",
@@ -333,6 +385,10 @@ public sealed class OrderFacadeTests
     [TestMethod]
     public void CreateOrder_WhenStreetIsEmpty_ShouldThrowValidationException()
     {
+        _shippingTypeRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([ShippingType.MakeShippingType("Express", 300m)]);
+
         var request = new CreateOrderRequest
         {
             DeliveryType = "Express",
@@ -353,6 +409,10 @@ public sealed class OrderFacadeTests
     [TestMethod]
     public void CreateOrder_WhenDoorNumberIsEmpty_ShouldThrowValidationException()
     {
+        _shippingTypeRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([ShippingType.MakeShippingType("Express", 300m)]);
+
         var request = new CreateOrderRequest
         {
             DeliveryType = "Express",
@@ -381,6 +441,10 @@ public sealed class OrderFacadeTests
             .Setup(r => r.FindByIdIncludingInactive(1))
             .Returns(MakeTestUser(1));
 
+        _productRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([]);
+
         var result = _orderFacade.GetById(1);
 
         result.Should().NotBeNull();
@@ -388,6 +452,7 @@ public sealed class OrderFacadeTests
 
         _orderServiceMock.VerifyAll();
         _repositoryUserMock.Verify(r => r.FindByIdIncludingInactive(1), Times.Once);
+        _productRepositoryMock.VerifyAll();
     }
 
     [TestMethod]
@@ -401,12 +466,17 @@ public sealed class OrderFacadeTests
             .Setup(r => r.FindByIdIncludingInactive(1))
             .Returns(MakeTestUser(1));
 
+        _productRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([]);
+
         var result = _orderFacade.GetClientOrders(1, null, null, null);
 
         result.Should().HaveCount(2);
 
         _orderServiceMock.VerifyAll();
         _repositoryUserMock.Verify(r => r.FindByIdIncludingInactive(1), Times.Exactly(2));
+        _productRepositoryMock.Verify(r => r.GetAll(), Times.Exactly(2));
     }
 
     [TestMethod]
@@ -437,12 +507,17 @@ public sealed class OrderFacadeTests
             .Setup(r => r.FindByIdIncludingInactive(1))
             .Returns(MakeTestUser(1));
 
+        _productRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([]);
+
         var result = _orderFacade.GetOrdersByFilters(dateFrom, dateTo, null, null);
 
         result.Should().HaveCount(2);
 
         _orderServiceMock.VerifyAll();
         _repositoryUserMock.Verify(r => r.FindByIdIncludingInactive(1), Times.Exactly(2));
+        _productRepositoryMock.Verify(r => r.GetAll(), Times.Exactly(2));
     }
 
     [TestMethod]
@@ -536,5 +611,41 @@ public sealed class OrderFacadeTests
         _orderFacade.Delay(1);
 
         _orderServiceMock.VerifyAll();
+    }
+
+    [TestMethod]
+    public void CreateOrder_WhenShippingTypeHasCost_ShouldPassCorrectShippingCostToService()
+    {
+        var shippingType = ShippingType.MakeShippingType("Rapido", 350m);
+        _shippingTypeRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([shippingType]);
+
+        _orderItemResolverMock
+            .Setup(r => r.Resolve(It.IsAny<List<CreateOrderItemRequest>>()))
+            .Returns(MakeResolvedItems());
+
+        CreateOrderData? capturedData = null;
+        _orderServiceMock
+            .Setup(s => s.CreateOrder(It.IsAny<CreateOrderData>()))
+            .Callback<CreateOrderData>(d => capturedData = d)
+            .Returns(MakeTestOrder(1, "Rapido"));
+
+        _repositoryUserMock
+            .Setup(r => r.FindByIdIncludingInactive(1))
+            .Returns(MakeTestUser(1));
+
+        _productRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([]);
+
+        _orderFacade.CreateOrder(1, MakeCreateOrderRequest("Rapido"));
+
+        _shippingTypeRepositoryMock.VerifyAll();
+        _orderItemResolverMock.VerifyAll();
+        _orderServiceMock.VerifyAll();
+        _repositoryUserMock.VerifyAll();
+        _productRepositoryMock.VerifyAll();
+        capturedData!.ShippingCost.Should().Be(350m);
     }
 }

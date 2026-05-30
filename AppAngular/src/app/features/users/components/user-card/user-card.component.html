@@ -1,13 +1,13 @@
-<div class="user-card">
+<div class="user-card d-flex justify-content-between align-items-center gap-3 p-3 rounded">
   <div class="user-info">
-    <h3>{{ user.name }} {{ user.lastName }}</h3>
+    <h2>{{ user.name }} {{ user.lastName }}</h2>
     <p>{{ user.email }}</p>
     <p>{{ user.phone }}</p>
     <span class="role">{{ user.role }}</span>
   </div>
-  <div class="user-actions">
+  <div class="d-flex gap-2">
     <app-edit-button (clicked)="onEdit()" />
-    <button class="btn-change-password" (click)="onChangePassword()">Cambiar contraseña</button>
+    <button class="btn btn-sm btn-change-password" (click)="onChangePassword()">Cambiar contraseña</button>
     <app-delete-button (clicked)="onDelete()" />
   </div>
 </div>

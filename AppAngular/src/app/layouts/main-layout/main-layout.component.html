@@ -1,26 +1,24 @@
-<nav class="navbar">
-  <span class="brand">Dark Kitchen</span>
-  <div class="nav-links">
-    <a routerLink="/app/orders" routerLinkActive="active">Órdenes</a>
-    @if (isAdminOrClient) {
-    <a routerLink="/app/products" routerLinkActive="active">Productos</a>
-    <a routerLink="/app/promotions" routerLinkActive="active">Promociones</a>
-    }
-    @if (isAdmin) {
-    <a routerLink="/app/users" routerLinkActive="active">Usuarios</a>
-    <a routerLink="/app/audit-logs" routerLinkActive="active">Auditorías</a>
-    <a routerLink="/app/reports" routerLinkActive="active">Reportes</a>
-    }
+<nav class="navbar navbar-dark px-4 py-2 shadow-sm" style="background-color: #2c2c54;">
+  <span class="navbar-brand fw-semibold">Dark Kitchen</span>
+
+  <div class="navbar-nav flex-row flex-wrap gap-2 mx-auto">
+    <a class="nav-link" routerLink="/home/orders" routerLinkActive="active">Órdenes</a>
+    <a *appHasRole="['Administrative', 'Client']" class="nav-link" routerLink="/home/products" routerLinkActive="active">Productos</a>
+    <a *appHasRole="['Administrative', 'Client']" class="nav-link" routerLink="/home/promotions" routerLinkActive="active">Promociones</a>
+    <a *appHasRole="['Administrative']" class="nav-link" routerLink="/home/users" routerLinkActive="active">Usuarios</a>
+    <a *appHasRole="['Administrative']" class="nav-link" routerLink="/home/shipping-types" routerLinkActive="active">Tipos de Envío</a>
+    <a *appHasRole="['Administrative']" class="nav-link" routerLink="/home/audit-logs" routerLinkActive="active">Auditorías</a>
+    <a *appHasRole="['Administrative']" class="nav-link" routerLink="/home/reports" routerLinkActive="active">Reportes</a>
   </div>
-  <div class="user-info">
-    <span>{{ email }}</span>
-    <button class="btn-logout" (click)="onLogout()" title="Cerrar
-  sesión">
+
+  <div class="d-flex align-items-center gap-3 nav-user">
+    <span class="nav-email small">{{ email }}</span>
+    <button class="btn btn-outline-danger btn-sm" (click)="onLogout()" title="Cerrar sesión">
       <i class="fa-solid fa-arrow-right-from-bracket"></i>
     </button>
   </div>
 </nav>
 
-<main class="content">
+<main class="p-4" style="background-color: #f0f0f5; min-height: calc(100vh - 54px);">
   <router-outlet />
 </main>

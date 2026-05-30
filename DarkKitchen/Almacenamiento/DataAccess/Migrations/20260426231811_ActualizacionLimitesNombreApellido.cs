@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Almacenamiento.Migrations
+namespace DataAccess.Migrations
 {
     /// <inheritdoc />
     public partial class ActualizacionLimitesNombreApellido : Migration

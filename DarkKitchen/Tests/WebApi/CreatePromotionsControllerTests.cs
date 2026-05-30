@@ -1,14 +1,13 @@
 using BusinessLogicsAbstractions.Promotions;
 using Contract.Products;
 using Contract.Promotions;
-using Contract.Users;
 using DarkKitchen.Controllers;
 using DarkKitchen.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace Pruebas.WebApi;
+namespace Tests.WebApi;
 
 [TestClass]
 public class CreatePromotionsControllerTests
@@ -65,7 +64,7 @@ public class CreatePromotionsControllerTests
         );
 
         _promotionServiceMock
-            .Setup(x => x.Create(request, It.IsAny<string>()))
+            .Setup(x => x.Create(request))
             .Returns(response);
 
         SetCurrentUser("admin@test.com");
@@ -76,7 +75,7 @@ public class CreatePromotionsControllerTests
         Assert.AreEqual(StatusCodes.Status201Created, result.StatusCode);
         Assert.AreEqual(response, result.Value);
 
-        _promotionServiceMock.Verify(x => x.Create(request, It.IsAny<string>()),
+        _promotionServiceMock.Verify(x => x.Create(request),
             Times.Once);
     }
 

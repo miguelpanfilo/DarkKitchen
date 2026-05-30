@@ -1,0 +1,21 @@
+<div class="order-card" [ngClass]="'border-' + order.status.toLowerCase()" (click)="onView()">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <span class="order-number">{{ order.orderNumber.slice(0, 10) }}</span>
+    <span class="status-badge status-{{ order.status.toLowerCase() }}">
+      {{ getStatusLabel(order.status) }}
+    </span>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-start mb-3">
+    <span class="delivery-tag">{{ order.deliveryType }}</span>
+    <div class="d-flex flex-column align-items-end">
+      <span class="order-total">${{ order.total | number:'1.2-2' }}</span>
+      <span class="order-items">{{ order.itemsCount }} {{ order.itemsCount === 1 ? 'ítem' : 'ítems' }}</span>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center order-footer">
+    <span class="order-date">{{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+    <span class="view-link">Ver detalle →</span>
+  </div>
+</div>

@@ -1,12 +1,12 @@
- import { Component, Input, Output, EventEmitter } from
-  '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
-  @Component({
-    selector: 'app-confirm-dialog',
-    imports: [],
-    templateUrl: './confirm-dialog.component.html',
-    styleUrl: './confirm-dialog.component.css'
-  })
+@Component({
+  selector: 'app-confirm-dialog',
+  imports: [CommonModule],
+  templateUrl: './confirm-dialog.component.html',
+  styleUrl: './confirm-dialog.component.css'
+})
   export class ConfirmDialogComponent {
     @Input() message = '¿Estás seguro?';
     @Input() visible = false;

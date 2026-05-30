@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CancelButtonComponent } from
@@ -8,27 +10,40 @@ import { SubmitButtonComponent } from
 import { FormCardComponent } from
   '../../../../shared/components/form-card/form-card.component';
 import { UserService } from '../../services/user.service';
+import { ChangePasswordRequest } from '../../models/change-password-request.model';
+import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
 
 @Component({
   selector: 'app-change-password-page',
-  imports: [FormsModule, CancelButtonComponent, SubmitButtonComponent,
-    FormCardComponent],
+  imports: [CommonModule, FormsModule, CancelButtonComponent, SubmitButtonComponent,
+    FormCardComponent, StatusMessagesComponent],
   templateUrl: './change-password-page.component.html',
   styleUrl: './change-password-page.component.css'
 })
-export class ChangePasswordPageComponent implements OnInit {
+export class ChangePasswordPageComponent implements OnInit, OnDestroy {
   userId = 0;
   userName = '';
   contrasenaActual = '';
   contrasenaNueva = '';
   confirmarContrasena = '';
+  isLoading: boolean = false;
   errorMessage = '';
   successMessage = '';
+  submitted = false;
+  private subs = new Subscription();
 
   constructor(private router: Router, private userService:
     UserService) { }
 
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
+
   ngOnInit() {
+    this.loadUserFromState();
+  }
+
+  private loadUserFromState(): void {
     const user =
       this.router.getCurrentNavigation()?.extras.state?.['user']
       ?? history.state?.user;
@@ -40,31 +55,39 @@ export class ChangePasswordPageComponent implements OnInit {
   }
 
   onSubmit() {
+    this.submitted = true;
     this.errorMessage = '';
     this.successMessage = '';
+
+    if (!this.contrasenaActual.trim() || !this.contrasenaNueva.trim() || !this.confirmarContrasena.trim()) {
+      return;
+    }
 
     if (this.contrasenaNueva !== this.confirmarContrasena) {
       this.errorMessage = 'Las contraseñas nuevas no coinciden.';
       return;
     }
 
-    this.userService.changePassword(this.userId,
-      this.contrasenaActual, this.contrasenaNueva).subscribe({
-        next: () => {
-          this.router.navigate(['/app/users'], {
-            state: {
-              successMessage:
-                'Contraseña cambiada exitosamente.'
-            }
-          });
-        },  
-        error: (err) => {
-          this.errorMessage = err.error?.message || 'Error al cambiar la contraseña.';
-        }
-      });
-  }
+    const request: ChangePasswordRequest = {
+      OldPassword: this.contrasenaActual,
+      NewPassword: this.contrasenaNueva
+    };
 
+    this.isLoading = true;
+    this.subs.add(this.userService.changePassword(this.userId, request).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.router.navigate(['/home/users'], {
+          state: { successMessage: 'Contraseña cambiada exitosamente.' }
+        });
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.errorMessage = err.error?.message || 'Error al cambiar la contraseña.';
+      }
+    }));
+  }
   onCancelled() {
-    this.router.navigate(['/app/users']);
+    this.router.navigate(['/home/users']);
   }
 }

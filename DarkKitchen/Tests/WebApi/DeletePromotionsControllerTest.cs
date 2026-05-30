@@ -1,12 +1,11 @@
 using BusinessLogicsAbstractions.Promotions;
-using Contract.Users;
 using DarkKitchen.Controllers;
 using DarkKitchen.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace Pruebas.WebApi;
+namespace Tests.WebApi;
 [TestClass]
 public class DeletePromotionsControllerTest
 {
@@ -42,7 +41,7 @@ public class DeletePromotionsControllerTest
     public void Delete_WhenAdmin_ShouldReturn204()
     {
         _promotionServiceMock
-            .Setup(x => x.Delete(1, It.IsAny<string>()));
+            .Setup(x => x.Delete(1));
 
         SetCurrentUser("admin@test.com");
         var result = _controller.Delete(1) as NoContentResult;
@@ -50,7 +49,7 @@ public class DeletePromotionsControllerTest
         Assert.IsNotNull(result);
         Assert.AreEqual(StatusCodes.Status204NoContent, result.StatusCode);
 
-        _promotionServiceMock.Verify(x => x.Delete(1, It.IsAny<string>()), Times.Once);
+        _promotionServiceMock.Verify(x => x.Delete(1), Times.Once);
     }
 
     [TestMethod]

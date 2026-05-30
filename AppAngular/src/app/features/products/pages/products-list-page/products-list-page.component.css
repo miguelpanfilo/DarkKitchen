@@ -1,0 +1,53 @@
+.products-container {
+  padding: 2rem;
+}
+
+h1 {
+  color: #1a1a2e;
+  margin: 0;
+}
+
+.filters {
+  background: #f5f5f0;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+label {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+input {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  outline: none;
+  font-family: inherit;
+  width: 200px;
+}
+
+input:focus {
+  border-color: #2c2c54;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.empty {
+  color: #999;
+  text-align: center;
+  margin-top: 2rem;
+}

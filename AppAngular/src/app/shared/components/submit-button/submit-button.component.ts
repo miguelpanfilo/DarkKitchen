@@ -8,4 +8,5 @@
   })
   export class SubmitButtonComponent {
     @Input() label = 'Aceptar';
+    @Input() disabled = false;
   }
