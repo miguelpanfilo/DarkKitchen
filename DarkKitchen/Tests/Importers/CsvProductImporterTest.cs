@@ -25,4 +25,16 @@ public class CsvProductImporterTest
         result[0].Code.Should().Be("CSV001");
         result[0].Name.Should().Be("Tarta de Espinaca");
     }
+
+    [TestMethod]
+    public void Import_WhenStreamIsEmpty_ShouldReturnEmptyList()
+    {
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(""));
+
+        var importer = new CsvImporter();
+
+        var result = importer.Import(stream);
+
+        result.Should().BeEmpty();
+    }
 }
