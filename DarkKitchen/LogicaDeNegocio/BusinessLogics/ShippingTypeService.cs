@@ -1,5 +1,4 @@
-using BusinessLogics.Shared;
-using BusinessLogicsAbstractions.Exceptions;
+﻿using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.ShippingTypes;
 using Contract.ShippingTypes;
 using DataAccessAbstractions;
@@ -7,7 +6,7 @@ using Domain;
 using Domain.Exceptions;
 using Mappers;
 
-namespace BusinessLogics.Shipping;
+namespace BusinessLogics;
 
 public class ShippingTypeService(IShippingTypeRepository shippingTypeRepository) : IShippingTypeService
 {

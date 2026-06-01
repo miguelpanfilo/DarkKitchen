@@ -1,10 +1,10 @@
-using BusinessLogicsAbstractions.Exceptions;
+﻿using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.Orders;
 using BusinessLogicsAbstractions.Products;
 using BusinessLogicsAbstractions.Promotions;
 using Contract.Orders;
 
-namespace BusinessLogics.Orders;
+namespace BusinessLogics;
 
 public class OrderItemResolver(
     IProductService productService,

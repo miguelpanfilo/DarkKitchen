@@ -1,7 +1,7 @@
-using BusinessLogicsAbstractions.Users;
+﻿using BusinessLogicsAbstractions.Users;
 using DataAccessAbstractions;
 
-namespace BusinessLogics.Users;
+namespace BusinessLogics;
 
 public class DeleteUserService(
     IRepositoryUser repositoryUsers,

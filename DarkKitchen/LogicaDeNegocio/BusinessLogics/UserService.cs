@@ -1,7 +1,7 @@
-using BusinessLogicsAbstractions.Users;
+﻿using BusinessLogicsAbstractions.Users;
 using Contract.Users;
 
-namespace BusinessLogics.Users;
+namespace BusinessLogics;
 
 public class UserService(
     ISignUpUserService signUpUserService,

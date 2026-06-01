@@ -1,10 +1,10 @@
-using BusinessLogicsAbstractions.Exceptions;
+﻿using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.Users;
 using Contract.Users;
 using DataAccessAbstractions;
 using Domain;
 
-namespace BusinessLogics.Users;
+namespace BusinessLogics;
 
 public class LoginService(
     IRepositoryUser repoUsuario,

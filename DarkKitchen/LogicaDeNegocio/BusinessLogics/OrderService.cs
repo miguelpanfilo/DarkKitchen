@@ -1,10 +1,10 @@
-using BusinessLogicsAbstractions.Exceptions;
+﻿using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.Orders;
 using Contract.Orders;
 using DataAccessAbstractions;
 using Domain;
 using Domain.Exceptions;
-namespace BusinessLogics.Orders;
+namespace BusinessLogics;
 public class OrderService(IOrderRepository orderRepository) : IOrderService
 {
     private readonly IOrderRepository _orderRepository = orderRepository;

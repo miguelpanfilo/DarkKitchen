@@ -1,4 +1,4 @@
-using BusinessLogics.Shipping;
+﻿using BusinessLogics;
 using BusinessLogicsAbstractions.Exceptions;
 using Contract.ShippingTypes;
 using DataAccessAbstractions;

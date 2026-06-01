@@ -1,5 +1,4 @@
-using BusinessLogics.Shared;
-using BusinessLogicsAbstractions;
+﻿using BusinessLogicsAbstractions;
 using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.Promotions;
 using Contract.Promotions;
@@ -8,7 +7,7 @@ using Domain;
 using Domain.Exceptions;
 using Mappers;
 
-namespace BusinessLogics.Promotions;
+namespace BusinessLogics;
 
 public class PromotionService : IPromotionService
 {

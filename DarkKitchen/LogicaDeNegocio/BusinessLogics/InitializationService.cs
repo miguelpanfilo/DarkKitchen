@@ -1,8 +1,8 @@
-using BusinessLogicsAbstractions.Users;
+﻿using BusinessLogicsAbstractions.Users;
 using DataAccessAbstractions;
 using Domain;
 
-namespace BusinessLogics.Initialization;
+namespace BusinessLogics;
 
 public class InitializationService : IInitializationService
 {

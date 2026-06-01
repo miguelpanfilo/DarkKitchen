@@ -1,11 +1,11 @@
-using BusinessLogicsAbstractions.Exceptions;
+﻿using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.Reports;
 using Contract.Reports;
 using DataAccessAbstractions;
 using Domain;
 using Mappers;
 
-namespace BusinessLogics.Reports;
+namespace BusinessLogics;
 
 public class ReportService(IOrderRepository orderRepository) : IReportService
 {

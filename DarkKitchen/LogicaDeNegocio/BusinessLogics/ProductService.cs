@@ -1,5 +1,4 @@
-using BusinessLogics.Shared;
-using BusinessLogicsAbstractions;
+﻿using BusinessLogicsAbstractions;
 using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.Products;
 using Contract.Importers;
@@ -9,7 +8,7 @@ using Domain;
 using Domain.Exceptions;
 using Mappers;
 
-namespace BusinessLogics.Products;
+namespace BusinessLogics;
 
 public class ProductService : IProductService, IProductCreatorService
 {

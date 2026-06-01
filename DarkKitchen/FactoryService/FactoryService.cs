@@ -1,13 +1,4 @@
-using BusinessLogics;
-using BusinessLogics.Initialization;
-using BusinessLogics.Orders;
-using BusinessLogics.Products;
-using BusinessLogics.Promotions;
-using BusinessLogics.Reports;
-using BusinessLogics.Sessions;
-using BusinessLogics.Shared;
-using BusinessLogics.Shipping;
-using BusinessLogics.Users;
+﻿using BusinessLogics;
 using BusinessLogicsAbstractions;
 using BusinessLogicsAbstractions.Imports;
 using BusinessLogicsAbstractions.Orders;

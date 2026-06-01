@@ -1,6 +1,6 @@
-using BusinessLogicsAbstractions.Users;
+﻿using BusinessLogicsAbstractions.Users;
 
-namespace BusinessLogics.Shared;
+namespace BusinessLogics;
 
 public class PhoneValidatorUruguay : IPhoneValidator
 {

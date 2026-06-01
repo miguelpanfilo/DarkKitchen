@@ -1,5 +1,4 @@
-using BusinessLogics.Shared;
-using BusinessLogicsAbstractions.Exceptions;
+﻿using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.Orders;
 using Contract.Orders;
 using DataAccessAbstractions;
@@ -7,7 +6,7 @@ using Domain;
 using Domain.Exceptions;
 using Mappers;
 
-namespace BusinessLogics.Orders;
+namespace BusinessLogics;
 
 public class OrderFacade(
     IOrderService orderService,

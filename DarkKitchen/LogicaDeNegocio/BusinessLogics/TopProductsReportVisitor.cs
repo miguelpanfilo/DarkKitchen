@@ -1,7 +1,7 @@
-using Contract.Reports;
+﻿using Contract.Reports;
 using Domain;
 
-namespace BusinessLogics.Reports;
+namespace BusinessLogics;
 
 public class TopProductsReportVisitor : IReportVisitor
 {

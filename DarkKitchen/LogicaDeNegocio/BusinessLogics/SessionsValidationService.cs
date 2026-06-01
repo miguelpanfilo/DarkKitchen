@@ -1,11 +1,11 @@
-using BusinessLogicsAbstractions.Exceptions;
+﻿using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.Users;
 using Contract.Users;
 using DataAccessAbstractions;
 using Domain;
 using Mappers;
 
-namespace BusinessLogics.Sessions;
+namespace BusinessLogics;
 
 public class SessionsValidationService(
     IRepositorySession repositorySession,

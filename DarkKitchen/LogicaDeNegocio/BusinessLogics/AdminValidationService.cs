@@ -1,9 +1,9 @@
-using BusinessLogicsAbstractions.Exceptions;
+﻿using BusinessLogicsAbstractions.Exceptions;
 using BusinessLogicsAbstractions.Users;
 using DataAccessAbstractions;
 using Domain;
 
-namespace BusinessLogics.Users;
+namespace BusinessLogics;
 
 public class AdminValidationService(IRepositoryUser repositoryUser) : IAdminValidationService
 {

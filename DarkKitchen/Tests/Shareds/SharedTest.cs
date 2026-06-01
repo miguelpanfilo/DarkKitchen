@@ -1,4 +1,4 @@
-using BusinessLogics.Shared;
+﻿using BusinessLogics;
 using BusinessLogicsAbstractions.Exceptions;
 using Domain.Exceptions;
 

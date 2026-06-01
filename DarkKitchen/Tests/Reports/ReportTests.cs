@@ -1,5 +1,5 @@
+﻿using BusinessLogics;
 using System.Data.Common;
-using BusinessLogics.Reports;
 using BusinessLogicsAbstractions.Exceptions;
 using DataAccess;
 using DataAccess.Repositories;

@@ -1,6 +1,6 @@
-using BusinessLogicsAbstractions.Exceptions;
+﻿using BusinessLogicsAbstractions.Exceptions;
 
-namespace BusinessLogics.Shared;
+namespace BusinessLogics;
 
 public static class ServiceExceptionHandler
 {

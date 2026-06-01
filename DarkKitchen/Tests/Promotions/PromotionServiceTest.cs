@@ -1,4 +1,4 @@
-using BusinessLogics.Promotions;
+﻿using BusinessLogics;
 using BusinessLogicsAbstractions;
 using BusinessLogicsAbstractions.Exceptions;
 using Contract.Promotions;

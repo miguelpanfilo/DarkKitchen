@@ -1,9 +1,9 @@
-using Contract.Products;
+﻿using Contract.Products;
 using DataAccessAbstractions;
 using Domain;
 using Domain.Exceptions;
 
-namespace BusinessLogics.Products;
+namespace BusinessLogics;
 
 public class ProductPhotoService
 {

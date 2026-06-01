@@ -1,10 +1,10 @@
-using BusinessLogicsAbstractions.Users;
+﻿using BusinessLogicsAbstractions.Users;
 using Contract.Users;
 using DataAccessAbstractions;
 using Domain;
 using Mappers;
 
-namespace BusinessLogics.Users;
+namespace BusinessLogics;
 
 public class FilterUserService(
     IRepositoryUser repositoryUsers,
