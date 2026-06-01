@@ -88,10 +88,11 @@ public class PromotionService : IPromotionService
     {
         var promotion = GetExistingPromotion(promotionId);
 
-        var hasChanges = promotionPatchDto.Name != null
-            || promotionPatchDto.DiscountPercentage != null
-            || promotionPatchDto.StartDate != null
-            || promotionPatchDto.EndDate != null;
+        var hasChanges =
+            (promotionPatchDto.Name != null && promotionPatchDto.Name != promotion.Name)
+            || (promotionPatchDto.DiscountPercentage != null && promotionPatchDto.DiscountPercentage != promotion.DiscountPercentage)
+            || (promotionPatchDto.StartDate != null && promotionPatchDto.StartDate != promotion.StartDate)
+            || (promotionPatchDto.EndDate != null && promotionPatchDto.EndDate != promotion.EndDate);
 
         if (!hasChanges)
         {
