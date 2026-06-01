@@ -1,4 +1,5 @@
 using System.Text;
+using BusinessLogicsAbstractions;
 using FluentAssertions;
 using ProductImporters;
 
@@ -72,5 +73,23 @@ public class CsvProductImporterTest
 
         result.Should().HaveCount(2);
         result[1].Code.Should().Be("CSV002");
+    }
+
+    [TestMethod]
+    public void Import_WhenCsvIsMalformed_ShouldThrowValidationException()
+    {
+        var csv = """
+                  code;name;description;commercialLine;category;price;photoPaths
+                  MALFORMED_LINE_SIN_COLUMNAS
+                  """;
+
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(csv));
+
+        var importer = new CsvImporter();
+
+        var act = () => importer.Import(stream);
+
+        act.Should().Throw<ValidationException>()
+            .WithMessage("El archivo CSV tiene un formato inválido");
     }
 }
