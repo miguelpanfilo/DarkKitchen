@@ -10,21 +10,28 @@ public class CsvImporter : IProductImporter
 
     public List<ImportedProductDto> Import(Stream fileStream)
     {
-        using var reader = new StreamReader(fileStream);
-        var lines = reader.ReadToEnd()
-            .Split('\n', StringSplitOptions.RemoveEmptyEntries)
-            .Select(l => l.Trim())
-            .Where(l => !string.IsNullOrWhiteSpace(l))
-            .ToList();
-
-        if (lines.Count == 0)
+        try
         {
-            return [];
+            using var reader = new StreamReader(fileStream);
+            var lines = reader.ReadToEnd()
+                .Split('\n', StringSplitOptions.RemoveEmptyEntries)
+                .Select(l => l.Trim())
+                .Where(l => !string.IsNullOrWhiteSpace(l))
+                .ToList();
+
+            if (lines.Count == 0)
+            {
+                return [];
+            }
+
+            lines.RemoveAt(0);
+
+            return lines.Select(ParseLine).ToList();
         }
-
-        lines.RemoveAt(0);
-
-        return lines.Select(ParseLine).ToList();
+        catch (Exception ex) when (ex is IndexOutOfRangeException or FormatException)
+        {
+            throw new ValidationException("El archivo CSV tiene un formato inválido");
+        }
     }
 
     private static ImportedProductDto ParseLine(string line)
