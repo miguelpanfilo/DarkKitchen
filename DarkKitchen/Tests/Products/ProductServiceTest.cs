@@ -1,9 +1,6 @@
-using BusinessLogics.Products;
-using BusinessLogics.Promotions;
+﻿using BusinessLogics;
 using BusinessLogicsAbstractions;
-using BusinessLogicsAbstractions.Exceptions;
-using Contract.Products;
-using Contract.Promotions;
+using Contract;
 using DataAccessAbstractions;
 using Domain;
 using Domain.Builders;
@@ -1142,13 +1139,14 @@ public class ProductServiceTest
         var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
         var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
 
-        var date = new DateOnly(2026, 1, 26);
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var date = today.AddDays(5);
 
         var promotion = Promotion.MakePromotion(
             "Promo Mixta",
             10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
+            today.AddDays(3),
+            today.AddDays(10)
         );
         promotion.AssociateProduct(100);
         promotion.AssociateProduct(200);

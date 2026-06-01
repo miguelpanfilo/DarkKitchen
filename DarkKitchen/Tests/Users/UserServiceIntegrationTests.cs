@@ -1,6 +1,6 @@
-using BusinessLogics.Users;
-using BusinessLogicsAbstractions.Users;
-using Contract.Users;
+﻿using BusinessLogics;
+using BusinessLogicsAbstractions;
+using Contract;
 using Moq;
 
 namespace Tests.Users;
@@ -50,7 +50,7 @@ public class UserServiceIntegrationTests
         var deleteUserServiceMock = new Mock<IDeleteUserService>(MockBehavior.Strict);
         var filterUserServiceMock = new Mock<IFilterUserService>(MockBehavior.Strict);
 
-        var request = new SingUpInternUserRequestDTO
+        var request = new SignUpInternUserRequestDTO
         {
             Name = "Juan",
             LastName = "Perez",

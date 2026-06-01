@@ -1,6 +1,6 @@
-using BusinessLogics.Shipping;
-using BusinessLogicsAbstractions.Exceptions;
-using Contract.ShippingTypes;
+﻿using BusinessLogics;
+using BusinessLogicsAbstractions;
+using Contract;
 using DataAccessAbstractions;
 using Domain;
 using Moq;

@@ -110,9 +110,8 @@ public class Order
 
     private void CalculateTotals()
     {
-        const decimal VatRate = 1.22m;
         Subtotal = Items.Sum(i => i.LineTotal);
-        Total = (Subtotal + ShippingCost) * VatRate;
+        Total = (Subtotal + ShippingCost) * TaxPolicy.VatRate;
     }
 
     private void TransitionTo(OrderStatus newStatus)

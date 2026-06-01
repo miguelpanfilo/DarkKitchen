@@ -23,11 +23,8 @@ public class Promotion
         DateOnly endDate)
     {
         ValidateName(name);
-
         ValidatePercentage(discountPercentage);
-
         ValidateDateRange(startDate, endDate);
-
         Name = name;
         DiscountPercentage = discountPercentage;
         StartDate = startDate;
@@ -40,6 +37,7 @@ public class Promotion
         DateOnly startDate,
         DateOnly endDate)
     {
+        ValidateEndDateNotInPast(endDate);
         return new Promotion(name, discountPercentage, startDate, endDate);
     }
 
@@ -96,7 +94,9 @@ public class Promotion
         PromotionProducts.Remove(promotionProduct);
     }
 
-    private void ValidateName(string name)
+    private static DateOnly Today() => DateOnly.FromDateTime(DateTime.Now);
+
+    private static void ValidateName(string name)
     {
         if(string.IsNullOrWhiteSpace(name))
         {
@@ -104,7 +104,7 @@ public class Promotion
         }
     }
 
-    private void ValidatePercentage(decimal discountPercentage)
+    private static void ValidatePercentage(decimal discountPercentage)
     {
         if(discountPercentage is < MinPercentage or > MaxPercentage)
         {
@@ -112,7 +112,7 @@ public class Promotion
         }
     }
 
-    private void ValidateDateRange(DateOnly startDate, DateOnly endDate)
+    private static void ValidateDateRange(DateOnly startDate, DateOnly endDate)
     {
         if (startDate > endDate)
         {
@@ -120,11 +120,17 @@ public class Promotion
         }
     }
 
+    private static void ValidateEndDateNotInPast(DateOnly endDate)
+    {
+        if (endDate < Today())
+        {
+            throw new PromotionException("La fecha de fin de la promoción no puede ser anterior a hoy");
+        }
+    }
+
     private void ValidateNotExpired()
     {
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
-
-        if (EndDate < today)
+        if (EndDate < Today())
         {
             throw new PromotionException("La promoción expiró, no se puede modificar");
         }

@@ -1,5 +1,4 @@
-using Contract.Orders;
-using Contract.Reports;
+﻿using Contract;
 using Domain;
 
 namespace Mappers;
@@ -35,7 +34,7 @@ public static class OrderMapper
         };
     }
 
-    private const decimal VatPercentage = 22m;
+    private const decimal VatPercentage = TaxPolicy.VatPercentage;
 
     private static decimal CalculateIva(Order order)
     {

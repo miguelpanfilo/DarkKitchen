@@ -1,5 +1,5 @@
+﻿using BusinessLogics;
 using System.Data.Common;
-using BusinessLogics.Reports;
 using DataAccess;
 using DataAccess.Repositories;
 using Domain;

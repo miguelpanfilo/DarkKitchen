@@ -1,9 +1,6 @@
-using BusinessLogics.Orders;
-using BusinessLogicsAbstractions.Exceptions;
-using BusinessLogicsAbstractions.Products;
-using BusinessLogicsAbstractions.Promotions;
-using Contract.Orders;
-using Contract.Products;
+﻿using BusinessLogics;
+using BusinessLogicsAbstractions;
+using Contract;
 using FluentAssertions;
 using Moq;
 

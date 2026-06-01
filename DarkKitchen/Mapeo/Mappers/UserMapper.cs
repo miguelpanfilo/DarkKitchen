@@ -1,4 +1,4 @@
-using Contract.Users;
+﻿using Contract;
 using Domain;
 
 namespace Mappers;
@@ -6,7 +6,7 @@ namespace Mappers;
 public static class UserMapper
 {
     public static Result<User> MappingDTOToInternUser(
-        this SingUpInternUserRequestDTO requestDto,
+        this SignUpInternUserRequestDTO requestDto,
         Phone phone,
         UserRoles role)
     {
@@ -21,10 +21,7 @@ public static class UserMapper
 
     public static UserResponseDTO MappingUserToResponseDTO(this User user)
     {
-        if(user == null)
-        {
-            throw new ArgumentNullException(nameof(user), "User cannot be null");
-        }
+        ArgumentNullException.ThrowIfNull(user);
 
         return new UserResponseDTO
         {

@@ -1,6 +1,5 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using BusinessLogicsAbstractions;
-using BusinessLogicsAbstractions.Users;
 using DarkKitchen.Services;
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
@@ -39,8 +38,11 @@ public static class ApplicationInitializationExtensions
 
         foreach (var (table, maxId) in tables)
         {
-            context.Database.ExecuteSqlRaw(
-                $"DBCC CHECKIDENT ('{table}', RESEED, {maxId})");
+            if (maxId > 0)
+            {
+                context.Database.ExecuteSqlRaw(
+                    $"DBCC CHECKIDENT ('{table}', RESEED, {maxId})");
+            }
         }
     }
 

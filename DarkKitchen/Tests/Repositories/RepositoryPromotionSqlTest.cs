@@ -151,8 +151,9 @@ public class RepositoryPromotionSqlTest
 
         var repository = new PromotionRepository(context);
 
-        var p1 = Promotion.MakePromotion("Promo1", 10, new DateOnly(2026,1,1), new DateOnly(2026,1,10));
-        var p2 = Promotion.MakePromotion("Promo2", 20, new DateOnly(2026,2,1), new DateOnly(2026,2,10));
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var p1 = Promotion.MakePromotion("Promo1", 10, today.AddDays(1), today.AddDays(10));
+        var p2 = Promotion.MakePromotion("Promo2", 20, today.AddDays(1), today.AddDays(10));
 
         context.Promotions.AddRange(p1, p2);
         context.SaveChanges();

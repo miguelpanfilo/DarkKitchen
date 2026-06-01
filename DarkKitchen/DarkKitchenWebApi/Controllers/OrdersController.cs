@@ -1,6 +1,5 @@
-using BusinessLogicsAbstractions.Orders;
-using Contract.Orders;
-using Contract.Users;
+﻿using BusinessLogicsAbstractions;
+using Contract;
 using DarkKitchen.Filters;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,8 +11,7 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
 {
     private readonly IOrderFacade _orderFacade = orderFacade;
 
-    private CurrentUserDto CurrentUser =>
-        (CurrentUserDto)HttpContext.Items["CurrentUser"]!;
+    private CurrentUserDto CurrentUser => (CurrentUserDto)HttpContext.Items["CurrentUser"]!;
 
   [HttpPost]
     [RoleAuthorization(UserRolesDto.Client)]
@@ -181,9 +179,8 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
             });
     }
 
-// solo un preparador puede pooner delay, SACARLO ANTES DEL RELEASE
     [HttpPut("{id:int}/delay")]
-    [RoleAuthorization(UserRolesDto.Preparer, UserRolesDto.Administrative)]
+    [RoleAuthorization(UserRolesDto.Preparer)]
     public IActionResult Delay(int id)
     {
         _orderFacade.Delay(id);

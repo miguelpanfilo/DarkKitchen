@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfImportedProductDto>
+  <ImportedProductDto>
+    <Code>MILAN001</Code>
+    <Name>Milanesa Napolitana</Name>
+    <Description>Milanesa con salsa y queso</Description>
+    <CommercialLine>Casera</CommercialLine>
+    <Category>Comidas</Category>
+    <Price>480.00</Price>
+    <PhotoPaths>
+      <string>C:\Users\migue\OneDrive\Escritorio\OBLIGATORIO DISEÑO\OBLIG NUEVO\255968_307265_329136\DarkKitchen\Importers\SampleImports\sample.jpg</string>
+    </PhotoPaths>
+  </ImportedProductDto>
+  <ImportedProductDto>
+    <Code>EMPAN001</Code>
+    <Name>Empanada de Carne</Name>
+    <Description>Empanada jugosa al horno</Description>
+    <CommercialLine>Casera</CommercialLine>
+    <Category>Entradas</Category>
+    <Price>120.00</Price>
+    <PhotoPaths>
+      <string>C:\Users\migue\OneDrive\Escritorio\OBLIGATORIO DISEÑO\OBLIG NUEVO\255968_307265_329136\DarkKitchen\Importers\SampleImports\sample.jpg</string>
+    </PhotoPaths>
+  </ImportedProductDto>
+</ArrayOfImportedProductDto>

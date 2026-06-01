@@ -1,5 +1,4 @@
-using Contract.Products;
-using Contract.Promotions;
+﻿using Contract;
 using Domain;
 
 namespace Mappers;

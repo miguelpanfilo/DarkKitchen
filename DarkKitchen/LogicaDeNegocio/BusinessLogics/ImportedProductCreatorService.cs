@@ -1,8 +1,5 @@
-using BusinessLogicsAbstractions;
-using BusinessLogicsAbstractions.Imports;
-using BusinessLogicsAbstractions.Products;
-using Contract.Importers;
-using Contract.Products;
+﻿using BusinessLogicsAbstractions;
+using Contract;
 
 namespace BusinessLogics;
 

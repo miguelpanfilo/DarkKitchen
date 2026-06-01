@@ -1,6 +1,5 @@
-using BusinessLogicsAbstractions.Orders;
-using Contract.Orders;
-using Contract.Users;
+﻿using BusinessLogicsAbstractions;
+using Contract;
 using DarkKitchen.Controllers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;

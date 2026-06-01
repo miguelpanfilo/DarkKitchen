@@ -20,13 +20,15 @@ public class PromotionTest
             .Build();
     }
 
+    private static DateOnly Today() => DateOnly.FromDateTime(DateTime.Now);
+
     private Promotion CreateValidPromotion()
     {
         return Promotion.MakePromotion(
             "Black Friday",
             10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
+            Today().AddDays(5),
+            Today().AddDays(10)
         );
     }
 
@@ -36,8 +38,8 @@ public class PromotionTest
         var promotion = Promotion.MakePromotion(
             "Black Friday",
             10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30));
+            Today().AddDays(5),
+            Today().AddDays(10));
 
         var ex = Assert.ThrowsException<PromotionException>(() => promotion.DisassociateProduct(100));
 
@@ -74,9 +76,10 @@ public class PromotionTest
         var promotion = Promotion.MakePromotion(
             "Black Friday",
             20,
-            new DateOnly(2025, 11, 1),
-            new DateOnly(2025, 11, 30)
+            Today().AddDays(5),
+            Today().AddDays(10)
         );
+        promotion.UpdateDates(Today().AddDays(-10), Today().AddDays(-1));
 
         var ex = Assert.ThrowsException<PromotionException>(() =>
             promotion.UpdateName("Cyber Monday"));
@@ -90,9 +93,10 @@ public class PromotionTest
         var promotion = Promotion.MakePromotion(
             "Black Friday",
             20,
-            new DateOnly(2025, 11, 1),
-            new DateOnly(2025, 11, 30)
+            Today().AddDays(5),
+            Today().AddDays(10)
         );
+        promotion.UpdateDates(Today().AddDays(-10), Today().AddDays(-1));
 
         var ex = Assert.ThrowsException<PromotionException>(() =>
             promotion.UpdateDiscountPercentage(30));

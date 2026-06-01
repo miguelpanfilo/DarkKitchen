@@ -1,6 +1,6 @@
-using System.Security.Claims;
-using BusinessLogicsAbstractions.Users;
-using Contract.Users;
+﻿using System.Security.Claims;
+using BusinessLogicsAbstractions;
+using Contract;
 using DarkKitchen.Filters;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,7 +14,7 @@ public class UsersController(IUserService userService) : ControllerBase
 
     [RoleAuthorization(UserRolesDto.Administrative)]
     [HttpPost]
-    public IActionResult CreateInternalUser([FromBody] SingUpInternUserRequestDTO request)
+    public IActionResult CreateInternalUser([FromBody] SignUpInternUserRequestDTO request)
     {
         var loggedUserId = GetLoggedUserId();
         if(loggedUserId == null)

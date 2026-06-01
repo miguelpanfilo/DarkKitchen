@@ -1,5 +1,5 @@
-using BusinessLogicsAbstractions.Reports;
-using Contract.Reports;
+﻿using BusinessLogicsAbstractions;
+using Contract;
 using DarkKitchen.Controllers;
 using DarkKitchen.Filters;
 using Microsoft.AspNetCore.Mvc;

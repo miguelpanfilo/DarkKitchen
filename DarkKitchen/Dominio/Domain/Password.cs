@@ -5,8 +5,8 @@ namespace Domain;
 
 public sealed class Password
 {
-    private const int MinLenght = 15;
-    private const int MaxLenght = 25;
+    private const int MinLength = 15;
+    private const int MaxLength = 25;
 
     public string Hash { get; private set; }
 
@@ -27,7 +27,7 @@ public sealed class Password
             return false;
         }
 
-        if(password.Length < MinLenght || password.Length > MaxLenght)
+        if(password.Length < MinLength || password.Length > MaxLength)
         {
             return false;
         }

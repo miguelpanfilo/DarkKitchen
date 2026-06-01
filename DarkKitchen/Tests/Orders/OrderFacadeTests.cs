@@ -1,7 +1,6 @@
-using BusinessLogics.Orders;
-using BusinessLogicsAbstractions.Exceptions;
-using BusinessLogicsAbstractions.Orders;
-using Contract.Orders;
+﻿using BusinessLogics;
+using BusinessLogicsAbstractions;
+using Contract;
 using DataAccessAbstractions;
 using Domain;
 using Domain.Exceptions;

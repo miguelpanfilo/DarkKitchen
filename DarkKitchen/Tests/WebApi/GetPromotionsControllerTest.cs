@@ -1,6 +1,5 @@
-using BusinessLogicsAbstractions.Promotions;
-using Contract.Products;
-using Contract.Promotions;
+﻿using BusinessLogicsAbstractions;
+using Contract;
 using DarkKitchen.Controllers;
 using DarkKitchen.Filters;
 using Microsoft.AspNetCore.Mvc;
