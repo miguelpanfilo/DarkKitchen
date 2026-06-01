@@ -37,4 +37,21 @@ public class CsvProductImporterTest
 
         result.Should().BeEmpty();
     }
+
+    [TestMethod]
+    public void Import_WhenProductHasMultiplePhotos_ShouldParseAllPaths()
+    {
+        var csv = """
+                  code,name,description,commercialLine,category,price,photoPaths
+                  CSV003,Milanesa,Milanesa napolitana,Casera,Comidas,180.00,C:\photos\mil1.jpg|C:\photos\mil2.jpg
+                  """;
+
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(csv));
+
+        var importer = new CsvImporter();
+
+        var result = importer.Import(stream);
+
+        result[0].PhotoPaths.Should().HaveCount(2);
+    }
 }
