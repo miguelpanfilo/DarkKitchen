@@ -54,4 +54,23 @@ public class CsvProductImporterTest
 
         result[0].PhotoPaths.Should().HaveCount(2);
     }
+
+    [TestMethod]
+    public void Import_WhenCsvHasMultipleProducts_ShouldReturnAllProducts()
+    {
+        var csv = """
+                  code,name,description,commercialLine,category,price,photoPaths
+                  CSV001,Tarta de Espinaca,Tarta casera,Casera,Comidas,200.00,C:\photos\tarta.jpg
+                  CSV002,Empanada de Carne,Empanada casera,Casera,Comidas,150.00,C:\photos\empanada.jpg
+                  """;
+
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(csv));
+
+        var importer = new CsvImporter();
+
+        var result = importer.Import(stream);
+
+        result.Should().HaveCount(2);
+        result[1].Code.Should().Be("CSV002");
+    }
 }
