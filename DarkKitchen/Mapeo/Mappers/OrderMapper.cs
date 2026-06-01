@@ -1,5 +1,4 @@
-using Contract.Orders;
-using Contract.Reports;
+﻿using Contract;
 using Domain;
 
 namespace Mappers;

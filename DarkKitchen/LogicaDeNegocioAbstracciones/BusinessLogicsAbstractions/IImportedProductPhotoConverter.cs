@@ -1,4 +1,4 @@
-﻿using Contract.Products;
+﻿using Contract;
 
 namespace BusinessLogicsAbstractions;
 

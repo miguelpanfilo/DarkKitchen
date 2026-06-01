@@ -1,6 +1,6 @@
 ﻿using BusinessLogics;
 using BusinessLogicsAbstractions;
-using Contract.Users;
+using Contract;
 using DarkKitchen.Controllers;
 using DataAccessAbstractions;
 using Domain;

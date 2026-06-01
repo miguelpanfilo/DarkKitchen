@@ -1,6 +1,6 @@
 ﻿using BusinessLogics;
 using BusinessLogicsAbstractions;
-using Contract.Importers;
+using Contract;
 using FluentAssertions;
 using Moq;
 

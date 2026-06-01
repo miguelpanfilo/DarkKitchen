@@ -1,4 +1,4 @@
-﻿using Contract.Products;
+﻿using Contract;
 using DataAccessAbstractions;
 using Domain;
 using Domain.Exceptions;

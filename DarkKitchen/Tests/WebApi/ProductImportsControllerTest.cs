@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 using BusinessLogicsAbstractions;
-using Contract.Importers;
+using Contract;
 using DarkKitchen.Controllers;
 using DarkKitchen.Filters;
 using FluentAssertions;

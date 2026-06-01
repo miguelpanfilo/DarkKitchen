@@ -1,5 +1,5 @@
 ﻿using BusinessLogicsAbstractions;
-using Contract.Users;
+using Contract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

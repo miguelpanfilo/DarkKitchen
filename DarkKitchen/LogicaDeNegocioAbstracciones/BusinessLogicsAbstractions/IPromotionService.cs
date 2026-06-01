@@ -1,4 +1,4 @@
-﻿using Contract.Promotions;
+﻿using Contract;
 
 namespace BusinessLogicsAbstractions;
 

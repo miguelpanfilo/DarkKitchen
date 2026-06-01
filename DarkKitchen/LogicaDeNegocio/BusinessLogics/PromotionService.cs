@@ -1,5 +1,5 @@
 ﻿using BusinessLogicsAbstractions;
-using Contract.Promotions;
+using Contract;
 using DataAccessAbstractions;
 using Domain;
 using Domain.Exceptions;

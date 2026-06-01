@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 using BusinessLogicsAbstractions;
-using Contract.Importers;
+using Contract;
 
 namespace ProductImporters;
 

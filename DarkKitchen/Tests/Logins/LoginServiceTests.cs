@@ -1,6 +1,6 @@
 ﻿using BusinessLogics;
 using BusinessLogicsAbstractions;
-using Contract.Users;
+using Contract;
 using DataAccess.Repositories;
 using DataAccessAbstractions;
 using Domain;

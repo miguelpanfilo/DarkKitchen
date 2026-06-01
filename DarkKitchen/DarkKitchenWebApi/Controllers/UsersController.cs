@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 using BusinessLogicsAbstractions;
-using Contract.Users;
+using Contract;
 using DarkKitchen.Filters;
 using Microsoft.AspNetCore.Mvc;
 

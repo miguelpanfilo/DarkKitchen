@@ -1,4 +1,4 @@
-using Contract.Products;
+﻿using Contract;
 using Domain;
 using Domain.Builders;
 

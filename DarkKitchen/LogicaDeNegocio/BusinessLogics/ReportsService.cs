@@ -1,5 +1,5 @@
 ﻿using BusinessLogicsAbstractions;
-using Contract.Reports;
+using Contract;
 using DataAccessAbstractions;
 using Domain;
 using Mappers;

@@ -1,4 +1,4 @@
-using Contract.ShippingTypes;
+﻿using Contract;
 using Domain;
 
 namespace Mappers;

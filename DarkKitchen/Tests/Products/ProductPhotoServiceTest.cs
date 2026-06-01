@@ -1,5 +1,5 @@
 ﻿using BusinessLogics;
-using Contract.Products;
+using Contract;
 using DataAccessAbstractions;
 using Domain.Exceptions;
 using Moq;

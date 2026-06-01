@@ -1,4 +1,4 @@
-﻿using Contract.Importers;
+﻿using Contract;
 
 namespace BusinessLogicsAbstractions;
 

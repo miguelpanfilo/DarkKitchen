@@ -1,5 +1,5 @@
 ﻿using BusinessLogicsAbstractions;
-using Contract.Users;
+using Contract;
 
 namespace BusinessLogics;
 

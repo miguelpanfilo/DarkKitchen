@@ -1,5 +1,5 @@
-using System.Security.Claims;
-using Contract.Users;
+﻿using System.Security.Claims;
+using Contract;
 using DarkKitchen.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

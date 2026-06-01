@@ -1,4 +1,4 @@
-﻿using Contract.Orders;
+﻿using Contract;
 
 namespace BusinessLogicsAbstractions;
 

@@ -1,6 +1,5 @@
 ﻿using BusinessLogicsAbstractions;
-using Contract.Importers;
-using Contract.Products;
+using Contract;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BusinessLogics;

@@ -1,4 +1,4 @@
-using Contract.Users;
+﻿using Contract;
 using Domain;
 
 namespace Mappers;

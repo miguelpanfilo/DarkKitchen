@@ -1,6 +1,5 @@
 ﻿using BusinessLogicsAbstractions;
-using Contract.ShippingTypes;
-using Contract.Users;
+using Contract;
 using DarkKitchen.Filters;
 using Microsoft.AspNetCore.Mvc;
 

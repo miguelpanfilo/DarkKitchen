@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 using BusinessLogicsAbstractions;
-using Contract.Users;
+using Contract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
