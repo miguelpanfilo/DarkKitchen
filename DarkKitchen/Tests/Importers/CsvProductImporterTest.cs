@@ -1,7 +1,7 @@
 using System.Text;
 using BusinessLogicsAbstractions;
+using CsvProductImporter;
 using FluentAssertions;
-using ProductImporters;
 
 namespace Tests.Importers;
 
