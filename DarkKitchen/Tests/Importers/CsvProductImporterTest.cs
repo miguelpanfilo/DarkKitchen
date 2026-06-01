@@ -1,6 +1,6 @@
 using System.Text;
 using FluentAssertions;
-using CsvProductImporter;
+using ProductImporters;
 
 namespace Tests.Importers;
 

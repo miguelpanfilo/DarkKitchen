@@ -11,7 +11,7 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <Target Name="CopyPluginToApi" AfterTargets="Build">
+    <Target Name="CopyPluginToApi" AfterTargets="Build" Condition="'$(SolutionDir)' != '' And '$(SolutionDir)' != '*Undefined*'">
         <MakeDir Directories="$(SolutionDir)DarkKitchenWebApi\bin\Debug\net8.0\plugins" />
 
         <Copy
