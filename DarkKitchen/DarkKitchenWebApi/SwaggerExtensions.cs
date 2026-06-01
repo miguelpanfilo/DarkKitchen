@@ -65,7 +65,10 @@ public class FileUploadOperationFilter : IOperationFilter
         var hasFileParam = context.MethodInfo.GetParameters()
             .Any(p => p.ParameterType == typeof(IFormFile));
 
-        if (!hasFileParam) return;
+        if (!hasFileParam)
+        {
+            return;
+        }
 
         operation.RequestBody = new OpenApiRequestBody
         {
