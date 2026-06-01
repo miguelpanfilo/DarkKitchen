@@ -181,7 +181,6 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
             });
     }
 
-// solo un preparador puede pooner delay, SACARLO ANTES DEL RELEASE
     [HttpPut("{id:int}/delay")]
     [RoleAuthorization(UserRolesDto.Preparer, UserRolesDto.Administrative)]
     public IActionResult Delay(int id)

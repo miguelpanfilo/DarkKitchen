@@ -237,7 +237,10 @@ public class PromotionService : IPromotionService
         return promotions
             .Where(p => p.PromotionProducts.Any(pp =>
             {
-                var product = GetExistingProduct(pp.ProductId);
+                var product = _productRepository.GetById(pp.ProductId);
+
+                if (product == null || product.IsDeleted)
+                    return false;
 
                 var matchesProductId = productId is null || pp.ProductId == productId.Value;
                 var matchesCommercialLine = string.IsNullOrWhiteSpace(commercialLine) ||
