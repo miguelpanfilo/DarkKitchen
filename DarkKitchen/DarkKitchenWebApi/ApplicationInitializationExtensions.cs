@@ -39,8 +39,11 @@ public static class ApplicationInitializationExtensions
 
         foreach (var (table, maxId) in tables)
         {
-            context.Database.ExecuteSqlRaw(
-                $"DBCC CHECKIDENT ('{table}', RESEED, {maxId})");
+            if (maxId > 0)
+            {
+                context.Database.ExecuteSqlRaw(
+                    $"DBCC CHECKIDENT ('{table}', RESEED, {maxId})");
+            }
         }
     }
 

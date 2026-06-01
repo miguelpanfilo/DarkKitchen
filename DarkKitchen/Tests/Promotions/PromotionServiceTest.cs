@@ -1191,4 +1191,48 @@ public class PromotionServiceTest
         promotionRepositoryMock.VerifyAll();
         productRepositoryMock.VerifyAll();
     }
+
+    [TestMethod]
+    public void GivenExistingPromotion_WhenUpdatingWithNoChanges_ThenRepositoryIsNotCalledAndNoAuditIsRegistered()
+    {
+        var (start, end) = FutureDates();
+        var promotion = Promotion.MakePromotion("Black Friday", 10, start, end);
+        var patchDto = new PromotionPatchDto();
+
+        var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        promotionRepositoryMock.Setup(r => r.GetById(1)).Returns(promotion);
+
+        var auditMock = new Mock<IAuditLogService>(MockBehavior.Strict);
+        var service = CreateService(promotionRepositoryMock, productRepositoryMock, auditMock);
+
+        var result = service.Update(1, patchDto);
+
+        Assert.IsNotNull(result);
+        promotionRepositoryMock.Verify(r => r.Update(It.IsAny<Promotion>()), Times.Never);
+        auditMock.Verify(r => r.Register(
+            It.IsAny<string>(), It.IsAny<int>(),
+            It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+    }
+
+    [TestMethod]
+    public void GivenPromotionDtoWithEndDateInThePast_WhenCreating_ThenThrowsValidationException()
+    {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var promotionDto = new PromotionRequestDto
+        {
+            Name = "Promo Pasada",
+            DiscountPercentage = 10,
+            StartDate = today.AddDays(-10),
+            EndDate = today.AddDays(-1)
+        };
+
+        var repositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var auditMock = new Mock<IAuditLogService>();
+        var service = CreateService(repositoryMock, productRepositoryMock, auditMock);
+
+        var ex = Assert.ThrowsException<ValidationException>(() => service.Create(promotionDto));
+        Assert.AreEqual("La fecha de fin de la promoción no puede ser anterior a hoy", ex.Message);
+    }
 }
