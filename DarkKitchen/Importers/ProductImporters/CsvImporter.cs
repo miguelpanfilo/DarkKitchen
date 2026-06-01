@@ -39,7 +39,7 @@ public class CsvImporter : IProductImporter
             CommercialLine = parts[3],
             Category = parts[4],
             Price = decimal.Parse(parts[5]),
-            PhotoPaths = [parts[6]]
+            PhotoPaths = [.. parts[6].Split('|')]
         };
     }
 }
