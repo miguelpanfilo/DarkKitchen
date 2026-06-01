@@ -11,8 +11,8 @@ public class CsvProductImporterTest
     public void Import_WhenCsvIsValid_ShouldReturnProducts()
     {
         var csv = """
-                  code,name,description,commercialLine,category,price,photoPaths
-                  CSV001,Tarta de Espinaca,Tarta casera,Casera,Comidas,200.00,C:\photos\tarta.jpg
+                  code;name;description;commercialLine;category;price;photoPaths
+                  CSV001;Tarta de Espinaca;Tarta casera;Casera;Comidas;200.00;C:\photos\tarta.jpg
                   """;
 
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes(csv));
@@ -42,8 +42,8 @@ public class CsvProductImporterTest
     public void Import_WhenProductHasMultiplePhotos_ShouldParseAllPaths()
     {
         var csv = """
-                  code,name,description,commercialLine,category,price,photoPaths
-                  CSV003,Milanesa,Milanesa napolitana,Casera,Comidas,180.00,C:\photos\mil1.jpg|C:\photos\mil2.jpg
+                  code;name;description;commercialLine;category;price;photoPaths
+                  CSV003;Milanesa;Milanesa napolitana;Casera;Comidas;180.00;C:\photos\mil1.jpg|C:\photos\mil2.jpg
                   """;
 
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes(csv));
@@ -59,9 +59,9 @@ public class CsvProductImporterTest
     public void Import_WhenCsvHasMultipleProducts_ShouldReturnAllProducts()
     {
         var csv = """
-                  code,name,description,commercialLine,category,price,photoPaths
-                  CSV001,Tarta de Espinaca,Tarta casera,Casera,Comidas,200.00,C:\photos\tarta.jpg
-                  CSV002,Empanada de Carne,Empanada casera,Casera,Comidas,150.00,C:\photos\empanada.jpg
+                  code;name;description;commercialLine;category;price;photoPaths
+                  CSV001;Tarta de Espinaca;Tarta casera;Casera;Comidas;200.00;C:\photos\tarta.jpg
+                  CSV002;Empanada de Carne;Empanada casera;Casera;Comidas;150.00;C:\photos\empanada.jpg
                   """;
 
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes(csv));
