@@ -1,4 +1,4 @@
-﻿using BusinessLogicsAbstractions.Exceptions;
+﻿using BusinessLogicsAbstractions;
 
 namespace BusinessLogics;
 

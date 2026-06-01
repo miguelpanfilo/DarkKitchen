@@ -1,5 +1,5 @@
-using BusinessLogics;
-using BusinessLogicsAbstractions.Imports;
+﻿using BusinessLogics;
+using BusinessLogicsAbstractions;
 using Contract.Importers;
 using FluentAssertions;
 

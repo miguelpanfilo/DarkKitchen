@@ -1,5 +1,4 @@
-﻿using BusinessLogicsAbstractions.Exceptions;
-using BusinessLogicsAbstractions.Reports;
+﻿using BusinessLogicsAbstractions;
 using Contract.Reports;
 using DataAccessAbstractions;
 using Domain;

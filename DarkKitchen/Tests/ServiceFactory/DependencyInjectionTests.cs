@@ -1,5 +1,5 @@
 ﻿using BusinessLogics;
-using BusinessLogicsAbstractions.Users;
+using BusinessLogicsAbstractions;
 using DataAccess.Repositories;
 using DataAccessAbstractions;
 using FactoryService;

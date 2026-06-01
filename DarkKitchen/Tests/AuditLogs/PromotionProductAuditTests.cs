@@ -1,6 +1,5 @@
 ﻿using BusinessLogics;
 using BusinessLogicsAbstractions;
-using BusinessLogicsAbstractions.Promotions;
 using Contract.Promotions;
 using DataAccessAbstractions;
 using Domain;

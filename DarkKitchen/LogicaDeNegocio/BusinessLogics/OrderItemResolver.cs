@@ -1,7 +1,4 @@
-﻿using BusinessLogicsAbstractions.Exceptions;
-using BusinessLogicsAbstractions.Orders;
-using BusinessLogicsAbstractions.Products;
-using BusinessLogicsAbstractions.Promotions;
+﻿using BusinessLogicsAbstractions;
 using Contract.Orders;
 
 namespace BusinessLogics;

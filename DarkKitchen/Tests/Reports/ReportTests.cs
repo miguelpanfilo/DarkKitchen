@@ -1,6 +1,6 @@
 ﻿using BusinessLogics;
 using System.Data.Common;
-using BusinessLogicsAbstractions.Exceptions;
+using BusinessLogicsAbstractions;
 using DataAccess;
 using DataAccess.Repositories;
 using DataAccessAbstractions;

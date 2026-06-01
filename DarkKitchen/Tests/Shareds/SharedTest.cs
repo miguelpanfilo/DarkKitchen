@@ -1,5 +1,5 @@
 ﻿using BusinessLogics;
-using BusinessLogicsAbstractions.Exceptions;
+using BusinessLogicsAbstractions;
 using Domain.Exceptions;
 
 namespace Tests.Shareds;

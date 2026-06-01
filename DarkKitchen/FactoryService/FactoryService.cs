@@ -1,12 +1,5 @@
 ﻿using BusinessLogics;
 using BusinessLogicsAbstractions;
-using BusinessLogicsAbstractions.Imports;
-using BusinessLogicsAbstractions.Orders;
-using BusinessLogicsAbstractions.Products;
-using BusinessLogicsAbstractions.Promotions;
-using BusinessLogicsAbstractions.Reports;
-using BusinessLogicsAbstractions.ShippingTypes;
-using BusinessLogicsAbstractions.Users;
 using DataAccess;
 using DataAccess.Repositories;
 using DataAccessAbstractions;

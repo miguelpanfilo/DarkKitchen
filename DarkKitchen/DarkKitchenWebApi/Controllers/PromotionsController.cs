@@ -1,5 +1,5 @@
-using System.Security.Claims;
-using BusinessLogicsAbstractions.Promotions;
+﻿using System.Security.Claims;
+using BusinessLogicsAbstractions;
 using Contract.Promotions;
 using Contract.Users;
 using DarkKitchen.Filters;

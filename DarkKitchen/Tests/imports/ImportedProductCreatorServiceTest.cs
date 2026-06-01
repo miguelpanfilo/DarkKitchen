@@ -1,6 +1,5 @@
-using BusinessLogics;
-using BusinessLogicsAbstractions.Imports;
-using BusinessLogicsAbstractions.Products;
+﻿using BusinessLogics;
+using BusinessLogicsAbstractions;
 using Contract.Importers;
 using Contract.Products;
 using FluentAssertions;

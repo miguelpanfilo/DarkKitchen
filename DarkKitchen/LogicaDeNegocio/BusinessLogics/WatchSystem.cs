@@ -1,4 +1,4 @@
-﻿using BusinessLogicsAbstractions.Users;
+﻿using BusinessLogicsAbstractions;
 
 namespace BusinessLogics;
 

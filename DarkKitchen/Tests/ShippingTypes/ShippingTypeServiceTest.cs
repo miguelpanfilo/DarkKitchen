@@ -1,5 +1,5 @@
 ﻿using BusinessLogics;
-using BusinessLogicsAbstractions.Exceptions;
+using BusinessLogicsAbstractions;
 using Contract.ShippingTypes;
 using DataAccessAbstractions;
 using Domain;

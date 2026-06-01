@@ -1,5 +1,5 @@
 ﻿using BusinessLogics;
-using BusinessLogicsAbstractions.Users;
+using BusinessLogicsAbstractions;
 using Contract.Users;
 using Moq;
 

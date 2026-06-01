@@ -1,7 +1,5 @@
 ﻿using BusinessLogics;
-using BusinessLogicsAbstractions.Exceptions;
-using BusinessLogicsAbstractions.Products;
-using BusinessLogicsAbstractions.Promotions;
+using BusinessLogicsAbstractions;
 using Contract.Orders;
 using Contract.Products;
 using FluentAssertions;
