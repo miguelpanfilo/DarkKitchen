@@ -29,7 +29,7 @@ public class CsvProductImporterTest
     [TestMethod]
     public void Import_WhenStreamIsEmpty_ShouldReturnEmptyList()
     {
-        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(""));
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(string.Empty));
 
         var importer = new CsvImporter();
 

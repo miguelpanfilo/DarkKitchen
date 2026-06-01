@@ -17,6 +17,11 @@ public class CsvImporter : IProductImporter
             .Where(l => !string.IsNullOrWhiteSpace(l))
             .ToList();
 
+        if (lines.Count == 0)
+        {
+            return [];
+        }
+
         lines.RemoveAt(0);
 
         return lines.Select(ParseLine).ToList();
