@@ -23,13 +23,8 @@ public class Promotion
         DateOnly endDate)
     {
         ValidateName(name);
-
         ValidatePercentage(discountPercentage);
-
         ValidateDateRange(startDate, endDate);
-
-        ValidateEndDateNotInPast(endDate);
-
         Name = name;
         DiscountPercentage = discountPercentage;
         StartDate = startDate;
@@ -42,6 +37,7 @@ public class Promotion
         DateOnly startDate,
         DateOnly endDate)
     {
+        ValidateEndDateNotInPast(endDate);
         return new Promotion(name, discountPercentage, startDate, endDate);
     }
 
@@ -127,12 +123,16 @@ public class Promotion
     private static void ValidateEndDateNotInPast(DateOnly endDate)
     {
         if (endDate < Today())
+        {
             throw new PromotionException("La fecha de fin de la promoción no puede ser anterior a hoy");
+        }
     }
 
     private void ValidateNotExpired()
     {
         if (EndDate < Today())
+        {
             throw new PromotionException("La promoción expiró, no se puede modificar");
+        }
     }
 }
