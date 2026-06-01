@@ -30,6 +30,7 @@
         <ProjectReference Include="..\Dominio\Domain\Domain.csproj" />
         <ProjectReference Include="..\FactoryService\FactoryService.csproj" />
         <ProjectReference Include="..\LogicaDeNegocio\BusinessLogics\BusinessLogics.csproj" />
+        <ProjectReference Include="..\Importers\ProductImporters\ProductImporters.csproj" />
     </ItemGroup>
 
     <ItemGroup>

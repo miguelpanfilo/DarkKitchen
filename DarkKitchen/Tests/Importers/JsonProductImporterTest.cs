@@ -1,8 +1,9 @@
 ﻿using System.Text;
 using BusinessLogicsAbstractions;
 using FluentAssertions;
+using ProductImporters;
 
-namespace ProductImporters.Tests;
+namespace Tests.Importers;
 
 [TestClass]
 public class JsonProductImporterTest
