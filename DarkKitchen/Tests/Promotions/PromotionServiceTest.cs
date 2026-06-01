@@ -45,12 +45,13 @@ public class PromotionServiceTest
     [TestMethod]
     public void GivenValidPromotionDto_WhenCreating_ThenRepositoryIsCalledAndPromotionIsReturned()
     {
+        var (start, end) = FutureDates();
         var promotionDto = new PromotionRequestDto
         {
             Name = "Black Friday",
             DiscountPercentage = 10,
-            StartDate = new DateOnly(2026, 1, 25),
-            EndDate = new DateOnly(2026, 1, 30)
+            StartDate = start,
+            EndDate = end
         };
 
         var repositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
@@ -61,8 +62,7 @@ public class PromotionServiceTest
             .Returns((Promotion promotion) => promotion);
 
         var auditMock = new Mock<IAuditLogService>();
-        var service = CreateService(repositoryMock,
-            productRepositoryMock, auditMock);
+        var service = CreateService(repositoryMock, productRepositoryMock, auditMock);
         var result = service.Create(promotionDto);;
 
         Assert.IsNotNull(result);
@@ -79,12 +79,13 @@ public class PromotionServiceTest
     [DataRow(" ")]
     public void GivenPromotionDtoWithInvalidName_WhenCreating_ThenThrowsPromotionException(string invalidName)
     {
+        var (start, end) = FutureDates();
         var promotionDto = new PromotionRequestDto
         {
             Name = invalidName,
             DiscountPercentage = 10,
-            StartDate = new DateOnly(2026, 1, 25),
-            EndDate = new DateOnly(2026, 1, 30)
+            StartDate = start,
+            EndDate = end
         };
 
         var repositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
@@ -105,12 +106,13 @@ public class PromotionServiceTest
     public void GivenPromotionDtoWithInvalidDiscountPercentage_WhenCreating_ThenThrowsPromotionException(
         int invalidDiscount)
     {
+        var (start, end) = FutureDates();
         var promotionDto = new PromotionRequestDto
         {
             Name = "Black Friday",
             DiscountPercentage = (decimal)invalidDiscount,
-            StartDate = new DateOnly(2026, 1, 25),
-            EndDate = new DateOnly(2026, 1, 30)
+            StartDate = start,
+            EndDate = end
         };
 
         var repositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
@@ -124,22 +126,16 @@ public class PromotionServiceTest
         Assert.AreEqual("El porcentaje de descuento debe estar entre 1 y 100", ex.Message);
     }
 
-    [DataTestMethod]
-    [DataRow(2026, 1, 30, 2026, 1, 25)]
-    public void GivenPromotionDtoWithInvalidDateRange_WhenCreating_ThenThrowsPromotionException(
-        int startYear,
-        int startMonth,
-        int startDay,
-        int endYear,
-        int endMonth,
-        int endDay)
+    [TestMethod]
+    public void GivenPromotionDtoWithInvalidDateRange_WhenCreating_ThenThrowsPromotionException()
     {
+        var today = Today();
         var promotionDto = new PromotionRequestDto
         {
             Name = "Black Friday",
             DiscountPercentage = 10,
-            StartDate = new DateOnly(startYear, startMonth, startDay),
-            EndDate = new DateOnly(endYear, endMonth, endDay)
+            StartDate = today.AddDays(10),
+            EndDate = today.AddDays(5)
         };
 
         var repositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
@@ -156,12 +152,8 @@ public class PromotionServiceTest
     [TestMethod]
     public void GivenExistingPromotionAndProduct_WhenAssociatingProduct_ThenProductIsAddedToPromotion()
     {
-        var promotion = Promotion.MakePromotion(
-            "Black Friday",
-            10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
-        );
+        var (start, end) = FutureDates();
+        var promotion = Promotion.MakePromotion("Black Friday", 10, start, end);
 
         var product = CreateValidProduct();
 
@@ -222,12 +214,8 @@ public class PromotionServiceTest
     [TestMethod]
     public void GivenExistingPromotionAndNonExistingProduct_WhenAssociatingProduct_ThenThrowsPromotionException()
     {
-        var promotion = Promotion.MakePromotion(
-            "Black Friday",
-            10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
-        );
+        var (start, end) = FutureDates();
+        var promotion = Promotion.MakePromotion("Black Friday", 10, start, end);
 
         var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
         var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
@@ -259,11 +247,8 @@ public class PromotionServiceTest
     [TestMethod]
     public void GivenAssociatedProduct_WhenDisassociatingFromPromotion_ThenProductIsRemoved()
     {
-        var promotion = Promotion.MakePromotion(
-            "Black Friday",
-            10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30));
+        var (start, end) = FutureDates();
+        var promotion = Promotion.MakePromotion("Black Friday", 10, start, end);
         var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
         var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
 
@@ -323,12 +308,8 @@ public class PromotionServiceTest
     [TestMethod]
     public void GivenExistingPromotionAndNonExistingProduct_WhenDisassociatingProduct_ThenThrowsPromotionException()
     {
-        var promotion = Promotion.MakePromotion(
-            "Black Friday",
-            10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
-        );
+        var (start, end) = FutureDates();
+        var promotion = Promotion.MakePromotion("Black Friday", 10, start, end);
 
         var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
         var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
@@ -518,14 +499,10 @@ public class PromotionServiceTest
     [TestMethod]
     public void GivenExistingPromotion_WhenUpdatingWithValidStartDate_ThenPromotionStartDateIsUpdated()
     {
-        var promotion = Promotion.MakePromotion(
-            "Black Friday",
-            10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
-        );
+        var (start, end) = FutureDates();
+        var promotion = Promotion.MakePromotion("Black Friday", 10, start, end);
 
-        var newStartDate = new DateOnly(2026, 1, 26);
+        var newStartDate = start.AddDays(1);
 
         var patchDto = new PromotionPatchDto
         {
@@ -552,7 +529,7 @@ public class PromotionServiceTest
 
         Assert.IsNotNull(result);
         Assert.AreEqual(newStartDate, result.StartDate);
-        Assert.AreEqual(new DateOnly(2026, 1, 30), result.EndDate);
+        Assert.AreEqual(end, result.EndDate);
 
         promotionRepositoryMock.VerifyAll();
         productRepositoryMock.VerifyAll();
@@ -561,14 +538,10 @@ public class PromotionServiceTest
     [TestMethod]
     public void GivenExistingPromotion_WhenUpdatingWithValidEndDate_ThenPromotionEndDateIsUpdated()
     {
-        var promotion = Promotion.MakePromotion(
-            "Black Friday",
-            10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
-        );
+        var (start, end) = FutureDates();
+        var promotion = Promotion.MakePromotion("Black Friday", 10, start, end);
 
-        var newEndDate = new DateOnly(2026, 1, 31);
+        var newEndDate = end.AddDays(1);
 
         var patchDto = new PromotionPatchDto
         {
@@ -594,7 +567,7 @@ public class PromotionServiceTest
         var result = service.Update(1, patchDto);
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(new DateOnly(2026, 1, 25), result.StartDate);
+        Assert.AreEqual(start, result.StartDate);
         Assert.AreEqual(newEndDate, result.EndDate);
 
         promotionRepositoryMock.VerifyAll();
@@ -604,15 +577,11 @@ public class PromotionServiceTest
     [TestMethod]
     public void GivenExistingPromotion_WhenUpdatingWithValidStartDateAndEndDate_ThenPromotionDatesAreUpdated()
     {
-        var promotion = Promotion.MakePromotion(
-            "Black Friday",
-            10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
-        );
+        var (start, end) = FutureDates();
+        var promotion = Promotion.MakePromotion("Black Friday", 10, start, end);
 
-        var newStartDate = new DateOnly(2026, 1, 26);
-        var newEndDate = new DateOnly(2026, 1, 31);
+        var newStartDate = start.AddDays(1);
+        var newEndDate = end.AddDays(1);
 
         var patchDto = new PromotionPatchDto
         {
@@ -649,16 +618,12 @@ public class PromotionServiceTest
     [TestMethod]
     public void GivenExistingPromotion_WhenUpdatingWithInvalidStartDate_ThenThrowsPromotionException()
     {
-        var promotion = Promotion.MakePromotion(
-            "Black Friday",
-            10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
-        );
+        var (start, end) = FutureDates();
+        var promotion = Promotion.MakePromotion("Black Friday", 10, start, end);
 
         var patchDto = new PromotionPatchDto
         {
-            StartDate = new DateOnly(2026, 1, 31)
+            StartDate = end.AddDays(1)
         };
 
         var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
@@ -686,16 +651,12 @@ public class PromotionServiceTest
     [TestMethod]
     public void GivenExistingPromotion_WhenUpdatingWithInvalidEndDate_ThenThrowsPromotionException()
     {
-        var promotion = Promotion.MakePromotion(
-            "Black Friday",
-            10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
-        );
+        var (start, end) = FutureDates();
+        var promotion = Promotion.MakePromotion("Black Friday", 10, start, end);
 
         var patchDto = new PromotionPatchDto
         {
-            EndDate = new DateOnly(2026, 1, 24)
+            EndDate = start.AddDays(-1)
         };
 
         var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
@@ -723,17 +684,13 @@ public class PromotionServiceTest
     [TestMethod]
     public void GivenExistingPromotion_WhenUpdatingWithInvalidDateRange_ThenThrowsPromotionException()
     {
-        var promotion = Promotion.MakePromotion(
-            "Black Friday",
-            10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
-        );
+        var (start, end) = FutureDates();
+        var promotion = Promotion.MakePromotion("Black Friday", 10, start, end);
 
         var patchDto = new PromotionPatchDto
         {
-            StartDate = new DateOnly(2026, 2, 5),
-            EndDate = new DateOnly(2026, 1, 31)
+            StartDate = end.AddDays(5),
+            EndDate = end.AddDays(1)
         };
 
         var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
@@ -794,12 +751,8 @@ public class PromotionServiceTest
         var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
         var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
 
-        var promotion = Promotion.MakePromotion(
-            "Black Friday",
-            10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
-        );
+        var (start, end) = FutureDates();
+        var promotion = Promotion.MakePromotion("Black Friday", 10, start, end);
 
         promotionRepositoryMock
             .Setup(r => r.GetById(1))
@@ -856,12 +809,8 @@ public class PromotionServiceTest
         var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
         var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
 
-        var promotion = Promotion.MakePromotion(
-            "Black Friday",
-            10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
-        );
+        var (start, end) = FutureDates();
+        var promotion = Promotion.MakePromotion("Black Friday", 10, start, end);
 
         promotion.Delete();
 
@@ -890,12 +839,8 @@ public class PromotionServiceTest
         var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
         var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
 
-        var promotion = Promotion.MakePromotion(
-            "Black Friday",
-            10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
-        );
+        var (start, end) = FutureDates();
+        var promotion = Promotion.MakePromotion("Black Friday", 10, start, end);
         promotion.Delete();
 
         var patchDto = new PromotionPatchDto
@@ -953,29 +898,30 @@ public class PromotionServiceTest
         var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
         var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
 
-        var date = new DateOnly(2026, 1, 26);
+        var today = Today();
+        var filterDate = today.AddDays(5);
 
         var activePromotion = Promotion.MakePromotion(
             "Promo Activa",
             10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
+            today.AddDays(3),
+            today.AddDays(10)
         );
 
-        var expiredPromotion = Promotion.MakePromotion(
-            "Promo Vencida",
+        var inactivePromotion = Promotion.MakePromotion(
+            "Promo No Iniciada",
             10,
-            new DateOnly(2026, 1, 10),
-            new DateOnly(2026, 1, 20)
+            today.AddDays(8),
+            today.AddDays(15)
         );
 
         promotionRepositoryMock
             .Setup(r => r.GetAll())
-            .Returns(new List<Promotion> { activePromotion, expiredPromotion });
+            .Returns(new List<Promotion> { activePromotion, inactivePromotion });
 
         var request = new PromotionSearchRequestDto
         {
-            Date = date
+            Date = filterDate
         };
 
         var auditMock = new Mock<IAuditLogService>();
@@ -1044,21 +990,22 @@ public class PromotionServiceTest
         var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
         var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
 
-        var date = new DateOnly(2026, 1, 26);
+        var today = Today();
+        var filterDate = today.AddDays(5);
 
         var matchingPromotion = Promotion.MakePromotion(
             "Promo Producto 100",
             10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
+            today.AddDays(3),
+            today.AddDays(10)
         );
         matchingPromotion.AssociateProduct(100);
 
         var otherPromotion = Promotion.MakePromotion(
             "Promo Otro Producto",
             15,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
+            today.AddDays(3),
+            today.AddDays(10)
         );
         otherPromotion.AssociateProduct(200);
 
@@ -1096,7 +1043,7 @@ public class PromotionServiceTest
 
         var request = new PromotionSearchRequestDto
         {
-            Date = date,
+            Date = filterDate,
             ProductId = 100
         };
 
@@ -1121,21 +1068,22 @@ public class PromotionServiceTest
         var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
         var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
 
-        var date = new DateOnly(2026, 1, 26);
+        var today = Today();
+        var filterDate = today.AddDays(5);
 
         var matchingPromotion = Promotion.MakePromotion(
             "Promo Línea Matching",
             10,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
+            today.AddDays(3),
+            today.AddDays(10)
         );
         matchingPromotion.AssociateProduct(100);
 
         var otherPromotion = Promotion.MakePromotion(
             "Promo Línea Otra",
             15,
-            new DateOnly(2026, 1, 25),
-            new DateOnly(2026, 1, 30)
+            today.AddDays(3),
+            today.AddDays(10)
         );
         otherPromotion.AssociateProduct(200);
 
@@ -1173,7 +1121,7 @@ public class PromotionServiceTest
 
         var request = new PromotionSearchRequestDto
         {
-            Date = date,
+            Date = filterDate,
             CommercialLine = "Línea A"
         };
 

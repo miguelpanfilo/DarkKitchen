@@ -38,8 +38,8 @@ public class PromotionServiceAuditTests
         {
             Name = "Black Friday",
             DiscountPercentage = 10,
-            StartDate = new DateOnly(2026, 1, 25),
-            EndDate = new DateOnly(2026, 1, 30)
+            StartDate = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(5),
+            EndDate = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(10)
         });
 
         auditMock.Verify(a => a.Register(AuditedEntities.Promotion,
@@ -152,8 +152,8 @@ public class PromotionServiceAuditTests
         {
             Name = "Black Friday",
             DiscountPercentage = 10,
-            StartDate = new DateOnly(2026, 1, 25),
-            EndDate = new DateOnly(2026, 1, 30)
+            StartDate = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(5),
+            EndDate = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(10)
         });
 
         currentUserMock.Verify(s => s.GetEmail(), Times.Once);

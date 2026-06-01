@@ -28,6 +28,8 @@ public class Promotion
 
         ValidateDateRange(startDate, endDate);
 
+        ValidateEndDateNotInPast(endDate);
+
         Name = name;
         DiscountPercentage = discountPercentage;
         StartDate = startDate;
@@ -117,6 +119,15 @@ public class Promotion
         if (startDate > endDate)
         {
             throw new PromotionException("La fecha de inicio no puede ser mayor a la fecha de fin");
+        }
+    }
+
+    private static void ValidateEndDateNotInPast(DateOnly endDate)
+    {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        if (endDate < today)
+        {
+            throw new PromotionException("La fecha de fin de la promoción no puede ser anterior a hoy");
         }
     }
 

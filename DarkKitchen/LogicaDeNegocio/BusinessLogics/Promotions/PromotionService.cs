@@ -88,6 +88,16 @@ public class PromotionService : IPromotionService
     {
         var promotion = GetExistingPromotion(promotionId);
 
+        var hasChanges = promotionPatchDto.Name != null
+            || promotionPatchDto.DiscountPercentage != null
+            || promotionPatchDto.StartDate != null
+            || promotionPatchDto.EndDate != null;
+
+        if (!hasChanges)
+        {
+            return MapPromotionWithProducts(promotion);
+        }
+
         UpdateNameIfProvided(promotion, promotionPatchDto.Name);
         UpdateDiscountIfProvided(promotion, promotionPatchDto.DiscountPercentage);
         UpdateDatesIfProvided(promotion, promotionPatchDto.StartDate, promotionPatchDto.EndDate);
