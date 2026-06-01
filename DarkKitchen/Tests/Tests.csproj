@@ -32,4 +32,8 @@
         <ProjectReference Include="..\LogicaDeNegocio\BusinessLogics\BusinessLogics.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Importers\" />
+    </ItemGroup>
+
 </Project>
