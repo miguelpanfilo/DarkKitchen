@@ -6,7 +6,7 @@ public interface IUserService
 {
     SignUpClientResponseDTO RegistrarCliente(SignUpClientRequestDTO requestDto);
 
-    UserResponseDTO MakeUserIntern(int idUserLogged, SingUpInternUserRequestDTO requestDto);
+    UserResponseDTO MakeUserIntern(int idUserLogged, SignUpInternUserRequestDTO requestDto);
 
     UserResponseDTO ModifyUserIntern(
         int idUserToModify,

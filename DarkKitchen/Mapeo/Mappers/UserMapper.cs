@@ -6,7 +6,7 @@ namespace Mappers;
 public static class UserMapper
 {
     public static Result<User> MappingDTOToInternUser(
-        this SingUpInternUserRequestDTO requestDto,
+        this SignUpInternUserRequestDTO requestDto,
         Phone phone,
         UserRoles role)
     {

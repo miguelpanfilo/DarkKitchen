@@ -29,9 +29,9 @@ public class SignUpInternUserTests
             _adminValidationMock.Object);
     }
 
-    private static SingUpInternUserRequestDTO CreateValidInternalUserRequest()
+    private static SignUpInternUserRequestDTO CreateValidInternalUserRequest()
     {
-        return new SingUpInternUserRequestDTO
+        return new SignUpInternUserRequestDTO
         {
             Name = "Juan",
             LastName = "Perez",
@@ -73,7 +73,7 @@ public class SignUpInternUserTests
         _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(1));
         _phoneValidatorMock.Setup(v => v.ItsValid("123")).Returns(false);
 
-        var request = new SingUpInternUserRequestDTO
+        var request = new SignUpInternUserRequestDTO
         {
             Name = "Juan",
             LastName = "Perez",
@@ -95,7 +95,7 @@ public class SignUpInternUserTests
         _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(1));
         _phoneValidatorMock.Setup(v => v.ItsValid("091123456")).Returns(false);
 
-        var request = new SingUpInternUserRequestDTO
+        var request = new SignUpInternUserRequestDTO
         {
             Name = "Juan",
             LastName = "Perez",
@@ -141,7 +141,7 @@ public class SignUpInternUserTests
         _phoneValidatorMock.Setup(v => v.ItsValid("099123456")).Returns(true);
         _repoMock.Setup(r => r.EmailExist("admin@gmail.com")).Returns(true);
 
-        var request = new SingUpInternUserRequestDTO
+        var request = new SignUpInternUserRequestDTO
         {
             Name = "Juan",
             LastName = "Perez",
@@ -165,7 +165,7 @@ public class SignUpInternUserTests
         _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(1));
         _phoneValidatorMock.Setup(v => v.ItsValid("099123456")).Returns(true);
 
-        var request = new SingUpInternUserRequestDTO
+        var request = new SignUpInternUserRequestDTO
         {
             Role = "Anything"
         };
@@ -184,7 +184,7 @@ public class SignUpInternUserTests
             .Throws(new ForbiddenException("Only an administrative user can perform this action"));
 
         var ex = Assert.ThrowsException<ForbiddenException>(() =>
-            _service.MakeInterUser(5, new SingUpInternUserRequestDTO()));
+            _service.MakeInterUser(5, new SignUpInternUserRequestDTO()));
 
         Assert.AreEqual("Only an administrative user can perform this action", ex.Message);
     }
@@ -226,7 +226,7 @@ public class SignUpInternUserTests
             .Throws(new ForbiddenException("Only an administrative user can perform this action"));
 
         Assert.ThrowsException<ForbiddenException>(() =>
-            _service.MakeInterUser(1, new SingUpInternUserRequestDTO()));
+            _service.MakeInterUser(1, new SignUpInternUserRequestDTO()));
 
         _repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);
     }

@@ -44,9 +44,9 @@ public class UsersControllerTests
         };
     }
 
-    private static SingUpInternUserRequestDTO CreateValidInternalUserRequest()
+    private static SignUpInternUserRequestDTO CreateValidInternalUserRequest()
     {
-        return new SingUpInternUserRequestDTO
+        return new SignUpInternUserRequestDTO
         {
             Name = "Juan",
             LastName = "Perez",
@@ -225,7 +225,7 @@ public class UsersControllerTests
         Assert.AreEqual(StatusCodes.Status401Unauthorized, result.StatusCode);
 
         _userServiceMock.Verify(
-            x => x.MakeUserIntern(It.IsAny<int>(), It.IsAny<SingUpInternUserRequestDTO>()),
+            x => x.MakeUserIntern(It.IsAny<int>(), It.IsAny<SignUpInternUserRequestDTO>()),
             Times.Never);
     }
 

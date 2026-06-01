@@ -48,7 +48,7 @@ public class SignUpService(
         };
     }
 
-    public UserResponseDTO MakeInterUser(int idUserLogged, SingUpInternUserRequestDTO requestDto)
+    public UserResponseDTO MakeInterUser(int idUserLogged, SignUpInternUserRequestDTO requestDto)
     {
         _adminValidationService.EnsureUserIsAdmin(idUserLogged);
 

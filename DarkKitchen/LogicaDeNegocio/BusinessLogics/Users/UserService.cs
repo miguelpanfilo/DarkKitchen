@@ -19,7 +19,7 @@ public class UserService(
         return _signUpUserService.SignUpClient(requestDto);
     }
 
-    public UserResponseDTO MakeUserIntern(int idUserLogged, SingUpInternUserRequestDTO requestDto)
+    public UserResponseDTO MakeUserIntern(int idUserLogged, SignUpInternUserRequestDTO requestDto)
     {
         return _signUpUserService.MakeInterUser(idUserLogged, requestDto);
     }

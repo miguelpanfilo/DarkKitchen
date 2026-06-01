@@ -12,8 +12,7 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
 {
     private readonly IOrderFacade _orderFacade = orderFacade;
 
-    private CurrentUserDto CurrentUser =>
-        (CurrentUserDto)HttpContext.Items["CurrentUser"]!;
+    private CurrentUserDto CurrentUser => (CurrentUserDto)HttpContext.Items["CurrentUser"]!;
 
   [HttpPost]
     [RoleAuthorization(UserRolesDto.Client)]
@@ -182,7 +181,7 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
     }
 
     [HttpPut("{id:int}/delay")]
-    [RoleAuthorization(UserRolesDto.Preparer, UserRolesDto.Administrative)]
+    [RoleAuthorization(UserRolesDto.Preparer)]
     public IActionResult Delay(int id)
     {
         _orderFacade.Delay(id);

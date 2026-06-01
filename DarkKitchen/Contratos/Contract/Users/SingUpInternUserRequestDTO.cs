@@ -1,6 +1,6 @@
 namespace Contract.Users;
 
-public class SingUpInternUserRequestDTO
+public class SignUpInternUserRequestDTO
 {
     public string Name { get; set; } = null!;
     public string LastName { get; set; } = null!;

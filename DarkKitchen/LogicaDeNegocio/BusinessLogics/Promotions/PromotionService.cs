@@ -240,7 +240,9 @@ public class PromotionService : IPromotionService
                 var product = _productRepository.GetById(pp.ProductId);
 
                 if (product == null || product.IsDeleted)
+                {
                     return false;
+                }
 
                 var matchesProductId = productId is null || pp.ProductId == productId.Value;
                 var matchesCommercialLine = string.IsNullOrWhiteSpace(commercialLine) ||
