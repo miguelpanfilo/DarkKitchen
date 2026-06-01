@@ -1,4 +1,5 @@
-﻿using BusinessLogicsAbstractions;
+﻿using System.Globalization;
+using BusinessLogicsAbstractions;
 using Contract;
 
 namespace ProductImporters;
@@ -45,7 +46,7 @@ public class CsvImporter : IProductImporter
             Description = parts[2],
             CommercialLine = parts[3],
             Category = parts[4],
-            Price = decimal.Parse(parts[5]),
+            Price = decimal.Parse(parts[5], CultureInfo.InvariantCulture),
             PhotoPaths = [.. parts[6].Split('|')]
         };
     }
