@@ -29,7 +29,7 @@ public class CsvImporter : IProductImporter
 
     private static ImportedProductDto ParseLine(string line)
     {
-        var parts = line.Split(',');
+        var parts = line.Split(';');
 
         return new ImportedProductDto
         {
