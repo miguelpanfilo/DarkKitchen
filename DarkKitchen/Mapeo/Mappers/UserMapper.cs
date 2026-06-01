@@ -21,10 +21,7 @@ public static class UserMapper
 
     public static UserResponseDTO MappingUserToResponseDTO(this User user)
     {
-        if(user == null)
-        {
-            throw new ArgumentNullException(nameof(user), "User cannot be null");
-        }
+        ArgumentNullException.ThrowIfNull(user);
 
         return new UserResponseDTO
         {

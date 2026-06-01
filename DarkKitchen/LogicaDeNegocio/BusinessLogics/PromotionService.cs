@@ -40,7 +40,7 @@ public class PromotionService : IPromotionService
     {
         var promotions = _promotionRepository.GetAll();
 
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var today = DateOnly.FromDateTime(DateTime.Now);
 
         var applicablePromotions = promotions
             .Where(p => !p.IsDeleted)
