@@ -13,7 +13,7 @@ namespace Tests.Promotions;
 public class PromotionServiceTest
 {
     private DateOnly Today() =>
-        DateOnly.FromDateTime(DateTime.UtcNow);
+        DateOnly.FromDateTime(DateTime.Now);
 
     private (DateOnly start, DateOnly end) FutureDates() =>
         (Today().AddDays(5), Today().AddDays(10));
@@ -944,7 +944,7 @@ public class PromotionServiceTest
         var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
         var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
 
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var today = DateOnly.FromDateTime(DateTime.Now);
 
         var promo10 = Promotion.MakePromotion(
             "Promo 10",
@@ -1166,7 +1166,7 @@ public class PromotionServiceTest
     [TestMethod]
     public void GivenPromotionDtoWithEndDateInThePast_WhenCreating_ThenThrowsValidationException()
     {
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var today = DateOnly.FromDateTime(DateTime.Now);
         var promotionDto = new PromotionRequestDto
         {
             Name = "Promo Pasada",

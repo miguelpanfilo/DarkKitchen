@@ -94,7 +94,7 @@ public class Promotion
         PromotionProducts.Remove(promotionProduct);
     }
 
-    private static DateOnly Today() => DateOnly.FromDateTime(DateTime.UtcNow);
+    private static DateOnly Today() => DateOnly.FromDateTime(DateTime.Now);
 
     private static void ValidateName(string name)
     {

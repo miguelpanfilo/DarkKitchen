@@ -20,7 +20,7 @@ public class PromotionTest
             .Build();
     }
 
-    private static DateOnly Today() => DateOnly.FromDateTime(DateTime.UtcNow);
+    private static DateOnly Today() => DateOnly.FromDateTime(DateTime.Now);
 
     private Promotion CreateValidPromotion()
     {
