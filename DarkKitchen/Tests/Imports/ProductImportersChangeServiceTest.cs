@@ -1,5 +1,6 @@
 ﻿using BusinessLogics;
 using BusinessLogicsAbstractions;
+using FluentAssertions;
 using Moq;
 
 namespace Tests.imports;
@@ -8,24 +9,44 @@ namespace Tests.imports;
 public class ProductImportersChangeServiceTest
 {
     [TestMethod]
-    public async Task NotifyImportersChanged_ShouldNotify()
+    public async Task NotifyImportersChanged_WhenCalled_ShouldReloadImportersAndNotify()
     {
-        var notifierMock =
-            new Mock<IProductImportersChangeNotifier>(MockBehavior.Strict);
+        var provider = new FakeProductImporterProvider();
+        var notifier = new FakeProductImportersChangeNotifier();
 
-        notifierMock
-            .Setup(notifier => notifier.NotifyImportersChanged())
-            .Returns(Task.CompletedTask);
-
-        var service = new ProductImportersChangeService(
-            notifierMock.Object);
+        var service = new ProductImportersChangeService(provider, notifier);
 
         await service.NotifyImportersChanged();
 
-        notifierMock.Verify(
-            notifier => notifier.NotifyImportersChanged(),
-            Times.Once);
+        provider.ReloadWasCalled.Should().BeTrue();
+        notifier.NotifyWasCalled.Should().BeTrue();
+    }
 
-        notifierMock.VerifyNoOtherCalls();
+    private class FakeProductImporterProvider
+        : IProductImporterProvider
+    {
+        public bool ReloadWasCalled { get; private set; }
+
+        public List<IProductImporter> GetImporters()
+        {
+            return [];
+        }
+
+        public void Reload()
+        {
+            ReloadWasCalled = true;
+        }
+    }
+
+    private class FakeProductImportersChangeNotifier
+        : IProductImportersChangeNotifier
+    {
+        public bool NotifyWasCalled { get; private set; }
+
+        public Task NotifyImportersChanged()
+        {
+            NotifyWasCalled = true;
+            return Task.CompletedTask;
+        }
     }
 }
