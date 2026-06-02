@@ -3,6 +3,7 @@ using BusinessLogics;
 using BusinessLogicsAbstractions;
 using Contract;
 using FluentAssertions;
+using Moq;
 
 namespace Tests.imports;
 [TestClass]
@@ -187,6 +188,42 @@ public class ProductImporterProviderTest
         var result = provider.GetImporters();
 
         result.Should().BeEmpty();
+    }
+
+    [TestMethod]
+    public void Reload_WhenShadowFolderCannotBeDeleted_ShouldNotThrow()
+    {
+        var pluginsPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        Directory.CreateDirectory(pluginsPath);
+
+        var shadowFolder = Path.Combine(pluginsPath, "plugins_shadow");
+        Directory.CreateDirectory(shadowFolder);
+
+        var shadowFile = Path.Combine(shadowFolder, "old.dll");
+        File.WriteAllText(shadowFile, "locked");
+
+        var assemblyLoader =
+            new Mock<IPluginAssemblyLoader>(MockBehavior.Strict);
+
+        using(var lockedFile = new FileStream(
+                  shadowFile,
+                  FileMode.Open,
+                  FileAccess.ReadWrite,
+                  FileShare.None))
+        {
+            var provider =
+                new ProductImporterProvider(
+                    pluginsPath,
+                    assemblyLoader.Object);
+
+            Action act = () => provider.Reload();
+
+            act.Should().NotThrow();
+
+            assemblyLoader.VerifyNoOtherCalls();
+        }
+
+        Directory.Delete(pluginsPath, recursive: true);
     }
 
     private class TestProductImporter : IProductImporter
