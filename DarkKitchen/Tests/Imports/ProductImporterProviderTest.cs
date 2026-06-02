@@ -28,6 +28,31 @@ public class ProductImporterProviderTest
     }
 
     [TestMethod]
+    public void Reload_WhenDllExists_ShouldUseAssemblyLoader()
+    {
+        var pluginsPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        Directory.CreateDirectory(pluginsPath);
+
+        var dllPath = Path.Combine(pluginsPath, "TestProductImporter.dll");
+        File.WriteAllText(dllPath, string.Empty);
+
+        var loader = new FakePluginAssemblyLoader(typeof(TestProductImporter).Assembly);
+
+        var provider = new ProductImporterProvider(pluginsPath, loader);
+
+        provider.Reload();
+
+        loader.LoadedPaths
+            .Should()
+            .ContainSingle()
+            .Which
+            .Should()
+            .Be(dllPath);
+
+        provider.GetImporters().Should().ContainSingle();
+    }
+
+    [TestMethod]
     public void GetImporters_WhenPluginsFolderDoesNotExist_ShouldReturnEmptyList()
     {
         var pluginsPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
