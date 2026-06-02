@@ -3,7 +3,6 @@ using DarkKitchen;
 using DarkKitchen.Filters;
 using FactoryService;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,13 +48,7 @@ if(app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-var photosPath = builder.Configuration["PhotoStorage:Path"]!;
-Directory.CreateDirectory(photosPath);
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(photosPath),
-    RequestPath = "/photos"
-});
+app.UsePhotoStorage();
 
 app.UseHttpsRedirection();
 

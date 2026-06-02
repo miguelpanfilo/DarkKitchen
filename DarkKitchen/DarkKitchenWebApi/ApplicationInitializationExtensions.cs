@@ -3,6 +3,7 @@ using BusinessLogicsAbstractions;
 using DarkKitchen.Services;
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 namespace DarkKitchen;
 
@@ -57,6 +58,18 @@ public static class ApplicationInitializationExtensions
     public static WebApplication UseCorsPolicy(this WebApplication app)
     {
         app.UseCors("AllowAngular");
+        return app;
+    }
+
+    public static WebApplication UsePhotoStorage(this WebApplication app)
+    {
+        var photosPath = app.Configuration["PhotoStorage:Path"]!;
+        Directory.CreateDirectory(photosPath);
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            FileProvider = new PhysicalFileProvider(photosPath),
+            RequestPath = "/photos"
+        });
         return app;
     }
 }

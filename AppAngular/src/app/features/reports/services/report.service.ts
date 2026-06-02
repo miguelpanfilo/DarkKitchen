@@ -21,7 +21,7 @@ export class ReportService {
         code: item.code,
         name: item.name,
         quantitySold: item.quantitySold,
-        images: item.images ?? []
+        images: (item.images ?? []).map((img: string) => this.apiUrl + img)
       } as TopProduct)))
     );
   }
