@@ -49,7 +49,12 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPromotionRepository, PromotionRepository>();
         services.AddScoped<IShippingTypeRepository, ShippingTypeRepository>();
 
-        services.AddScoped<IProductPhotoStorage>(_ => new ProductPhotoStorage("C:\\temp\\photos"));
+        services.AddScoped<IProductPhotoStorage>(provider =>
+        {
+            var config = provider.GetRequiredService<IConfiguration>();
+            var path = config["PhotoStorage:Path"]!;
+            return new ProductPhotoStorage(path);
+        });
 
         return services;
     }

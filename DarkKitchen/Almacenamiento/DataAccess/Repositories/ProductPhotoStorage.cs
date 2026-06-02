@@ -21,14 +21,13 @@ public class ProductPhotoStorage : IProductPhotoStorage
 
         File.WriteAllBytes(fullPath, bytes);
 
-        return fullPath;
+        return $"/photos/{fileName}";
     }
 
-    public void Delete(string path)
+    public void Delete(string url)
     {
-        if (File.Exists(path))
-        {
-            File.Delete(path);
-        }
+        var fullPath = Path.Combine(_basePath, Path.GetFileName(url));
+        if (File.Exists(fullPath))
+            File.Delete(fullPath);
     }
 }
