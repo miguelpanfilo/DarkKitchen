@@ -107,11 +107,19 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddImportServices(this IServiceCollection services)
     {
-        services.AddScoped<IProductImporterProvider>(_ =>
+        services.AddSingleton<IPluginAssemblyLoader, PluginAssemblyLoader>();
+
+        services.AddSingleton<IProductImporterProvider>(provider =>
         {
             var pluginsPath = Path.Combine(AppContext.BaseDirectory, "plugins");
 
-            return new ProductImporterProvider(pluginsPath);
+            var importerProvider = new ProductImporterProvider(
+                pluginsPath,
+                provider.GetRequiredService<IPluginAssemblyLoader>());
+
+            importerProvider.Reload();
+
+            return importerProvider;
         });
 
         services.AddScoped<IProductImporterQueryService, ProductImporterQueryService>();
@@ -123,9 +131,7 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<ProductImportersWatcher>(provider =>
         {
-            var pluginsPath = Path.Combine(
-                AppContext.BaseDirectory,
-                "plugins");
+            var pluginsPath = Path.Combine(AppContext.BaseDirectory, "plugins");
 
             return new ProductImportersWatcher(
                 provider.GetRequiredService<IProductImportersChangeNotifier>(),
