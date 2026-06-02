@@ -48,7 +48,7 @@ public class ProductImporterProvider(string pluginsPath,
 
     private void ClearShadowFolder()
     {
-        var shadowFolder = Path.Combine(pluginsPath, "plugins_shadow");
+        var shadowFolder = GetShadowFolderPath();
 
         if(!Directory.Exists(shadowFolder))
         {
@@ -59,11 +59,17 @@ public class ProductImporterProvider(string pluginsPath,
         {
             Directory.Delete(shadowFolder, recursive: true);
         }
-        catch(IOException)
+        catch(Exception ex) when (
+            ex is IOException ||
+            ex is UnauthorizedAccessException)
         {
         }
-        catch(UnauthorizedAccessException)
-        {
-        }
+    }
+
+    private string GetShadowFolderPath()
+    {
+        return Path.Combine(
+            pluginsPath,
+            "plugins_shadow");
     }
 }
