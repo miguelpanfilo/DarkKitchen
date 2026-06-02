@@ -10,13 +10,14 @@ public class ProductImporterProvider(string pluginsPath,
 
     public List<IProductImporter> GetImporters()
     {
-        Directory.CreateDirectory(pluginsPath);
+        Reload();
         return _importers;
     }
 
     public void Reload()
     {
         Directory.CreateDirectory(pluginsPath);
+
         ClearShadowFolder();
 
         _importers = Directory
