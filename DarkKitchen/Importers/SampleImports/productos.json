@@ -6,7 +6,7 @@
     "commercialLine": "Fast Food",
     "category": "Comidas",
     "price": 350.00,
-    "photoPaths": ["C:\\Users\\migue\\OneDrive\\Escritorio\\OBLIGATORIO DISEÑO\\OBLIG NUEVO\\255968_307265_329136\\demo-assets\\fotos-productos\\panqueue2.jpg"]
+    "photoPaths": ["demo-assets\\fotos-productos\\panqueue2.jpg"]
   },
   {
     "code": "PIZZ001",
@@ -15,6 +15,6 @@
     "commercialLine": "Italiana",
     "category": "Comidas",
     "price": 520.00,
-    "photoPaths": ["C:\\Users\\migue\\OneDrive\\Escritorio\\OBLIGATORIO DISEÑO\\OBLIG NUEVO\\255968_307265_329136\\demo-assets\\fotos-productos\\cafe.jpg"]
+    "photoPaths": ["demo-assets\\fotos-productos\\cafe.jpg"]
   }
 ]
