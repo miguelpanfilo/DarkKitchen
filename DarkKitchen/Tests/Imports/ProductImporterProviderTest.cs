@@ -15,7 +15,7 @@ public class ProductImporterProviderTest
         Directory.CreateDirectory(pluginsPath);
 
         var dllPath = Path.Combine(pluginsPath, "TestProductImporter.dll");
-        File.WriteAllText(dllPath, "");
+        File.WriteAllText(dllPath, string.Empty);
 
         var loader = new FakePluginAssemblyLoader(typeof(TestProductImporter).Assembly);
 
@@ -23,7 +23,12 @@ public class ProductImporterProviderTest
 
         var result = provider.GetImporters();
 
-        loader.LoadedPaths.Should().ContainSingle(dllPath);
+        loader.LoadedPaths
+            .Should()
+            .ContainSingle()
+            .Which
+            .Should()
+            .Be(dllPath);
         result.Should().ContainSingle();
     }
 
@@ -32,7 +37,9 @@ public class ProductImporterProviderTest
     {
         var pluginsPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
 
-        var provider = new ProductImporterProvider(pluginsPath);
+        var provider = new ProductImporterProvider(
+            pluginsPath,
+            new PluginAssemblyLoader());
 
         var result = provider.GetImporters();
 
@@ -46,7 +53,9 @@ public class ProductImporterProviderTest
 
         Directory.CreateDirectory(pluginsPath);
 
-        var provider = new ProductImporterProvider(pluginsPath);
+        var provider = new ProductImporterProvider(
+            pluginsPath,
+            new PluginAssemblyLoader());
 
         var result = provider.GetImporters();
 
@@ -64,7 +73,9 @@ public class ProductImporterProviderTest
 
         File.Copy(sourceDll, targetDll);
 
-        var provider = new ProductImporterProvider(pluginsPath);
+        var provider = new ProductImporterProvider(
+            pluginsPath,
+            new PluginAssemblyLoader());
 
         var result = provider.GetImporters();
 

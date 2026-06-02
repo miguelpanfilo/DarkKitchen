@@ -3,7 +3,8 @@ using BusinessLogicsAbstractions;
 
 namespace BusinessLogics;
 
-public class ProductImporterProvider(string pluginsPath) : IProductImporterProvider
+public class ProductImporterProvider(string pluginsPath,
+    IPluginAssemblyLoader assemblyLoader) : IProductImporterProvider
 {
     public List<IProductImporter> GetImporters()
     {
@@ -15,11 +16,11 @@ public class ProductImporterProvider(string pluginsPath) : IProductImporterProvi
             .ToList();
     }
 
-    private static IEnumerable<IProductImporter> LoadImportersFromAssembly(string dllPath)
+    private  IEnumerable<IProductImporter> LoadImportersFromAssembly(string dllPath)
     {
         try
         {
-            var assembly = Assembly.LoadFrom(dllPath);
+            var assembly = assemblyLoader.Load(dllPath);
 
             return assembly
                 .GetTypes()
