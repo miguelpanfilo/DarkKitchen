@@ -3,4 +3,5 @@
 public interface IProductImporterProvider
 {
     List<IProductImporter> GetImporters();
+    void Reload();
 }

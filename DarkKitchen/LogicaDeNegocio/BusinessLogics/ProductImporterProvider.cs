@@ -6,12 +6,22 @@ namespace BusinessLogics;
 public class ProductImporterProvider(string pluginsPath,
     IPluginAssemblyLoader assemblyLoader) : IProductImporterProvider
 {
-    private readonly List<IProductImporter> _importers = [];
+    private List<IProductImporter> _importers = [];
 
     public List<IProductImporter> GetImporters()
     {
         Directory.CreateDirectory(pluginsPath);
         return _importers;
+    }
+
+    public void Reload()
+    {
+        Directory.CreateDirectory(pluginsPath);
+
+        _importers = Directory
+            .GetFiles(pluginsPath, "*.dll")
+            .SelectMany(LoadImportersFromAssembly)
+            .ToList();
     }
 
     private IEnumerable<IProductImporter> LoadImportersFromAssembly(string dllPath)
