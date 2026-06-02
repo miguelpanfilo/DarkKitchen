@@ -5,12 +5,13 @@ namespace BusinessLogics;
 
 public class PluginAssemblyLoader : IPluginAssemblyLoader
 {
+    private const string ShadowFolderName = "plugins_shadow";
     public Assembly Load(string dllPath)
     {
         var shadowFolder =
             Path.Combine(
                 Path.GetDirectoryName(dllPath)!,
-                "plugins_shadow");
+                ShadowFolderName);
 
         Directory.CreateDirectory(shadowFolder);
 
