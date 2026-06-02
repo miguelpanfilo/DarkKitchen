@@ -6,7 +6,7 @@ public interface IOrderFacade
 {
     OrderResponse CreateOrder(int clientId, CreateOrderRequest request);
 
-    OrderResponse GetById(int orderId);
+    OrderResponse GetById(int orderId, int currentUserId, UserRolesDto currentUserRole);
 
     List<OrderResponse> GetClientOrders(int clientId, DateTime? dateFrom, DateTime? dateTo, OrderStatusDto? status);
 
@@ -14,7 +14,7 @@ public interface IOrderFacade
 
     void Prepare(int orderId);
 
-    void Cancel(int orderId);
+    void Cancel(int orderId, int currentUserId, UserRolesDto currentUserRole);
 
     void Dispatch(int orderId);
 

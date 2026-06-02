@@ -2,7 +2,7 @@
 
 public class OrderStatusResponse
 {
-    public int PedidoId { get; set; }
-    public string Estado { get; set; } = string.Empty;
-    public DateTime FechaCambioEstado { get; set; }
+    public int OrderId { get; set; }
+    public string Status { get; set; } = string.Empty;
+    public DateTime StatusUpdatedAt { get; set; }
 }

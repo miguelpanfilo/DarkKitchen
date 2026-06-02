@@ -444,7 +444,7 @@ public sealed class OrderFacadeTests
             .Setup(r => r.GetAll())
             .Returns([]);
 
-        var result = _orderFacade.GetById(1);
+        var result = _orderFacade.GetById(1, currentUserId: 1, UserRolesDto.Administrative);
 
         result.Should().NotBeNull();
         result.Should().BeOfType<OrderResponse>();
@@ -567,7 +567,7 @@ public sealed class OrderFacadeTests
     {
         _orderServiceMock.Setup(s => s.Cancel(1));
 
-        _orderFacade.Cancel(1);
+        _orderFacade.Cancel(1, currentUserId: 1, UserRolesDto.Administrative);
 
         _orderServiceMock.VerifyAll();
     }
