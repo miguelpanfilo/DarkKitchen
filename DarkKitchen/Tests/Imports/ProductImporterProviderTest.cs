@@ -157,6 +157,32 @@ public class ProductImporterProviderTest
             .ContainSingle();
     }
 
+    [TestMethod]
+    public void GetImporters_WhenDllIsRemoved_ShouldReloadImporters()
+    {
+        var pluginsPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        Directory.CreateDirectory(pluginsPath);
+
+        var sourceDll = typeof(TestProductImporter).Assembly.Location;
+        var targetDll = Path.Combine(pluginsPath, "TestProductImporter.dll");
+
+        File.Copy(sourceDll, targetDll);
+
+        var provider = new ProductImporterProvider(
+            pluginsPath,
+            new PluginAssemblyLoader());
+
+        provider.GetImporters()
+            .Should()
+            .ContainSingle();
+
+        File.Delete(targetDll);
+
+        var result = provider.GetImporters();
+
+        result.Should().BeEmpty();
+    }
+
     private class TestProductImporter : IProductImporter
     {
         public string Id => "TestProductImporter";
