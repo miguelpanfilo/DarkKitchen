@@ -9,7 +9,7 @@ namespace Tests.imports;
 public class ProductImporterProviderTest
 {
     [TestMethod]
-    public void GetImporters_WhenDllExists_ShouldUseAssemblyLoader()
+    public void GetImporters_WhenCalled_ShouldNotUseAssemblyLoader()
     {
         var pluginsPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         Directory.CreateDirectory(pluginsPath);
@@ -23,13 +23,8 @@ public class ProductImporterProviderTest
 
         var result = provider.GetImporters();
 
-        loader.LoadedPaths
-            .Should()
-            .ContainSingle()
-            .Which
-            .Should()
-            .Be(dllPath);
-        result.Should().ContainSingle();
+        loader.LoadedPaths.Should().BeEmpty();
+        result.Should().BeEmpty();
     }
 
     [TestMethod]
