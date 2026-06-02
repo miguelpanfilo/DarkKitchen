@@ -90,6 +90,10 @@ export class OrdersListPageComponent implements OnInit {
       this.errorMessage = 'El rango de fechas es obligatorio.';
       return;
     }
+    if (this.filterDateFrom && this.filterDateTo && this.filterDateFrom > this.filterDateTo) {
+      this.errorMessage = 'La fecha de inicio no puede ser posterior a la fecha fin.';
+      return;
+    }
     this.loadOrders();
   }
 
