@@ -612,6 +612,113 @@ public sealed class OrderFacadeTests
         _orderServiceMock.VerifyAll();
     }
 
+    #region GetById ownership
+
+    [TestMethod]
+    public void GetById_WhenClientRequestsOtherClientsOrder_ShouldThrowForbiddenException()
+    {
+        _orderServiceMock
+            .Setup(s => s.GetById(1))
+            .Returns(MakeTestOrder(clientId: 1));
+
+        _repositoryUserMock
+            .Setup(r => r.FindByIdIncludingInactive(1))
+            .Returns(MakeTestUser(1));
+
+        _productRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([]);
+
+        var act = () => _orderFacade.GetById(1, currentUserId: 2, UserRolesDto.Client);
+
+        act.Should().Throw<ForbiddenException>();
+    }
+
+    [TestMethod]
+    public void GetById_WhenClientRequestsOwnOrder_ShouldReturnOrderResponse()
+    {
+        _orderServiceMock
+            .Setup(s => s.GetById(1))
+            .Returns(MakeTestOrder(clientId: 1));
+
+        _repositoryUserMock
+            .Setup(r => r.FindByIdIncludingInactive(1))
+            .Returns(MakeTestUser(1));
+
+        _productRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([]);
+
+        var result = _orderFacade.GetById(1, currentUserId: 1, UserRolesDto.Client);
+
+        result.Should().NotBeNull();
+        _orderServiceMock.VerifyAll();
+    }
+
+    [TestMethod]
+    public void GetById_WhenNonClientRequestsAnyOrder_ShouldReturnOrderResponse()
+    {
+        _orderServiceMock
+            .Setup(s => s.GetById(1))
+            .Returns(MakeTestOrder(clientId: 1));
+
+        _repositoryUserMock
+            .Setup(r => r.FindByIdIncludingInactive(1))
+            .Returns(MakeTestUser(1));
+
+        _productRepositoryMock
+            .Setup(r => r.GetAll())
+            .Returns([]);
+
+        var result = _orderFacade.GetById(1, currentUserId: 99, UserRolesDto.Administrative);
+
+        result.Should().NotBeNull();
+        _orderServiceMock.VerifyAll();
+    }
+
+    #endregion
+
+    #region Cancel ownership
+
+    [TestMethod]
+    public void Cancel_WhenClientCancelsOtherClientsOrder_ShouldThrowForbiddenException()
+    {
+        _orderServiceMock
+            .Setup(s => s.GetById(1))
+            .Returns(MakeTestOrder(clientId: 1));
+
+        var act = () => _orderFacade.Cancel(1, currentUserId: 2, UserRolesDto.Client);
+
+        act.Should().Throw<ForbiddenException>();
+        _orderServiceMock.Verify(s => s.Cancel(It.IsAny<int>()), Times.Never);
+    }
+
+    [TestMethod]
+    public void Cancel_WhenClientCancelsOwnOrder_ShouldDelegateToService()
+    {
+        _orderServiceMock
+            .Setup(s => s.GetById(1))
+            .Returns(MakeTestOrder(clientId: 1));
+
+        _orderServiceMock.Setup(s => s.Cancel(1));
+
+        _orderFacade.Cancel(1, currentUserId: 1, UserRolesDto.Client);
+
+        _orderServiceMock.VerifyAll();
+    }
+
+    [TestMethod]
+    public void Cancel_WhenAdminCancelsAnyOrder_ShouldDelegateToService()
+    {
+        _orderServiceMock.Setup(s => s.Cancel(1));
+
+        _orderFacade.Cancel(1, currentUserId: 99, UserRolesDto.Administrative);
+
+        _orderServiceMock.VerifyAll();
+    }
+
+    #endregion
+
     [TestMethod]
     public void CreateOrder_WhenShippingTypeHasCost_ShouldPassCorrectShippingCostToService()
     {
