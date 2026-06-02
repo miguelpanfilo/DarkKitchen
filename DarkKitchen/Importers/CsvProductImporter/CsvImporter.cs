@@ -1,6 +1,10 @@
 using System.Globalization;
 using BusinessLogicsAbstractions;
 using Contract;
+using CsvHelper;
+using CsvHelper.Configuration;
+using CsvHelper.TypeConversion;
+using ValidationException =BusinessLogicsAbstractions.ValidationException;
 
 namespace CsvProductImporter;
 
@@ -13,41 +17,52 @@ public class CsvImporter : IProductImporter
     {
         try
         {
-            using var reader = new StreamReader(fileStream);
-            var lines = reader.ReadToEnd()
-                .Split('\n', StringSplitOptions.RemoveEmptyEntries)
-                .Select(l => l.Trim())
-                .Where(l => !string.IsNullOrWhiteSpace(l))
-                .ToList();
-
-            if (lines.Count == 0)
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
-                return [];
-            }
+                Delimiter = ";",
+                HasHeaderRecord = true,
+            };
 
-            lines.RemoveAt(0);
+            using var reader = new StreamReader(fileStream);
+            using var csv = new CsvReader(reader, config);
 
-            return lines.Select(ParseLine).ToList();
+            csv.Context.RegisterClassMap<ImportedProductDtoMap>();
+
+            return csv.GetRecords<ImportedProductDto>().ToList();
         }
-        catch (Exception ex) when (ex is IndexOutOfRangeException or FormatException)
+        catch (CsvHelperException)
         {
             throw new ValidationException("El archivo CSV tiene un formato inválido");
         }
     }
+}
 
-    private static ImportedProductDto ParseLine(string line)
+public class ImportedProductDtoMap : ClassMap<ImportedProductDto>
+{
+    public ImportedProductDtoMap()
     {
-        var parts = line.Split(';');
+        Map(m => m.Code).Name("code");
+        Map(m => m.Name).Name("name");
+        Map(m => m.Description).Name("description");
+        Map(m => m.CommercialLine).Name("commercialLine");
+        Map(m => m.Category).Name("category");
+        Map(m => m.Price).Name("price");
+        Map(m => m.PhotoPaths).Name("photoPaths").TypeConverter<PhotoPathsConverter>();
+    }
+}
 
-        return new ImportedProductDto
+public class PhotoPathsConverter : DefaultTypeConverter
+{
+    public override object ConvertFromString(
+        string? text,
+        IReaderRow row,
+        MemberMapData memberMapData)
+    {
+        if (string.IsNullOrWhiteSpace(text))
         {
-            Code = parts[0],
-            Name = parts[1],
-            Description = parts[2],
-            CommercialLine = parts[3],
-            Category = parts[4],
-            Price = decimal.Parse(parts[5], CultureInfo.InvariantCulture),
-            PhotoPaths = [.. parts[6].Split('|')]
-        };
+            return new List<string>();
+        }
+
+        return text.Split('|').ToList();
     }
 }
