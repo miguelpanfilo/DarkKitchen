@@ -50,9 +50,20 @@ public class ProductImporterProvider(string pluginsPath,
     {
         var shadowFolder = Path.Combine(pluginsPath, "plugins_shadow");
 
-        if(Directory.Exists(shadowFolder))
+        if(!Directory.Exists(shadowFolder))
+        {
+            return;
+        }
+
+        try
         {
             Directory.Delete(shadowFolder, recursive: true);
+        }
+        catch(IOException)
+        {
+        }
+        catch(UnauthorizedAccessException)
+        {
         }
     }
 }
