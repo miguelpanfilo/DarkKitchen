@@ -17,14 +17,21 @@ public class ProductImporterProvider(string pluginsPath) : IProductImporterProvi
 
     private static IEnumerable<IProductImporter> LoadImportersFromAssembly(string dllPath)
     {
-        var assembly = Assembly.LoadFrom(dllPath);
+        try
+        {
+            var assembly = Assembly.LoadFrom(dllPath);
 
-        return assembly
-            .GetTypes()
-            .Where(type =>
-                typeof(IProductImporter).IsAssignableFrom(type)
-                && !type.IsInterface
-                && !type.IsAbstract)
-            .Select(type => (IProductImporter)Activator.CreateInstance(type)!);
+            return assembly
+                .GetTypes()
+                .Where(type =>
+                    typeof(IProductImporter).IsAssignableFrom(type)
+                    && !type.IsInterface
+                    && !type.IsAbstract)
+                .Select(type => (IProductImporter)Activator.CreateInstance(type)!);
+        }
+        catch (Exception)
+        {
+            return [];
+        }
     }
 }

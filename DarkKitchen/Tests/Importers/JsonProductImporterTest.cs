@@ -1,7 +1,7 @@
-﻿using System.Text;
+using System.Text;
 using BusinessLogicsAbstractions;
 using FluentAssertions;
-using ProductImporters;
+using JsonProductImporter;
 
 namespace Tests.Importers;
 
@@ -28,7 +28,7 @@ public class JsonProductImporterTest
         using var stream = new MemoryStream(
             Encoding.UTF8.GetBytes(json));
 
-        var importer = new JsonProductImporter();
+        var importer = new JsonImporter();
 
         var result = importer.Import(stream);
 
@@ -51,7 +51,7 @@ public class JsonProductImporterTest
         using var stream = new MemoryStream(
             Encoding.UTF8.GetBytes(json));
 
-        var importer = new JsonProductImporter();
+        var importer = new JsonImporter();
 
         var result = importer.Import(stream);
 
@@ -66,7 +66,7 @@ public class JsonProductImporterTest
         using var stream = new MemoryStream(
             Encoding.UTF8.GetBytes(json));
 
-        var importer = new JsonProductImporter();
+        var importer = new JsonImporter();
 
         Action act = () => importer.Import(stream);
 

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Contratos\Contract\Contract.csproj" />
+        <ProjectReference Include="..\..\LogicaDeNegocioAbstracciones\BusinessLogicsAbstractions\BusinessLogicsAbstractions.csproj" />
+    </ItemGroup>
+
+    <Target Name="CopyPluginToApi" AfterTargets="Build" Condition="'$(SolutionDir)' != '' And '$(SolutionDir)' != '*Undefined*'">
+        <MakeDir Directories="$(SolutionDir)DarkKitchenWebApi\bin\Debug\net8.0\plugins" />
+        <Copy
+            SourceFiles="$(TargetDir)$(TargetFileName)"
+            DestinationFolder="$(SolutionDir)DarkKitchenWebApi\bin\Debug\net8.0\plugins" />
+    </Target>
+
+</Project>

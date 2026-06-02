@@ -4,6 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
 
     <ItemGroup>
@@ -11,11 +12,14 @@
         <ProjectReference Include="..\..\LogicaDeNegocioAbstracciones\BusinessLogicsAbstractions\BusinessLogicsAbstractions.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="CsvHelper" Version="33.0.1" />
+    </ItemGroup>
+
     <Target Name="CopyPluginToApi" AfterTargets="Build">
         <MakeDir Directories="$(SolutionDir)DarkKitchenWebApi\bin\Debug\net8.0\plugins" />
-        <Copy
-            SourceFiles="$(TargetDir)$(TargetFileName)"
-            DestinationFolder="$(SolutionDir)DarkKitchenWebApi\bin\Debug\net8.0\plugins" />
+        <Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFolder="$(SolutionDir)DarkKitchenWebApi\bin\Debug\net8.0\plugins" />
+        <Copy SourceFiles="$(TargetDir)CsvHelper.dll" DestinationFolder="$(SolutionDir)DarkKitchenWebApi\bin\Debug\net8.0\plugins" />
     </Target>
 
 </Project>

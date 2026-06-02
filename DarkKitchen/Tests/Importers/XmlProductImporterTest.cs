@@ -1,7 +1,7 @@
-﻿using System.Text;
+using System.Text;
 using BusinessLogicsAbstractions;
 using FluentAssertions;
-using ProductImporters;
+using XmlProductImporter;
 
 namespace Tests.Importers;
 
@@ -30,7 +30,7 @@ public class XmlProductImporterTest
         using var stream = new MemoryStream(
             Encoding.UTF8.GetBytes(xml));
 
-        var importer = new XmlProductImporter();
+        var importer = new XmlImporter();
 
         var result = importer.Import(stream);
 
@@ -56,7 +56,7 @@ public class XmlProductImporterTest
         using var stream = new MemoryStream(
             Encoding.UTF8.GetBytes(xml));
 
-        var importer = new XmlProductImporter();
+        var importer = new XmlImporter();
 
         var result = importer.Import(stream);
 
@@ -71,7 +71,7 @@ public class XmlProductImporterTest
         using var stream = new MemoryStream(
             Encoding.UTF8.GetBytes(xml));
 
-        var importer = new XmlProductImporter();
+        var importer = new XmlImporter();
 
         Action act = () => importer.Import(stream);
 
