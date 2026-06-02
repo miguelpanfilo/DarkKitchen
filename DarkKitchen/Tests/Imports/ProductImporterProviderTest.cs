@@ -84,6 +84,31 @@ public class ProductImporterProviderTest
         result[0].Name.Should().Be("Importador de prueba");
     }
 
+    [TestMethod]
+    public void Load_WhenDllPathIsProvided_ShouldCreateShadowCopy()
+    {
+        var pluginsPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        Directory.CreateDirectory(pluginsPath);
+
+        var originalDllPath = typeof(TestProductImporter).Assembly.Location;
+        var pluginDllPath = Path.Combine(pluginsPath, "TestProductImporter.dll");
+
+        File.Copy(originalDllPath, pluginDllPath);
+
+        var loader = new PluginAssemblyLoader();
+
+        loader.Load(pluginDllPath);
+
+        var shadowFolder = Path.Combine(pluginsPath, "plugins_shadow");
+
+        Directory.Exists(shadowFolder).Should().BeTrue();
+
+        Directory
+            .GetFiles(shadowFolder, "*.dll")
+            .Should()
+            .ContainSingle();
+    }
+
     private class TestProductImporter : IProductImporter
     {
         public string Id => "TestProductImporter";

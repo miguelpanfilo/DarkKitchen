@@ -16,7 +16,7 @@ public class ProductImporterProvider(string pluginsPath,
             .ToList();
     }
 
-    private  IEnumerable<IProductImporter> LoadImportersFromAssembly(string dllPath)
+    private IEnumerable<IProductImporter> LoadImportersFromAssembly(string dllPath)
     {
         try
         {
