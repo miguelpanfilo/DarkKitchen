@@ -67,7 +67,7 @@
             <td style="padding: 0.5rem; border: 1px solid #ccc;">
               <ng-container *ngIf="product.photos?.length > 0; else noPhoto">
                 <img *ngFor="let photo of product.photos"
-                     [src]="'data:image/' + photo.extension + ';base64,' + photo.base64"
+                     [src]="apiUrl + photo.path"
                      style="width: 60px; height: 60px; object-fit: cover; margin-right: 4px;" />
               </ng-container>
               <ng-template #noPhoto><span style="color: gray;">Sin fotos</span></ng-template>

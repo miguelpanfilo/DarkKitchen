@@ -18,6 +18,7 @@ export class ProductImportersPageComponent implements OnInit {
   errorMessage: string = '';
   loading: boolean = false;
   importedProducts: any[] = [];
+  readonly apiUrl = 'http://localhost:5254';
 
   constructor(private importerService: ProductImporterService) {}
 
