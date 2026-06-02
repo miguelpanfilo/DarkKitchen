@@ -131,6 +131,32 @@ public class ProductImporterProviderTest
             .ContainSingle();
     }
 
+    [TestMethod]
+    public void Reload_WhenCalledTwice_ShouldNotAccumulateShadowCopies()
+    {
+        var pluginsPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        Directory.CreateDirectory(pluginsPath);
+
+        var originalDllPath = typeof(TestProductImporter).Assembly.Location;
+        var pluginDllPath = Path.Combine(pluginsPath, "TestProductImporter.dll");
+
+        File.Copy(originalDllPath, pluginDllPath);
+
+        var provider = new ProductImporterProvider(
+            pluginsPath,
+            new PluginAssemblyLoader());
+
+        provider.Reload();
+        provider.Reload();
+
+        var shadowFolder = Path.Combine(pluginsPath, "plugins_shadow");
+
+        Directory
+            .GetFiles(shadowFolder, "*.dll")
+            .Should()
+            .ContainSingle();
+    }
+
     private class TestProductImporter : IProductImporter
     {
         public string Id => "TestProductImporter";
