@@ -1,4 +1,5 @@
-﻿using BusinessLogics;
+﻿using System.Reflection;
+using BusinessLogics;
 using BusinessLogicsAbstractions;
 using Contract;
 using FluentAssertions;
@@ -7,6 +8,25 @@ namespace Tests.imports;
 [TestClass]
 public class ProductImporterProviderTest
 {
+    [TestMethod]
+    public void GetImporters_WhenDllExists_ShouldUseAssemblyLoader()
+    {
+        var pluginsPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        Directory.CreateDirectory(pluginsPath);
+
+        var dllPath = Path.Combine(pluginsPath, "TestProductImporter.dll");
+        File.WriteAllText(dllPath, "");
+
+        var loader = new FakePluginAssemblyLoader(typeof(TestProductImporter).Assembly);
+
+        var provider = new ProductImporterProvider(pluginsPath, loader);
+
+        var result = provider.GetImporters();
+
+        loader.LoadedPaths.Should().ContainSingle(dllPath);
+        result.Should().ContainSingle();
+    }
+
     [TestMethod]
     public void GetImporters_WhenPluginsFolderDoesNotExist_ShouldReturnEmptyList()
     {
@@ -61,6 +81,17 @@ public class ProductImporterProviderTest
         public List<ImportedProductDto> Import(Stream fileStream)
         {
             return [];
+        }
+    }
+
+    private class FakePluginAssemblyLoader(Assembly assembly) : IPluginAssemblyLoader
+    {
+        public List<string> LoadedPaths { get; } = [];
+
+        public Assembly Load(string dllPath)
+        {
+            LoadedPaths.Add(dllPath);
+            return assembly;
         }
     }
 }
