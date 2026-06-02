@@ -71,7 +71,11 @@ public class ImportedProductDto
 
 ### 3. Compilar y desplegar
 
-Compilar el proyecto como Class Library. Copiar únicamente el `.dll` resultante (no sus dependencias) a la carpeta `plugins/` junto al ejecutable de la WebApi.
+Compilar el proyecto como Class Library. Copiar el `.dll` resultante a la carpeta `plugins/` junto al ejecutable de la WebApi.
+
+Si el plugin usa librerías NuGet externas (no incluidas en el runtime de .NET), también deben copiarse sus DLLs a la carpeta `plugins/`. Las librerías del runtime de .NET (`System.Text.Json`, `System.Xml.Serialization`, etc.) no necesitan copiarse porque ya están disponibles.
+
+**Ejemplo:** un plugin que usa `CsvHelper` debe copiar tanto `CsvImporter.dll` como `CsvHelper.dll` a `plugins/`.
 
 ### 4. El sistema lo descubre automáticamente
 
