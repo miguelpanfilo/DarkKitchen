@@ -24,6 +24,7 @@ import { EditProductPageComponent } from './features/products/pages/edit-product
 import { PromotionsListPageComponent } from './features/promotions/pages/promotions-list-page/promotions-list-page.component';
 import { EditPromotionPageComponent } from './features/promotions/pages/edit-promotion-page/edit-promotion-page.component';
 import { CreatePromotionPageComponent } from './features/promotions/pages/create-promotion-page/create-promotion-page.component';
+import { ProductImportersPageComponent } from './features/product-importers/pages/product-importers-page/product-importers-page.component';
 
 export const routes: Routes = [
   {
@@ -94,6 +95,7 @@ export const routes: Routes = [
         path: 'promotions/edit/:id', component: EditPromotionPageComponent,
         canActivate: [roleGuard(['Administrative'])]
       },
+      { path: 'product-importers', component: ProductImportersPageComponent },
     ]
   },
   { path: '**', component: NotFoundComponent }

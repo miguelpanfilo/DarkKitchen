@@ -1,0 +1,80 @@
+<div style="padding: 2rem;">
+  <h2>Importadores disponibles</h2>
+  <p style="color: gray; font-size: 0.9rem;">
+    La lista se actualiza automáticamente al agregar o quitar DLLs de la carpeta <code>plugins/</code>.
+  </p>
+
+  <ng-container *ngIf="importers$ | async as importers">
+    <ul *ngIf="importers.length > 0; else empty">
+      <li *ngFor="let importer of importers" style="margin-bottom: 0.5rem;">
+        <strong>{{ importer.name }}</strong> <span style="color: gray;">({{ importer.id }})</span>
+      </li>
+    </ul>
+    <ng-template #empty>
+      <p>No hay importadores disponibles en la carpeta plugins.</p>
+    </ng-template>
+
+    <hr style="margin: 2rem 0;" />
+
+    <h3>Importar productos</h3>
+
+    <div style="display: flex; flex-direction: column; gap: 1rem; max-width: 400px;">
+      <div>
+        <label>Importador</label><br/>
+        <select [(ngModel)]="selectedImporterName" (ngModelChange)="onImporterChange()" style="width: 100%; padding: 0.4rem;">
+          <option value="">-- Seleccioná un importador --</option>
+          <option *ngFor="let importer of importers" [value]="importer.name">
+            {{ importer.name }}
+          </option>
+        </select>
+      </div>
+
+      <div
+        (dragover)="onDragOver($event)"
+        (drop)="onFileDrop($event)"
+        style="border: 2px dashed #aaa; padding: 2rem; text-align: center; border-radius: 8px; cursor: pointer; background: #fafafa;">
+        <p style="margin: 0 0 0.5rem 0;">Arrastrá un archivo acá</p>
+        <p style="margin: 0 0 0.5rem 0; color: gray; font-size: 0.85rem;">o</p>
+        <input type="file" (change)="onFileChange($event)" style="display: block; margin: 0 auto;" />
+        <p *ngIf="loading" style="margin-top: 1rem; color: gray;">Importando...</p>
+      </div>
+
+      <p *ngIf="successMessage" style="color: green;">{{ successMessage }}</p>
+      <p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
+    </div>
+
+    <ng-container *ngIf="importedProducts.length > 0">
+      <hr style="margin: 2rem 0;" />
+      <h3>Productos importados</h3>
+      <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr style="background: #f0f0f0;">
+            <th style="padding: 0.5rem; border: 1px solid #ccc;">Código</th>
+            <th style="padding: 0.5rem; border: 1px solid #ccc;">Nombre</th>
+            <th style="padding: 0.5rem; border: 1px solid #ccc;">Línea comercial</th>
+            <th style="padding: 0.5rem; border: 1px solid #ccc;">Categoría</th>
+            <th style="padding: 0.5rem; border: 1px solid #ccc;">Precio</th>
+            <th style="padding: 0.5rem; border: 1px solid #ccc;">Fotos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let product of importedProducts">
+            <td style="padding: 0.5rem; border: 1px solid #ccc;">{{ product.code }}</td>
+            <td style="padding: 0.5rem; border: 1px solid #ccc;">{{ product.name }}</td>
+            <td style="padding: 0.5rem; border: 1px solid #ccc;">{{ product.commercialLine }}</td>
+            <td style="padding: 0.5rem; border: 1px solid #ccc;">{{ product.category }}</td>
+            <td style="padding: 0.5rem; border: 1px solid #ccc;">{{ product.price }}</td>
+            <td style="padding: 0.5rem; border: 1px solid #ccc;">
+              <ng-container *ngIf="product.photos?.length > 0; else noPhoto">
+                <img *ngFor="let photo of product.photos"
+                     [src]="'data:image/' + photo.extension + ';base64,' + photo.base64"
+                     style="width: 60px; height: 60px; object-fit: cover; margin-right: 4px;" />
+              </ng-container>
+              <ng-template #noPhoto><span style="color: gray;">Sin fotos</span></ng-template>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
+  </ng-container>
+</div>
