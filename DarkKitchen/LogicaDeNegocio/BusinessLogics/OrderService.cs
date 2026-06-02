@@ -48,6 +48,11 @@ public class OrderService(IOrderRepository orderRepository) : IOrderService
 
     public List<Order> GetOrdersByFilters(DateTime dateFrom, DateTime dateTo, string? street, OrderStatus? status)
     {
+        if (dateFrom > dateTo)
+        {
+            throw new ValidationException("Fecha inicio no puede ser posterior a fecha fin");
+        }
+
         return _orderRepository.GetByFilters(dateFrom, dateTo, street, status);
     }
 
