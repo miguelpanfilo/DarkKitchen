@@ -17,6 +17,7 @@ public class ProductImporterProvider(string pluginsPath,
     public void Reload()
     {
         Directory.CreateDirectory(pluginsPath);
+        ClearShadowFolder();
 
         _importers = Directory
             .GetFiles(pluginsPath, "*.dll")
@@ -41,6 +42,16 @@ public class ProductImporterProvider(string pluginsPath,
         catch (Exception)
         {
             return [];
+        }
+    }
+
+    private void ClearShadowFolder()
+    {
+        var shadowFolder = Path.Combine(pluginsPath, "plugins_shadow");
+
+        if(Directory.Exists(shadowFolder))
+        {
+            Directory.Delete(shadowFolder, recursive: true);
         }
     }
 }
