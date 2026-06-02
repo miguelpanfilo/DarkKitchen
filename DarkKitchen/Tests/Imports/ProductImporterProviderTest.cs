@@ -97,6 +97,8 @@ public class ProductImporterProviderTest
             pluginsPath,
             new PluginAssemblyLoader());
 
+        provider.Reload();
+
         var result = provider.GetImporters();
 
         result.Should().ContainSingle();
