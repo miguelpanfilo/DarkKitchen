@@ -3,8 +3,10 @@ using BusinessLogicsAbstractions;
 using DataAccess.Repositories;
 using DataAccessAbstractions;
 using FactoryService;
+using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 
 namespace Tests.ServiceFactory;
 
@@ -230,5 +232,267 @@ public class DependencyInjectionTests
         Assert.IsNotNull(descriptor);
         Assert.AreEqual(typeof(ShippingTypeRepository), descriptor.ImplementationType);
         Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
+    }
+
+    [TestMethod]
+    public void AddDarkKitchenDependencies_RegistersOrderRepository()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder().Build();
+
+        services.AddDarkKitchenDependencies(configuration);
+
+        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(IOrderRepository));
+
+        Assert.IsNotNull(descriptor);
+        Assert.AreEqual(typeof(OrderRepository), descriptor.ImplementationType);
+        Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
+    }
+
+    [TestMethod]
+    public void AddDarkKitchenDependencies_RegistersProductRepository()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder().Build();
+
+        services.AddDarkKitchenDependencies(configuration);
+
+        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(IProductRepository));
+
+        Assert.IsNotNull(descriptor);
+        Assert.AreEqual(typeof(ProductRepository), descriptor.ImplementationType);
+        Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
+    }
+
+    [TestMethod]
+    public void AddDarkKitchenDependencies_RegistersPromotionRepository()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder().Build();
+
+        services.AddDarkKitchenDependencies(configuration);
+
+        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(IPromotionRepository));
+
+        Assert.IsNotNull(descriptor);
+        Assert.AreEqual(typeof(PromotionRepository), descriptor.ImplementationType);
+        Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
+    }
+
+    [TestMethod]
+    public void AddDarkKitchenDependencies_RegistersOrderFacade()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder().Build();
+
+        services.AddDarkKitchenDependencies(configuration);
+
+        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(IOrderFacade));
+
+        Assert.IsNotNull(descriptor);
+        Assert.AreEqual(typeof(OrderFacade), descriptor.ImplementationType);
+        Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
+    }
+
+    [TestMethod]
+    public void AddDarkKitchenDependencies_RegistersOrderService()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder().Build();
+
+        services.AddDarkKitchenDependencies(configuration);
+
+        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(IOrderService));
+
+        Assert.IsNotNull(descriptor);
+        Assert.AreEqual(typeof(OrderService), descriptor.ImplementationType);
+        Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
+    }
+
+    [TestMethod]
+    public void AddDarkKitchenDependencies_RegistersReportService()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder().Build();
+
+        services.AddDarkKitchenDependencies(configuration);
+
+        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(IReportService));
+
+        Assert.IsNotNull(descriptor);
+        Assert.AreEqual(typeof(ReportService), descriptor.ImplementationType);
+        Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
+    }
+
+    [TestMethod]
+    public void AddDarkKitchenDependencies_RegistersProductService()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder().Build();
+
+        services.AddDarkKitchenDependencies(configuration);
+
+        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(IProductService));
+
+        Assert.IsNotNull(descriptor);
+        Assert.AreEqual(typeof(ProductService), descriptor.ImplementationType);
+        Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
+    }
+
+    [TestMethod]
+    public void AddDarkKitchenDependencies_RegistersPromotionService()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder().Build();
+
+        services.AddDarkKitchenDependencies(configuration);
+
+        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(IPromotionService));
+
+        Assert.IsNotNull(descriptor);
+        Assert.AreEqual(typeof(PromotionService), descriptor.ImplementationType);
+        Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
+    }
+
+    [TestMethod]
+    public void AddDarkKitchenDependencies_RegistersShippingTypeService()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder().Build();
+
+        services.AddDarkKitchenDependencies(configuration);
+
+        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(IShippingTypeService));
+
+        Assert.IsNotNull(descriptor);
+        Assert.AreEqual(typeof(ShippingTypeService), descriptor.ImplementationType);
+        Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
+    }
+
+    [TestMethod]
+    public void AddDarkKitchenDependencies_RegistersAuditLogRepository()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder().Build();
+
+        services.AddDarkKitchenDependencies(configuration);
+
+        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(IAuditLogRepository));
+
+        Assert.IsNotNull(descriptor);
+        Assert.AreEqual(typeof(AuditLogRepository), descriptor.ImplementationType);
+        Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
+    }
+
+    [TestMethod]
+    public void AddDarkKitchenDependencies_RegistersAuditLogService()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder().Build();
+
+        services.AddDarkKitchenDependencies(configuration);
+
+        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(IAuditLogService));
+
+        Assert.IsNotNull(descriptor);
+        Assert.AreEqual(typeof(AuditLogService), descriptor.ImplementationType);
+        Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
+    }
+
+    [TestMethod]
+    public void AddDarkKitchenDependencies_RegistersProductImporterQueryService()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder().Build();
+
+        services.AddDarkKitchenDependencies(configuration);
+
+        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(IProductImporterQueryService));
+
+        Assert.IsNotNull(descriptor);
+        Assert.AreEqual(typeof(ProductImporterQueryService), descriptor.ImplementationType);
+        Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
+    }
+
+    [TestMethod]
+    public void AddDarkKitchenDependencies_RegistersProductImportService()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder().Build();
+
+        services.AddDarkKitchenDependencies(configuration);
+
+        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(IProductImportService));
+
+        Assert.IsNotNull(descriptor);
+        Assert.AreEqual(typeof(ProductImportService), descriptor.ImplementationType);
+        Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
+    }
+
+    [TestMethod]
+    public void AddDarkKitchenDependencies_RegistersProductImportersChangeService()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder().Build();
+
+        services.AddDarkKitchenDependencies(configuration);
+
+        var descriptor = services.FirstOrDefault(x => x.ServiceType == typeof(IProductImportersChangeService));
+
+        Assert.IsNotNull(descriptor);
+        Assert.AreEqual(typeof(ProductImportersChangeService), descriptor.ImplementationType);
+        Assert.AreEqual(ServiceLifetime.Scoped, descriptor.Lifetime);
+    }
+
+    [TestMethod]
+    public void AddDarkKitchenDependencies_CanResolveProductImporterProvider()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["PhotoStorage:Path"] = Path.GetTempPath() })
+            .Build();
+        services.AddDarkKitchenDependencies(configuration);
+        services.AddSingleton<IProductImportersChangeNotifier>(new Mock<IProductImportersChangeNotifier>().Object);
+
+        var provider = services.BuildServiceProvider();
+
+        var result = provider.GetRequiredService<IProductImporterProvider>();
+
+        result.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public void AddDarkKitchenDependencies_CanResolveProductImportersWatcher()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["PhotoStorage:Path"] = Path.GetTempPath() })
+            .Build();
+        services.AddDarkKitchenDependencies(configuration);
+        services.AddSingleton<IProductImportersChangeNotifier>(new Mock<IProductImportersChangeNotifier>().Object);
+
+        var provider = services.BuildServiceProvider();
+
+        var result = provider.GetRequiredService<ProductImportersWatcher>();
+
+        result.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public void AddDarkKitchenDependencies_CanResolveProductPhotoStorage()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["PhotoStorage:Path"] = Path.GetTempPath() })
+            .Build();
+        services.AddSingleton<IConfiguration>(configuration);
+        services.AddDarkKitchenDependencies(configuration);
+
+        var provider = services.BuildServiceProvider();
+        using var scope = provider.CreateScope();
+
+        var result = scope.ServiceProvider.GetRequiredService<IProductPhotoStorage>();
+
+        result.Should().NotBeNull();
     }
 }

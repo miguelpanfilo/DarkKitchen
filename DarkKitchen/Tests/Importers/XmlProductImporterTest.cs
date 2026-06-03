@@ -77,4 +77,16 @@ public class XmlProductImporterTest
 
         act.Should().Throw<ValidationException>();
     }
+
+    [TestMethod]
+    public void XmlImporter_Id_ShouldBeXml()
+    {
+        new XmlImporter().Id.Should().Be("xml");
+    }
+
+    [TestMethod]
+    public void XmlImporter_Name_ShouldBeXML()
+    {
+        new XmlImporter().Name.Should().Be("XML");
+    }
 }

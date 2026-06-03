@@ -92,4 +92,22 @@ public class CsvProductImporterTest
         act.Should().Throw<ValidationException>()
             .WithMessage("El archivo CSV tiene un formato inválido");
     }
+
+    [TestMethod]
+    public void Import_WhenProductHasEmptyPhotoPaths_ShouldReturnEmptyPhotoList()
+    {
+        var csv = """
+                  code;name;description;commercialLine;category;price;photoPaths
+                  CSV005;Empanada;Desc;Casera;Comidas;150.00;
+                  """;
+
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(csv));
+
+        var importer = new CsvImporter();
+
+        var result = importer.Import(stream);
+
+        result.Should().HaveCount(1);
+        result[0].PhotoPaths.Should().BeEmpty();
+    }
 }
