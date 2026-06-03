@@ -449,14 +449,14 @@ public sealed class OrdersControllerTests
     }
 
     [TestMethod]
-    public void Delay_WhenAdmin_ShouldReturnOk()
+    public void Delay_WhenPreparer_ShouldReturnOk()
     {
-        SetCurrentUser(MakeAdmin());
+        SetCurrentUser(MakePreparer());
 
         var updatedOrder = MakeOrderResponse(clientId: 1, status: "Delayed");
 
         _orderFacadeMock.Setup(f => f.Delay(1));
-        _orderFacadeMock.Setup(f => f.GetById(1, 3, UserRolesDto.Administrative)).Returns(updatedOrder);
+        _orderFacadeMock.Setup(f => f.GetById(1, 2, UserRolesDto.Preparer)).Returns(updatedOrder);
 
         var result = _controller.Delay(1);
 
@@ -466,14 +466,14 @@ public sealed class OrdersControllerTests
     }
 
     [TestMethod]
-    public void Delay_WhenAdmin_ShouldReturnOkWithStatusResponse()
+    public void Delay_WhenPreparer_ShouldReturnOkWithStatusResponse()
     {
-        SetCurrentUser(MakeAdmin());
+        SetCurrentUser(MakePreparer());
 
         var updatedOrder = MakeOrderResponse(clientId: 1, status: "Delayed");
 
         _orderFacadeMock.Setup(f => f.Delay(1));
-        _orderFacadeMock.Setup(f => f.GetById(1, 3, UserRolesDto.Administrative)).Returns(updatedOrder);
+        _orderFacadeMock.Setup(f => f.GetById(1, 2, UserRolesDto.Preparer)).Returns(updatedOrder);
 
         var result = _controller.Delay(1);
 

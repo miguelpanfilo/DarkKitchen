@@ -1,80 +1,66 @@
-﻿using Contract;
+using Contract;
 using DataAccess.Repositories;
 
 namespace Tests.Storages;
 
 [TestClass]
-public class StorageProductPhotoTest
+public sealed class StorageProductPhotoTest
 {
+    private string _tempDir = null!;
+
+    [TestInitialize]
+    public void Setup()
+    {
+        _tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+    }
+
+    [TestCleanup]
+    public void Cleanup()
+    {
+        if (Directory.Exists(_tempDir))
+        {
+            Directory.Delete(_tempDir, true);
+        }
+    }
+
     [TestMethod]
     public void GivenValidPhoto_WhenSaving_ThenCreatesFile()
     {
-        var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-        Directory.CreateDirectory(tempDir);
+        Directory.CreateDirectory(_tempDir);
+        var storage = new ProductPhotoStorage(_tempDir);
+        var base64 = Convert.ToBase64String(new byte[] { 1, 2, 3 });
+        var photo = new PhotoDTO("foto", ".jpg", 3, base64);
 
-        try
-        {
-            var storage = new ProductPhotoStorage(tempDir);
-            var base64 = Convert.ToBase64String(new byte[] { 1, 2, 3 });
+        var url = storage.Save(photo.Base64, photo.Extension);
 
-            var photo = new PhotoDTO("foto", ".jpg", 3, base64);
-
-            var path = storage.Save(photo.Base64, photo.Extension);
-
-            Assert.IsTrue(File.Exists(path));
-        }
-        finally
-        {
-            Directory.Delete(tempDir, true);
-        }
+        var fullPath = Path.Combine(_tempDir, Path.GetFileName(url));
+        Assert.IsTrue(File.Exists(fullPath));
     }
 
     [TestMethod]
     public void GivenExistingFile_WhenDeleting_ThenRemovesFile()
     {
-        var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-        Directory.CreateDirectory(tempDir);
+        Directory.CreateDirectory(_tempDir);
+        var filePath = Path.Combine(_tempDir, "foto.jpg");
+        File.WriteAllBytes(filePath, new byte[] { 1, 2, 3 });
+        var storage = new ProductPhotoStorage(_tempDir);
 
-        try
-        {
-            var filePath = Path.Combine(tempDir, "foto.jpg");
-            File.WriteAllBytes(filePath, new byte[] { 1, 2, 3 });
+        storage.Delete(filePath);
 
-            var storage = new ProductPhotoStorage(tempDir);
-
-            storage.Delete(filePath);
-
-            Assert.IsFalse(File.Exists(filePath));
-        }
-        finally
-        {
-            Directory.Delete(tempDir, true);
-        }
+        Assert.IsFalse(File.Exists(filePath));
     }
 
     [TestMethod]
     public void GivenNonExistingDirectory_WhenSavingPhoto_ThenCreatesDirectoryAndSavesFile()
     {
-        var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        var storage = new ProductPhotoStorage(_tempDir);
+        var base64 = Convert.ToBase64String(new byte[] { 1, 2, 3 });
+        var photo = new PhotoDTO("foto", ".jpg", 3, base64);
 
-        try
-        {
-            var storage = new ProductPhotoStorage(tempDir);
-            var base64 = Convert.ToBase64String(new byte[] { 1, 2, 3 });
+        var url = storage.Save(photo.Base64, photo.Extension);
 
-            var photo = new PhotoDTO("foto", ".jpg", 3, base64);
-
-            var path = storage.Save(photo.Base64, photo.Extension);
-
-            Assert.IsTrue(Directory.Exists(tempDir));
-            Assert.IsTrue(File.Exists(path));
-        }
-        finally
-        {
-            if (Directory.Exists(tempDir))
-            {
-                Directory.Delete(tempDir, true);
-            }
-        }
+        var fullPath = Path.Combine(_tempDir, Path.GetFileName(url));
+        Assert.IsTrue(Directory.Exists(_tempDir));
+        Assert.IsTrue(File.Exists(fullPath));
     }
 }
