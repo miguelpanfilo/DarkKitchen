@@ -17,6 +17,13 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Content Include="..\..\demo-assets\fotos-productos\*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Link>demo-assets\fotos-productos\%(Filename)%(Extension)</Link>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\AlmacenamientoAbstracciones\DataAccessAbstractions\DataAccessAbstractions.csproj" />
         <ProjectReference Include="..\Almacenamiento\DataAccess\DataAccess.csproj" />
         <ProjectReference Include="..\FactoryService\FactoryService.csproj" />

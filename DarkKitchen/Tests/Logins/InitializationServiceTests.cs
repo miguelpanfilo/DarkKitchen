@@ -63,7 +63,7 @@ public class InitializationServiceTests
 
         _shippingTypeRepositoryMock.Verify(
             x => x.Create(It.Is<ShippingType>(s => s.Name ==
-                                                   "TwentyFourHours")),
+                                                   "Envio dentro de 24 horas")),
             Times.Once);
     }
 

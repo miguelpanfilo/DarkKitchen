@@ -8,7 +8,7 @@
     <Category>Comidas</Category>
     <Price>480.00</Price>
     <PhotoPaths>
-      <string>C:\Users\migue\OneDrive\Escritorio\OBLIGATORIO DISEÑO\OBLIG NUEVO\255968_307265_329136\DarkKitchen\Importers\SampleImports\sample.jpg</string>
+      <string>demo-assets\fotos-productos\verdura.jpg</string>
     </PhotoPaths>
   </ImportedProductDto>
   <ImportedProductDto>
@@ -19,7 +19,7 @@
     <Category>Entradas</Category>
     <Price>120.00</Price>
     <PhotoPaths>
-      <string>C:\Users\migue\OneDrive\Escritorio\OBLIGATORIO DISEÑO\OBLIG NUEVO\255968_307265_329136\DarkKitchen\Importers\SampleImports\sample.jpg</string>
+      <string>demo-assets\fotos-productos\cafe2.jpg</string>
     </PhotoPaths>
   </ImportedProductDto>
 </ArrayOfImportedProductDto>

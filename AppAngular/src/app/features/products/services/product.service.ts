@@ -26,7 +26,7 @@ export class ProductService {
       category: item.category,
       price: item.price,
       isActive: item.isActive,
-      photos: (item.photos ?? []).map((p: any) => ({ path: p.path }))
+      photos: (item.photos ?? []).map((p: any) => ({ path: this.apiUrl + p.path }))
     };
   }
 

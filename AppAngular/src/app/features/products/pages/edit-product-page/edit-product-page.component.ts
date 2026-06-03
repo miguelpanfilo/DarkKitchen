@@ -61,7 +61,9 @@ export class EditProductPageComponent implements OnInit {
         this.category = product.category;
         this.price = product.price;
         this.isActive = product.isActive;
-        this.photos = product.photos.map(p => ({ path: p.path }));
+        this.photos = product.photos.map(p => ({
+          path: p.path.startsWith('http') ? new URL(p.path).pathname : p.path
+        }));
       },
       error: (error) => {
         this.isLoading = false;

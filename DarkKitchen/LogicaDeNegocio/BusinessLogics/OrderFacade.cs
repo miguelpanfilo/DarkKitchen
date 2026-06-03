@@ -57,9 +57,15 @@ public class OrderFacade(
             request.Address.Apartment);
     }
 
-    public OrderResponse GetById(int orderId)
+    public OrderResponse GetById(int orderId, int currentUserId, UserRolesDto currentUserRole)
     {
         var order = _orderService.GetById(orderId);
+
+        if (currentUserRole == UserRolesDto.Client && order.ClientId != currentUserId)
+        {
+            throw new ForbiddenException("El usuario no tiene permisos para ejecutar esta acción");
+        }
+
         return ToOrderResponseWithClient(order);
     }
 
@@ -132,9 +138,20 @@ public class OrderFacade(
         ServiceExceptionHandler.ExecuteWithConflictHandling<OrderException>(
             () => _orderService.Prepare(orderId));
 
-    public void Cancel(int orderId) =>
+    public void Cancel(int orderId, int currentUserId, UserRolesDto currentUserRole)
+    {
+        if (currentUserRole == UserRolesDto.Client)
+        {
+            var order = _orderService.GetById(orderId);
+            if (order.ClientId != currentUserId)
+            {
+                throw new ForbiddenException("El usuario no tiene permisos para ejecutar esta acción");
+            }
+        }
+
         ServiceExceptionHandler.ExecuteWithConflictHandling<OrderException>(
             () => _orderService.Cancel(orderId));
+    }
 
     public void Dispatch(int orderId) =>
         ServiceExceptionHandler.ExecuteWithConflictHandling<OrderException>(

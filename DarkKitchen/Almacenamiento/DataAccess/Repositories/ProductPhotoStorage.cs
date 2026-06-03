@@ -16,19 +16,21 @@ public class ProductPhotoStorage : IProductPhotoStorage
         Directory.CreateDirectory(_basePath);
 
         var bytes = Convert.FromBase64String(base64);
-        var fileName = $"{Guid.NewGuid()}{extension}";
+        var normalizedExtension = extension.StartsWith('.') ? extension : $".{extension}";
+        var fileName = $"{Guid.NewGuid()}{normalizedExtension}";
         var fullPath = Path.Combine(_basePath, fileName);
 
         File.WriteAllBytes(fullPath, bytes);
 
-        return fullPath;
+        return $"/photos/{fileName}";
     }
 
-    public void Delete(string path)
+    public void Delete(string url)
     {
-        if (File.Exists(path))
+        var fullPath = Path.Combine(_basePath, Path.GetFileName(url));
+        if (File.Exists(fullPath))
         {
-            File.Delete(path);
+            File.Delete(fullPath);
         }
     }
 }

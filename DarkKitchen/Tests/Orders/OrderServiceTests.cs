@@ -173,6 +173,20 @@ public sealed class OrderServiceTests
         result.Should().BeEmpty();
     }
     #endregion
+
+    #region Error
+    [TestMethod]
+    public void GetOrdersByFilters_WhenDateFromIsAfterDateTo_ShouldThrowValidationException()
+    {
+        var dateFrom = new DateTime(2026, 1, 31, 0, 0, 0, DateTimeKind.Utc);
+        var dateTo = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        var act = () => _orderService.GetOrdersByFilters(dateFrom, dateTo, null, null);
+
+        act.Should().Throw<ValidationException>()
+            .WithMessage("Fecha inicio no puede ser posterior a fecha fin");
+    }
+    #endregion
     #endregion
 
     #region Prepare

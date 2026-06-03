@@ -25,9 +25,12 @@ public class ImportedProductPhotoConverter : IImportedProductPhotoConverter
 
     private static byte[] ReadPhotoBytes(string path)
     {
+        var resolvedPath = Path.IsPathRooted(path)
+            ? path
+            : Path.Combine(AppContext.BaseDirectory, path);
         try
         {
-            return File.ReadAllBytes(path);
+            return File.ReadAllBytes(resolvedPath);
         }
         catch(FileNotFoundException)
         {

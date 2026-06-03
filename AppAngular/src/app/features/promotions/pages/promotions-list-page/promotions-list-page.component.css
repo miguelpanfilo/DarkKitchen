@@ -47,7 +47,7 @@ input:focus {
 }
 
 .empty {
-  color: #999;
+  color: #555;
   text-align: center;
   margin-top: 2rem;
 }

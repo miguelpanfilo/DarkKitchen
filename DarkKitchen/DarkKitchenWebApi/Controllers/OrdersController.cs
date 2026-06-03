@@ -25,13 +25,7 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
     [RoleAuthorization(UserRolesDto.Client, UserRolesDto.Preparer, UserRolesDto.Administrative)]
     public IActionResult GetById(int id)
     {
-        var order = _orderFacade.GetById(id);
-
-        if(CurrentUser.Role == UserRolesDto.Client && order.Client.Id != CurrentUser.Id)
-        {
-            return Forbid();
-        }
-
+        var order = _orderFacade.GetById(id, CurrentUser.Id, CurrentUser.Role);
         return Ok(order);
     }
 
@@ -97,11 +91,11 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
     {
         _orderFacade.Prepare(id);
 
-        var order = _orderFacade.GetById(id);
+        var order = _orderFacade.GetById(id, CurrentUser.Id, CurrentUser.Role);
 
         return Ok(new OrderStatusResponse
         {
-            PedidoId = order.Id, Estado = order.Status, FechaCambioEstado = order.StatusUpdatedAt
+            OrderId = order.Id, Status = order.Status, StatusUpdatedAt = order.StatusUpdatedAt
         });
     }
 
@@ -109,22 +103,13 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
     [RoleAuthorization(UserRolesDto.Client, UserRolesDto.Administrative)]
     public IActionResult Cancel(int id)
     {
-        if(CurrentUser.Role == UserRolesDto.Client)
-        {
-            var order = _orderFacade.GetById(id);
-            if(order.Client.Id != CurrentUser.Id)
-            {
-                return ForbiddenResponse();
-            }
-        }
+        _orderFacade.Cancel(id, CurrentUser.Id, CurrentUser.Role);
 
-        _orderFacade.Cancel(id);
-
-        var updated = _orderFacade.GetById(id);
+        var updated = _orderFacade.GetById(id, CurrentUser.Id, CurrentUser.Role);
 
         return Ok(new OrderStatusResponse
         {
-            PedidoId = updated.Id, Estado = updated.Status, FechaCambioEstado = updated.StatusUpdatedAt
+            OrderId = updated.Id, Status = updated.Status, StatusUpdatedAt = updated.StatusUpdatedAt
         });
     }
 
@@ -134,11 +119,11 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
     {
         _orderFacade.Dispatch(id);
 
-        var order = _orderFacade.GetById(id);
+        var order = _orderFacade.GetById(id, CurrentUser.Id, CurrentUser.Role);
 
         return Ok(new OrderStatusResponse
         {
-            PedidoId = order.Id, Estado = order.Status, FechaCambioEstado = order.StatusUpdatedAt
+            OrderId = order.Id, Status = order.Status, StatusUpdatedAt = order.StatusUpdatedAt
         });
     }
 
@@ -148,11 +133,11 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
     {
         _orderFacade.Deliver(id);
 
-        var order = _orderFacade.GetById(id);
+        var order = _orderFacade.GetById(id, CurrentUser.Id, CurrentUser.Role);
 
         return Ok(new OrderStatusResponse
         {
-            PedidoId = order.Id, Estado = order.Status, FechaCambioEstado = order.StatusUpdatedAt
+            OrderId = order.Id, Status = order.Status, StatusUpdatedAt = order.StatusUpdatedAt
         });
     }
 
@@ -162,21 +147,12 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
     {
         _orderFacade.MarkNotDelivered(id);
 
-        var order = _orderFacade.GetById(id);
+        var order = _orderFacade.GetById(id, CurrentUser.Id, CurrentUser.Role);
 
         return Ok(new OrderStatusResponse
         {
-            PedidoId = order.Id, Estado = order.Status, FechaCambioEstado = order.StatusUpdatedAt
+            OrderId = order.Id, Status = order.Status, StatusUpdatedAt = order.StatusUpdatedAt
         });
-    }
-
-    private IActionResult ForbiddenResponse()
-    {
-        return StatusCode(StatusCodes.Status403Forbidden,
-            new ResponseDto
-            {
-                ExecutionSuccessful = false, Message = "El usuario no tiene permisos para ejecutar esta acción"
-            });
     }
 
     [HttpPut("{id:int}/delay")]
@@ -185,13 +161,13 @@ public class OrdersController(IOrderFacade orderFacade) : ControllerBase
     {
         _orderFacade.Delay(id);
 
-        var order = _orderFacade.GetById(id);
+        var order = _orderFacade.GetById(id, CurrentUser.Id, CurrentUser.Role);
 
         return Ok(new OrderStatusResponse
         {
-            PedidoId = order.Id,
-            Estado = order.Status,
-            FechaCambioEstado = order.StatusUpdatedAt
+            OrderId = order.Id,
+            Status = order.Status,
+            StatusUpdatedAt = order.StatusUpdatedAt
         });
     }
 }

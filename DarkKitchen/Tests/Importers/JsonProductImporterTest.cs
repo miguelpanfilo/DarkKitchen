@@ -73,4 +73,30 @@ public class JsonProductImporterTest
         act.Should().Throw<ValidationException>()
             .WithMessage("*formato inválido*");
     }
+
+    [TestMethod]
+    public void Import_WhenJsonIsNull_ShouldReturnEmptyList()
+    {
+        var json = "null";
+
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
+
+        var importer = new JsonImporter();
+
+        var result = importer.Import(stream);
+
+        result.Should().BeEmpty();
+    }
+
+    [TestMethod]
+    public void JsonImporter_Id_ShouldBeJson()
+    {
+        new JsonImporter().Id.Should().Be("json");
+    }
+
+    [TestMethod]
+    public void JsonImporter_Name_ShouldBeJSON()
+    {
+        new JsonImporter().Name.Should().Be("JSON");
+    }
 }

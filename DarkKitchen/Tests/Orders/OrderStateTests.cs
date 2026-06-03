@@ -291,4 +291,224 @@ public class OrderStateTests
 
         act.Should().Throw<OrderException>();
     }
+
+    [TestMethod]
+    public void PendingState_WhenDeliver_ShouldThrowOrderException()
+    {
+        var state = new PendingState();
+
+        Action act = () => state.Deliver();
+
+        act.Should()
+            .Throw<OrderException>()
+            .WithMessage("Solo se puede entregar un pedido en camino");
+    }
+
+    [TestMethod]
+    public void PendingState_WhenGetStatus_ShouldReturnPending()
+    {
+        var state = new PendingState();
+
+        var status = state.GetStatus();
+
+        status.Should().Be(OrderStatus.Pending);
+    }
+
+    [TestMethod]
+    public void CancelledState_WhenPrepare_ShouldThrowOrderException()
+    {
+        var state = new CancelledState();
+
+        Action act = () => state.Prepare();
+
+        act.Should()
+            .Throw<OrderException>()
+            .WithMessage("No se puede modificar un pedido cancelado");
+    }
+
+    [TestMethod]
+    public void CancelledState_WhenDispatch_ShouldThrowOrderException()
+    {
+        var state = new CancelledState();
+
+        Action act = () => state.Dispatch();
+
+        act.Should()
+            .Throw<OrderException>()
+            .WithMessage("No se puede modificar un pedido cancelado");
+    }
+
+    [TestMethod]
+    public void CancelledState_WhenDeliver_ShouldThrowOrderException()
+    {
+        var state = new CancelledState();
+
+        Action act = () => state.Deliver();
+
+        act.Should()
+            .Throw<OrderException>()
+            .WithMessage("No se puede modificar un pedido cancelado");
+    }
+
+    [TestMethod]
+    public void CancelledState_WhenMarkNotDelivered_ShouldThrowOrderException()
+    {
+        var state = new CancelledState();
+
+        Action act = () => state.MarkNotDelivered();
+
+        act.Should()
+            .Throw<OrderException>()
+            .WithMessage("No se puede modificar un pedido cancelado");
+    }
+
+    [TestMethod]
+    public void CancelledState_WhenDelay_ShouldThrowOrderException()
+    {
+        var state = new CancelledState();
+
+        Action act = () => state.Delay();
+
+        act.Should()
+            .Throw<OrderException>()
+            .WithMessage("No se puede modificar un pedido cancelado");
+    }
+
+    [TestMethod]
+    public void CancelledState_WhenGetStatus_ShouldReturnCancelled()
+    {
+        var state = new CancelledState();
+
+        var status = state.GetStatus();
+
+        status.Should().Be(OrderStatus.Cancelled);
+    }
+
+    [TestMethod]
+    public void NotDeliveredState_WhenPrepare_ShouldThrowOrderException()
+    {
+        var state = new NotDeliveredState();
+
+        Action act = () => state.Prepare();
+
+        act.Should()
+            .Throw<OrderException>()
+            .WithMessage("No se puede modificar un pedido no entregado");
+    }
+
+    [TestMethod]
+    public void NotDeliveredState_WhenCancel_ShouldThrowOrderException()
+    {
+        var state = new NotDeliveredState();
+
+        Action act = () => state.Cancel();
+
+        act.Should()
+            .Throw<OrderException>()
+            .WithMessage("No se puede modificar un pedido no entregado");
+    }
+
+    [TestMethod]
+    public void NotDeliveredState_WhenDispatch_ShouldThrowOrderException()
+    {
+        var state = new NotDeliveredState();
+
+        Action act = () => state.Dispatch();
+
+        act.Should()
+            .Throw<OrderException>()
+            .WithMessage("No se puede modificar un pedido no entregado");
+    }
+
+    [TestMethod]
+    public void NotDeliveredState_WhenDeliver_ShouldThrowOrderException()
+    {
+        var state = new NotDeliveredState();
+
+        Action act = () => state.Deliver();
+
+        act.Should()
+            .Throw<OrderException>()
+            .WithMessage("No se puede modificar un pedido no entregado");
+    }
+
+    [TestMethod]
+    public void NotDeliveredState_WhenDelay_ShouldThrowOrderException()
+    {
+        var state = new NotDeliveredState();
+
+        Action act = () => state.Delay();
+
+        act.Should()
+            .Throw<OrderException>()
+            .WithMessage("No se puede modificar un pedido no entregado");
+    }
+
+    [TestMethod]
+    public void NotDeliveredState_WhenGetStatus_ShouldReturnNotDelivered()
+    {
+        var state = new NotDeliveredState();
+
+        var status = state.GetStatus();
+
+        status.Should().Be(OrderStatus.NotDelivered);
+    }
+
+    [TestMethod]
+    public void DeliveredState_WhenPrepare_ShouldThrowOrderException()
+    {
+        var state = new DeliveredState();
+
+        Action act = () => state.Prepare();
+
+        act.Should()
+            .Throw<OrderException>()
+            .WithMessage("No se puede modificar un pedido entregado");
+    }
+
+    [TestMethod]
+    public void DeliveredState_WhenDispatch_ShouldThrowOrderException()
+    {
+        var state = new DeliveredState();
+
+        Action act = () => state.Dispatch();
+
+        act.Should()
+            .Throw<OrderException>()
+            .WithMessage("No se puede modificar un pedido entregado");
+    }
+
+    [TestMethod]
+    public void DeliveredState_WhenMarkNotDelivered_ShouldThrowOrderException()
+    {
+        var state = new DeliveredState();
+
+        Action act = () => state.MarkNotDelivered();
+
+        act.Should()
+            .Throw<OrderException>()
+            .WithMessage("No se puede modificar un pedido entregado");
+    }
+
+    [TestMethod]
+    public void DeliveredState_WhenDelay_ShouldThrowOrderException()
+    {
+        var state = new DeliveredState();
+
+        Action act = () => state.Delay();
+
+        act.Should()
+            .Throw<OrderException>()
+            .WithMessage("No se puede modificar un pedido entregado");
+    }
+
+    [TestMethod]
+    public void DeliveredState_WhenGetStatus_ShouldReturnDelivered()
+    {
+        var state = new DeliveredState();
+
+        var status = state.GetStatus();
+
+        status.Should().Be(OrderStatus.Delivered);
+    }
 }

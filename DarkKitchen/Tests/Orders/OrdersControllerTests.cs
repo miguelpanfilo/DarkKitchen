@@ -1,4 +1,4 @@
-﻿using BusinessLogicsAbstractions;
+using BusinessLogicsAbstractions;
 using Contract;
 using DarkKitchen.Controllers;
 using FluentAssertions;
@@ -118,7 +118,7 @@ public sealed class OrdersControllerTests
         var order = MakeOrderResponse(clientId: 1);
 
         _orderFacadeMock
-            .Setup(f => f.GetById(1))
+            .Setup(f => f.GetById(1, 1, UserRolesDto.Client))
             .Returns(order);
 
         var result = _controller.GetById(1);
@@ -130,30 +130,13 @@ public sealed class OrdersControllerTests
     }
 
     [TestMethod]
-    public void GetById_WhenClientDoesNotOwnOrder_ShouldReturnForbid()
-    {
-        SetCurrentUser(MakeClient(id: 99));
-        var order = MakeOrderResponse(clientId: 1);
-
-        _orderFacadeMock
-            .Setup(f => f.GetById(1))
-            .Returns(order);
-
-        var result = _controller.GetById(1);
-
-        _orderFacadeMock.VerifyAll();
-
-        result.Should().BeOfType<ForbidResult>();
-    }
-
-    [TestMethod]
     public void GetById_WhenPreparer_ShouldReturnOk()
     {
         SetCurrentUser(MakePreparer());
         var order = MakeOrderResponse(clientId: 1);
 
         _orderFacadeMock
-            .Setup(f => f.GetById(1))
+            .Setup(f => f.GetById(1, 2, UserRolesDto.Preparer))
             .Returns(order);
 
         var result = _controller.GetById(1);
@@ -170,7 +153,7 @@ public sealed class OrdersControllerTests
         var order = MakeOrderResponse(clientId: 1);
 
         _orderFacadeMock
-            .Setup(f => f.GetById(1))
+            .Setup(f => f.GetById(1, 3, UserRolesDto.Administrative))
             .Returns(order);
 
         var result = _controller.GetById(1);
@@ -273,7 +256,7 @@ public sealed class OrdersControllerTests
         var updatedOrder = MakeOrderResponse(clientId: 1, status: "Prepared");
 
         _orderFacadeMock.Setup(f => f.Prepare(1));
-        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
+        _orderFacadeMock.Setup(f => f.GetById(1, 2, UserRolesDto.Preparer)).Returns(updatedOrder);
 
         var result = _controller.Prepare(1);
 
@@ -285,45 +268,6 @@ public sealed class OrdersControllerTests
     }
 
     [TestMethod]
-    public void Cancel_WhenClientCancelsOwnOrder_ShouldReturnOk()
-    {
-        SetCurrentUser(MakeClient(id: 1));
-
-        var order = MakeOrderResponse(clientId: 1, status: "Pending");
-        var updatedOrder = MakeOrderResponse(clientId: 1, status: "Cancelled");
-
-        _orderFacadeMock.SetupSequence(f => f.GetById(1))
-            .Returns(order)
-            .Returns(updatedOrder);
-
-        _orderFacadeMock.Setup(f => f.Cancel(1));
-
-        var result = _controller.Cancel(1);
-
-        _orderFacadeMock.VerifyAll();
-
-        result.Should().BeOfType<OkObjectResult>();
-    }
-
-    [TestMethod]
-    public void Cancel_WhenClientCancelsAnotherClientOrder_ShouldReturnForbidden()
-    {
-        SetCurrentUser(MakeClient(id: 99));
-
-        var order = MakeOrderResponse(clientId: 1);
-
-        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(order);
-
-        var result = _controller.Cancel(1);
-
-        _orderFacadeMock.VerifyAll();
-
-        result.Should().BeOfType<ObjectResult>();
-        var objectResult = (ObjectResult)result;
-        objectResult.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
-    }
-
-    [TestMethod]
     public void Prepare_WhenAdmin_ShouldReturnOk()
     {
         SetCurrentUser(MakeAdmin());
@@ -331,7 +275,7 @@ public sealed class OrdersControllerTests
         var updatedOrder = MakeOrderResponse(clientId: 1, status: "Prepared");
 
         _orderFacadeMock.Setup(f => f.Prepare(1));
-        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
+        _orderFacadeMock.Setup(f => f.GetById(1, 3, UserRolesDto.Administrative)).Returns(updatedOrder);
 
         var result = _controller.Prepare(1);
 
@@ -342,9 +286,43 @@ public sealed class OrdersControllerTests
         var okResult = (OkObjectResult)result;
         var response = okResult.Value.Should().BeOfType<OrderStatusResponse>().Subject;
 
-        response.PedidoId.Should().Be(updatedOrder.Id);
-        response.Estado.Should().Be(updatedOrder.Status);
-        response.FechaCambioEstado.Should().Be(updatedOrder.StatusUpdatedAt);
+        response.OrderId.Should().Be(updatedOrder.Id);
+        response.Status.Should().Be(updatedOrder.Status);
+        response.StatusUpdatedAt.Should().Be(updatedOrder.StatusUpdatedAt);
+    }
+
+    [TestMethod]
+    public void Cancel_WhenClientCancelsOwnOrder_ShouldReturnOk()
+    {
+        SetCurrentUser(MakeClient(id: 1));
+
+        var updatedOrder = MakeOrderResponse(clientId: 1, status: "Cancelled");
+
+        _orderFacadeMock.Setup(f => f.Cancel(1, 1, UserRolesDto.Client));
+        _orderFacadeMock.Setup(f => f.GetById(1, 1, UserRolesDto.Client)).Returns(updatedOrder);
+
+        var result = _controller.Cancel(1);
+
+        _orderFacadeMock.VerifyAll();
+
+        result.Should().BeOfType<OkObjectResult>();
+    }
+
+    [TestMethod]
+    public void Cancel_WhenAdmin_ShouldReturnOk()
+    {
+        SetCurrentUser(MakeAdmin());
+
+        var updatedOrder = MakeOrderResponse(clientId: 1, status: "Cancelled");
+
+        _orderFacadeMock.Setup(f => f.Cancel(1, 3, UserRolesDto.Administrative));
+        _orderFacadeMock.Setup(f => f.GetById(1, 3, UserRolesDto.Administrative)).Returns(updatedOrder);
+
+        var result = _controller.Cancel(1);
+
+        _orderFacadeMock.VerifyAll();
+
+        result.Should().BeOfType<OkObjectResult>();
     }
 
     [TestMethod]
@@ -355,7 +333,7 @@ public sealed class OrdersControllerTests
         var updatedOrder = MakeOrderResponse(clientId: 1, status: "OnTheWay");
 
         _orderFacadeMock.Setup(f => f.Dispatch(1));
-        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
+        _orderFacadeMock.Setup(f => f.GetById(1, 3, UserRolesDto.Administrative)).Returns(updatedOrder);
 
         var result = _controller.Dispatch(1);
 
@@ -366,9 +344,9 @@ public sealed class OrdersControllerTests
         var okResult = (OkObjectResult)result;
         var response = okResult.Value.Should().BeOfType<OrderStatusResponse>().Subject;
 
-        response.PedidoId.Should().Be(updatedOrder.Id);
-        response.Estado.Should().Be(updatedOrder.Status);
-        response.FechaCambioEstado.Should().Be(updatedOrder.StatusUpdatedAt);
+        response.OrderId.Should().Be(updatedOrder.Id);
+        response.Status.Should().Be(updatedOrder.Status);
+        response.StatusUpdatedAt.Should().Be(updatedOrder.StatusUpdatedAt);
     }
 
     [TestMethod]
@@ -379,7 +357,7 @@ public sealed class OrdersControllerTests
         var updatedOrder = MakeOrderResponse(clientId: 1, status: "Delivered");
 
         _orderFacadeMock.Setup(f => f.Deliver(1));
-        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
+        _orderFacadeMock.Setup(f => f.GetById(1, 3, UserRolesDto.Administrative)).Returns(updatedOrder);
 
         var result = _controller.Deliver(1);
 
@@ -390,9 +368,9 @@ public sealed class OrdersControllerTests
         var okResult = (OkObjectResult)result;
         var response = okResult.Value.Should().BeOfType<OrderStatusResponse>().Subject;
 
-        response.PedidoId.Should().Be(updatedOrder.Id);
-        response.Estado.Should().Be(updatedOrder.Status);
-        response.FechaCambioEstado.Should().Be(updatedOrder.StatusUpdatedAt);
+        response.OrderId.Should().Be(updatedOrder.Id);
+        response.Status.Should().Be(updatedOrder.Status);
+        response.StatusUpdatedAt.Should().Be(updatedOrder.StatusUpdatedAt);
     }
 
     [TestMethod]
@@ -403,7 +381,7 @@ public sealed class OrdersControllerTests
         var updatedOrder = MakeOrderResponse(clientId: 1, status: "NotDelivered");
 
         _orderFacadeMock.Setup(f => f.MarkNotDelivered(1));
-        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
+        _orderFacadeMock.Setup(f => f.GetById(1, 3, UserRolesDto.Administrative)).Returns(updatedOrder);
 
         var result = _controller.MarkNotDelivered(1);
 
@@ -414,26 +392,9 @@ public sealed class OrdersControllerTests
         var okResult = (OkObjectResult)result;
         var response = okResult.Value.Should().BeOfType<OrderStatusResponse>().Subject;
 
-        response.PedidoId.Should().Be(updatedOrder.Id);
-        response.Estado.Should().Be(updatedOrder.Status);
-        response.FechaCambioEstado.Should().Be(updatedOrder.StatusUpdatedAt);
-    }
-
-    [TestMethod]
-    public void Cancel_WhenAdmin_ShouldReturnOk()
-    {
-        SetCurrentUser(MakeAdmin());
-
-        var updatedOrder = MakeOrderResponse(clientId: 1, status: "Cancelled");
-
-        _orderFacadeMock.Setup(f => f.Cancel(1));
-        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
-
-        var result = _controller.Cancel(1);
-
-        _orderFacadeMock.VerifyAll();
-
-        result.Should().BeOfType<OkObjectResult>();
+        response.OrderId.Should().Be(updatedOrder.Id);
+        response.Status.Should().Be(updatedOrder.Status);
+        response.StatusUpdatedAt.Should().Be(updatedOrder.StatusUpdatedAt);
     }
 
     [TestMethod]
@@ -444,7 +405,7 @@ public sealed class OrdersControllerTests
         var updatedOrder = MakeOrderResponse(clientId: 1, status: "OnTheWay");
 
         _orderFacadeMock.Setup(f => f.Dispatch(1));
-        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
+        _orderFacadeMock.Setup(f => f.GetById(1, 2, UserRolesDto.Preparer)).Returns(updatedOrder);
 
         var result = _controller.Dispatch(1);
 
@@ -461,7 +422,7 @@ public sealed class OrdersControllerTests
         var updatedOrder = MakeOrderResponse(clientId: 1, status: "Delivered");
 
         _orderFacadeMock.Setup(f => f.Deliver(1));
-        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
+        _orderFacadeMock.Setup(f => f.GetById(1, 2, UserRolesDto.Preparer)).Returns(updatedOrder);
 
         var result = _controller.Deliver(1);
 
@@ -478,7 +439,7 @@ public sealed class OrdersControllerTests
         var updatedOrder = MakeOrderResponse(clientId: 1, status: "NotDelivered");
 
         _orderFacadeMock.Setup(f => f.MarkNotDelivered(1));
-        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
+        _orderFacadeMock.Setup(f => f.GetById(1, 2, UserRolesDto.Preparer)).Returns(updatedOrder);
 
         var result = _controller.MarkNotDelivered(1);
 
@@ -488,14 +449,14 @@ public sealed class OrdersControllerTests
     }
 
     [TestMethod]
-    public void Delay_WhenAdmin_ShouldReturnOk()
+    public void Delay_WhenPreparer_ShouldReturnOk()
     {
-        SetCurrentUser(MakeAdmin());
+        SetCurrentUser(MakePreparer());
 
         var updatedOrder = MakeOrderResponse(clientId: 1, status: "Delayed");
 
         _orderFacadeMock.Setup(f => f.Delay(1));
-        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
+        _orderFacadeMock.Setup(f => f.GetById(1, 2, UserRolesDto.Preparer)).Returns(updatedOrder);
 
         var result = _controller.Delay(1);
 
@@ -505,14 +466,14 @@ public sealed class OrdersControllerTests
     }
 
     [TestMethod]
-    public void Delay_WhenAdmin_ShouldReturnOkWithStatusResponse()
+    public void Delay_WhenPreparer_ShouldReturnOkWithStatusResponse()
     {
-        SetCurrentUser(MakeAdmin());
+        SetCurrentUser(MakePreparer());
 
         var updatedOrder = MakeOrderResponse(clientId: 1, status: "Delayed");
 
         _orderFacadeMock.Setup(f => f.Delay(1));
-        _orderFacadeMock.Setup(f => f.GetById(1)).Returns(updatedOrder);
+        _orderFacadeMock.Setup(f => f.GetById(1, 2, UserRolesDto.Preparer)).Returns(updatedOrder);
 
         var result = _controller.Delay(1);
 
@@ -523,9 +484,9 @@ public sealed class OrdersControllerTests
         var okResult = (OkObjectResult)result;
         var response = okResult.Value.Should().BeOfType<OrderStatusResponse>().Subject;
 
-        response.PedidoId.Should().Be(updatedOrder.Id);
-        response.Estado.Should().Be(updatedOrder.Status);
-        response.FechaCambioEstado.Should().Be(updatedOrder.StatusUpdatedAt);
+        response.OrderId.Should().Be(updatedOrder.Id);
+        response.Status.Should().Be(updatedOrder.Status);
+        response.StatusUpdatedAt.Should().Be(updatedOrder.StatusUpdatedAt);
     }
 
     #endregion

@@ -48,6 +48,8 @@ if(app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UsePhotoStorage();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
