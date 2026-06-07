@@ -45,10 +45,20 @@ export class PromotionsListPageComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    const nav = this.router.getCurrentNavigation()?.extras.state ?? history.state;
-    if (nav?.successMessage) this.successMessage = nav.successMessage;
-    this.loadPromotions();
-  }
+      const nav = history.state;
+
+      if (nav?.successMessage) {
+        this.successMessage = nav.successMessage;
+
+        history.replaceState({}, '');
+
+        setTimeout(() => {
+          this.successMessage = '';
+        }, 3000);
+      }
+
+      this.loadPromotions();
+    }
 
   ngOnDestroy() {
     this.subs.unsubscribe();
@@ -102,7 +112,12 @@ export class PromotionsListPageComponent implements OnInit, OnDestroy {
         this.promotions = this.promotions.filter(p => p.id !== id);
         this.showConfirmDialog = false;
         this.promotionToDelete = null;
+
         this.successMessage = 'Promoción eliminada correctamente.';
+
+        setTimeout(() => {
+          this.successMessage = '';
+        }, 3000);
       },
       error: (error) => {
         this.showConfirmDialog = false;
