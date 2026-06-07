@@ -3,10 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { LoginRequest } from '../../features/auth/models/login-request.model';
 import { LoginResponse } from '../../features/auth/models/login-response.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = 'http://localhost:5254';
+  private apiUrl = environment.webApiBaseUrl;
 
   constructor(private http: HttpClient) { }
 

@@ -4,10 +4,11 @@ import { map, Observable } from 'rxjs';
 import { Promotion } from '../models/promotion.model';
 import { PromotionFilters } from '../models/promotion-filters.model';
 import { PromotionPatchRequest } from '../models/promotion-patch-request.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class PromotionService {
-  private apiUrl = 'http://localhost:5254';
+  private apiUrl = environment.webApiBaseUrl;
 
   constructor(private http: HttpClient) {}
 

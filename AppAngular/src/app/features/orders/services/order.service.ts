@@ -5,12 +5,13 @@ import { Order, OrderClient, OrderAddress } from '../models/order.model';
 import { OrderItem } from '../models/order-item.model';
 import { OrderFilters } from '../models/order-filters.model';
 import { CreateOrderRequest } from '../models/create-order-request.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
-  private apiUrl = 'http://localhost:5254';
+  private apiUrl = environment.webApiBaseUrl;
 
   constructor(private http: HttpClient) { }
 
