@@ -95,7 +95,9 @@ export const routes: Routes = [
         path: 'promotions/edit/:id', component: EditPromotionPageComponent,
         canActivate: [roleGuard(['Administrative'])]
       },
-      { path: 'product-importers', component: ProductImportersPageComponent },
+      { path: 'product-importers', component: ProductImportersPageComponent, 
+        canActivate: [roleGuard(['Administrative'])]
+      },
     ]
   },
   { path: '**', component: NotFoundComponent }
