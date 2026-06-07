@@ -16,6 +16,32 @@ export class ProductCardComponent {
   @Output() edit = new EventEmitter<Product>();
   @Output() delete = new EventEmitter<Product>();
 
+  currentPhotoIndex = 0;
+
+  get currentPhotoPath(): string {
+    return this.product.photos[this.currentPhotoIndex]?.path;
+  }
+
+  previousPhoto(event: Event) {
+    event.stopPropagation();
+
+    if (this.currentPhotoIndex === 0) {
+      this.currentPhotoIndex = this.product.photos.length - 1;
+    } else {
+      this.currentPhotoIndex--;
+    }
+  }
+
+  nextPhoto(event: Event) {
+    event.stopPropagation();
+
+    if (this.currentPhotoIndex === this.product.photos.length - 1) {
+      this.currentPhotoIndex = 0;
+    } else {
+      this.currentPhotoIndex++;
+    }
+  }
+  
   onEdit() {
     this.edit.emit(this.product);
   }
