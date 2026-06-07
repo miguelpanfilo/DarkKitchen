@@ -75,6 +75,10 @@ export class CreateProductPageComponent {
     this.photos.splice(index, 1);
   }
 
+  getPhotoPreview(photo: PhotoRequest): string {
+    return `data:image/jpg;base64,${photo.base64}`;
+  }
+
   onSubmit() {
     this.submitted = true;
     this.errorMessage = '';

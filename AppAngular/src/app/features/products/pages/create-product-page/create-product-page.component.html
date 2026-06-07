@@ -48,8 +48,23 @@
 
       <div *ngIf="photos.length > 0" class="photos-list">
         <div *ngFor="let photo of photos; let i = index" class="photo-item">
-          <span class="photo-name">{{ photo.fileName }}.{{ photo.extension }}</span>
-          <button type="button" class="btn-remove-photo" (click)="removePhoto(i)">✕</button>
+
+          <img
+            class="photo-preview"
+            [src]="getPhotoPreview(photo)"
+            [alt]="photo.fileName">
+
+          <span class="photo-name">
+            {{ photo.fileName }}.{{ photo.extension }}
+          </span>
+
+          <button
+            type="button"
+            class="btn-remove-photo"
+            (click)="removePhoto(i)">
+            ✕
+          </button>
+
         </div>
       </div>
 

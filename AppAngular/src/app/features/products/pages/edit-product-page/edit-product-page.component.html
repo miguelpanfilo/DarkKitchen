@@ -60,7 +60,10 @@
 
       <div *ngIf="photos.length > 0" class="photos-list">
         <div *ngFor="let photo of photos; let i = index" class="photo-item">
+          <img class="photo-preview" [src]="getPhotoPreview(photo)" [alt]="getPhotoLabel(photo)" />
+
           <span class="photo-name">{{ getPhotoLabel(photo) }}</span>
+
           <button type="button" class="btn-remove-photo" (click)="removePhoto(i)">✕</button>
         </div>
       </div>

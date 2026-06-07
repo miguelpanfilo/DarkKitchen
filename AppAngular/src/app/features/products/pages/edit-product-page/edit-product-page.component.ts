@@ -8,6 +8,7 @@ import { SubmitButtonComponent } from '../../../../shared/components/submit-butt
 import { CancelButtonComponent } from '../../../../shared/components/cancel-button/cancel-button.component';
 import { FormCardComponent } from '../../../../shared/components/form-card/form-card.component';
 import { PatchPhotoRequest } from '../../models/product-photo.model';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-edit-product-page',
@@ -74,6 +75,18 @@ export class EditProductPageComponent implements OnInit {
 
   getPhotoLabel(photo: PatchPhotoRequest): string {
     return photo.path ? photo.path.split('/').pop() ?? photo.path : `${photo.fileName}.${photo.extension}`;
+  }
+
+  getPhotoPreview(photo: PatchPhotoRequest): string {
+    if (photo.base64) {
+      return `data:image/jpg;base64,${photo.base64}`;
+    }
+
+    if (photo.path) {
+      return `${environment.webApiBaseUrl}${photo.path}`;
+    }
+
+    return '';
   }
 
   onPhotosSelected(event: Event) {
