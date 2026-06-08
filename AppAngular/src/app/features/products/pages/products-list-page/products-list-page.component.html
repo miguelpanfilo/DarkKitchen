@@ -1,7 +1,17 @@
 <div class="products-container">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Productos</h1>
-    <app-add-button *appHasRole="['Administrative']" label="Nuevo producto" (clicked)="onAdd()" />
+    <div class="d-flex gap-2">
+      <app-add-button
+        *appHasRole="['Administrative']"
+        label="Importar productos"
+        (clicked)="onImport()" />
+
+      <app-add-button
+        *appHasRole="['Administrative']"
+        label="Nuevo producto"
+        (clicked)="onAdd()" />
+    </div>
   </div>
 
   <div class="filters d-flex gap-3 align-items-end flex-wrap">

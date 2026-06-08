@@ -10,6 +10,7 @@ import { environment } from '../../../../../environments/environment';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './product-importers-page.component.html',
+  styleUrl: './product-importers-page.component.css'
 })
 export class ProductImportersPageComponent implements OnInit {
   importers$!: Observable<Importer[]>;

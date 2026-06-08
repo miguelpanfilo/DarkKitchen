@@ -136,4 +136,8 @@ export class ProductsListPageComponent implements OnInit, OnDestroy {
     this.showConfirmDialog = false;
     this.productToDelete = null;
   }
+
+  onImport() {
+    this.router.navigate(['/home/product-importers']);
+  }
 }
