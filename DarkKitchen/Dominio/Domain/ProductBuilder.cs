@@ -1,4 +1,4 @@
-namespace Domain.Builders;
+namespace Domain;
 
 public class ProductBuilder
 {

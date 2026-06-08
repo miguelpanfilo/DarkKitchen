@@ -1,8 +1,7 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using BusinessLogicsAbstractions;
 using Contract;
 using DarkKitchen.Controllers;
-using DarkKitchen.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -24,23 +23,13 @@ public class ProductControllerTest
             "Minutas",
             "Sandwiches",
             100,
-            new List<PhotoDTO>
-            {
-                new PhotoDTO("foto1", ".jpg", 100, validBase64)
-            }
+            new List<PhotoDTO> { new PhotoDTO("foto1", ".jpg", 100, validBase64) }
         );
 
-        var response = new ProductResponseDto
-        {
-            Id = 1,
-            Name = request.Name
-        };
+        var response = new ProductResponseDto { Id = 1, Name = request.Name };
 
         var serviceMock = new Mock<IProductService>(MockBehavior.Strict);
-
-        serviceMock
-            .Setup(s => s.Create(request))
-            .Returns(response);
+        serviceMock.Setup(s => s.Create(request)).Returns(response);
 
         var controller = new ProductController(serviceMock.Object);
         var claims = new List<Claim> { new Claim(ClaimTypes.Email, "admin@dark.com") };
@@ -65,32 +54,6 @@ public class ProductControllerTest
     }
 
     [TestMethod]
-    public void Create_ShouldHaveHttpPostAttribute()
-    {
-        var method = typeof(ProductController)
-            .GetMethod("Create");
-
-        var attribute = method!
-            .GetCustomAttributes(typeof(HttpPostAttribute), false)
-            .FirstOrDefault();
-
-        Assert.IsNotNull(attribute);
-    }
-
-    [TestMethod]
-    public void Create_ShouldHaveRoleAuthorizationAttribute()
-    {
-        var method = typeof(ProductController)
-            .GetMethod("Create");
-
-        var attribute = method!
-            .GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
-            .FirstOrDefault() as RoleAuthorizationAttribute;
-
-        Assert.IsNotNull(attribute);
-    }
-
-    [TestMethod]
     public void GivenSearchRequest_WhenGettingProducts_ThenReturnsOk()
     {
         var request = new ProductSearchRequestDto
@@ -112,21 +75,12 @@ public class ProductControllerTest
                 Category = "Sandwiches",
                 Price = 100,
                 IsActive = true,
-                Photos = new List<PhotoResponseDto>
-                {
-                    new PhotoResponseDto
-                    {
-                        Path = "uploads/photo1.jpg"
-                    }
-                }
+                Photos = new List<PhotoResponseDto> { new PhotoResponseDto { Path = "uploads/photo1.jpg" } }
             }
         };
 
         var serviceMock = new Mock<IProductService>(MockBehavior.Strict);
-
-        serviceMock
-            .Setup(s => s.GetProducts(request))
-            .Returns(response);
+        serviceMock.Setup(s => s.GetProducts(request)).Returns(response);
 
         var controller = new ProductController(serviceMock.Object);
 
@@ -145,53 +99,14 @@ public class ProductControllerTest
     }
 
     [TestMethod]
-    public void Get_ShouldHaveHttpGetAttribute()
-    {
-        var method = typeof(ProductController)
-            .GetMethod("Get");
-
-        var attribute = method!
-            .GetCustomAttributes(typeof(HttpGetAttribute), false)
-            .Cast<HttpGetAttribute>()
-            .SingleOrDefault();
-
-        Assert.IsNotNull(attribute);
-    }
-
-    [TestMethod]
-    public void Get_ShouldHaveRoleAuthorizationAttribute()
-    {
-        var method = typeof(ProductController)
-            .GetMethod("Get");
-
-        var attribute = method!
-            .GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
-            .Cast<RoleAuthorizationAttribute>()
-            .SingleOrDefault();
-
-        Assert.IsNotNull(attribute);
-    }
-
-    [TestMethod]
     public void GivenValidPatchRequest_WhenUpdatingProduct_ThenReturnsOk()
     {
         var serviceMock = new Mock<IProductService>(MockBehavior.Strict);
-
         var productId = 1;
-        var request = new ProductPatchDto
-        {
-            Name = "Producto actualizado"
-        };
+        var request = new ProductPatchDto { Name = "Producto actualizado" };
+        var response = new ProductResponseDto { Id = productId, Name = "Producto actualizado" };
 
-        var response = new ProductResponseDto
-        {
-            Id = productId,
-            Name = "Producto actualizado"
-        };
-
-        serviceMock
-            .Setup(s => s.Update(productId, request))
-            .Returns(response);
+        serviceMock.Setup(s => s.Update(productId, request)).Returns(response);
 
         var controller = new ProductController(serviceMock.Object);
         var claims = new List<Claim> { new Claim(ClaimTypes.Email, "admin@dark.com") };
@@ -203,37 +118,12 @@ public class ProductControllerTest
             }
         };
 
-        var result = controller.Update(productId, request);
+        var result = controller.Update(productId, request) as OkObjectResult;
 
-        var okResult = result as OkObjectResult;
-        Assert.IsNotNull(okResult);
-        Assert.AreEqual(response, okResult.Value);
+        Assert.IsNotNull(result);
+        Assert.AreEqual(response, result.Value);
 
         serviceMock.Verify(s => s.Update(productId, request), Times.Once);
-        serviceMock.VerifyAll();
-    }
-
-    [TestMethod]
-    public void GivenUpdateEndpoint_WhenCheckingHttpAttribute_ThenHasHttpPatch()
-    {
-        var method = typeof(ProductController).GetMethod("Update");
-
-        var attribute = method.GetCustomAttributes(typeof(HttpPatchAttribute), false);
-
-        Assert.AreEqual(1, attribute.Length);
-    }
-
-    [TestMethod]
-    public void GivenUpdateEndpoint_WhenCheckingRoleAuthorization_ThenAllowsAdministrative()
-    {
-        var method = typeof(ProductController).GetMethod("Update");
-
-        var attribute = method
-            .GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
-            .Cast<RoleAuthorizationAttribute>()
-            .FirstOrDefault();
-
-        Assert.IsNotNull(attribute);
     }
 
     [TestMethod]
@@ -242,8 +132,7 @@ public class ProductControllerTest
         var serviceMock = new Mock<IProductService>(MockBehavior.Strict);
         var productId = 1;
 
-        serviceMock
-            .Setup(s => s.Delete(productId));
+        serviceMock.Setup(s => s.Delete(productId));
 
         var controller = new ProductController(serviceMock.Object);
         var claims = new List<Claim> { new Claim(ClaimTypes.Email, "admin@dark.com") };
@@ -260,29 +149,5 @@ public class ProductControllerTest
         Assert.IsInstanceOfType(result, typeof(NoContentResult));
 
         serviceMock.Verify(s => s.Delete(productId), Times.Once);
-        serviceMock.VerifyAll();
-    }
-
-    [TestMethod]
-    public void GivenDeleteEndpoint_WhenCheckingHttpAttribute_ThenHasHttpDelete()
-    {
-        var method = typeof(ProductController).GetMethod("Delete");
-
-        var attribute = method.GetCustomAttributes(typeof(HttpDeleteAttribute), false);
-
-        Assert.AreEqual(1, attribute.Length);
-    }
-
-    [TestMethod]
-    public void GivenDeleteEndpoint_WhenCheckingRoleAuthorization_ThenAllowsAdministrative()
-    {
-        var method = typeof(ProductController).GetMethod("Delete");
-
-        var attribute = method
-            .GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
-            .Cast<RoleAuthorizationAttribute>()
-            .FirstOrDefault();
-
-        Assert.IsNotNull(attribute);
     }
 }

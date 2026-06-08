@@ -1,6 +1,5 @@
 using DataAccess.Repositories;
 using Domain;
-using Domain.Builders;
 using Microsoft.EntityFrameworkCore;
 using Tests.Persistence;
 

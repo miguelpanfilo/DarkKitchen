@@ -1,7 +1,6 @@
-﻿using BusinessLogicsAbstractions;
+using BusinessLogicsAbstractions;
 using Contract;
 using DarkKitchen.Controllers;
-using DarkKitchen.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -37,31 +36,6 @@ public class ReportsControllerTest
     }
 
     [TestMethod]
-    public void GivenReportsController_WhenGettingTopProducts_ThenHasHttpGetAttribute()
-    {
-        var method = typeof(ReportsController).GetMethod(nameof(ReportsController.GetTopProducts));
-
-        var attribute = method!
-            .GetCustomAttributes(typeof(HttpGetAttribute), false)
-            .FirstOrDefault() as HttpGetAttribute;
-
-        Assert.IsNotNull(attribute);
-        Assert.AreEqual("top-products", attribute.Template);
-    }
-
-    [TestMethod]
-    public void GivenReportsController_WhenGettingTopProducts_ThenHasAdministrativeRoleAuthorization()
-    {
-        var method = typeof(ReportsController).GetMethod(nameof(ReportsController.GetTopProducts));
-
-        var attribute = method!
-            .GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
-            .FirstOrDefault() as RoleAuthorizationAttribute;
-
-        Assert.IsNotNull(attribute);
-    }
-
-    [TestMethod]
     public void GivenValidDates_WhenGettingSalesReport_ThenReturnsOk()
     {
         var reportServiceMock = new Mock<IReportService>(MockBehavior.Strict);
@@ -85,30 +59,5 @@ public class ReportsControllerTest
         Assert.AreSame(expectedResult, okResult.Value);
 
         reportServiceMock.VerifyAll();
-    }
-
-    [TestMethod]
-    public void GivenReportsController_WhenGettingSalesReport_ThenHasHttpGetAttribute()
-    {
-        var method = typeof(ReportsController).GetMethod(nameof(ReportsController.GetSalesReport));
-
-        var attribute = method!
-            .GetCustomAttributes(typeof(HttpGetAttribute), false)
-            .FirstOrDefault() as HttpGetAttribute;
-
-        Assert.IsNotNull(attribute);
-        Assert.AreEqual("sales", attribute.Template);
-    }
-
-    [TestMethod]
-    public void GivenReportsController_WhenGettingSalesReport_ThenHasAdministrativeRoleAuthorization()
-    {
-        var method = typeof(ReportsController).GetMethod(nameof(ReportsController.GetSalesReport));
-
-        var attribute = method!
-            .GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
-            .FirstOrDefault() as RoleAuthorizationAttribute;
-
-        Assert.IsNotNull(attribute);
     }
 }

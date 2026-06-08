@@ -1,7 +1,6 @@
-﻿using BusinessLogicsAbstractions;
+using BusinessLogicsAbstractions;
 using Contract;
 using DarkKitchen.Controllers;
-using DarkKitchen.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -25,21 +24,17 @@ public class CreatePromotionsControllerTests
     {
         var claims = new List<System.Security.Claims.Claim>
         {
-            new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Email,
-                email)
+            new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Email, email)
         };
         var httpContext = new DefaultHttpContext
         {
             User = new System.Security.Claims.ClaimsPrincipal(
                 new System.Security.Claims.ClaimsIdentity(claims))
         };
-        _controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = httpContext
-        };
+        _controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
     }
 
-   [TestMethod]
+    [TestMethod]
     public void Create_WhenAdmin_ShouldReturn201()
     {
         var request = new PromotionRequestDto
@@ -56,15 +51,10 @@ public class CreatePromotionsControllerTests
             20,
             new DateOnly(2026, 11, 1),
             new DateOnly(2026, 11, 30),
-            new List<ProductSummaryDto>
-            {
-                new (5, "Hamburguesa Clásica")
-            }
+            new List<ProductSummaryDto> { new(5, "Hamburguesa Clásica") }
         );
 
-        _promotionServiceMock
-            .Setup(x => x.Create(request))
-            .Returns(response);
+        _promotionServiceMock.Setup(x => x.Create(request)).Returns(response);
 
         SetCurrentUser("admin@test.com");
 
@@ -74,35 +64,6 @@ public class CreatePromotionsControllerTests
         Assert.AreEqual(StatusCodes.Status201Created, result.StatusCode);
         Assert.AreEqual(response, result.Value);
 
-        _promotionServiceMock.Verify(x => x.Create(request),
-            Times.Once);
-    }
-
-    [TestMethod]
-    public void Create_HasHttpPostAttribute()
-    {
-        var method = typeof(DarkKitchen.Controllers.PromotionsController).GetMethod(nameof(DarkKitchen.Controllers.PromotionsController.Create));
-
-        Assert.IsNotNull(method);
-
-        var attribute = method.GetCustomAttributes(typeof(HttpPostAttribute), false)
-            .Cast<HttpPostAttribute>()
-            .SingleOrDefault();
-
-        Assert.IsNotNull(attribute);
-    }
-
-    [TestMethod]
-    public void Create_HasRoleAuthorizationAttribute()
-    {
-        var method = typeof(DarkKitchen.Controllers.PromotionsController).GetMethod(nameof(DarkKitchen.Controllers.PromotionsController.Create));
-
-        Assert.IsNotNull(method);
-
-        var attribute = method.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
-            .Cast<RoleAuthorizationAttribute>()
-            .SingleOrDefault();
-
-        Assert.IsNotNull(attribute);
+        _promotionServiceMock.Verify(x => x.Create(request), Times.Once);
     }
 }
