@@ -96,7 +96,7 @@ export class PromotionsListPageComponent implements OnInit, OnDestroy {
   onAdd() { this.router.navigate(['/home/promotions/create']); }
 
   onEdit(promotion: Promotion) {
-    this.router.navigate(['/home/promotions/edit', promotion.id], { state: { promotion } });
+    this.router.navigate(['/home/promotions/edit', promotion.id]);
   }
 
   onDelete(promotion: Promotion) {

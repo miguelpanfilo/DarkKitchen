@@ -23,6 +23,12 @@ export class PromotionService {
     };
   }
 
+  getById(id: number): Observable<Promotion> {
+    return this.http.get<any>(`${this.apiUrl}/api/v1/promotions/${id}`).pipe(
+      map(item => this.mapPromotion(item))
+    );
+  }
+
   getPromotions(filters: PromotionFilters): Observable<Promotion[]> {
     let params = new HttpParams();
     params = params.set('Date', filters.date);

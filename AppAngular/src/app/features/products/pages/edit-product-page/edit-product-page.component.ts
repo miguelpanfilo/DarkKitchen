@@ -10,6 +10,7 @@ import { CancelButtonComponent } from '../../../../shared/components/cancel-butt
 import { FormCardComponent } from '../../../../shared/components/form-card/form-card.component';
 import { PatchPhotoRequest } from '../../models/product-photo.model';
 import { environment } from '../../../../../environments/environment';
+import { HasUnsavedChanges } from '../../../../core/guards/pending-changes.guard';
 
 @Component({
   selector: 'app-edit-product-page',
@@ -17,7 +18,7 @@ import { environment } from '../../../../../environments/environment';
   templateUrl: './edit-product-page.component.html',
   styleUrl: './edit-product-page.component.css'
 })
-export class EditProductPageComponent implements OnInit, OnDestroy {
+export class EditProductPageComponent implements OnInit, OnDestroy, HasUnsavedChanges {
   code = '';
   name = '';
   description = '';
@@ -31,6 +32,7 @@ export class EditProductPageComponent implements OnInit, OnDestroy {
   isLoading = false;
   isSubmitting = false;
   errorMessage = '';
+  isDirty = false;
 
   private productId = 0;
   private subs = new Subscription();
@@ -44,6 +46,10 @@ export class EditProductPageComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
+
+  markDirty(): void { this.isDirty = true; }
+
+  hasUnsavedChanges(): boolean { return this.isDirty; }
 
   ngOnInit() {
     this.productId = Number(this.route.snapshot.paramMap.get('id'));
@@ -162,6 +168,7 @@ export class EditProductPageComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: () => {
         this.isSubmitting = false;
+        this.isDirty = false;
         this.router.navigate(['/home/products'], { state: { successMessage: 'Producto actualizado correctamente.' } });
       },
       error: (error) => {

@@ -44,6 +44,19 @@ export class UserService {
     );
   }
 
+  getUserById(id: number): Observable<User> {
+    return this.http.get<any>(`${this.apiUrl}/api/v1/users/${id}`).pipe(
+      map(item => ({
+        id: item.id,
+        name: item.name,
+        lastName: item.lastName,
+        email: item.email,
+        role: item.role,
+        phone: item.phone
+      } as User))
+    );
+  }
+
   getUsers(filters?: FindUserRequest): Observable<User[]> {
     let params = new HttpParams();
     if (filters?.name) params = params.set('Name', filters.name);

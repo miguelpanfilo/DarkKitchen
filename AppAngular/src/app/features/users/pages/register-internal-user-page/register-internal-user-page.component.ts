@@ -13,6 +13,7 @@ import { UserService } from '../../services/user.service';
 import { ROLES } from '../../../../shared/constants/roles';
 import { RegisterUserRequest } from '../../models/register-user-request.model';
 import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
+import { HasUnsavedChanges } from '../../../../core/guards/pending-changes.guard';
 
 @Component({
   selector: 'app-register-internal-user-page',
@@ -21,7 +22,7 @@ import { StatusMessagesComponent } from '../../../../shared/components/status-me
   templateUrl: './register-internal-user-page.component.html',
   styleUrl: './register-internal-user-page.component.css'
 })
-export class RegisterInternalUserPageComponent implements OnDestroy {
+export class RegisterInternalUserPageComponent implements OnDestroy, HasUnsavedChanges {
   nombre = '';
   apellido = '';
   email = '';
@@ -33,6 +34,7 @@ export class RegisterInternalUserPageComponent implements OnDestroy {
   successMessage = '';
   submitted = false;
   roles = ROLES.filter(r => r.value !== 'Client');
+  private saveSucceeded = false;
 
   constructor(private userService: UserService, private router:
     Router) { }
@@ -41,6 +43,10 @@ export class RegisterInternalUserPageComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.subs.unsubscribe();
+  }
+
+  hasUnsavedChanges(): boolean {
+    return !this.saveSucceeded && !!(this.nombre || this.apellido || this.email || this.telefono || this.contrasena || this.rol);
   }
 
   onSubmit() {
@@ -67,6 +73,7 @@ export class RegisterInternalUserPageComponent implements OnDestroy {
     this.subs.add(this.userService.registerInternalUser(request).subscribe({
       next: () => {
         this.isLoading = false;
+        this.saveSucceeded = true;
         this.router.navigate(['/home/users'], { state: { successMessage: '¡Usuario registrado exitosamente!' } });
       },
       error: (error) => {

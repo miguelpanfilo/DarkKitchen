@@ -8,6 +8,7 @@ import { FormCardComponent } from '../../../../shared/components/form-card/form-
 import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
 import { SubmitButtonComponent } from '../../../../shared/components/submit-button/submit-button.component';
 import { CancelButtonComponent } from '../../../../shared/components/cancel-button/cancel-button.component';
+import { HasUnsavedChanges } from '../../../../core/guards/pending-changes.guard';
 
 @Component({
   selector: 'app-create-promotion-page',
@@ -16,7 +17,7 @@ import { CancelButtonComponent } from '../../../../shared/components/cancel-butt
   templateUrl: './create-promotion-page.component.html',
   styleUrl: './create-promotion-page.component.css'
 })
-export class CreatePromotionPageComponent implements OnDestroy {
+export class CreatePromotionPageComponent implements OnDestroy, HasUnsavedChanges {
   name = '';
   discountPercentage: number | null = null;
   startDate = '';
@@ -25,6 +26,7 @@ export class CreatePromotionPageComponent implements OnDestroy {
   submitted = false;
   isSubmitting = false;
   errorMessage = '';
+  private saveSucceeded = false;
 
   private subs = new Subscription();
 
@@ -32,6 +34,10 @@ export class CreatePromotionPageComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.subs.unsubscribe();
+  }
+
+  hasUnsavedChanges(): boolean {
+    return !this.saveSucceeded && !!(this.name || this.discountPercentage !== null || this.startDate || this.endDate);
   }
 
   onSubmit() {
@@ -51,9 +57,8 @@ export class CreatePromotionPageComponent implements OnDestroy {
     }).subscribe({
       next: (created) => {
         this.isSubmitting = false;
-        this.router.navigate(['/home/promotions/edit', created.id], {
-          state: { promotion: { id: created.id, name: this.name.trim(), discountPercentage: this.discountPercentage, startDate: this.startDate, endDate: this.endDate, products: [] } }
-        });
+        this.saveSucceeded = true;
+        this.router.navigate(['/home/promotions/edit', created.id]);
       },
       error: (error) => {
         this.isSubmitting = false;

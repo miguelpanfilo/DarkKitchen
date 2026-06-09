@@ -4,7 +4,7 @@
 
     <app-status-messages [errorMessage]="errorMessage" [isLoading]="isSubmitting" loadingText="Guardando..." />
 
-    <form (ngSubmit)="onSubmit()">
+    <form (ngSubmit)="onSubmit()" (input)="markDirty()">
       <div class="form-group">
         <label for="name">Nombre *</label>
         <input id="name" type="text" [(ngModel)]="name" name="name"

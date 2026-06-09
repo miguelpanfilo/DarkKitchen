@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CancelButtonComponent } from
   '../../../../shared/components/cancel-button/cancel-button.component';
 import { SubmitButtonComponent } from
@@ -13,6 +13,7 @@ import { UserService } from '../../services/user.service';
 import { ROLES } from '../../../../shared/constants/roles';
 import { UpdateUserRequest } from '../../models/update-user-request.model';
 import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
+import { HasUnsavedChanges } from '../../../../core/guards/pending-changes.guard';
 
 @Component({
   selector: 'app-edit-user-page',
@@ -22,7 +23,7 @@ import { StatusMessagesComponent } from '../../../../shared/components/status-me
   styleUrl: './edit-user-page.component.css'
 })
 
-export class EditUserPageComponent implements OnInit, OnDestroy {
+export class EditUserPageComponent implements OnInit, OnDestroy, HasUnsavedChanges {
   userId = 0;
   nombre = '';
   apellido = '';
@@ -32,33 +33,46 @@ export class EditUserPageComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   errorMessage = '';
   submitted = false;
+  isDirty = false;
   roles = ROLES;
   private subs = new Subscription();
 
-  constructor(private router: Router, private userService:
-    UserService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private userService: UserService
+  ) { }
 
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
 
+  markDirty(): void { this.isDirty = true; }
+
+  hasUnsavedChanges(): boolean { return this.isDirty; }
+
   ngOnInit() {
-    this.loadUserFromState();
+    this.userId = Number(this.route.snapshot.paramMap.get('id'));
+    this.loadUser();
   }
 
-  private loadUserFromState(): void {
-    const user =
-      this.router.getCurrentNavigation()?.extras.state?.['user']
-      ?? history.state?.user;
-
-    if (user) {
-      this.userId = user.id;
-      this.nombre = user.name;
-      this.apellido = user.lastName;
-      this.email = user.email;
-      this.telefono = user.phone;
-      this.rol = user.role;
-    }
+  loadUser() {
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.subs.add(this.userService.getUserById(this.userId).subscribe({
+      next: (user) => {
+        this.isLoading = false;
+        this.nombre = user.name;
+        this.apellido = user.lastName;
+        this.email = user.email;
+        this.telefono = user.phone;
+        this.rol = user.role;
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.errorMessage = error.error?.message || 'Error al cargar el usuario.';
+      }
+    }));
   }
 
   onSubmit() {
@@ -78,6 +92,7 @@ export class EditUserPageComponent implements OnInit, OnDestroy {
     this.subs.add(this.userService.updateUser(this.userId, request).subscribe({
       next: () => {
         this.isLoading = false;
+        this.isDirty = false;
         this.router.navigate(['/home/users']);
       },
       error: (err) => {

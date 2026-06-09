@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CancelButtonComponent } from
   '../../../../shared/components/cancel-button/cancel-button.component';
 import { SubmitButtonComponent } from
@@ -32,26 +32,22 @@ export class ChangePasswordPageComponent implements OnInit, OnDestroy {
   submitted = false;
   private subs = new Subscription();
 
-  constructor(private router: Router, private userService:
-    UserService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private userService: UserService
+  ) { }
 
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
 
   ngOnInit() {
-    this.loadUserFromState();
-  }
-
-  private loadUserFromState(): void {
-    const user =
-      this.router.getCurrentNavigation()?.extras.state?.['user']
-      ?? history.state?.user;
-
-    if (user) {
-      this.userId = user.id;
-      this.userName = user.name + ' ' + user.lastName;
-    }
+    this.userId = Number(this.route.snapshot.paramMap.get('id'));
+    this.subs.add(this.userService.getUserById(this.userId).subscribe({
+      next: (user) => { this.userName = user.name + ' ' + user.lastName; },
+      error: () => { this.errorMessage = 'Error al cargar el usuario.'; }
+    }));
   }
 
   onSubmit() {

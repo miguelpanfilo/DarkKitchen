@@ -12,6 +12,7 @@ import { CreateOrderItemRequest } from '../../models/create-order-request.model'
 import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
 import { SubmitButtonComponent } from '../../../../shared/components/submit-button/submit-button.component';
 import { CancelButtonComponent } from '../../../../shared/components/cancel-button/cancel-button.component';
+import { HasUnsavedChanges } from '../../../../core/guards/pending-changes.guard';
 
 interface CartItem {
   product: Product;
@@ -24,7 +25,7 @@ interface CartItem {
   templateUrl: './create-order-page.component.html',
   styleUrl: './create-order-page.component.css'
 })
-export class CreateOrderPageComponent implements OnInit, OnDestroy {
+export class CreateOrderPageComponent implements OnInit, OnDestroy, HasUnsavedChanges {
   products: Product[] = [];
   shippingTypes: ShippingType[] = [];
   cartItems: CartItem[] = [];
@@ -37,6 +38,7 @@ export class CreateOrderPageComponent implements OnInit, OnDestroy {
   isLoadingProducts = false;
   isSubmitting = false;
   errorMessage = '';
+  private saveSucceeded = false;
 
   private subs = new Subscription();
 
@@ -49,6 +51,10 @@ export class CreateOrderPageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subs.unsubscribe();
+  }
+
+  hasUnsavedChanges(): boolean {
+    return !this.saveSucceeded && (this.cartItems.length > 0 || !!this.street.trim() || !!this.doorNumber.trim() || !!this.apartment.trim());
   }
 
   ngOnInit() {
@@ -145,6 +151,7 @@ export class CreateOrderPageComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: () => {
         this.isSubmitting = false;
+        this.saveSucceeded = true;
         this.router.navigate(['/home/orders'], { state: { successMessage: 'Orden creada exitosamente.' } });
       },
       error: (error) => {

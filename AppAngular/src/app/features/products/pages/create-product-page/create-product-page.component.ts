@@ -9,6 +9,7 @@ import { SubmitButtonComponent } from '../../../../shared/components/submit-butt
 import { CancelButtonComponent } from '../../../../shared/components/cancel-button/cancel-button.component';
 import { FormCardComponent } from '../../../../shared/components/form-card/form-card.component';
 import { PhotoRequest } from '../../models/product-photo.model';
+import { HasUnsavedChanges } from '../../../../core/guards/pending-changes.guard';
 
 @Component({
   selector: 'app-create-product-page',
@@ -16,7 +17,7 @@ import { PhotoRequest } from '../../models/product-photo.model';
   templateUrl: './create-product-page.component.html',
   styleUrl: './create-product-page.component.css'
 })
-export class CreateProductPageComponent implements OnDestroy {
+export class CreateProductPageComponent implements OnDestroy, HasUnsavedChanges {
   code = '';
   name = '';
   description = '';
@@ -28,6 +29,7 @@ export class CreateProductPageComponent implements OnDestroy {
   submitted = false;
   isSubmitting = false;
   errorMessage = '';
+  private saveSucceeded = false;
 
   private subs = new Subscription();
 
@@ -38,6 +40,10 @@ export class CreateProductPageComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.subs.unsubscribe();
+  }
+
+  hasUnsavedChanges(): boolean {
+    return !this.saveSucceeded && !!(this.code || this.name || this.description || this.commercialLine || this.category || this.price !== null || this.photos.length > 0);
   }
 
   onPhotosSelected(event: Event) {
@@ -110,6 +116,7 @@ export class CreateProductPageComponent implements OnDestroy {
     }).subscribe({
       next: () => {
         this.isSubmitting = false;
+        this.saveSucceeded = true;
         this.router.navigate(['/home/products'], { state: { successMessage: 'Producto creado correctamente.' } });
       },
       error: (error) => {
