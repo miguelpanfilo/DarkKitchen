@@ -75,6 +75,10 @@ export class CreateOrderPageComponent implements OnInit {
     return this.cartItems.find(i => i.product.id === productId)?.quantity ?? 0;
   }
 
+  get totalCartItems(): number {
+    return this.cartItems.reduce((sum, i) => sum + i.quantity, 0);
+  }
+
   get cartSubtotal(): number {
     return this.cartItems.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
   }
