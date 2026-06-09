@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductImporterService, Importer } from '../../services/product-importer.service';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-product-importers-page',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './product-importers-page.component.html',
+  styleUrl: './product-importers-page.component.css'
 })
 export class ProductImportersPageComponent implements OnInit {
   importers$!: Observable<Importer[]>;
@@ -18,7 +20,7 @@ export class ProductImportersPageComponent implements OnInit {
   errorMessage: string = '';
   loading: boolean = false;
   importedProducts: any[] = [];
-  readonly apiUrl = 'http://localhost:5254';
+  readonly apiUrl = environment.webApiBaseUrl;
 
   constructor(private importerService: ProductImporterService) {}
 

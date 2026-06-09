@@ -7,7 +7,27 @@
   </div>
 
   <div *ngIf="product.photos.length > 0" class="product-photo">
-    <img [src]="product.photos[0].path" alt="" />
+    <img [src]="currentPhotoPath" alt="" />
+
+    <button
+      *ngIf="product.photos.length > 1"
+      type="button"
+      class="photo-nav photo-nav-left"
+      (click)="previousPhoto($event)">
+      ‹
+    </button>
+
+    <button
+      *ngIf="product.photos.length > 1"
+      type="button"
+      class="photo-nav photo-nav-right"
+      (click)="nextPhoto($event)">
+      ›
+    </button>
+
+    <span *ngIf="product.photos.length > 1" class="photo-counter">
+      {{ currentPhotoIndex + 1 }}/{{ product.photos.length }}
+    </span>
   </div>
 
   <div class="d-flex flex-column gap-1">

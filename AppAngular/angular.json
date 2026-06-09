@@ -77,6 +77,17 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "lan": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.lan.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -89,6 +100,9 @@
             },
             "development": {
               "buildTarget": "AppAngular:build:development"
+            },
+            "lan": {
+              "buildTarget": "AppAngular:build:lan"
             }
           },
           "defaultConfiguration": "development"

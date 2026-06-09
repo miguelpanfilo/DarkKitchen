@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import * as signalR from '@microsoft/signalr';
 import { HttpErrorResponse } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 export interface Importer {
   id: string;
@@ -11,7 +12,7 @@ export interface Importer {
 
 @Injectable({ providedIn: 'root' })
 export class ProductImporterService implements OnDestroy {
-  private apiUrl = 'http://localhost:5254';
+  private apiUrl = environment.webApiBaseUrl;
   private hubConnection!: signalR.HubConnection;
   private importers$ = new BehaviorSubject<Importer[]>([]);
 

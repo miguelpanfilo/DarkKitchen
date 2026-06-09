@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { TopProduct, SalesReport, SalesPeriod, SalesCustomer } from '../models/report.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReportService {
 
-  private apiUrl = 'http://localhost:5254';
+  private apiUrl = environment.webApiBaseUrl;
 
   constructor(private http: HttpClient) { }
 

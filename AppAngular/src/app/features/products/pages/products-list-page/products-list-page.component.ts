@@ -47,8 +47,18 @@ export class ProductsListPageComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    const nav = this.router.getCurrentNavigation()?.extras.state ?? history.state;
-    if (nav?.successMessage) this.successMessage = nav.successMessage;
+    const nav = history.state;
+
+    if (nav?.successMessage) {
+      this.successMessage = nav.successMessage;
+
+      history.replaceState({}, '');
+
+      setTimeout(() => {
+        this.successMessage = '';
+      }, 3000);
+    }
+
     this.loadProducts();
   }
 
@@ -108,7 +118,12 @@ export class ProductsListPageComponent implements OnInit, OnDestroy {
         this.products = this.products.filter(p => p.id !== id);
         this.showConfirmDialog = false;
         this.productToDelete = null;
+
         this.successMessage = 'Producto eliminado correctamente.';
+
+        setTimeout(() => {
+          this.successMessage = '';
+        }, 3000);
       },
       error: (error) => {
         this.showConfirmDialog = false;
@@ -120,5 +135,9 @@ export class ProductsListPageComponent implements OnInit, OnDestroy {
   onCancelDelete() {
     this.showConfirmDialog = false;
     this.productToDelete = null;
+  }
+
+  onImport() {
+    this.router.navigate(['/home/product-importers']);
   }
 }

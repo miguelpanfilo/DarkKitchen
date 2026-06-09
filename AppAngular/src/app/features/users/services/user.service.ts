@@ -10,13 +10,14 @@ import { FindUserRequest } from '../models/find-user-request.model';
 import { UpdateUserRequest } from '../models/update-user-request.model';
 import { UpdateUserResponse } from '../models/update-user-response.model';
 import { ChangePasswordRequest } from '../models/change-password-request.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  private apiUrl = 'http://localhost:5254';
+  private apiUrl = environment.webApiBaseUrl;
 
   constructor(private http: HttpClient) { }
 

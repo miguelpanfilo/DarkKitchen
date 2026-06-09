@@ -7,12 +7,14 @@ import { CreateProductRequest } from
   '../models/create-product-request.model';
 import { UpdateProductRequest } from
   '../models/update-product-request.model';
+import { environment } from '../../../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  private apiUrl = 'http://localhost:5254';
+  private apiUrl = environment.webApiBaseUrl;
 
   constructor(private http: HttpClient) { }
 
