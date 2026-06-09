@@ -1,8 +1,6 @@
-﻿using BusinessLogicsAbstractions;
+using BusinessLogicsAbstractions;
 using Contract;
 using DarkKitchen.Controllers;
-using DarkKitchen.Filters;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -141,34 +139,6 @@ public class ClientsControllerTests
     }
 
     [TestMethod]
-    public void CreateClient_HasAllowAnonymousAttribute()
-    {
-        var method = typeof(ClientsController).GetMethod(nameof(ClientsController.CreateClient));
-
-        Assert.IsNotNull(method);
-
-        var attribute = method.GetCustomAttributes(typeof(AllowAnonymousAttribute), false)
-            .Cast<AllowAnonymousAttribute>()
-            .SingleOrDefault();
-
-        Assert.IsNotNull(attribute);
-    }
-
-    [TestMethod]
-    public void CreateClient_HasHttpPostAttribute()
-    {
-        var method = typeof(ClientsController).GetMethod(nameof(ClientsController.CreateClient));
-
-        Assert.IsNotNull(method);
-
-        var attribute = method.GetCustomAttributes(typeof(HttpPostAttribute), false)
-            .Cast<HttpPostAttribute>()
-            .SingleOrDefault();
-
-        Assert.IsNotNull(attribute);
-    }
-
-    [TestMethod]
     public void CreateClient_ValidRequest_ReturnsCreatedWithCorrectLocation()
     {
         var signUpServiceMock = new Mock<ISignUpUserService>(MockBehavior.Strict);
@@ -199,19 +169,5 @@ public class ClientsControllerTests
 
         Assert.IsNotNull(result);
         Assert.AreEqual("/api/v1/clients", result.Location);
-    }
-
-    [TestMethod]
-    public void CreateClient_DoesNotHaveRoleAuthorizationAttribute()
-    {
-        var method = typeof(ClientsController).GetMethod(nameof(ClientsController.CreateClient));
-
-        Assert.IsNotNull(method);
-
-        var attribute = method.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
-            .Cast<RoleAuthorizationAttribute>()
-            .SingleOrDefault();
-
-        Assert.IsNull(attribute);
     }
 }

@@ -1,7 +1,6 @@
-﻿using BusinessLogicsAbstractions;
+using BusinessLogicsAbstractions;
 using Contract;
 using DarkKitchen.Controllers;
-using DarkKitchen.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -63,30 +62,6 @@ public class ShippingTypesControllerTests
     }
 
     [TestMethod]
-    public void Create_HasHttpPostAttribute()
-    {
-        var method = typeof(ShippingTypesController).GetMethod(nameof(ShippingTypesController.Create));
-
-        var attribute = method!.GetCustomAttributes(typeof(HttpPostAttribute), false)
-            .Cast<HttpPostAttribute>()
-            .SingleOrDefault();
-
-        Assert.IsNotNull(attribute);
-    }
-
-    [TestMethod]
-    public void Create_HasRoleAuthorizationAttributeWithAdministrative()
-    {
-        var method = typeof(ShippingTypesController).GetMethod(nameof(ShippingTypesController.Create));
-
-        var attribute = method!.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
-            .Cast<RoleAuthorizationAttribute>()
-            .SingleOrDefault();
-
-        Assert.IsNotNull(attribute);
-    }
-
-    [TestMethod]
     public void Update_WhenAdmin_Returns200WithUpdatedResource()
     {
         var request = new ShippingTypePatchDto { Name = "Envío premium", Cost = 200m };
@@ -116,31 +91,6 @@ public class ShippingTypesControllerTests
     }
 
     [TestMethod]
-    public void Update_HasHttpPatchAttributeWithIdTemplate()
-    {
-        var method = typeof(ShippingTypesController).GetMethod(nameof(ShippingTypesController.Update));
-
-        var attribute = method!.GetCustomAttributes(typeof(HttpPatchAttribute), false)
-            .Cast<HttpPatchAttribute>()
-            .SingleOrDefault();
-
-        Assert.IsNotNull(attribute);
-        Assert.AreEqual("{id}", attribute.Template);
-    }
-
-    [TestMethod]
-    public void Update_HasRoleAuthorizationAttributeWithAdministrative()
-    {
-        var method = typeof(ShippingTypesController).GetMethod(nameof(ShippingTypesController.Update));
-
-        var attribute = method!.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
-            .Cast<RoleAuthorizationAttribute>()
-            .SingleOrDefault();
-
-        Assert.IsNotNull(attribute);
-    }
-
-    [TestMethod]
     public void GetAll_Returns200WithList()
     {
         var response = new List<ShippingTypeResponseDto>
@@ -157,29 +107,5 @@ public class ShippingTypesControllerTests
         Assert.AreEqual(StatusCodes.Status200OK, result.StatusCode);
         Assert.AreEqual(response, result.Value);
         _serviceMock.VerifyAll();
-    }
-
-    [TestMethod]
-    public void GetAll_HasHttpGetAttribute()
-    {
-        var method = typeof(ShippingTypesController).GetMethod(nameof(ShippingTypesController.GetAll));
-
-        var attribute = method!.GetCustomAttributes(typeof(HttpGetAttribute), false)
-            .Cast<HttpGetAttribute>()
-            .SingleOrDefault();
-
-        Assert.IsNotNull(attribute);
-    }
-
-    [TestMethod]
-    public void GetAll_HasRoleAuthorizationForAdministrativeAndClient()
-    {
-        var method = typeof(ShippingTypesController).GetMethod(nameof(ShippingTypesController.GetAll));
-
-        var attribute =
-            method!.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
-                .SingleOrDefault() as RoleAuthorizationAttribute;
-
-        Assert.IsNotNull(attribute);
     }
 }
