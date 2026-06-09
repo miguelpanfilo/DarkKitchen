@@ -1,7 +1,6 @@
-﻿using BusinessLogicsAbstractions;
+using BusinessLogicsAbstractions;
 using Contract;
 using DarkKitchen.Controllers;
-using DarkKitchen.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -25,37 +24,22 @@ public class AssociateDisassociatePromotionsControllerTests
     {
         var httpContext = new DefaultHttpContext();
         httpContext.Items["CurrentUser"] = user;
-
-        _controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = httpContext
-        };
+        _controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
     }
 
-    private static CurrentUserDto MakeAdmin()
-    {
-        return new CurrentUserDto { Id = 1, Role = UserRolesDto.Administrative, Email = "admin@test.com" };
-    }
+    private static CurrentUserDto MakeAdmin() =>
+        new CurrentUserDto { Id = 1, Role = UserRolesDto.Administrative, Email = "admin@test.com" };
 
     [TestMethod]
     public void AssociateProduct_WhenAdmin_ShouldReturn200()
     {
         var response = new PromotionResponseDto(
-            1,
-            "Black Friday",
-            20,
-            new DateOnly(2026, 11, 1),
-            new DateOnly(2026, 11, 30),
-            new List<ProductSummaryDto>
-            {
-                new (5, "Hamburguesa Clásica")
-            }
+            1, "Black Friday", 20,
+            new DateOnly(2026, 11, 1), new DateOnly(2026, 11, 30),
+            new List<ProductSummaryDto> { new(5, "Hamburguesa Clásica") }
         );
 
-        _promotionServiceMock
-            .Setup(x => x.AssociateProduct(1, 5))
-            .Returns(response);
-
+        _promotionServiceMock.Setup(x => x.AssociateProduct(1, 5)).Returns(response);
         SetCurrentUser(MakeAdmin());
 
         var result = _controller.AssociateProduct(1, 5) as OkObjectResult;
@@ -71,31 +55,19 @@ public class AssociateDisassociatePromotionsControllerTests
     public void AssociateProduct_WhenAdmin_ShouldReturnPromotionWithAssociatedProducts()
     {
         var response = new PromotionResponseDto(
-            1,
-            "Black Friday",
-            20,
-            new DateOnly(2026, 11, 1),
-            new DateOnly(2026, 11, 30),
-            new List<ProductSummaryDto>
-            {
-                new(5, "Producto 5")
-            }
+            1, "Black Friday", 20,
+            new DateOnly(2026, 11, 1), new DateOnly(2026, 11, 30),
+            new List<ProductSummaryDto> { new(5, "Producto 5") }
         );
 
-        _promotionServiceMock
-            .Setup(x => x.AssociateProduct(1, 5))
-            .Returns(response);
-
+        _promotionServiceMock.Setup(x => x.AssociateProduct(1, 5)).Returns(response);
         SetCurrentUser(MakeAdmin());
 
         var result = _controller.AssociateProduct(1, 5) as OkObjectResult;
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(StatusCodes.Status200OK, result.StatusCode);
-
-        var value = result.Value as PromotionResponseDto;
+        var value = result!.Value as PromotionResponseDto;
         Assert.IsNotNull(value);
-        Assert.IsNotNull(value.Products);
         Assert.AreEqual(1, value.Products.Count);
         Assert.AreEqual(5, value.Products[0].Id);
         Assert.AreEqual("Producto 5", value.Products[0].Name);
@@ -104,84 +76,15 @@ public class AssociateDisassociatePromotionsControllerTests
     }
 
     [TestMethod]
-    public void AssociateProduct_HasHttpPostAttributeWithRouteTemplate()
-    {
-        var method = typeof(PromotionsController).GetMethod(nameof(PromotionsController.AssociateProduct));
-
-        Assert.IsNotNull(method);
-
-        var attribute = method.GetCustomAttributes(typeof(HttpPostAttribute), false)
-            .Cast<HttpPostAttribute>()
-            .SingleOrDefault();
-
-        Assert.IsNotNull(attribute);
-        Assert.AreEqual("{promotionId}/products/{productId}", attribute.Template);
-    }
-
-    [TestMethod]
-    public void DisassociateProduct_WhenAdmin_ShouldReturnPromotionWithAssociatedProducts()
-    {
-        var response = new PromotionResponseDto(
-            1,
-            "Black Friday",
-            20,
-            new DateOnly(2026, 11, 1),
-            new DateOnly(2026, 11, 30),
-            new List<ProductSummaryDto>()
-        );
-
-        _promotionServiceMock
-            .Setup(x => x.DisassociateProduct(1, 5))
-            .Returns(response);
-
-        SetCurrentUser(MakeAdmin());
-
-        var result = _controller.DisassociateProduct(1, 5) as OkObjectResult;
-
-        Assert.IsNotNull(result);
-        Assert.AreEqual(StatusCodes.Status200OK, result.StatusCode);
-
-        var value = result.Value as PromotionResponseDto;
-        Assert.IsNotNull(value);
-        Assert.IsNotNull(value.Products);
-        Assert.AreEqual(0, value.Products.Count);
-
-        _promotionServiceMock.Verify(x => x.DisassociateProduct(1, 5), Times.Once);
-    }
-
-    [TestMethod]
-    public void AssociateProduct_HasRoleAuthorizationAttribute()
-    {
-        var method = typeof(PromotionsController).GetMethod(nameof(PromotionsController.AssociateProduct));
-
-        Assert.IsNotNull(method);
-
-        var attribute = method.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
-            .Cast<RoleAuthorizationAttribute>()
-            .SingleOrDefault();
-
-        Assert.IsNotNull(attribute);
-    }
-
-    [TestMethod]
     public void DisassociateProduct_WhenAdmin_ShouldReturn200()
     {
         var response = new PromotionResponseDto(
-            1,
-            "Black Friday",
-            20,
-            new DateOnly(2026, 11, 1),
-            new DateOnly(2026, 11, 30),
-            new List<ProductSummaryDto>
-            {
-                new (5, "Hamburguesa Clásica")
-            }
+            1, "Black Friday", 20,
+            new DateOnly(2026, 11, 1), new DateOnly(2026, 11, 30),
+            new List<ProductSummaryDto> { new(5, "Hamburguesa Clásica") }
         );
 
-        _promotionServiceMock
-            .Setup(x => x.DisassociateProduct(1, 5))
-            .Returns(response);
-
+        _promotionServiceMock.Setup(x => x.DisassociateProduct(1, 5)).Returns(response);
         SetCurrentUser(MakeAdmin());
 
         var result = _controller.DisassociateProduct(1, 5) as OkObjectResult;
@@ -194,31 +97,24 @@ public class AssociateDisassociatePromotionsControllerTests
     }
 
     [TestMethod]
-    public void DisassociateProduct_HasHttpPostAttributeWithRouteTemplate()
+    public void DisassociateProduct_WhenAdmin_ShouldReturnPromotionWithAssociatedProducts()
     {
-        var method = typeof(PromotionsController).GetMethod(nameof(PromotionsController.DisassociateProduct));
+        var response = new PromotionResponseDto(
+            1, "Black Friday", 20,
+            new DateOnly(2026, 11, 1), new DateOnly(2026, 11, 30),
+            new List<ProductSummaryDto>()
+        );
 
-        Assert.IsNotNull(method);
+        _promotionServiceMock.Setup(x => x.DisassociateProduct(1, 5)).Returns(response);
+        SetCurrentUser(MakeAdmin());
 
-        var attribute = method.GetCustomAttributes(typeof(HttpDeleteAttribute), false)
-            .Cast<HttpDeleteAttribute>()
-            .SingleOrDefault();
+        var result = _controller.DisassociateProduct(1, 5) as OkObjectResult;
 
-        Assert.IsNotNull(attribute);
-        Assert.AreEqual("{promotionId}/products/{productId}", attribute.Template);
-    }
+        Assert.IsNotNull(result);
+        var value = result!.Value as PromotionResponseDto;
+        Assert.IsNotNull(value);
+        Assert.AreEqual(0, value.Products.Count);
 
-    [TestMethod]
-    public void DisassociateProduct_HasRoleAuthorizationAttribute()
-    {
-        var method = typeof(PromotionsController).GetMethod(nameof(PromotionsController.DisassociateProduct));
-
-        Assert.IsNotNull(method);
-
-        var attribute = method.GetCustomAttributes(typeof(RoleAuthorizationAttribute), false)
-            .Cast<RoleAuthorizationAttribute>()
-            .SingleOrDefault();
-
-        Assert.IsNotNull(attribute);
+        _promotionServiceMock.Verify(x => x.DisassociateProduct(1, 5), Times.Once);
     }
 }

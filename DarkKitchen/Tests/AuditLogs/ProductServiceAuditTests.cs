@@ -3,7 +3,7 @@ using BusinessLogicsAbstractions;
 using Contract;
 using DataAccessAbstractions;
 using Domain;
-using Domain.Builders;
+using Domain;
 using Moq;
 
 namespace Tests.AuditLogs;

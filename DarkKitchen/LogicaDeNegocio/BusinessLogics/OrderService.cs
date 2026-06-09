@@ -2,7 +2,6 @@
 using Contract;
 using DataAccessAbstractions;
 using Domain;
-using Domain.Exceptions;
 namespace BusinessLogics;
 public class OrderService(IOrderRepository orderRepository) : IOrderService
 {

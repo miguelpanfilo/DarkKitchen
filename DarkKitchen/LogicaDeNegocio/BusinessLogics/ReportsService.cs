@@ -2,7 +2,6 @@
 using Contract;
 using DataAccessAbstractions;
 using Domain;
-using Mappers;
 
 namespace BusinessLogics;
 
