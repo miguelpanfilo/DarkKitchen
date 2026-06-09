@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -16,7 +17,7 @@ import { environment } from '../../../../../environments/environment';
   templateUrl: './edit-product-page.component.html',
   styleUrl: './edit-product-page.component.css'
 })
-export class EditProductPageComponent implements OnInit {
+export class EditProductPageComponent implements OnInit, OnDestroy {
   code = '';
   name = '';
   description = '';
@@ -32,12 +33,17 @@ export class EditProductPageComponent implements OnInit {
   errorMessage = '';
 
   private productId = 0;
+  private subs = new Subscription();
 
   constructor(
     private productService: ProductService,
     private route: ActivatedRoute,
     private router: Router
   ) { }
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
 
   ngOnInit() {
     this.productId = Number(this.route.snapshot.paramMap.get('id'));
@@ -47,7 +53,7 @@ export class EditProductPageComponent implements OnInit {
   loadProduct() {
     this.isLoading = true;
     this.errorMessage = '';
-    this.productService.getProducts().subscribe({
+    this.subs.add(this.productService.getProducts().subscribe({
       next: (products) => {
         this.isLoading = false;
         const product = products.find(p => p.id === this.productId);
@@ -70,7 +76,7 @@ export class EditProductPageComponent implements OnInit {
         this.isLoading = false;
         this.errorMessage = error.error?.message || 'Error al cargar el producto.';
       }
-    });
+    }));
   }
 
   getPhotoLabel(photo: PatchPhotoRequest): string {
@@ -144,7 +150,7 @@ export class EditProductPageComponent implements OnInit {
       return;
     }
     this.isSubmitting = true;
-    this.productService.update(this.productId, {
+    this.subs.add(this.productService.update(this.productId, {
       code: this.code.trim(),
       name: this.name.trim(),
       description: this.description.trim(),
@@ -162,7 +168,7 @@ export class EditProductPageComponent implements OnInit {
         this.isSubmitting = false;
         this.errorMessage = error.error?.message || 'Error al actualizar el producto.';
       }
-    });
+    }));
   }
 
   onCancel() {

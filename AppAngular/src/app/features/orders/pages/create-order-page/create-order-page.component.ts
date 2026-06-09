@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -23,7 +24,7 @@ interface CartItem {
   templateUrl: './create-order-page.component.html',
   styleUrl: './create-order-page.component.css'
 })
-export class CreateOrderPageComponent implements OnInit {
+export class CreateOrderPageComponent implements OnInit, OnDestroy {
   products: Product[] = [];
   shippingTypes: ShippingType[] = [];
   cartItems: CartItem[] = [];
@@ -37,6 +38,8 @@ export class CreateOrderPageComponent implements OnInit {
   isSubmitting = false;
   errorMessage = '';
 
+  private subs = new Subscription();
+
   constructor(
     private orderService: OrderService,
     private productService: ProductService,
@@ -44,9 +47,13 @@ export class CreateOrderPageComponent implements OnInit {
     private router: Router
   ) { }
 
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
+
   ngOnInit() {
     this.loadProducts();
-    this.shippingTypeService.getAll().subscribe({
+    this.subs.add(this.shippingTypeService.getAll().subscribe({
       next: (types) => {
         this.shippingTypes = types;
         if (types.length > 0) this.deliveryType = types[0].name;
@@ -54,12 +61,12 @@ export class CreateOrderPageComponent implements OnInit {
       error: () => {
         this.errorMessage = 'Error al cargar los tipos de envío.';
       }
-    });
+    }));
   }
 
   loadProducts() {
     this.isLoadingProducts = true;
-    this.productService.getProducts().subscribe({
+    this.subs.add(this.productService.getProducts().subscribe({
       next: (products) => {
         this.isLoadingProducts = false;
         this.products = products.filter(p => p.isActive);
@@ -68,7 +75,7 @@ export class CreateOrderPageComponent implements OnInit {
         this.isLoadingProducts = false;
         this.errorMessage = 'Error al cargar los productos.';
       }
-    });
+    }));
   }
 
   getCartQty(productId: number): number {
@@ -127,7 +134,7 @@ export class CreateOrderPageComponent implements OnInit {
     }));
 
     this.isSubmitting = true;
-    this.orderService.create({
+    this.subs.add(this.orderService.create({
       deliveryType: this.deliveryType,
       address: {
         street: this.street.trim(),
@@ -144,7 +151,7 @@ export class CreateOrderPageComponent implements OnInit {
         this.isSubmitting = false;
         this.errorMessage = error.error?.message || 'Error al crear la orden.';
       }
-    });
+    }));
   }
 
   onCancel() {

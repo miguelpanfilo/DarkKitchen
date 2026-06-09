@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -15,7 +16,7 @@ import { PhotoRequest } from '../../models/product-photo.model';
   templateUrl: './create-product-page.component.html',
   styleUrl: './create-product-page.component.css'
 })
-export class CreateProductPageComponent {
+export class CreateProductPageComponent implements OnDestroy {
   code = '';
   name = '';
   description = '';
@@ -28,10 +29,16 @@ export class CreateProductPageComponent {
   isSubmitting = false;
   errorMessage = '';
 
+  private subs = new Subscription();
+
   constructor(
     private productService: ProductService,
     private router: Router
   ) { }
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
 
   onPhotosSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -92,7 +99,7 @@ export class CreateProductPageComponent {
       return;
     }
     this.isSubmitting = true;
-    this.productService.create({
+    this.subs.add(this.productService.create({
       code: this.code.trim(),
       name: this.name.trim(),
       description: this.description.trim(),
@@ -109,7 +116,7 @@ export class CreateProductPageComponent {
         this.isSubmitting = false;
         this.errorMessage = error.error?.message || 'Error al crear el producto.';
       }
-    });
+    }));
   }
 
   onCancel() {
