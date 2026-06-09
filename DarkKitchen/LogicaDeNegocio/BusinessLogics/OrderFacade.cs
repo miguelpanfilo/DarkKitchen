@@ -11,13 +11,13 @@ public class OrderFacade(
     IOrderService orderService,
     IOrderItemResolver orderItemResolver,
     IRepositoryUser repositoryUser,
-    IShippingTypeRepository shippingTypeRepository,
+    IShippingTypeService shippingTypeService,
     IProductRepository productRepository) : IOrderFacade
 {
     private readonly IOrderItemResolver _orderItemResolver = orderItemResolver;
     private readonly IOrderService _orderService = orderService;
     private readonly IRepositoryUser _repositoryUser = repositoryUser;
-    private readonly IShippingTypeRepository _shippingTypeRepository = shippingTypeRepository;
+    private readonly IShippingTypeService _shippingTypeService = shippingTypeService;
     private readonly IProductRepository _productRepository = productRepository;
     public OrderResponse CreateOrder(int clientId, CreateOrderRequest request)
     {
@@ -113,15 +113,14 @@ public class OrderFacade(
         }
     }
 
-    private ShippingType GetValidShippingType(string? deliveryType)
+    private ShippingTypeResponseDto GetValidShippingType(string? deliveryType)
     {
         if (string.IsNullOrWhiteSpace(deliveryType))
         {
             throw new ValidationException("El tipo de entrega es obligatorio");
         }
 
-        var shippingType = _shippingTypeRepository.GetAll()
-            .FirstOrDefault(s => s.Name.Equals(deliveryType, StringComparison.OrdinalIgnoreCase));
+        var shippingType = _shippingTypeService.GetByName(deliveryType);
 
         if (shippingType == null)
         {

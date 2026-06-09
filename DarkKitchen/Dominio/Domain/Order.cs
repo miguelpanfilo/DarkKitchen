@@ -21,17 +21,7 @@ public class Order
     {
     }
 
-    private IOrderState CurrentState => Status switch
-    {
-        OrderStatus.Pending => new PendingState(),
-        OrderStatus.Prepared => new PreparedState(),
-        OrderStatus.OnTheWay => new OnTheWayState(),
-        OrderStatus.Delivered => new DeliveredState(),
-        OrderStatus.NotDelivered => new NotDeliveredState(),
-        OrderStatus.Cancelled => new CancelledState(),
-        OrderStatus.Delayed => new DelayedState(),
-        _ => throw new InvalidOperationException($"Estado desconocido: {Status}")
-    };
+    private IOrderState CurrentState => OrderStateFactory.Create(Status);
 
     public static Order MakeOrder(
         int clientId,
@@ -54,20 +44,31 @@ public class Order
             CreatedAt = DateTime.UtcNow,
             StatusUpdatedAt = DateTime.UtcNow,
             ShippingCost = shippingCost,
-            OrderNumber = GenerateOrderNumber()
+            OrderNumber = GenerateOrderNumber(),
+            Items = BuildItems(items)
         };
-
-        order.Items = items
-            .Select(i => OrderItem.MakeOrderItem(
-                i.ProductId,
-                i.Quantity,
-                i.UnitPrice,
-                i.DiscountApplied))
-            .ToList();
 
         order.CalculateTotals();
 
         return order;
+    }
+
+    private static List<OrderItem> BuildItems(List<OrderItemData> items)
+    {
+        var orderItems = new List<OrderItem>();
+
+        foreach (var item in items)
+        {
+            var orderItem = OrderItem.MakeOrderItem(
+                item.ProductId,
+                item.Quantity,
+                item.UnitPrice,
+                item.DiscountApplied);
+
+            orderItems.Add(orderItem);
+        }
+
+        return orderItems;
     }
 
     public void Prepare()
@@ -97,7 +98,6 @@ public class Order
     public void Delay()
     {
         var nextState = CurrentState.Delay();
-
         TransitionTo(nextState.GetStatus());
     }
 
