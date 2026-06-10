@@ -14,11 +14,12 @@ import { ROLES } from '../../../../shared/constants/roles';
 import { RegisterUserRequest } from '../../models/register-user-request.model';
 import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
 import { HasUnsavedChanges } from '../../../../core/guards/pending-changes.guard';
+import { PasswordInputComponent } from '../../../../shared/components/password-input/password-input.component';
 
 @Component({
   selector: 'app-register-internal-user-page',
   imports: [CommonModule, FormsModule, CancelButtonComponent, SubmitButtonComponent,
-    FormCardComponent, StatusMessagesComponent],
+    FormCardComponent, StatusMessagesComponent, PasswordInputComponent],
   templateUrl: './register-internal-user-page.component.html',
   styleUrl: './register-internal-user-page.component.css'
 })

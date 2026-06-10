@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductImporterService, Importer } from '../../services/product-importer.service';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
@@ -12,7 +12,7 @@ import { environment } from '../../../../../environments/environment';
   templateUrl: './product-importers-page.component.html',
   styleUrl: './product-importers-page.component.css'
 })
-export class ProductImportersPageComponent implements OnInit {
+export class ProductImportersPageComponent implements OnInit, OnDestroy {
   importers$!: Observable<Importer[]>;
   selectedImporterName: string = '';
   selectedFile: File | null = null;
@@ -22,7 +22,13 @@ export class ProductImportersPageComponent implements OnInit {
   importedProducts: any[] = [];
   readonly apiUrl = environment.webApiBaseUrl;
 
+  private subs = new Subscription();
+
   constructor(private importerService: ProductImporterService) {}
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
 
   ngOnInit(): void {
     this.importers$ = this.importerService.getImporters();
@@ -55,7 +61,7 @@ export class ProductImportersPageComponent implements OnInit {
     this.successMessage = '';
     this.errorMessage = '';
 
-    this.importerService.importProducts(this.selectedImporterName, this.selectedFile)
+    this.subs.add(this.importerService.importProducts(this.selectedImporterName, this.selectedFile)
       .subscribe({
         next: (result: any[]) => {
           this.successMessage = `Importación exitosa: ${result.length} productos importados.`;
@@ -66,6 +72,6 @@ export class ProductImportersPageComponent implements OnInit {
           this.errorMessage = err.error?.message ?? 'Error al importar el archivo.';
           this.loading = false;
         }
-      });
+      }));
   }
 }

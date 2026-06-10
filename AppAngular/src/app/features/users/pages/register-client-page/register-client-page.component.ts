@@ -10,11 +10,12 @@ import { UserService } from '../../services/user.service';
 import { RegisterClientRequest } from '../../models/register-client-request.model';
 import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
 import { HasUnsavedChanges } from '../../../../core/guards/pending-changes.guard';
+import { PasswordInputComponent } from '../../../../shared/components/password-input/password-input.component';
 
 @Component({
   selector: 'app-register-client-page',
   imports: [CommonModule, FormsModule, CancelButtonComponent, SubmitButtonComponent,
-    FormCardComponent, StatusMessagesComponent],
+    FormCardComponent, StatusMessagesComponent, PasswordInputComponent],
   templateUrl: './register-client-page.component.html',
   styleUrl: './register-client-page.component.css'
 })

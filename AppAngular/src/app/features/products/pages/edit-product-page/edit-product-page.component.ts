@@ -141,6 +141,7 @@ export class EditProductPageComponent implements OnInit, OnDestroy, HasUnsavedCh
 
   removePhoto(index: number) {
     this.photos.splice(index, 1);
+    this.markDirty();
   }
 
   onSubmit() {

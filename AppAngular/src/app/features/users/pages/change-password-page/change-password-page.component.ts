@@ -12,17 +12,17 @@ import { FormCardComponent } from
 import { UserService } from '../../services/user.service';
 import { ChangePasswordRequest } from '../../models/change-password-request.model';
 import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
+import { PasswordInputComponent } from '../../../../shared/components/password-input/password-input.component';
 
 @Component({
   selector: 'app-change-password-page',
   imports: [CommonModule, FormsModule, CancelButtonComponent, SubmitButtonComponent,
-    FormCardComponent, StatusMessagesComponent],
+    FormCardComponent, StatusMessagesComponent, PasswordInputComponent],
   templateUrl: './change-password-page.component.html',
   styleUrl: './change-password-page.component.css'
 })
 export class ChangePasswordPageComponent implements OnInit, OnDestroy {
   userId = 0;
-  userName = '';
   contrasenaActual = '';
   contrasenaNueva = '';
   confirmarContrasena = '';
@@ -44,10 +44,6 @@ export class ChangePasswordPageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.userId = Number(this.route.snapshot.paramMap.get('id'));
-    this.subs.add(this.userService.getUserById(this.userId).subscribe({
-      next: (user) => { this.userName = user.name + ' ' + user.lastName; },
-      error: () => { this.errorMessage = 'Error al cargar el usuario.'; }
-    }));
   }
 
   onSubmit() {
