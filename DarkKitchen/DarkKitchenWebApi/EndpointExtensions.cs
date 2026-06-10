@@ -1,7 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using DarkKitchen.Hubs;
 
 namespace DarkKitchen;
 
+[ExcludeFromCodeCoverage]
 public static class EndpointExtensions
 {
     public static WebApplication MapApplicationEndpoints(

@@ -449,23 +449,6 @@ public sealed class OrdersControllerTests
     }
 
     [TestMethod]
-    public void Delay_WhenPreparer_ShouldReturnOk()
-    {
-        SetCurrentUser(MakePreparer());
-
-        var updatedOrder = MakeOrderResponse(clientId: 1, status: "Delayed");
-
-        _orderFacadeMock.Setup(f => f.Delay(1));
-        _orderFacadeMock.Setup(f => f.GetById(1, 2, UserRolesDto.Preparer)).Returns(updatedOrder);
-
-        var result = _controller.Delay(1);
-
-        _orderFacadeMock.VerifyAll();
-
-        result.Should().BeOfType<OkObjectResult>();
-    }
-
-    [TestMethod]
     public void Delay_WhenPreparer_ShouldReturnOkWithStatusResponse()
     {
         SetCurrentUser(MakePreparer());

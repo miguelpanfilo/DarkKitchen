@@ -42,7 +42,7 @@ public class SignUpInternUserTests
     }
 
     [TestMethod]
-    public void CreateInternalUser_ValidData_ReturnsUserResponse()
+    public void CreateInternalUser_ValidData_ReturnsUserResponseAndCallsRepositoryOnce()
     {
         _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(1));
         _phoneValidatorMock.Setup(v => v.ItsValid("099123456")).Returns(true);
@@ -64,28 +64,7 @@ public class SignUpInternUserTests
         Assert.AreEqual("Perez", result.LastName);
         Assert.AreEqual("admin@gmail.com", result.Email);
         Assert.AreEqual("Administrative", result.Role);
-    }
-
-    [TestMethod]
-    public void CreateInternalUser_InvalidPhone_ThrowsException()
-    {
-        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(1));
-        _phoneValidatorMock.Setup(v => v.ItsValid("123")).Returns(false);
-
-        var request = new SignUpInternUserRequestDTO
-        {
-            Name = "Juan",
-            LastName = "Perez",
-            Email = "admin@gmail.com",
-            Phone = "123",
-            Password = "PasswordSeguraee3!",
-            Role = "Administrative"
-        };
-
-        var ex = Assert.ThrowsException<ValidationException>(() =>
-            _service.MakeInterUser(1, request));
-
-        Assert.AreEqual("Telefono no valido", ex.Message);
+        _repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Once);
     }
 
     [TestMethod]
@@ -110,27 +89,6 @@ public class SignUpInternUserTests
         Assert.AreEqual("Telefono no valido", ex.Message);
 
         _repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Never);
-    }
-
-    [TestMethod]
-    public void CreateInternalUser_ValidData_CallsRepositoryOnce()
-    {
-        _adminValidationMock.Setup(v => v.EnsureUserIsAdmin(1));
-        _phoneValidatorMock.Setup(v => v.ItsValid("099123456")).Returns(true);
-        _repoMock.Setup(r => r.EmailExist("admin@gmail.com")).Returns(false);
-
-        _repoMock.Setup(r => r.Add(It.IsAny<User>()))
-            .Returns((User u) =>
-            {
-                u.Id = 10;
-                return u;
-            });
-
-        var request = CreateValidInternalUserRequest();
-
-        _service.MakeInterUser(1, request);
-
-        _repoMock.Verify(r => r.Add(It.IsAny<User>()), Times.Once);
     }
 
     [TestMethod]

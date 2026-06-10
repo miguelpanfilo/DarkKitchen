@@ -511,4 +511,35 @@ public class OrderStateTests
 
         status.Should().Be(OrderStatus.Delivered);
     }
+
+    #region OrderStateFactory
+
+    [DataTestMethod]
+    [DataRow(OrderStatus.Pending)]
+    [DataRow(OrderStatus.Prepared)]
+    [DataRow(OrderStatus.OnTheWay)]
+    [DataRow(OrderStatus.Delivered)]
+    [DataRow(OrderStatus.NotDelivered)]
+    [DataRow(OrderStatus.Cancelled)]
+    [DataRow(OrderStatus.Delayed)]
+    public void OrderStateFactory_Create_ShouldReturnStateWithMatchingStatus(OrderStatus status)
+    {
+        var state = OrderStateFactory.Create(status);
+
+        state.Should().NotBeNull();
+        state.GetStatus().Should().Be(status);
+    }
+
+    [TestMethod]
+    public void OrderStateFactory_Create_WhenUnknownStatus_ShouldThrowInvalidOperationException()
+    {
+        var unknownStatus = (OrderStatus)999;
+
+        Action act = () => OrderStateFactory.Create(unknownStatus);
+
+        act.Should().Throw<InvalidOperationException>()
+            .WithMessage("*Estado desconocido*");
+    }
+
+    #endregion
 }
