@@ -7,10 +7,10 @@ public static class OrderStateFactory
         OrderStatus.Pending      => new PendingState(),
         OrderStatus.Prepared     => new PreparedState(),
         OrderStatus.OnTheWay     => new OnTheWayState(),
-        OrderStatus.Delivered    => new DeliveredState(),
+        OrderStatus.Delivered => new DeliveredState(),
         OrderStatus.NotDelivered => new NotDeliveredState(),
-        OrderStatus.Cancelled    => new CancelledState(),
-        OrderStatus.Delayed      => new DelayedState(),
+        OrderStatus.Cancelled => new CancelledState(),
+        OrderStatus.Delayed => new DelayedState(),
         _ => throw new InvalidOperationException($"Estado desconocido: {status}")
     };
 }

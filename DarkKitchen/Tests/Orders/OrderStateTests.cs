@@ -48,7 +48,7 @@ public class OrderStateTests
 
         act.Should()
             .Throw<OrderException>()
-            .WithMessage("Solo se puede cancelar un pedido pendiente");
+            .WithMessage("Solo se puede cancelar un pedido pendiente o demorado");
     }
 
     [TestMethod]

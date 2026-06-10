@@ -12,10 +12,10 @@
     </ItemGroup>
 
     <Target Name="CopyPluginToApi" AfterTargets="Build" Condition="'$(SolutionDir)' != '' And '$(SolutionDir)' != '*Undefined*'">
-        <MakeDir Directories="$(SolutionDir)DarkKitchenWebApi\bin\Debug\net8.0\plugins" />
+        <MakeDir Directories="$(SolutionDir)plugins" />
         <Copy
             SourceFiles="$(TargetDir)$(TargetFileName)"
-            DestinationFolder="$(SolutionDir)DarkKitchenWebApi\bin\Debug\net8.0\plugins" />
+            DestinationFolder="$(SolutionDir)plugins" />
     </Target>
 
 </Project>
