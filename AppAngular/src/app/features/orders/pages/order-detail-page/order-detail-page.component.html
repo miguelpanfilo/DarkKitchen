@@ -1,7 +1,7 @@
 <div class="detail-container">
-  <div class="d-flex align-items-center gap-3 mb-4">
-    <button class="btn btn-outline-dark btn-sm" (click)="onBack()">← Volver</button>
+  <div class="d-flex align-items-center justify-content-between mb-4">
     <h1 class="mb-0">Detalle de Orden</h1>
+    <button class="btn btn-outline-dark btn-sm" (click)="onBack()">← Volver</button>
   </div>
 
   <app-status-messages [errorMessage]="errorMessage" [isLoading]="isLoading" loadingText="Cargando orden..." />

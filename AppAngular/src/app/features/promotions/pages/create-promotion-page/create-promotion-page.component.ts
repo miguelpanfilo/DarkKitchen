@@ -58,7 +58,7 @@ export class CreatePromotionPageComponent implements OnDestroy, HasUnsavedChange
       next: (created) => {
         this.isSubmitting = false;
         this.saveSucceeded = true;
-        this.router.navigate(['/home/promotions/edit', created.id]);
+        this.router.navigate(['/home/promotions'], { state: { successMessage: '¡Promoción creada exitosamente!' } });
       },
       error: (error) => {
         this.isSubmitting = false;

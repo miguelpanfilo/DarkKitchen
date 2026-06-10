@@ -17,11 +17,13 @@ public class Order
     public decimal Subtotal { get; private set; }
     public decimal ShippingCost { get; private set; }
     public decimal Total { get; private set; }
+    private IOrderState? _state;
+
     private Order()
     {
     }
 
-    private IOrderState CurrentState => OrderStateFactory.Create(Status);
+    private IOrderState CurrentState => _state ??= OrderStateFactory.Create(Status);
 
     public static Order MakeOrder(
         int clientId,
@@ -48,6 +50,7 @@ public class Order
             Items = BuildItems(items)
         };
 
+        order._state = new PendingState();
         order.CalculateTotals();
 
         return order;
@@ -73,39 +76,32 @@ public class Order
 
     public void Prepare()
     {
-        var nextState = CurrentState.Prepare();
-        TransitionTo(nextState.GetStatus());
+        TransitionTo(CurrentState.Prepare());
     }
 
     public void Cancel()
     {
-        var nextState = CurrentState.Cancel();
-        TransitionTo(nextState.GetStatus());
+        TransitionTo(CurrentState.Cancel());
     }
 
     public void Dispatch()
     {
-        var nextState = CurrentState.Dispatch();
-        TransitionTo(nextState.GetStatus());
+        TransitionTo(CurrentState.Dispatch());
     }
 
     public void Deliver()
     {
-        var nextState = CurrentState.Deliver();
-        TransitionTo(nextState.GetStatus());
+        TransitionTo(CurrentState.Deliver());
     }
 
     public void Delay()
     {
-        var nextState = CurrentState.Delay();
-        TransitionTo(nextState.GetStatus());
+        TransitionTo(CurrentState.Delay());
     }
 
     public void MarkNotDelivered()
     {
-        var nextState = CurrentState.MarkNotDelivered();
-
-        TransitionTo(nextState.GetStatus());
+        TransitionTo(CurrentState.MarkNotDelivered());
     }
 
     private void CalculateTotals()
@@ -114,9 +110,10 @@ public class Order
         Total = (Subtotal + ShippingCost) * TaxPolicy.VatRate;
     }
 
-    private void TransitionTo(OrderStatus newStatus)
+    private void TransitionTo(IOrderState nextState)
     {
-        Status = newStatus;
+        _state = nextState;
+        Status = nextState.GetStatus();
         StatusUpdatedAt = DateTime.UtcNow;
     }
 
