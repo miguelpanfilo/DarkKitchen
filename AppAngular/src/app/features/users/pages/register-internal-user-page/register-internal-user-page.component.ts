@@ -67,14 +67,10 @@ export class RegisterInternalUserPageComponent implements OnDestroy {
     this.subs.add(this.userService.registerInternalUser(request).subscribe({
       next: () => {
         this.isLoading = false;
-        this.submitted = false;
-        this.successMessage = '¡Usuario registrado exitosamente!';
-        this.nombre = '';
-        this.apellido = '';
-        this.email = '';
-        this.telefono = '';
-        this.contrasena = '';
-        this.rol = '';
+
+        this.router.navigate(['/home/users'], {
+          state: { successMessage: 'Usuario registrado correctamente.' }
+        });
       },
       error: (error) => {
         this.isLoading = false;

@@ -78,7 +78,9 @@ export class EditUserPageComponent implements OnInit, OnDestroy {
     this.subs.add(this.userService.updateUser(this.userId, request).subscribe({
       next: () => {
         this.isLoading = false;
-        this.router.navigate(['/home/users']);
+        this.router.navigate(['/home/users'], {
+          state: { successMessage: 'Usuario actualizado correctamente.' }
+        });
       },
       error: (err) => {
         this.isLoading = false;

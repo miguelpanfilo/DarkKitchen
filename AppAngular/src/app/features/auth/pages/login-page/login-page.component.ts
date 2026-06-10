@@ -23,6 +23,7 @@ import { StatusMessagesComponent } from '../../../../shared/components/status-me
 export class LoginPageComponent implements OnInit, OnDestroy {
   email = '';
   contrasena = '';
+  showPassword = false;
   isLoading: boolean = false;
   errorMessage = '';
   successMessage = '';

@@ -66,7 +66,7 @@ export class ShippingTypesPageComponent implements OnInit {
         this.shippingTypes.push(created);
         this.newName = '';
         this.newCost = null;
-        this.successMessage = 'Tipo de envío creado correctamente.';
+        this.showSuccessMessage('Tipo de envío creado correctamente.');
       },
       error: (error) => {
         this.isCreating = false;
@@ -104,12 +104,20 @@ export class ShippingTypesPageComponent implements OnInit {
         const index = this.shippingTypes.findIndex(t => t.id === type.id);
         if (index !== -1) this.shippingTypes[index] = updated;
         this.editingId = null;
-        this.successMessage = 'Tipo de envío actualizado.';
+        this.showSuccessMessage('Tipo de envío actualizado.');
       },
       error: (error) => {
         this.isSaving = false;
         this.errorMessage = error.error?.message || 'Error al actualizar el tipo de envío.';
       }
     });
+  }
+
+  private showSuccessMessage(message: string): void {
+    this.successMessage = message;
+
+    setTimeout(() => {
+      this.successMessage = '';
+    }, 3000);
   }
 }
