@@ -75,8 +75,7 @@ export class RegisterInternalUserPageComponent implements OnDestroy, HasUnsavedC
       next: () => {
           this.isLoading = false;
           this.saveSucceeded = true;
-          this.router.navigate(['/home/users'], { state: {
-  successMessage: '¡Usuario registrado exitosamente!' } });
+          this.router.navigate(['/home/users'], { state: {successMessage: '¡Usuario registrado exitosamente!' } });
         },
       error: (error) => {
         this.isLoading = false;

@@ -43,4 +43,31 @@ public class GetPromotionsControllerTest
 
         serviceMock.VerifyAll();
     }
+
+    [TestMethod]
+    public void GetById_WhenPromotionExists_ShouldReturn200WithPromotion()
+    {
+        var serviceMock = new Mock<IPromotionService>(MockBehavior.Strict);
+
+        var response = new PromotionResponseDto(
+            5,
+            "Black Friday",
+            20,
+            new DateOnly(2026, 11, 1),
+            new DateOnly(2026, 11, 30),
+            new List<ProductSummaryDto> { new ProductSummaryDto(1, "Hamburguesa") }
+        );
+
+        serviceMock.Setup(s => s.GetById(5)).Returns(response);
+
+        var controller = new PromotionsController(serviceMock.Object);
+
+        var result = controller.GetById(5) as OkObjectResult;
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(200, result.StatusCode);
+        Assert.AreEqual(response, result.Value);
+
+        serviceMock.VerifyAll();
+    }
 }
