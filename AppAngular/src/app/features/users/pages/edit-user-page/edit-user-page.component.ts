@@ -91,10 +91,13 @@ export class EditUserPageComponent implements OnInit, OnDestroy, HasUnsavedChang
     this.isLoading = true;
     this.subs.add(this.userService.updateUser(this.userId, request).subscribe({
       next: () => {
-        this.isLoading = false;
-        this.isDirty = false;
-        this.router.navigate(['/home/users']);
-      },
+          this.isLoading = false;
+          this.isDirty = false;
+          this.router.navigate(['/home/users'], {
+            state: { successMessage: 'Usuario actualizado correctamente.' }
+          });
+        },
+
       error: (err) => {
         this.isLoading = false;
         this.errorMessage = err.error?.message || 'Error al modificar el usuario.';
