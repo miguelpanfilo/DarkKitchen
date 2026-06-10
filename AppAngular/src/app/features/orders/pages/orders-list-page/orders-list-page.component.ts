@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -22,7 +23,7 @@ import { HasRoleDirective } from '../../../../shared/directives/has-role.directi
   templateUrl: './orders-list-page.component.html',
   styleUrl: './orders-list-page.component.css'
 })
-export class OrdersListPageComponent implements OnInit {
+export class OrdersListPageComponent implements OnInit, OnDestroy {
   orders: Order[] = [];
   isLoading = false;
   errorMessage = '';
@@ -35,11 +36,17 @@ export class OrdersListPageComponent implements OnInit {
 
   statuses = ['Pending', 'Prepared', 'OnTheWay', 'Delivered', 'NotDelivered', 'Cancelled', 'Delayed'];
 
+  private subs = new Subscription();
+
   constructor(
     private orderService: OrderService,
     private authService: AuthService,
     private router: Router
   ) { }
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
 
   ngOnInit() {
     const nav = history.state;
@@ -81,7 +88,7 @@ export class OrdersListPageComponent implements OnInit {
       status: this.filterStatus || undefined,
       street: this.filterStreet || undefined
     };
-    this.orderService.getOrders(filters).subscribe({
+    this.subs.add(this.orderService.getOrders(filters).subscribe({
       next: (orders) => {
         this.isLoading = false;
         this.orders = orders;
@@ -90,7 +97,7 @@ export class OrdersListPageComponent implements OnInit {
         this.isLoading = false;
         this.errorMessage = error.error?.message || 'Error al cargar las órdenes.';
       }
-    });
+    }));
   }
 
   onFiltrar() {

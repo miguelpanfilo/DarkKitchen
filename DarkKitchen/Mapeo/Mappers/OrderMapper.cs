@@ -5,35 +5,6 @@ namespace Mappers;
 
 public static class OrderMapper
 {
-    public static OrderResponse ToOrderResponse(this Order order, User user, Dictionary<int, string> productNames)
-    {
-        var iva = CalculateIva(order);
-
-        return new OrderResponse
-        {
-            Id = order.Id,
-            OrderNumber = order.OrderNumber,
-            Client = MapClient(user),
-            DeliveryType = order.DeliveryType,
-            Address = order.Address.ToAddressResponse(),
-            Items = order.Items.Select(i => i.ToOrderItemResponse(productNames)).ToList(),
-
-            ItemsCount = CalculateItemsCount(order),
-
-            Status = order.Status.ToString(),
-            CreatedAt = order.CreatedAt,
-            StatusUpdatedAt = order.StatusUpdatedAt,
-
-            Subtotal = Round(order.Subtotal),
-            ShippingCost = Round(order.ShippingCost),
-
-            Iva = iva,
-            IvaPercentage = VatPercentage,
-
-            Total = Round(order.Total),
-        };
-    }
-
     private const decimal VatPercentage = TaxPolicy.VatPercentage;
 
     private static decimal CalculateIva(Order order)
@@ -75,18 +46,7 @@ public static class OrderMapper
         };
     }
 
-    private static ClientOrderResponse MapClient(User user)
-    {
-        return new ClientOrderResponse
-        {
-            Id = user.Id,
-            Name = user.Name,
-            LastName = user.LastName,
-            Email = user.Email.ToString()
-        };
-    }
-
-    private static ClientOrderResponse MapClient(UserResponseDTO user)
+   private static ClientOrderResponse MapClient(UserResponseDTO user)
     {
         return new ClientOrderResponse
         {

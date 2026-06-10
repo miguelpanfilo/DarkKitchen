@@ -24,7 +24,6 @@ import { PasswordInputComponent } from '../../../../shared/components/password-i
 export class LoginPageComponent implements OnInit, OnDestroy {
   email = '';
   contrasena = '';
-  showPassword = false;
   isLoading: boolean = false;
   errorMessage = '';
   successMessage = '';
