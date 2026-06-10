@@ -42,13 +42,22 @@ export class OrdersListPageComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    const nav = this.router.getCurrentNavigation()?.extras.state ?? history.state;
+    const nav = history.state;
+
     if (nav?.successMessage) {
       this.successMessage = nav.successMessage;
+
+      history.replaceState({}, '');
+
+      setTimeout(() => {
+        this.successMessage = '';
+      }, 3000);
     }
+
     if (this.authService.getRole() !== 'Client') {
       this.setDefaultDateRange();
     }
+
     this.loadOrders();
   }
 

@@ -6,9 +6,26 @@
       <input id="email" type="email" [(ngModel)]="email" name="email" placeholder="tu@email.com" />
     </div>
     <div class="form-group mb-3">
-      <label for="contrasena">Contraseña</label>
-      <input id="contrasena" type="password" [(ngModel)]="contrasena" name="contrasena" placeholder="••••••••" />
+  <label for="contrasena">Contraseña</label>
+
+    <div class="password-container">
+      <input
+        id="contrasena"
+        [type]="showPassword ? 'text' : 'password'"
+        [(ngModel)]="contrasena"
+        name="contrasena"
+        placeholder="••••••••" />
+
+      <button
+        type="button"
+        class="password-toggle"
+        (click)="showPassword = !showPassword">
+
+        <span>{{ showPassword ? 'Ocultar' : 'Mostrar' }}</span>
+
+      </button>
     </div>
+  </div>
     <app-submit-button label="Entrar" [disabled]="isLoading" />
     <app-cancel-button (cancelled)="onCancelled()" />
   </form>

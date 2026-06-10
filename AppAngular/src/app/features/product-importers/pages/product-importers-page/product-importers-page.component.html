@@ -1,15 +1,18 @@
 <div class="product-importers-container">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Importar productos</h1>
+  <div class="d-flex align-items-center gap-3 mb-4">
+    <button
+      type="button"
+      class="btn btn-outline-dark btn-sm"
+      (click)="onBack()">
+      ← Volver
+    </button>
+
+    <h1 class="mb-0">Importar productos</h1>
   </div>
 
   <ng-container *ngIf="importers$ | async as importers">
     <section class="import-card">
-      <h3>Formatos disponibles</h3>
-
-      <p class="helper-text">
-        La lista se actualiza automáticamente al agregar o quitar DLLs de la carpeta <code>plugins/</code>.
-      </p>
+      <h2>Formatos disponibles</h2>
 
       <div *ngIf="importers.length > 0; else empty" class="importers-grid">
         <div class="importer-item" *ngFor="let importer of importers">
@@ -24,38 +27,81 @@
       </div>
 
       <ng-template #empty>
-        <p class="empty">No hay importadores disponibles en la carpeta plugins.</p>
+        <p class="empty">No hay importadores disponibles actualmente.</p>
       </ng-template>
     </section>
 
     <section class="import-card">
-      <h3>Archivo a importar</h3>
+      <h2>Archivo a importar</h2>
 
       <div class="import-form">
         <div class="form-group">
-          <label>Importador</label>
-          <select [(ngModel)]="selectedImporterName" (ngModelChange)="onImporterChange()">
+          <label for="selectedImporterName">
+            Importador
+          </label>
+
+          <select
+            id="selectedImporterName"
+            name="selectedImporterName"
+            [(ngModel)]="selectedImporterName"
+            (ngModelChange)="onImporterChange()">
             <option value="">-- Seleccioná un importador --</option>
-            <option *ngFor="let importer of importers" [value]="importer.name">
+
+            <option
+              *ngFor="let importer of importers"
+              [value]="importer.name">
               {{ importer.name }}
             </option>
           </select>
         </div>
 
-        <div class="drop-zone" (dragover)="onDragOver($event)" (drop)="onFileDrop($event)">
+        <div
+          class="drop-zone"
+          (dragover)="onDragOver($event)"
+          (drop)="onFileDrop($event)">
+
           <p>Arrastrá un archivo acá</p>
+
           <span>o</span>
-          <input type="file" (change)="onFileChange($event)" />
-          <p *ngIf="loading" class="loading-text">Importando...</p>
+
+          <div class="form-group">
+            <label for="fileToImport">
+              Archivo a importar
+            </label>
+
+            <input
+              id="fileToImport"
+              name="fileToImport"
+              #fileInput
+              type="file"
+              (change)="onFileChange($event)" />
+          </div>
+
+          <p *ngIf="loading" class="loading-text">
+            Importando...
+          </p>
         </div>
 
-        <p *ngIf="successMessage" class="success">{{ successMessage }}</p>
-        <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+        <div class="actions">
+          <app-submit-button
+            label="Importar"
+            [disabled]="loading || !selectedImporterName || !selectedFile"
+            (click)="import()" />
+
+          <app-cancel-button
+            (cancelled)="onCancel(fileInput)" />
+        </div>
+
+        <app-status-messages
+          [errorMessage]="errorMessage"
+          [successMessage]="successMessage"
+          [isLoading]="loading"
+          loadingText="Importando productos..." />
       </div>
     </section>
 
     <section *ngIf="importedProducts.length > 0" class="import-section">
-      <h3>Productos importados</h3>
+      <h2>Productos importados</h2>
 
       <div class="table-wrapper">
         <table>
@@ -82,7 +128,8 @@
                   <img
                     *ngFor="let photo of product.photos"
                     [src]="apiUrl + photo.path"
-                    class="product-photo" />
+                    class="product-photo"
+                    alt="Foto del producto {{ product.name }}" />
                 </ng-container>
 
                 <ng-template #noPhoto>

@@ -40,15 +40,19 @@ export class UsersListPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.loadNavigationState();
-    this.loadUsers();
-  }
+    const nav = history.state;
 
-  private loadNavigationState(): void {
-    const nav = this.router.getCurrentNavigation()?.extras.state ?? history.state;
     if (nav?.successMessage) {
       this.successMessage = nav.successMessage;
+
+      history.replaceState({}, '');
+
+      setTimeout(() => {
+        this.successMessage = '';
+      }, 3000);
     }
+
+    this.loadUsers();
   }
 
   loadUsers() {
@@ -65,8 +69,9 @@ export class UsersListPageComponent implements OnInit, OnDestroy {
         this.users = response;
       },
       error: (error) => {
-        this.isLoading = false;
-        this.errorMessage = error.error?.message || 'Error al cargar los  usuarios.';
+        this.errorMessage = error.error?.message || 'Error al eliminar el usuario.';
+        this.successMessage = '';
+        this.showConfirmDialog = false;
       }
     }));
   }
@@ -103,6 +108,12 @@ export class UsersListPageComponent implements OnInit, OnDestroy {
         this.users = this.users.filter(u => u.id !== id);
         this.showConfirmDialog = false;
         this.userToDelete = null;
+
+        this.successMessage = 'Usuario eliminado correctamente.';
+
+        setTimeout(() => {
+          this.successMessage = '';
+        }, 3000);
       },
       error: (error) => {
         this.errorMessage = error.error?.message || 'Error al eliminar el usuario.';
