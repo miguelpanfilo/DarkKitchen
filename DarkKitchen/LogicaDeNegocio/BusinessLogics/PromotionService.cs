@@ -56,6 +56,12 @@ public class PromotionService : IPromotionService
         return applicablePromotions.Max(p => p.DiscountPercentage) / 100m;
     }
 
+    public PromotionResponseDto GetById(int id)
+    {
+        var promotion = GetExistingPromotion(id);
+        return MapPromotionWithProducts(promotion);
+    }
+
     public void Delete(int promotionId)
     {
         var promotion = GetExistingPromotion(promotionId);

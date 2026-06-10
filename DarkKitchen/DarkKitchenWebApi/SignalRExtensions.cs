@@ -1,8 +1,10 @@
-﻿using BusinessLogicsAbstractions;
+﻿using System.Diagnostics.CodeAnalysis;
+using BusinessLogicsAbstractions;
 using DarkKitchen.SignalR;
 
 namespace DarkKitchen;
 
+[ExcludeFromCodeCoverage]
 public static class SignalRExtensions
 {
     public static IServiceCollection AddSignalRServices(

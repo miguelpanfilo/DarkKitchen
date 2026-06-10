@@ -9,15 +9,17 @@ import { FormCardComponent } from '../../../../shared/components/form-card/form-
 import { UserService } from '../../services/user.service';
 import { RegisterClientRequest } from '../../models/register-client-request.model';
 import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
+import { HasUnsavedChanges } from '../../../../core/guards/pending-changes.guard';
+import { PasswordInputComponent } from '../../../../shared/components/password-input/password-input.component';
 
 @Component({
   selector: 'app-register-client-page',
   imports: [CommonModule, FormsModule, CancelButtonComponent, SubmitButtonComponent,
-    FormCardComponent, StatusMessagesComponent],
+    FormCardComponent, StatusMessagesComponent, PasswordInputComponent],
   templateUrl: './register-client-page.component.html',
   styleUrl: './register-client-page.component.css'
 })
-export class RegisterClientPageComponent implements OnDestroy {
+export class RegisterClientPageComponent implements OnDestroy, HasUnsavedChanges {
   nombre = '';
   apellido = '';
   email = '';
@@ -26,6 +28,7 @@ export class RegisterClientPageComponent implements OnDestroy {
   errorMessage = '';
   successMessage = '';
   submitted = false;
+  private saveSucceeded = false;
 
   constructor(private userService: UserService, private router:
     Router) { }
@@ -35,6 +38,10 @@ export class RegisterClientPageComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.subs.unsubscribe();
+  }
+
+  hasUnsavedChanges(): boolean {
+    return !this.saveSucceeded && !!(this.nombre || this.apellido || this.email || this.telefono || this.contrasena);
   }
 
   onSubmit() {
@@ -83,6 +90,7 @@ export class RegisterClientPageComponent implements OnDestroy {
     this.subs.add(this.userService.registerClient(request).subscribe({
       next: () => {
         this.isLoading = false;
+        this.saveSucceeded = true;
         this.router.navigate(['/login'], {
           state: { successMessage: '¡Registro exitoso! Iniciá sesión para continuar.' }
         });

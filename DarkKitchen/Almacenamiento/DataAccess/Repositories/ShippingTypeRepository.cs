@@ -35,4 +35,10 @@ public class ShippingTypeRepository : IShippingTypeRepository
     {
         return _context.ShippingTypes.ToList();
     }
+
+    public ShippingType? GetByName(string name)
+    {
+        return _context.ShippingTypes
+            .FirstOrDefault(s => s.Name.ToLower() == name.ToLower());
+    }
 }

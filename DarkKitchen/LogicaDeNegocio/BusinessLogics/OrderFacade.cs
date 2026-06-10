@@ -1,6 +1,5 @@
 ﻿using BusinessLogicsAbstractions;
 using Contract;
-using DataAccessAbstractions;
 using Domain;
 using Domain.Exceptions;
 using Mappers;
@@ -10,15 +9,22 @@ namespace BusinessLogics;
 public class OrderFacade(
     IOrderService orderService,
     IOrderItemResolver orderItemResolver,
-    IRepositoryUser repositoryUser,
-    IShippingTypeRepository shippingTypeRepository,
-    IProductRepository productRepository) : IOrderFacade
+    IUserService userService,
+    IShippingTypeService shippingTypeService,
+    IProductService productService) : IOrderFacade
 {
     private readonly IOrderItemResolver _orderItemResolver = orderItemResolver;
     private readonly IOrderService _orderService = orderService;
-    private readonly IRepositoryUser _repositoryUser = repositoryUser;
-    private readonly IShippingTypeRepository _shippingTypeRepository = shippingTypeRepository;
-    private readonly IProductRepository _productRepository = productRepository;
+    private readonly IUserService _userService = userService;
+    private readonly IShippingTypeService _shippingTypeService = shippingTypeService;
+    private readonly IProductService _productService = productService;
+
+    private const string DeliveryTypeRequired = "El tipo de entrega es obligatorio";
+    private const string DeliveryTypeInvalid = "El tipo de entrega no es válido";
+    private const string ItemsRequired = "El pedido debe contener al menos un producto";
+    private const string ItemQuantityInvalid = "La cantidad de cada producto debe ser mayor a 0";
+    private const string AddressRequired = "La dirección es obligatoria";
+    private const string UnauthorizedAction = "El usuario no tiene permisos para ejecutar esta acción";
     public OrderResponse CreateOrder(int clientId, CreateOrderRequest request)
     {
         return ServiceExceptionHandler.ExecuteWithValidationHandling<OrderResponse, OrderException>(() =>
@@ -48,7 +54,7 @@ public class OrderFacade(
     {
         if (request.Address == null)
         {
-            throw new ValidationException("La dirección es obligatoria");
+            throw new ValidationException(AddressRequired);
         }
 
         return Address.MakeAddress(
@@ -63,7 +69,7 @@ public class OrderFacade(
 
         if (currentUserRole == UserRolesDto.Client && order.ClientId != currentUserId)
         {
-            throw new ForbiddenException("El usuario no tiene permisos para ejecutar esta acción");
+            throw new ForbiddenException(UnauthorizedAction);
         }
 
         return ToOrderResponseWithClient(order);
@@ -85,47 +91,39 @@ public class OrderFacade(
 
     private OrderResponse ToOrderResponseWithClient(Order order)
     {
-        var user = _repositoryUser.FindByIdIncludingInactive(order.ClientId);
-        if (user == null)
-        {
-            throw new NotFoundException($"No se encontró el cliente con id {order.ClientId}");
-        }
+        var user = _userService.GetByIdIncludingInactive(order.ClientId);
 
-        var productIds = order.Items.Select(i =>
-            i.ProductId).Distinct().ToList();
-        var productNames = _productRepository.GetAll()
-            .Where(p => productIds.Contains(p.Id))
-            .ToDictionary(p => p.Id, p => p.Name);
+        var productIds = order.Items.Select(i => i.ProductId).Distinct().ToList();
+        var productNames = _productService.GetNamesByIds(productIds);
 
         return order.ToOrderResponse(user, productNames);
     }
 
     private static void ValidateItems(List<CreateOrderItemRequest> requestItems)
     {
-        if(requestItems == null || requestItems.Count == 0)
+        if (requestItems == null || requestItems.Count == 0)
         {
-            throw new ValidationException("El pedido debe contener al menos un producto");
+            throw new ValidationException(ItemsRequired);
         }
 
-        if(requestItems.Any(i => i.Quantity <= 0))
+        if (requestItems.Any(i => i.Quantity <= 0))
         {
-            throw new ValidationException("La cantidad de cada producto debe ser mayor a 0");
+            throw new ValidationException(ItemQuantityInvalid);
         }
     }
 
-    private ShippingType GetValidShippingType(string? deliveryType)
+    private ShippingTypeResponseDto GetValidShippingType(string? deliveryType)
     {
         if (string.IsNullOrWhiteSpace(deliveryType))
         {
-            throw new ValidationException("El tipo de entrega es obligatorio");
+            throw new ValidationException(DeliveryTypeRequired);
         }
 
-        var shippingType = _shippingTypeRepository.GetAll()
-            .FirstOrDefault(s => s.Name.Equals(deliveryType, StringComparison.OrdinalIgnoreCase));
+        var shippingType = _shippingTypeService.GetByName(deliveryType);
 
         if (shippingType == null)
         {
-            throw new ValidationException("El tipo de entrega no es válido");
+            throw new ValidationException(DeliveryTypeInvalid);
         }
 
         return shippingType;
@@ -140,17 +138,25 @@ public class OrderFacade(
 
     public void Cancel(int orderId, int currentUserId, UserRolesDto currentUserRole)
     {
-        if (currentUserRole == UserRolesDto.Client)
-        {
-            var order = _orderService.GetById(orderId);
-            if (order.ClientId != currentUserId)
-            {
-                throw new ForbiddenException("El usuario no tiene permisos para ejecutar esta acción");
-            }
-        }
+        ValidateClientOrderOwnership(orderId, currentUserId, currentUserRole);
 
         ServiceExceptionHandler.ExecuteWithConflictHandling<OrderException>(
             () => _orderService.Cancel(orderId));
+    }
+
+    private void ValidateClientOrderOwnership(int orderId, int currentUserId, UserRolesDto currentUserRole)
+    {
+        if (currentUserRole != UserRolesDto.Client)
+        {
+            return;
+        }
+
+        var order = _orderService.GetById(orderId);
+
+        if (order.ClientId != currentUserId)
+        {
+            throw new ForbiddenException(UnauthorizedAction);
+        }
     }
 
     public void Dispatch(int orderId) =>

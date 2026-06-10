@@ -12,18 +12,18 @@ import { FormCardComponent } from
 import { AuthService } from '../../../../core/services/auth.service';
 import { LoginRequest } from '../../models/login-request.model';
 import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
+import { PasswordInputComponent } from '../../../../shared/components/password-input/password-input.component';
 
 @Component({
   selector: 'app-login-page',
   imports: [CommonModule, FormsModule, CancelButtonComponent, SubmitButtonComponent,
-    FormCardComponent, StatusMessagesComponent],
+    FormCardComponent, StatusMessagesComponent, PasswordInputComponent],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.css'
 })
 export class LoginPageComponent implements OnInit, OnDestroy {
   email = '';
   contrasena = '';
-  showPassword = false;
   isLoading: boolean = false;
   errorMessage = '';
   successMessage = '';

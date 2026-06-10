@@ -1,33 +1,16 @@
-<app-form-card>
-  <h1>Iniciar sesión</h1>
-  <form (ngSubmit)="onSubmit()">
-    <div class="form-group mb-3">
-      <label for="email">Email</label>
-      <input id="email" type="email" [(ngModel)]="email" name="email" placeholder="tu@email.com" />
-    </div>
-    <div class="form-group mb-3">
-  <label for="contrasena">Contraseña</label>
-
-    <div class="password-container">
-      <input
-        id="contrasena"
-        [type]="showPassword ? 'text' : 'password'"
-        [(ngModel)]="contrasena"
-        name="contrasena"
-        placeholder="••••••••" />
-
-      <button
-        type="button"
-        class="password-toggle"
-        (click)="showPassword = !showPassword">
-
-        <span>{{ showPassword ? 'Ocultar' : 'Mostrar' }}</span>
-
-      </button>
-    </div>
-  </div>
-    <app-submit-button label="Entrar" [disabled]="isLoading" />
-    <app-cancel-button (cancelled)="onCancelled()" />
-  </form>
-  <app-status-messages [errorMessage]="errorMessage" [successMessage]="successMessage" />
-</app-form-card>
+ <app-form-card>
+    <h1>Iniciar sesión</h1>
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group mb-3">
+        <label for="email">Email</label>
+        <input id="email" type="email" [(ngModel)]="email" name="email"placeholder="tu@email.com" />
+      </div>
+      <div class="form-group mb-3">
+        <label for="contrasena">Contraseña</label>
+        <app-password-input inputId="contrasena" name="contrasena" [(value)]="contrasena" />
+      </div>
+      <app-submit-button label="Entrar" [disabled]="isLoading" />
+      <app-cancel-button (cancelled)="onCancelled()" />
+    </form>
+    <app-status-messages [errorMessage]="errorMessage" [successMessage]="successMessage" />
+  </app-form-card>

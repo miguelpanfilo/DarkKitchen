@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderService } from '../../services/order.service';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -14,7 +14,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
   templateUrl: './order-detail-page.component.html',
   styleUrl: './order-detail-page.component.css'
 })
-export class OrderDetailPageComponent implements OnInit {
+export class OrderDetailPageComponent implements OnInit, OnDestroy {
   order: Order | null = null;
   isLoading = false;
   errorMessage = '';
@@ -24,12 +24,18 @@ export class OrderDetailPageComponent implements OnInit {
   confirmMessage = '';
   pendingAction: (() => void) | null = null;
 
+  private subs = new Subscription();
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private orderService: OrderService,
     private authService: AuthService
   ) { }
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -39,7 +45,7 @@ export class OrderDetailPageComponent implements OnInit {
   loadOrder(id: number) {
     this.isLoading = true;
     this.errorMessage = '';
-    this.orderService.getById(id).subscribe({
+    this.subs.add(this.orderService.getById(id).subscribe({
       next: (order) => {
         this.isLoading = false;
         this.order = order;
@@ -48,7 +54,7 @@ export class OrderDetailPageComponent implements OnInit {
         this.isLoading = false;
         this.errorMessage = error.error?.message || 'Error al cargar la orden.';
       }
-    });
+    }));
   }
 
   get role(): string {
@@ -142,7 +148,7 @@ export class OrderDetailPageComponent implements OnInit {
   private executeTransition(call: Observable<void>, newStatus: string) {
     this.actionLoading = true;
     this.errorMessage = '';
-    call.subscribe({
+    this.subs.add(call.subscribe({
       next: () => {
         this.actionLoading = false;
         this.order!.status = newStatus;
@@ -151,7 +157,7 @@ export class OrderDetailPageComponent implements OnInit {
         this.actionLoading = false;
         this.errorMessage = (error as any).error?.message || 'Error al actualizar la orden.';
       }
-    });
+    }));
   }
 
   onConfirmDialog() {

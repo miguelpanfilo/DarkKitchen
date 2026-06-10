@@ -91,7 +91,7 @@ export class UsersListPageComponent implements OnInit, OnDestroy {
   }
 
   onEdit(user: User) {
-    this.router.navigate(['/home/edit-user'], { state: { user } });
+    this.router.navigate(['/home/edit-user', user.id]);
   }
 
   onDelete(user: User) {
@@ -127,6 +127,6 @@ export class UsersListPageComponent implements OnInit, OnDestroy {
     this.userToDelete = null;
   }
   onChangePassword(user: User) {
-    this.router.navigate(['/home/change-password'], { state: { user } });
+    this.router.navigate(['/home/change-password', user.id]);
   }
 }

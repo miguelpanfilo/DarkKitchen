@@ -1,7 +1,7 @@
 <div class="d-flex justify-content-center pt-4">
   <app-form-card>
     <h1>Modificar Usuario</h1>
-    <form (ngSubmit)="onSubmit()">
+    <form (ngSubmit)="onSubmit()" (input)="markDirty()" (change)="markDirty()">
       <div class="form-group">
         <label for="nombre">Nombre</label>
         <input id="nombre" type="text" [(ngModel)]="nombre" name="nombre" placeholder="Tu nombre" [class.input-error]="submitted && !nombre.trim()" />

@@ -7,7 +7,7 @@
       [isLoading]="isLoading || isSubmitting"
       [loadingText]="isLoading ? 'Cargando producto...' : 'Guardando...'" />
 
-    <form *ngIf="!isLoading" (ngSubmit)="onSubmit()">
+    <form *ngIf="!isLoading" (ngSubmit)="onSubmit()" (input)="markDirty()" (change)="markDirty()">
       <div class="form-group">
         <label for="code">Código *</label>
         <input id="code" type="text" [(ngModel)]="code" name="code"

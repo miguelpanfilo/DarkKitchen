@@ -13,15 +13,17 @@ import { UserService } from '../../services/user.service';
 import { ROLES } from '../../../../shared/constants/roles';
 import { RegisterUserRequest } from '../../models/register-user-request.model';
 import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
+import { HasUnsavedChanges } from '../../../../core/guards/pending-changes.guard';
+import { PasswordInputComponent } from '../../../../shared/components/password-input/password-input.component';
 
 @Component({
   selector: 'app-register-internal-user-page',
   imports: [CommonModule, FormsModule, CancelButtonComponent, SubmitButtonComponent,
-    FormCardComponent, StatusMessagesComponent],
+    FormCardComponent, StatusMessagesComponent, PasswordInputComponent],
   templateUrl: './register-internal-user-page.component.html',
   styleUrl: './register-internal-user-page.component.css'
 })
-export class RegisterInternalUserPageComponent implements OnDestroy {
+export class RegisterInternalUserPageComponent implements OnDestroy, HasUnsavedChanges {
   nombre = '';
   apellido = '';
   email = '';
@@ -33,6 +35,7 @@ export class RegisterInternalUserPageComponent implements OnDestroy {
   successMessage = '';
   submitted = false;
   roles = ROLES.filter(r => r.value !== 'Client');
+  private saveSucceeded = false;
 
   constructor(private userService: UserService, private router:
     Router) { }
@@ -41,6 +44,10 @@ export class RegisterInternalUserPageComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.subs.unsubscribe();
+  }
+
+  hasUnsavedChanges(): boolean {
+    return !this.saveSucceeded && !!(this.nombre || this.apellido || this.email || this.telefono || this.contrasena || this.rol);
   }
 
   onSubmit() {
@@ -66,12 +73,10 @@ export class RegisterInternalUserPageComponent implements OnDestroy {
     this.isLoading = true;
     this.subs.add(this.userService.registerInternalUser(request).subscribe({
       next: () => {
-        this.isLoading = false;
-
-        this.router.navigate(['/home/users'], {
-          state: { successMessage: 'Usuario registrado correctamente.' }
-        });
-      },
+          this.isLoading = false;
+          this.saveSucceeded = true;
+          this.router.navigate(['/home/users'], { state: {successMessage: '¡Usuario registrado exitosamente!' } });
+        },
       error: (error) => {
         this.isLoading = false;
         this.errorMessage = error.error?.message || 'Ocurrió un error al registrar el usuario.';

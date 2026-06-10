@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { PromotionService } from '../../services/promotion.service';
 import { ProductService } from '../../../products/services/product.service';
@@ -10,6 +10,7 @@ import { FormCardComponent } from '../../../../shared/components/form-card/form-
 import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
 import { SubmitButtonComponent } from '../../../../shared/components/submit-button/submit-button.component';
 import { CancelButtonComponent } from '../../../../shared/components/cancel-button/cancel-button.component';
+import { HasUnsavedChanges } from '../../../../core/guards/pending-changes.guard';
 
 @Component({
   selector: 'app-edit-promotion-page',
@@ -18,7 +19,7 @@ import { CancelButtonComponent } from '../../../../shared/components/cancel-butt
   templateUrl: './edit-promotion-page.component.html',
   styleUrl: './edit-promotion-page.component.css'
 })
-export class EditPromotionPageComponent implements OnInit, OnDestroy {
+export class EditPromotionPageComponent implements OnInit, OnDestroy, HasUnsavedChanges {
   private promotionId = 0;
   name = '';
   discountPercentage: number | null = null;
@@ -33,27 +34,20 @@ export class EditPromotionPageComponent implements OnInit, OnDestroy {
   isSubmitting = false;
   errorMessage = '';
   successMessage = '';
+  isDirty = false;
 
   private subs = new Subscription();
 
   constructor(
+    private route: ActivatedRoute,
     private promotionService: PromotionService,
     private productService: ProductService,
     private router: Router
   ) {}
 
   ngOnInit() {
-    const promotion = this.router.getCurrentNavigation()?.extras.state?.['promotion']
-      ?? history.state?.promotion;
-
-    if (promotion) {
-      this.promotionId = promotion.id;
-      this.name = promotion.name;
-      this.discountPercentage = promotion.discountPercentage;
-      this.startDate = promotion.startDate;
-      this.endDate = promotion.endDate;
-      this.associatedIds = new Set((promotion.products ?? []).map((p: any) => p.id));
-    }
+    this.promotionId = Number(this.route.snapshot.paramMap.get('id'));
+    this.loadPromotion();
 
     this.isLoadingProducts = true;
     this.subs.add(this.productService.getProducts().subscribe({
@@ -65,9 +59,28 @@ export class EditPromotionPageComponent implements OnInit, OnDestroy {
     }));
   }
 
+  loadPromotion() {
+    this.subs.add(this.promotionService.getById(this.promotionId).subscribe({
+      next: (promotion) => {
+        this.name = promotion.name;
+        this.discountPercentage = promotion.discountPercentage;
+        this.startDate = promotion.startDate;
+        this.endDate = promotion.endDate;
+        this.associatedIds = new Set(promotion.products.map(p => p.id));
+      },
+      error: (error) => {
+        this.errorMessage = error.error?.message || 'Error al cargar la promoción.';
+      }
+    }));
+  }
+
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
+
+  markDirty(): void { this.isDirty = true; }
+
+  hasUnsavedChanges(): boolean { return this.isDirty; }
 
   isAssociated(id: number): boolean {
     return this.associatedIds.has(id);
@@ -105,6 +118,7 @@ export class EditPromotionPageComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: () => {
         this.isSubmitting = false;
+        this.isDirty = false;
         this.router.navigate(['/home/promotions'], { state: { successMessage: 'Promoción actualizada correctamente.' } });
       },
       error: (error) => {

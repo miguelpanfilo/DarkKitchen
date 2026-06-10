@@ -33,6 +33,18 @@ public class FilterUserService(
         return filteredUsers;
     }
 
+    public UserResponseDTO GetByIdIncludingInactive(int id)
+    {
+        var user = _repositoryUsers.FindByIdIncludingInactive(id);
+
+        if (user == null)
+        {
+            throw new NotFoundException($"No se encontró el usuario con id {id}");
+        }
+
+        return user.MappingUserToResponseDTO();
+    }
+
     private static bool MatchName(User user, string? name)
     {
         return string.IsNullOrWhiteSpace(name) ||

@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { ShippingTypeService } from '../../services/shipping-type.service';
 import { ShippingType } from '../../models/shipping-type.model';
 import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
@@ -12,7 +13,7 @@ import { EditButtonComponent } from '../../../../shared/components/edit-button/e
   templateUrl: './shipping-types-page.component.html',
   styleUrl: './shipping-types-page.component.css'
 })
-export class ShippingTypesPageComponent implements OnInit {
+export class ShippingTypesPageComponent implements OnInit, OnDestroy {
   shippingTypes: ShippingType[] = [];
   isLoading = false;
   errorMessage = '';
@@ -27,7 +28,13 @@ export class ShippingTypesPageComponent implements OnInit {
   editCost: number | null = null;
   isSaving = false;
 
+  private subs = new Subscription();
+
   constructor(private shippingTypeService: ShippingTypeService) { }
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
 
   ngOnInit() {
     this.load();
@@ -36,7 +43,7 @@ export class ShippingTypesPageComponent implements OnInit {
   load() {
     this.isLoading = true;
     this.errorMessage = '';
-    this.shippingTypeService.getAll().subscribe({
+    this.subs.add(this.shippingTypeService.getAll().subscribe({
       next: (types) => {
         this.isLoading = false;
         this.shippingTypes = types;
@@ -45,7 +52,7 @@ export class ShippingTypesPageComponent implements OnInit {
         this.isLoading = false;
         this.errorMessage = error.error?.message || 'Error al cargar los tipos de envío.';
       }
-    });
+    }));
   }
 
   onCreate() {
@@ -60,7 +67,7 @@ export class ShippingTypesPageComponent implements OnInit {
       return;
     }
     this.isCreating = true;
-    this.shippingTypeService.create(this.newName.trim(), this.newCost).subscribe({
+    this.subs.add(this.shippingTypeService.create(this.newName.trim(), this.newCost).subscribe({
       next: (created) => {
         this.isCreating = false;
         this.shippingTypes.push(created);
@@ -72,7 +79,7 @@ export class ShippingTypesPageComponent implements OnInit {
         this.isCreating = false;
         this.errorMessage = error.error?.message || 'Error al crear el tipo de envío.';
       }
-    });
+    }));
   }
 
   onEdit(type: ShippingType) {
@@ -98,7 +105,7 @@ export class ShippingTypesPageComponent implements OnInit {
       return;
     }
     this.isSaving = true;
-    this.shippingTypeService.update(type.id, this.editName.trim(), this.editCost).subscribe({
+    this.subs.add(this.shippingTypeService.update(type.id, this.editName.trim(), this.editCost).subscribe({
       next: (updated) => {
         this.isSaving = false;
         const index = this.shippingTypes.findIndex(t => t.id === type.id);
@@ -110,7 +117,7 @@ export class ShippingTypesPageComponent implements OnInit {
         this.isSaving = false;
         this.errorMessage = error.error?.message || 'Error al actualizar el tipo de envío.';
       }
-    });
+    }));
   }
 
   private showSuccessMessage(message: string): void {

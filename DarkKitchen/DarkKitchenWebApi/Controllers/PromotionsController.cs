@@ -52,6 +52,14 @@ public class PromotionsController(IPromotionService promotionService) : Controll
         return Ok(response);
     }
 
+    [HttpGet("{id:int}")]
+    [RoleAuthorization(UserRolesDto.Administrative, UserRolesDto.Client)]
+    public IActionResult GetById([FromRoute] int id)
+    {
+        var result = _promotionService.GetById(id);
+        return Ok(result);
+    }
+
     [HttpGet]
     [RoleAuthorization(UserRolesDto.Administrative, UserRolesDto.Client)]
     public IActionResult Get([FromQuery] PromotionSearchRequestDto request)

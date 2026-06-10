@@ -17,9 +17,9 @@
     </ItemGroup>
 
     <Target Name="CopyPluginToApi" AfterTargets="Build">
-        <MakeDir Directories="$(SolutionDir)DarkKitchenWebApi\bin\Debug\net8.0\plugins" />
-        <Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFolder="$(SolutionDir)DarkKitchenWebApi\bin\Debug\net8.0\plugins" />
-        <Copy SourceFiles="$(TargetDir)CsvHelper.dll" DestinationFolder="$(SolutionDir)DarkKitchenWebApi\bin\Debug\net8.0\plugins" />
+        <MakeDir Directories="$(SolutionDir)plugins" />
+        <Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFolder="$(SolutionDir)plugins" />
+        <Copy SourceFiles="$(TargetDir)CsvHelper.dll" DestinationFolder="$(SolutionDir)plugins" />
     </Target>
 
 </Project>

@@ -55,4 +55,9 @@ public class UserService(
     {
         return _filterUserService.FindUser(idUserLogged, requestDto);
     }
+
+    public UserResponseDTO GetByIdIncludingInactive(int id)
+    {
+        return _filterUserService.GetByIdIncludingInactive(id);
+    }
 }

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -8,6 +9,7 @@ import { SubmitButtonComponent } from '../../../../shared/components/submit-butt
 import { CancelButtonComponent } from '../../../../shared/components/cancel-button/cancel-button.component';
 import { FormCardComponent } from '../../../../shared/components/form-card/form-card.component';
 import { PhotoRequest } from '../../models/product-photo.model';
+import { HasUnsavedChanges } from '../../../../core/guards/pending-changes.guard';
 
 @Component({
   selector: 'app-create-product-page',
@@ -15,7 +17,7 @@ import { PhotoRequest } from '../../models/product-photo.model';
   templateUrl: './create-product-page.component.html',
   styleUrl: './create-product-page.component.css'
 })
-export class CreateProductPageComponent {
+export class CreateProductPageComponent implements OnDestroy, HasUnsavedChanges {
   code = '';
   name = '';
   description = '';
@@ -27,11 +29,22 @@ export class CreateProductPageComponent {
   submitted = false;
   isSubmitting = false;
   errorMessage = '';
+  private saveSucceeded = false;
+
+  private subs = new Subscription();
 
   constructor(
     private productService: ProductService,
     private router: Router
   ) { }
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
+
+  hasUnsavedChanges(): boolean {
+    return !this.saveSucceeded && !!(this.code || this.name || this.description || this.commercialLine || this.category || this.price !== null || this.photos.length > 0);
+  }
 
   onPhotosSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -92,7 +105,7 @@ export class CreateProductPageComponent {
       return;
     }
     this.isSubmitting = true;
-    this.productService.create({
+    this.subs.add(this.productService.create({
       code: this.code.trim(),
       name: this.name.trim(),
       description: this.description.trim(),
@@ -103,13 +116,14 @@ export class CreateProductPageComponent {
     }).subscribe({
       next: () => {
         this.isSubmitting = false;
+        this.saveSucceeded = true;
         this.router.navigate(['/home/products'], { state: { successMessage: 'Producto creado correctamente.' } });
       },
       error: (error) => {
         this.isSubmitting = false;
         this.errorMessage = error.error?.message || 'Error al crear el producto.';
       }
-    });
+    }));
   }
 
   onCancel() {

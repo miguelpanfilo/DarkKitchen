@@ -219,6 +219,13 @@ public class ProductService : IProductService, IProductCreatorService
         }
     }
 
+    public Dictionary<int, string> GetNamesByIds(List<int> ids)
+    {
+        return _repository.GetAll()
+            .Where(p => ids.Contains(p.Id))
+            .ToDictionary(p => p.Id, p => p.Name);
+    }
+
     private Product GetExistingProduct(int productId)
     {
         var product = _repository.GetById(productId);

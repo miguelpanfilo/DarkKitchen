@@ -55,16 +55,45 @@ public class OrderService(IOrderRepository orderRepository) : IOrderService
         return _orderRepository.GetByFilters(dateFrom, dateTo, street, status);
     }
 
-    public void Prepare(int orderId) => ApplyStateChange(orderId, o => o.Prepare());
-    public void Cancel(int orderId) => ApplyStateChange(orderId, o => o.Cancel());
-    public void Dispatch(int orderId) => ApplyStateChange(orderId, o => o.Dispatch());
-    public void Deliver(int orderId) => ApplyStateChange(orderId, o => o.Deliver());
-    public void MarkNotDelivered(int orderId) => ApplyStateChange(orderId, o => o.MarkNotDelivered());
-    public void Delay(int orderId) => ApplyStateChange(orderId, o => o.Delay());
-    private void ApplyStateChange(int orderId, Action<Order> transition)
+    public void Prepare(int orderId)
     {
         var order = GetById(orderId);
-        transition(order);
+        order.Prepare();
+        _orderRepository.Update(order);
+    }
+
+    public void Cancel(int orderId)
+    {
+        var order = GetById(orderId);
+        order.Cancel();
+        _orderRepository.Update(order);
+    }
+
+    public void Dispatch(int orderId)
+    {
+        var order = GetById(orderId);
+        order.Dispatch();
+        _orderRepository.Update(order);
+    }
+
+    public void Deliver(int orderId)
+    {
+        var order = GetById(orderId);
+        order.Deliver();
+        _orderRepository.Update(order);
+    }
+
+    public void MarkNotDelivered(int orderId)
+    {
+        var order = GetById(orderId);
+        order.MarkNotDelivered();
+        _orderRepository.Update(order);
+    }
+
+    public void Delay(int orderId)
+    {
+        var order = GetById(orderId);
+        order.Delay();
         _orderRepository.Update(order);
     }
 }

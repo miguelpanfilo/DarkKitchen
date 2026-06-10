@@ -1,7 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using BusinessLogics;
 
 namespace DarkKitchen;
 
+[ExcludeFromCodeCoverage]
 public static class ProductImportersWatcherExtensions
 {
     public static WebApplication StartProductImportersWatcher(

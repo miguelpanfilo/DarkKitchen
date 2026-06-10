@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,6 +12,7 @@ import { CreateOrderItemRequest } from '../../models/create-order-request.model'
 import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
 import { SubmitButtonComponent } from '../../../../shared/components/submit-button/submit-button.component';
 import { CancelButtonComponent } from '../../../../shared/components/cancel-button/cancel-button.component';
+import { HasUnsavedChanges } from '../../../../core/guards/pending-changes.guard';
 
 interface CartItem {
   product: Product;
@@ -23,7 +25,7 @@ interface CartItem {
   templateUrl: './create-order-page.component.html',
   styleUrl: './create-order-page.component.css'
 })
-export class CreateOrderPageComponent implements OnInit {
+export class CreateOrderPageComponent implements OnInit, OnDestroy, HasUnsavedChanges {
   products: Product[] = [];
   shippingTypes: ShippingType[] = [];
   cartItems: CartItem[] = [];
@@ -36,6 +38,9 @@ export class CreateOrderPageComponent implements OnInit {
   isLoadingProducts = false;
   isSubmitting = false;
   errorMessage = '';
+  private saveSucceeded = false;
+
+  private subs = new Subscription();
 
   constructor(
     private orderService: OrderService,
@@ -44,9 +49,17 @@ export class CreateOrderPageComponent implements OnInit {
     private router: Router
   ) { }
 
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
+
+  hasUnsavedChanges(): boolean {
+    return !this.saveSucceeded && (this.cartItems.length > 0 || !!this.street.trim() || !!this.doorNumber.trim() || !!this.apartment.trim());
+  }
+
   ngOnInit() {
     this.loadProducts();
-    this.shippingTypeService.getAll().subscribe({
+    this.subs.add(this.shippingTypeService.getAll().subscribe({
       next: (types) => {
         this.shippingTypes = types;
         if (types.length > 0) this.deliveryType = types[0].name;
@@ -54,12 +67,12 @@ export class CreateOrderPageComponent implements OnInit {
       error: () => {
         this.errorMessage = 'Error al cargar los tipos de envío.';
       }
-    });
+    }));
   }
 
   loadProducts() {
     this.isLoadingProducts = true;
-    this.productService.getProducts().subscribe({
+    this.subs.add(this.productService.getProducts().subscribe({
       next: (products) => {
         this.isLoadingProducts = false;
         this.products = products.filter(p => p.isActive);
@@ -68,11 +81,15 @@ export class CreateOrderPageComponent implements OnInit {
         this.isLoadingProducts = false;
         this.errorMessage = 'Error al cargar los productos.';
       }
-    });
+    }));
   }
 
   getCartQty(productId: number): number {
     return this.cartItems.find(i => i.product.id === productId)?.quantity ?? 0;
+  }
+
+  get totalCartItems(): number {
+    return this.cartItems.reduce((sum, i) => sum + i.quantity, 0);
   }
 
   get cartSubtotal(): number {
@@ -123,7 +140,7 @@ export class CreateOrderPageComponent implements OnInit {
     }));
 
     this.isSubmitting = true;
-    this.orderService.create({
+    this.subs.add(this.orderService.create({
       deliveryType: this.deliveryType,
       address: {
         street: this.street.trim(),
@@ -134,13 +151,14 @@ export class CreateOrderPageComponent implements OnInit {
     }).subscribe({
       next: () => {
         this.isSubmitting = false;
+        this.saveSucceeded = true;
         this.router.navigate(['/home/orders'], { state: { successMessage: 'Orden creada exitosamente.' } });
       },
       error: (error) => {
         this.isSubmitting = false;
         this.errorMessage = error.error?.message || 'Error al crear la orden.';
       }
-    });
+    }));
   }
 
   onCancel() {

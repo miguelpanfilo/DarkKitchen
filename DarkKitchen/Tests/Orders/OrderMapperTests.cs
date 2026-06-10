@@ -1,3 +1,4 @@
+using Contract;
 using Domain;
 using FluentAssertions;
 using Mappers;
@@ -24,23 +25,16 @@ public sealed class OrderMapperTests
         return Order.MakeOrder(clientId, "Express", address, items, 200m);
     }
 
-    private static User MakeUser(int id = 1)
+    private static UserResponseDTO MakeUser(int id = 1)
     {
-        var phoneResult = Phone.TryMakePhone("099123456");
-        phoneResult.Success.Should().BeTrue();
-
-        var userResult = User.MakeClient(
-            "Miguel",
-            "Panfilo",
-            $"miguel{id}@test.com",
-            phoneResult.Value!,
-            "PasswordSeguraee3!");
-
-        userResult.Success.Should().BeTrue();
-
-        var user = userResult.Value!;
-        user.Id = id;
-        return user;
+        return new UserResponseDTO
+        {
+            Id = id,
+            Name = "Miguel",
+            LastName = "Panfilo",
+            Email = $"miguel{id}@test.com",
+            Role = "Client"
+        };
     }
 
     #region ToOrderResponse

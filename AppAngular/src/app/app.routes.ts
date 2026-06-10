@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
+import { pendingChangesGuard } from './core/guards/pending-changes.guard';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { LoginPageComponent } from './features/auth/pages/login-page/login-page.component';
@@ -33,7 +34,7 @@ export const routes: Routes = [
       { path: '', redirectTo: 'welcome', pathMatch: 'full' },
       { path: 'welcome', component: WelcomePageComponent },
       { path: 'login', component: LoginPageComponent },
-      { path: 'register-client', component: RegisterClientPageComponent },
+      { path: 'register-client', component: RegisterClientPageComponent, canDeactivate: [pendingChangesGuard] },
     ]
   },
   {
@@ -54,14 +55,14 @@ export const routes: Routes = [
       {
         path: 'register-internal-user', component:
           RegisterInternalUserPageComponent, canActivate:
-          [roleGuard(['Administrative'])]
+          [roleGuard(['Administrative'])], canDeactivate: [pendingChangesGuard]
       },
       {
-        path: 'edit-user', component: EditUserPageComponent,
-        canActivate: [roleGuard(['Administrative'])]
+        path: 'edit-user/:id', component: EditUserPageComponent,
+        canActivate: [roleGuard(['Administrative'])], canDeactivate: [pendingChangesGuard]
       },
       {
-        path: 'change-password', component:
+        path: 'change-password/:id', component:
           ChangePasswordPageComponent, canActivate:
           [roleGuard(['Administrative'])]
       },
@@ -70,8 +71,8 @@ export const routes: Routes = [
         canActivate: [roleGuard(['Administrative'])]
       },
       { path: 'orders', component: OrdersListPageComponent },
-      { path: 'orders/create', component: CreateOrderPageComponent, 
-        canActivate: [roleGuard(['Client'])] 
+      { path: 'orders/create', component: CreateOrderPageComponent,
+        canActivate: [roleGuard(['Client'])], canDeactivate: [pendingChangesGuard]
       },
       { path: 'orders/:id', component: OrderDetailPageComponent },
       { path: 'shipping-types', component: ShippingTypesPageComponent,
@@ -80,20 +81,20 @@ export const routes: Routes = [
       { path: 'products', component: ProductsListPageComponent },
       {
         path: 'products/create', component: CreateProductPageComponent,
-        canActivate: [roleGuard(['Administrative'])]
+        canActivate: [roleGuard(['Administrative'])], canDeactivate: [pendingChangesGuard]
       },
       {
         path: 'products/edit/:id', component: EditProductPageComponent,
-        canActivate: [roleGuard(['Administrative'])]
+        canActivate: [roleGuard(['Administrative'])], canDeactivate: [pendingChangesGuard]
       },
       { path: 'promotions', component: PromotionsListPageComponent },
       {
         path: 'promotions/create', component: CreatePromotionPageComponent,
-        canActivate: [roleGuard(['Administrative'])]
+        canActivate: [roleGuard(['Administrative'])], canDeactivate: [pendingChangesGuard]
       },
       {
         path: 'promotions/edit/:id', component: EditPromotionPageComponent,
-        canActivate: [roleGuard(['Administrative'])]
+        canActivate: [roleGuard(['Administrative'])], canDeactivate: [pendingChangesGuard]
       },
       { path: 'product-importers', component: ProductImportersPageComponent, 
         canActivate: [roleGuard(['Administrative'])]

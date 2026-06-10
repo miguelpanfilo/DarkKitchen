@@ -9,4 +9,5 @@ public interface IProductService
     List<ProductResponseDto> GetProducts(ProductSearchRequestDto request);
     ProductResponseDto Update(int productId, ProductPatchDto request);
     void Delete(int productId);
+    Dictionary<int, string> GetNamesByIds(List<int> ids);
 }

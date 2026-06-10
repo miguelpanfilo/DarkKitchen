@@ -597,29 +597,6 @@ public class FilterUserTests
     }
 
     [TestMethod]
-    public void BuscarUsuarios_UsuarioLogueadoNoEsAdministrativo_LanzaExcepcionConMensajeCorrecto()
-    {
-        var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);
-        var adminValidationMock = new Mock<IAdminValidationService>(MockBehavior.Strict);
-
-        adminValidationMock
-            .Setup(v => v.EnsureUserIsAdmin(5))
-            .Throws(new ForbiddenException("Only an administrative user can perform this action"));
-
-        var service = new FilterUserService(repoMock.Object, adminValidationMock.Object);
-
-        var request = new FindUserRequestDTO
-        {
-            Name = "Juan"
-        };
-
-        var ex = Assert.ThrowsException<ForbiddenException>(() =>
-            service.FindUser(5, request));
-
-        Assert.AreEqual("Only an administrative user can perform this action", ex.Message);
-    }
-
-    [TestMethod]
     public void BuscarUsuarios_UsuarioLogueadoNoEsAdministrativo_NoLlamaGetAllYLanzaExcepcionConMensajeCorrecto()
     {
         var repoMock = new Mock<IRepositoryUser>(MockBehavior.Strict);

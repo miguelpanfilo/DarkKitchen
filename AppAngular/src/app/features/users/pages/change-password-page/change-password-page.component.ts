@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CancelButtonComponent } from
   '../../../../shared/components/cancel-button/cancel-button.component';
 import { SubmitButtonComponent } from
@@ -12,17 +12,17 @@ import { FormCardComponent } from
 import { UserService } from '../../services/user.service';
 import { ChangePasswordRequest } from '../../models/change-password-request.model';
 import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
+import { PasswordInputComponent } from '../../../../shared/components/password-input/password-input.component';
 
 @Component({
   selector: 'app-change-password-page',
   imports: [CommonModule, FormsModule, CancelButtonComponent, SubmitButtonComponent,
-    FormCardComponent, StatusMessagesComponent],
+    FormCardComponent, StatusMessagesComponent, PasswordInputComponent],
   templateUrl: './change-password-page.component.html',
   styleUrl: './change-password-page.component.css'
 })
 export class ChangePasswordPageComponent implements OnInit, OnDestroy {
   userId = 0;
-  userName = '';
   contrasenaActual = '';
   contrasenaNueva = '';
   confirmarContrasena = '';
@@ -32,26 +32,18 @@ export class ChangePasswordPageComponent implements OnInit, OnDestroy {
   submitted = false;
   private subs = new Subscription();
 
-  constructor(private router: Router, private userService:
-    UserService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private userService: UserService
+  ) { }
 
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
 
   ngOnInit() {
-    this.loadUserFromState();
-  }
-
-  private loadUserFromState(): void {
-    const user =
-      this.router.getCurrentNavigation()?.extras.state?.['user']
-      ?? history.state?.user;
-
-    if (user) {
-      this.userId = user.id;
-      this.userName = user.name + ' ' + user.lastName;
-    }
+    this.userId = Number(this.route.snapshot.paramMap.get('id'));
   }
 
   onSubmit() {

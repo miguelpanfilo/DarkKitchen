@@ -21,4 +21,5 @@ public interface IUserService
     void DeleteUser(int idUserToDelete, int idUserLogged);
 
     List<UserResponseDTO> FindUserOnSystem(int idUserLogged, FindUserRequestDTO requestDto);
+    UserResponseDTO GetByIdIncludingInactive(int id);
 }

@@ -49,6 +49,12 @@ public class ShippingTypeService(IShippingTypeRepository shippingTypeRepository)
             .ToList();
     }
 
+    public ShippingTypeResponseDto? GetByName(string name)
+    {
+        var shippingType = _shippingTypeRepository.GetByName(name);
+        return shippingType == null ? null : ShippingTypeMapper.ToResponseDto(shippingType);
+    }
+
     private ShippingType GetExistingShippingType(int id)
     {
         var shippingType = _shippingTypeRepository.GetById(id);
