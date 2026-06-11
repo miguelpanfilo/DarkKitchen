@@ -126,6 +126,7 @@ export class UsersListPageComponent implements OnInit, OnDestroy {
     this.showConfirmDialog = false;
     this.userToDelete = null;
   }
+
   onChangePassword(user: User) {
     this.router.navigate(['/home/change-password', user.id]);
   }

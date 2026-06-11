@@ -9,7 +9,6 @@ import { UpdateProductRequest } from
   '../models/update-product-request.model';
 import { environment } from '../../../../environments/environment';
 
-
 @Injectable({
   providedIn: 'root'
 })

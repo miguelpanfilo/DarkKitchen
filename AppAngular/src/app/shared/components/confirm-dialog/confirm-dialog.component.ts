@@ -7,17 +7,17 @@ import { CommonModule } from '@angular/common';
   templateUrl: './confirm-dialog.component.html',
   styleUrl: './confirm-dialog.component.css'
 })
-  export class ConfirmDialogComponent {
-    @Input() message = '¿Estás seguro?';
-    @Input() visible = false;
-    @Output() confirmed = new EventEmitter<void>();
-    @Output() cancelled = new EventEmitter<void>();
+export class ConfirmDialogComponent {
+  @Input() message = '¿Estás seguro?';
+  @Input() visible = false;
+  @Output() confirmed = new EventEmitter<void>();
+  @Output() cancelled = new EventEmitter<void>();
 
-    onConfirm() {
-      this.confirmed.emit();
-    }
-
-    onCancel() {
-      this.cancelled.emit();
-    }
+  onConfirm() {
+    this.confirmed.emit();
   }
+
+  onCancel() {
+    this.cancelled.emit();
+  }
+}

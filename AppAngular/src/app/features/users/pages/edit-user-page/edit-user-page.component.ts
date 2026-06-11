@@ -22,7 +22,6 @@ import { HasUnsavedChanges } from '../../../../core/guards/pending-changes.guard
   templateUrl: './edit-user-page.component.html',
   styleUrl: './edit-user-page.component.css'
 })
-
 export class EditUserPageComponent implements OnInit, OnDestroy, HasUnsavedChanges {
   userId = 0;
   nombre = '';
@@ -91,13 +90,12 @@ export class EditUserPageComponent implements OnInit, OnDestroy, HasUnsavedChang
     this.isLoading = true;
     this.subs.add(this.userService.updateUser(this.userId, request).subscribe({
       next: () => {
-          this.isLoading = false;
-          this.isDirty = false;
-          this.router.navigate(['/home/users'], {
-            state: { successMessage: 'Usuario actualizado correctamente.' }
-          });
-        },
-
+        this.isLoading = false;
+        this.isDirty = false;
+        this.router.navigate(['/home/users'], {
+          state: { successMessage: 'Usuario actualizado correctamente.' }
+        });
+      },
       error: (err) => {
         this.isLoading = false;
         this.errorMessage = err.error?.message || 'Error al modificar el usuario.';

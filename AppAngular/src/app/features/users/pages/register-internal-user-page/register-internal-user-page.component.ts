@@ -37,8 +37,7 @@ export class RegisterInternalUserPageComponent implements OnDestroy, HasUnsavedC
   roles = ROLES.filter(r => r.value !== 'Client');
   private saveSucceeded = false;
 
-  constructor(private userService: UserService, private router:
-    Router) { }
+  constructor(private userService: UserService, private router: Router) { }
 
   private subs = new Subscription();
 
@@ -73,10 +72,10 @@ export class RegisterInternalUserPageComponent implements OnDestroy, HasUnsavedC
     this.isLoading = true;
     this.subs.add(this.userService.registerInternalUser(request).subscribe({
       next: () => {
-          this.isLoading = false;
-          this.saveSucceeded = true;
-          this.router.navigate(['/home/users'], { state: {successMessage: '¡Usuario registrado exitosamente!' } });
-        },
+        this.isLoading = false;
+        this.saveSucceeded = true;
+        this.router.navigate(['/home/users'], { state: { successMessage: '¡Usuario registrado exitosamente!' } });
+      },
       error: (error) => {
         this.isLoading = false;
         this.errorMessage = error.error?.message || 'Ocurrió un error al registrar el usuario.';

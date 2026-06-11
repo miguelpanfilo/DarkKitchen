@@ -45,20 +45,20 @@ export class PromotionsListPageComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-      const nav = history.state;
+    const nav = history.state;
 
-      if (nav?.successMessage) {
-        this.successMessage = nav.successMessage;
+    if (nav?.successMessage) {
+      this.successMessage = nav.successMessage;
 
-        history.replaceState({}, '');
+      history.replaceState({}, '');
 
-        setTimeout(() => {
-          this.successMessage = '';
-        }, 3000);
-      }
-
-      this.loadPromotions();
+      setTimeout(() => {
+        this.successMessage = '';
+      }, 3000);
     }
+
+    this.loadPromotions();
+  }
 
   ngOnDestroy() {
     this.subs.unsubscribe();
