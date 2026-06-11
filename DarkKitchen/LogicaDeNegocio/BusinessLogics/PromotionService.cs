@@ -122,6 +122,8 @@ public class PromotionService : IPromotionService
             => promotion.AssociateProduct(productId));
 
         var updatedPromotion = _promotionRepository.Update(promotion);
+        _auditLogService.Register(AuditedEntities.Promotion, updatedPromotion.Id,
+            AuditDescriptions.PromotionProductAssociated, _currentUserService.GetEmail());
 
         return MapPromotionWithProducts(updatedPromotion);
     }
