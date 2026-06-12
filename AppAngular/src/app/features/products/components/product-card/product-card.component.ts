@@ -41,7 +41,7 @@ export class ProductCardComponent {
       this.currentPhotoIndex++;
     }
   }
-  
+
   onEdit() {
     this.edit.emit(this.product);
   }
