@@ -9,4 +9,5 @@ public static class AuditDescriptions
     public const string PromotionModified = "Modificación de promoción";
     public const string PromotionDeleted = "Eliminación de promoción";
     public const string PromotionProductAssociated = "Asociación de producto a promoción";
+    public const string PromotionProductDisassociated = "Desasociación de producto de promoción";
 }

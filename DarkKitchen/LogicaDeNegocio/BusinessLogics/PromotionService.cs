@@ -138,6 +138,8 @@ public class PromotionService : IPromotionService
             => promotion.DisassociateProduct(productId));
 
         var updatedPromotion = _promotionRepository.Update(promotion);
+        _auditLogService.Register(AuditedEntities.Promotion, updatedPromotion.Id,
+            AuditDescriptions.PromotionProductDisassociated, _currentUserService.GetEmail());
 
         return MapPromotionWithProducts(updatedPromotion);
     }
