@@ -5,6 +5,9 @@
 [Bb]in/
 [Oo]bj/
 
+# Plugin DLLs loaded at runtime
+plugins/
+
 .env*
 
 # Mac

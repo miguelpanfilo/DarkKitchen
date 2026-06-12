@@ -1,4 +1,4 @@
-<div class="order-card" [ngClass]="'border-' + order.status.toLowerCase()" (click)="onView()">
+<div class="order-card" (click)="onView()">
   <div class="d-flex justify-content-between align-items-center mb-2">
     <span class="order-number">{{ order.orderNumber.slice(0, 10) }}</span>
     <span class="status-badge status-{{ order.status.toLowerCase() }}">
