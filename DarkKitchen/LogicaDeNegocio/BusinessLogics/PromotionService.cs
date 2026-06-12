@@ -253,7 +253,7 @@ public class PromotionService : IPromotionService
 
                 var matchesProductId = productId is null || pp.ProductId == productId.Value;
                 var matchesCommercialLine = string.IsNullOrWhiteSpace(commercialLine) ||
-                                            product.CommercialLine == commercialLine;
+                                            product.CommercialLine.Contains(commercialLine.Trim(), StringComparison.OrdinalIgnoreCase);
 
                 return matchesProductId && matchesCommercialLine;
             }))

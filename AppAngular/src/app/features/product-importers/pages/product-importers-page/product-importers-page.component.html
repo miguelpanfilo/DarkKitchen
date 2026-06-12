@@ -86,7 +86,7 @@
           <app-submit-button
             label="Importar"
             [disabled]="loading || !selectedImporterName || !selectedFile"
-            (click)="import()" />
+            (click)="import(fileInput)" />
 
           <app-cancel-button
             (cancelled)="onCancel(fileInput)" />
