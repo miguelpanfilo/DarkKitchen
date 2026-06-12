@@ -62,9 +62,8 @@ export const routes: Routes = [
         canActivate: [roleGuard(['Administrative'])], canDeactivate: [pendingChangesGuard]
       },
       {
-        path: 'change-password/:id', component:
-          ChangePasswordPageComponent, canActivate:
-          [roleGuard(['Administrative'])]
+        path: 'change-password/:id', component: ChangePasswordPageComponent, 
+        canActivate: [roleGuard(['Administrative'])]
       },
       {
         path: 'audit-logs', component: AuditLogsPageComponent,

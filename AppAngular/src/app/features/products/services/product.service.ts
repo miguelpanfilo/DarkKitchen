@@ -3,12 +3,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { Product } from '../models/product.model';
 import { ProductFilters } from '../models/product-filters.model';
-import { CreateProductRequest } from
-  '../models/create-product-request.model';
-import { UpdateProductRequest } from
-  '../models/update-product-request.model';
+import { CreateProductRequest } from '../models/create-product-request.model';
+import { UpdateProductRequest } from  '../models/update-product-request.model';
 import { environment } from '../../../../environments/environment';
-
 
 @Injectable({
   providedIn: 'root'
