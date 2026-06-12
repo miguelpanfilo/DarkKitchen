@@ -70,8 +70,7 @@ export class OrdersListPageComponent implements OnInit, OnDestroy {
 
   private setDefaultDateRange() {
     const pad = (n: number) => n.toString().padStart(2, '0');
-    const toDateStr = (d: Date) =>
-      `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    const toDateStr = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
     const now = new Date();
     const monthAgo = new Date(now);
     monthAgo.setDate(monthAgo.getDate() - 30);
