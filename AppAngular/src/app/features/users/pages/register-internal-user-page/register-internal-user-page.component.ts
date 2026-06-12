@@ -3,12 +3,9 @@ import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { CancelButtonComponent } from
-  '../../../../shared/components/cancel-button/cancel-button.component';
-import { SubmitButtonComponent } from
-  '../../../../shared/components/submit-button/submit-button.component';
-import { FormCardComponent } from
-  '../../../../shared/components/form-card/form-card.component';
+import { CancelButtonComponent } from '../../../../shared/components/cancel-button/cancel-button.component';
+import { SubmitButtonComponent } from '../../../../shared/components/submit-button/submit-button.component';
+import { FormCardComponent } from '../../../../shared/components/form-card/form-card.component';
 import { UserService } from '../../services/user.service';
 import { ROLES } from '../../../../shared/constants/roles';
 import { RegisterUserRequest } from '../../models/register-user-request.model';
