@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using BusinessLogicsAbstractions;
+﻿using BusinessLogicsAbstractions;
 using Contract;
 using DarkKitchen.Filters;
 using Microsoft.AspNetCore.Mvc;

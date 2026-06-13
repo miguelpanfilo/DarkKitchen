@@ -124,3 +124,31 @@ td {
   gap: 12px;
   margin-top: 20px;
 }
+
+.hidden-input {
+  display: none;
+}
+
+.btn-file {
+  cursor: pointer;
+  background: #343a40;
+  color: white;
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.btn-file:hover {
+  background: #23272b;
+}
+
+.file-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.file-name {
+  font-size: 0.85rem;
+  color: #3d3d3d;
+}

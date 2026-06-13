@@ -1,13 +1,7 @@
 <div class="product-importers-container">
-  <div class="d-flex align-items-center gap-3 mb-4">
-    <button
-      type="button"
-      class="btn btn-outline-dark btn-sm"
-      (click)="onBack()">
-      ← Volver
-    </button>
-
+  <div class="d-flex align-items-center justify-content-between mb-4">
     <h1 class="mb-0">Importar productos</h1>
+    <button type="button" class="btn btn-outline-dark btn-sm" (click)="onBack()">← Volver</button>
   </div>
 
   <ng-container *ngIf="importers$ | async as importers">
@@ -64,16 +58,17 @@
 
           <span>o</span>
 
-          <div class="form-group">
-            <label for="fileToImport">
-              Archivo a importar
+          <div class="form-group file-group">
+            <label for="fileToImport" class="btn-file">
+              Seleccionar archivo
             </label>
-
+            <span class="file-name">{{ selectedFile ? selectedFile.name : 'Ningún archivo seleccionado' }}</span>
             <input
               id="fileToImport"
               name="fileToImport"
               #fileInput
               type="file"
+              class="hidden-input"
               (change)="onFileChange($event)" />
           </div>
 
