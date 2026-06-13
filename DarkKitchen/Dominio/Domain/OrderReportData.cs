@@ -1,6 +1,6 @@
 namespace Domain;
 
-public class OrderReportData : IReportVisitable
+public class OrderReportData
 {
     public List<Order> Orders { get; }
 

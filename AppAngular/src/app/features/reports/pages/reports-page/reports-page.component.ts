@@ -4,10 +4,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReportService } from '../../services/report.service';
 import { TopProduct, SalesReport } from '../../models/report.model';
-import { FilterButtonComponent } from
-  '../../../../shared/components/filter-button/filter-button.component';
-import { ClearButtonComponent } from
-  '../../../../shared/components/clear-button/clear-button.component';
+import { FilterButtonComponent } from '../../../../shared/components/filter-button/filter-button.component';
+import { ClearButtonComponent } from '../../../../shared/components/clear-button/clear-button.component';
 import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
 
 @Component({

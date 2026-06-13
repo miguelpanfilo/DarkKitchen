@@ -224,20 +224,12 @@ public sealed class OrdersControllerTests
         result.Should().BeOfType<OkObjectResult>();
     }
 
-    [TestMethod]
-    public void GetOrders_WhenPreparerWithoutDates_ShouldReturnBadRequest()
+    [DataTestMethod]
+    [DataRow(2, "Preparer")]
+    [DataRow(3, "Administrative")]
+    public void GetOrders_WhenNonClientWithoutDates_ShouldReturnBadRequest(int userId, string role)
     {
-        SetCurrentUser(MakePreparer());
-
-        var result = _controller.GetOrders(null, null, null, null);
-
-        result.Should().BeOfType<BadRequestObjectResult>();
-    }
-
-    [TestMethod]
-    public void GetOrders_WhenAdminWithoutDates_ShouldReturnBadRequest()
-    {
-        SetCurrentUser(MakeAdmin());
+        SetCurrentUser(new CurrentUserDto { Id = userId, Role = Enum.Parse<UserRolesDto>(role), Email = "test@test.com" });
 
         var result = _controller.GetOrders(null, null, null, null);
 

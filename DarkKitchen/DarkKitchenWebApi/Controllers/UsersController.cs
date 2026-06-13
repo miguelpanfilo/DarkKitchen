@@ -69,6 +69,20 @@ public class UsersController(IUserService userService) : ControllerBase
     }
 
     [RoleAuthorization(UserRolesDto.Administrative)]
+    [HttpGet("{id}")]
+    public IActionResult GetUserById([FromRoute] int id)
+    {
+        var loggedUserId = GetLoggedUserId();
+        if (loggedUserId == null)
+        {
+            return Unauthorized();
+        }
+
+        var response = _userService.GetByIdIncludingInactive(id);
+        return Ok(response);
+    }
+
+    [RoleAuthorization(UserRolesDto.Administrative)]
     [HttpPatch("{id}/password")]
     public IActionResult UpdateInternalUserPassword([FromRoute] int id, [FromBody] ModifyPasswordRequestDTO request)
     {

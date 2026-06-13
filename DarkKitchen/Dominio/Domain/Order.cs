@@ -43,8 +43,8 @@ public class Order
             DeliveryType = deliveryType,
             Address = address,
             Status = OrderStatus.Pending,
-            CreatedAt = DateTime.UtcNow,
-            StatusUpdatedAt = DateTime.UtcNow,
+            CreatedAt = DateTime.Now,
+            StatusUpdatedAt = DateTime.Now,
             ShippingCost = shippingCost,
             OrderNumber = GenerateOrderNumber(),
             Items = BuildItems(items)
@@ -114,7 +114,7 @@ public class Order
     {
         _state = nextState;
         Status = nextState.GetStatus();
-        StatusUpdatedAt = DateTime.UtcNow;
+        StatusUpdatedAt = DateTime.Now;
     }
 
     private static string GenerateOrderNumber()

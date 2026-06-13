@@ -30,8 +30,7 @@ export class RegisterClientPageComponent implements OnDestroy, HasUnsavedChanges
   submitted = false;
   private saveSucceeded = false;
 
-  constructor(private userService: UserService, private router:
-    Router) { }
+  constructor(private userService: UserService, private router: Router) { }
 
   isLoading: boolean = false;
   private subs = new Subscription();

@@ -2,12 +2,10 @@ import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { FilterButtonComponent } from
-  '../../../../shared/components/filter-button/filter-button.component';
+import { FilterButtonComponent } from '../../../../shared/components/filter-button/filter-button.component';
 import { AuditLogService } from '../../services/audit-log.service';
 import { AuditLog } from '../../models/audit-log.model';
-import { ClearButtonComponent } from
-  '../../../../shared/components/clear-button/clear-button.component';
+import { ClearButtonComponent } from '../../../../shared/components/clear-button/clear-button.component';
 import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
 
 @Component({

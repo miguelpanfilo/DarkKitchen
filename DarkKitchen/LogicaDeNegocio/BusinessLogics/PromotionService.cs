@@ -122,6 +122,8 @@ public class PromotionService : IPromotionService
             => promotion.AssociateProduct(productId));
 
         var updatedPromotion = _promotionRepository.Update(promotion);
+        _auditLogService.Register(AuditedEntities.Promotion, updatedPromotion.Id,
+            AuditDescriptions.PromotionProductAssociated, _currentUserService.GetEmail());
 
         return MapPromotionWithProducts(updatedPromotion);
     }
@@ -136,6 +138,8 @@ public class PromotionService : IPromotionService
             => promotion.DisassociateProduct(productId));
 
         var updatedPromotion = _promotionRepository.Update(promotion);
+        _auditLogService.Register(AuditedEntities.Promotion, updatedPromotion.Id,
+            AuditDescriptions.PromotionProductDisassociated, _currentUserService.GetEmail());
 
         return MapPromotionWithProducts(updatedPromotion);
     }
@@ -249,7 +253,7 @@ public class PromotionService : IPromotionService
 
                 var matchesProductId = productId is null || pp.ProductId == productId.Value;
                 var matchesCommercialLine = string.IsNullOrWhiteSpace(commercialLine) ||
-                                            product.CommercialLine == commercialLine;
+                                            product.CommercialLine.Contains(commercialLine.Trim(), StringComparison.OrdinalIgnoreCase);
 
                 return matchesProductId && matchesCommercialLine;
             }))

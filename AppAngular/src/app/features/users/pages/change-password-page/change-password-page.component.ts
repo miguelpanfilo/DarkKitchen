@@ -79,6 +79,7 @@ export class ChangePasswordPageComponent implements OnInit, OnDestroy {
       }
     }));
   }
+
   onCancelled() {
     this.router.navigate(['/home/users']);
   }

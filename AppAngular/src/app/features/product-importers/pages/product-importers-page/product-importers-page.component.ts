@@ -79,7 +79,7 @@ export class ProductImportersPageComponent implements OnInit, OnDestroy {
     this.importedProducts = [];
   }
 
-  import(): void {
+  import(fileInput: HTMLInputElement): void {
     if (!this.selectedImporterName || !this.selectedFile) return;
 
     this.loading = true;
@@ -92,6 +92,8 @@ export class ProductImportersPageComponent implements OnInit, OnDestroy {
           this.successMessage = `Importación exitosa: ${result.length} productos importados.`;
           this.importedProducts = result;
           this.loading = false;
+          this.selectedFile = null;
+          fileInput.value = '';
         },
         error: (err) => {
           this.errorMessage = err.error?.message ?? 'Error al importar el archivo.';
