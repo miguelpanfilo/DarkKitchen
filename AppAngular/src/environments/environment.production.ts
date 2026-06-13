@@ -1,3 +1,3 @@
 export const environment = {
-  webApiBaseUrl: 'https://predictions-identical-driver-medicine.trycloudflare.com'
+  webApiBaseUrl: 'https://overpass-skipper-swooned.ngrok-free.dev'
 };

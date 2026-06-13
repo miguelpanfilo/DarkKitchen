@@ -7,7 +7,7 @@
   </div>
 
   <div *ngIf="product.photos.length > 0" class="product-photo">
-    <img [src]="currentPhotoPath" alt="" />
+    <img [src]="currentPhotoPath | safeImage | async" alt="" />
 
     <button
       *ngIf="product.photos.length > 1"

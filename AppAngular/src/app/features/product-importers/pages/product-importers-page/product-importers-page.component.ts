@@ -8,6 +8,7 @@ import { StatusMessagesComponent } from '../../../../shared/components/status-me
 import { CancelButtonComponent } from '../../../../shared/components/cancel-button/cancel-button.component';
 import { environment } from '../../../../../environments/environment';
 import { Router } from '@angular/router';
+import { SafeImagePipe } from '../../../../shared/pipes/safe-image.pipe';
 
 @Component({
   selector: 'app-product-importers-page',
@@ -17,7 +18,8 @@ import { Router } from '@angular/router';
     FormsModule,
     SubmitButtonComponent,
     CancelButtonComponent,
-    StatusMessagesComponent
+    StatusMessagesComponent,
+    SafeImagePipe
   ],
   templateUrl: './product-importers-page.component.html',
   styleUrl: './product-importers-page.component.css'

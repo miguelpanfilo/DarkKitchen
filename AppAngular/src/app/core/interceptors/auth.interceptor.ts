@@ -10,8 +10,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   const sessionId = authService.getSessionId();
   const authReq = sessionId
-    ? req.clone({ setHeaders: { 'X-Session-Id': sessionId } })
-    : req;
+    ? req.clone({ setHeaders: { 'X-Session-Id': sessionId, 'ngrok-skip-browser-warning': 'true' } })
+    : req.clone({ setHeaders: { 'ngrok-skip-browser-warning': 'true' } });
 
   return next(authReq).pipe(
     catchError((error) => {
