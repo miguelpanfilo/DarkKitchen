@@ -12,8 +12,7 @@ import { HasRoleDirective } from '../../shared/directives/has-role.directive';
 export class MainLayoutComponent implements OnInit {
   email = '';
 
-  constructor(private router: Router, private authService:
-    AuthService) { }
+  constructor(private router: Router, private authService: AuthService) { }
 
   ngOnInit() {
     this.email = this.authService.getEmail() || '';

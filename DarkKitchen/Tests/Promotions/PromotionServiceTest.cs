@@ -1170,6 +1170,34 @@ public class PromotionServiceTest
     }
 
     [TestMethod]
+    public void GivenExistingPromotion_WhenGettingById_ThenReturnsPromotion()
+    {
+        var (start, end) = FutureDates();
+        var promotion = Promotion.MakePromotion("Black Friday", 10, start, end);
+
+        var promotionRepositoryMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepositoryMock = new Mock<IProductRepository>(MockBehavior.Strict);
+
+        promotionRepositoryMock
+            .Setup(r => r.GetById(1))
+            .Returns(promotion);
+
+        var auditMock = new Mock<IAuditLogService>();
+        var service = CreateService(promotionRepositoryMock, productRepositoryMock, auditMock);
+
+        var result = service.GetById(1);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual("Black Friday", result.Name);
+        Assert.AreEqual(10, result.DiscountPercentage);
+        Assert.AreEqual(start, result.StartDate);
+        Assert.AreEqual(end, result.EndDate);
+
+        promotionRepositoryMock.VerifyAll();
+        productRepositoryMock.VerifyAll();
+    }
+
+    [TestMethod]
     public void GivenPromotionDtoWithEndDateInThePast_WhenCreating_ThenThrowsValidationException()
     {
         var today = DateOnly.FromDateTime(DateTime.Now);

@@ -3,11 +3,9 @@ import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UserCardComponent } from
-  '../../components/user-card/user-card.component';
+import { UserCardComponent } from '../../components/user-card/user-card.component';
 import { UserService } from '../../services/user.service';
-import { AddButtonComponent } from
-  '../../../../shared/components/add-button/add-button.component';
+import { AddButtonComponent } from '../../../../shared/components/add-button/add-button.component';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { FilterButtonComponent } from '../../../../shared/components/filter-button/filter-button.component';
 import { ClearButtonComponent } from '../../../../shared/components/clear-button/clear-button.component';
@@ -126,6 +124,7 @@ export class UsersListPageComponent implements OnInit, OnDestroy {
     this.showConfirmDialog = false;
     this.userToDelete = null;
   }
+
   onChangePassword(user: User) {
     this.router.navigate(['/home/change-password', user.id]);
   }

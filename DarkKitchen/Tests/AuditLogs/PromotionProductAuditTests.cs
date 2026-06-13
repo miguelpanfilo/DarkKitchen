@@ -208,6 +208,109 @@ public class PromotionServiceAuditTests
     }
 
     [TestMethod]
+    public void AssociateProduct_ValidAssociation_RegistersAuditLog()
+    {
+        var promotionRepoMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var auditMock = new Mock<IAuditLogService>(MockBehavior.Strict);
+
+        var promotion = Promotion.MakePromotion(
+            "Black Friday",
+            10,
+            new DateOnly(2026, 6, 1),
+            new DateOnly(2026, 6, 30));
+
+        var product = new ProductBuilder()
+            .WithCode("COD01")
+            .WithName("Producto Test")
+            .WithDescription("Descripción válida con más de veinte caracteres")
+            .WithCommercialLine("Línea")
+            .WithCategory("Categoría")
+            .WithPrice(100)
+            .WithPhotos(new List<ProductPhoto> { new ProductPhoto("photo.jpg") })
+            .Build();
+
+        promotionRepoMock
+            .Setup(r => r.GetById(It.IsAny<int>()))
+            .Returns(promotion);
+
+        productRepoMock
+            .Setup(r => r.GetById(It.IsAny<int>()))
+            .Returns(product);
+
+        promotionRepoMock
+            .Setup(r => r.Update(It.IsAny<Promotion>()))
+            .Returns((Promotion p) => p);
+
+        auditMock
+            .Setup(a => a.Register(AuditedEntities.Promotion,
+                It.IsAny<int>(), AuditDescriptions.PromotionProductAssociated, It.IsAny<string>()));
+
+        var currentUserMock = new Mock<ICurrentUserService>(MockBehavior.Strict);
+        currentUserMock.Setup(s => s.GetEmail()).Returns("admin@dark.com");
+        var service = new PromotionService(promotionRepoMock.Object, productRepoMock.Object,
+            auditMock.Object, currentUserMock.Object);
+
+        service.AssociateProduct(1, 5);
+
+        auditMock.Verify(a => a.Register(AuditedEntities.Promotion,
+            It.IsAny<int>(), AuditDescriptions.PromotionProductAssociated, It.IsAny<string>()),
+            Times.Once);
+    }
+
+    [TestMethod]
+    public void DisassociateProduct_ValidDisassociation_RegistersAuditLog()
+    {
+        var promotionRepoMock = new Mock<IPromotionRepository>(MockBehavior.Strict);
+        var productRepoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var auditMock = new Mock<IAuditLogService>(MockBehavior.Strict);
+
+        var promotion = Promotion.MakePromotion(
+            "Black Friday",
+            10,
+            new DateOnly(2026, 6, 1),
+            new DateOnly(2026, 6, 30));
+        promotion.AssociateProduct(5);
+
+        var product = new ProductBuilder()
+            .WithCode("COD01")
+            .WithName("Producto Test")
+            .WithDescription("Descripción válida con más de veinte caracteres")
+            .WithCommercialLine("Línea")
+            .WithCategory("Categoría")
+            .WithPrice(100)
+            .WithPhotos(new List<ProductPhoto> { new ProductPhoto("photo.jpg") })
+            .Build();
+
+        promotionRepoMock
+            .Setup(r => r.GetById(It.IsAny<int>()))
+            .Returns(promotion);
+
+        productRepoMock
+            .Setup(r => r.GetById(It.IsAny<int>()))
+            .Returns(product);
+
+        promotionRepoMock
+            .Setup(r => r.Update(It.IsAny<Promotion>()))
+            .Returns((Promotion p) => p);
+
+        auditMock
+            .Setup(a => a.Register(AuditedEntities.Promotion,
+                It.IsAny<int>(), AuditDescriptions.PromotionProductDisassociated, It.IsAny<string>()));
+
+        var currentUserMock = new Mock<ICurrentUserService>(MockBehavior.Strict);
+        currentUserMock.Setup(s => s.GetEmail()).Returns("admin@dark.com");
+        var service = new PromotionService(promotionRepoMock.Object, productRepoMock.Object,
+            auditMock.Object, currentUserMock.Object);
+
+        service.DisassociateProduct(1, 5);
+
+        auditMock.Verify(a => a.Register(AuditedEntities.Promotion,
+            It.IsAny<int>(), AuditDescriptions.PromotionProductDisassociated, It.IsAny<string>()),
+            Times.Once);
+    }
+
+    [TestMethod]
     public void Delete_ValidPromotion_GetsResponsibleUserFromCurrentUserService()
     {
         var promotionRepoMock = new

@@ -282,4 +282,27 @@ public class UsersControllerTests
         Assert.IsInstanceOfType(result, typeof(NoContentResult));
         userServiceMock.Verify(x => x.ModifyPasswordUser(3, 99, request), Times.Once);
     }
+
+    [TestMethod]
+    public void GetUserById_WhenClaimIsValid_ReturnsOkWithUser()
+    {
+        var response = new UserResponseDTO
+        {
+            Id = 5,
+            Name = "Juan",
+            LastName = "Perez",
+            Email = "juan@gmail.com",
+            Phone = "099123456",
+            Role = UserRolesDto.Administrative.ToString()
+        };
+
+        _userServiceMock.Setup(x => x.GetByIdIncludingInactive(5)).Returns(response);
+        SetUserClaim("99");
+
+        var result = _controller.GetUserById(5) as OkObjectResult;
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(StatusCodes.Status200OK, result.StatusCode);
+        Assert.AreEqual(response, result.Value);
+    }
 }
