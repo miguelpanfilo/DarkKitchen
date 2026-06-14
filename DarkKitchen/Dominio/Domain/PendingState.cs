@@ -1,6 +1,6 @@
-namespace Domain;
+﻿namespace Domain;
 
-public sealed class PendingState : OrderStateBase
+public sealed class PendingState : OrderBaseState
 {
     public override string Name => "Pending";
     public override void Prepare(Order order) => order.TransitionTo(new PreparedState());

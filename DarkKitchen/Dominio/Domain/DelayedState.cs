@@ -1,6 +1,6 @@
-namespace Domain;
+﻿namespace Domain;
 
-public sealed class DelayedState : OrderStateBase
+public sealed class DelayedState : OrderBaseState
 {
     public override string Name => "Delayed";
     public override void Prepare(Order order) => order.TransitionTo(new PreparedState());

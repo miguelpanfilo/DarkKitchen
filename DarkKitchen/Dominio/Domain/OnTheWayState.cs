@@ -1,6 +1,6 @@
-namespace Domain;
+﻿namespace Domain;
 
-public sealed class OnTheWayState : OrderStateBase
+public sealed class OnTheWayState : OrderBaseState
 {
     public override string Name => "OnTheWay";
     public override void Deliver(Order order) => order.TransitionTo(new DeliveredState());
