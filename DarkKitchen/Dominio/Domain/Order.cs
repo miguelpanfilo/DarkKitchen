@@ -23,7 +23,7 @@ public class Order
     {
     }
 
-    private IOrderState CurrentState => _state ??= OrderStateFactory.Create(Status);
+    private IOrderState CurrentState => _state ?? OrderStateFactory.Create(Status);
 
     public static Order MakeOrder(
         int clientId,
@@ -74,35 +74,12 @@ public class Order
         return orderItems;
     }
 
-    public void Prepare()
-    {
-        TransitionTo(CurrentState.Prepare());
-    }
-
-    public void Cancel()
-    {
-        TransitionTo(CurrentState.Cancel());
-    }
-
-    public void Dispatch()
-    {
-        TransitionTo(CurrentState.Dispatch());
-    }
-
-    public void Deliver()
-    {
-        TransitionTo(CurrentState.Deliver());
-    }
-
-    public void Delay()
-    {
-        TransitionTo(CurrentState.Delay());
-    }
-
-    public void MarkNotDelivered()
-    {
-        TransitionTo(CurrentState.MarkNotDelivered());
-    }
+    public void Prepare() => CurrentState.Prepare(this);
+    public void Cancel() => CurrentState.Cancel(this);
+    public void Dispatch() => CurrentState.Dispatch(this);
+    public void Deliver() => CurrentState.Deliver(this);
+    public void Delay() => CurrentState.Delay(this);
+    public void MarkNotDelivered() => CurrentState.MarkNotDelivered(this);
 
     private void CalculateTotals()
     {
@@ -110,10 +87,10 @@ public class Order
         Total = (Subtotal + ShippingCost) * TaxPolicy.VatRate;
     }
 
-    private void TransitionTo(IOrderState nextState)
+    internal void TransitionTo(IOrderState nextState)
     {
         _state = nextState;
-        Status = nextState.GetStatus();
+        Status = Enum.Parse<OrderStatus>(nextState.Name);
         StatusUpdatedAt = DateTime.Now;
     }
 
