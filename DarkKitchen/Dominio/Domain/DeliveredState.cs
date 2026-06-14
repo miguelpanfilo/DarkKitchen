@@ -1,6 +1,6 @@
 ﻿namespace Domain;
 
-public sealed class DeliveredState : OrderBaseState
+public sealed class DeliveredState : OrderBase
 {
     public override string Name => "Delivered";
 }
