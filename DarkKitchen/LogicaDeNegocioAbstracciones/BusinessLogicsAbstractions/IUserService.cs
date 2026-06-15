@@ -4,8 +4,6 @@ namespace BusinessLogicsAbstractions;
 
 public interface IUserService
 {
-    SignUpClientResponseDTO RegistrarCliente(SignUpClientRequestDTO requestDto);
-
     UserResponseDTO MakeUserIntern(int idUserLogged, SignUpInternUserRequestDTO requestDto);
 
     UserResponseDTO ModifyUserIntern(
