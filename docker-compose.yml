@@ -35,6 +35,7 @@ services:
       - "5080:8080"
     volumes:
       - photos_data:/app/photos
+      - ./DarkKitchen/plugins:/plugins
     depends_on:
       - sqlserver
     restart: unless-stopped

@@ -18,6 +18,13 @@ DELETE FROM [Sessions];
 DELETE FROM [AuditLogs];
 DELETE FROM [Users];
 
+-- Resetear contadores IDENTITY para que los IDs queden consistentes
+DBCC CHECKIDENT ('Users',      RESEED, 0);
+DBCC CHECKIDENT ('Products',   RESEED, 0);
+DBCC CHECKIDENT ('Promotions', RESEED, 0);
+DBCC CHECKIDENT ('Orders',     RESEED, 0);
+DBCC CHECKIDENT ('OrderItems', RESEED, 0);
+
 -- Usuarios
 INSERT INTO [Users] (Name, LastName, Email, Phone, PasswordHash, Role, Status)
 VALUES
