@@ -7,7 +7,6 @@ import { TopProduct, SalesReport } from '../../models/report.model';
 import { FilterButtonComponent } from '../../../../shared/components/filter-button/filter-button.component';
 import { ClearButtonComponent } from '../../../../shared/components/clear-button/clear-button.component';
 import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
-
 @Component({
   selector: 'app-reports-page',
   imports: [CommonModule, FormsModule, FilterButtonComponent, ClearButtonComponent, StatusMessagesComponent],

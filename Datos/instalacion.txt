@@ -1,0 +1,94 @@
+GUÍA DE INSTALACIÓN — DARK KITCHEN
+====================================
+
+REQUISITO PREVIO
+----------------
+Tener instalado Docker Desktop en la máquina.
+
+
+PASO 1 — CLONAR EL REPOSITORIO
+--------------------------------
+git clone https://github.com/IngSoft-DA2/255968_307265_329136.git
+
+
+PASO 2 — LEVANTAR LA APLICACIÓN
+---------------------------------
+Desde la raíz del repositorio (donde está el archivo docker-compose.yml):
+
+   docker compose up --build
+
+Esperar hasta que aparezca en los logs:
+   dk-webapi | Now listening on: http://[::]:8080
+
+
+PASO 3 — COPIAR LAS IMÁGENES DE DEMO
+--------------------------------------
+Abrir una nueva terminal en la raíz del repositorio y ejecutar:
+
+   docker cp DarkKitchen/demo-assets/fotos-productos/. dk-webapi:/app/photos/
+
+
+PASO 4 — CONECTARSE A LA BASE DE DATOS EN DBEAVER
+---------------------------------------------------
+Abrir DBeaver y crear una nueva conexión :
+
+   Tipo:          SQL Server  
+   Host:          localhost
+   Puerto:        1433
+   Base de datos: DarkKitchenDb
+   Usuario:       sa
+   Contraseña:    Passw1rd
+
+Tildar "Trust server certificate" y "Show all schemas" en las opciones de conexión.
+Hacer click "Finalizar".
+
+
+PASO 5 — CARGAR LOS DATOS DE PRUEBA
+-------------------------------------
+En DBeaver:
+   1. Abrir el archivo Datos/db_with_data.sql con cualquier editor de texto.
+   2. Copiar todo el contenido.
+   3. En DBeaver, click derecho sobre DarkKitchenDb -> "SQL Editor" -> "Nuevo script SQL"
+   4. Pegar el contenido en el editor.
+   5. Verificar que arriba del editor diga DarkKitchenDb como base activa
+   6. Ejecutar el script.
+
+Este script carga:
+   - 8 usuarios (admin, clientes, preparadores y admin extra)
+   - 10 productos con fotos
+   - 6 promociones con sus productos asociados
+   - 12 órdenes en distintos estados con sus items
+
+Todas las cuentas usan la contraseña: PasswordSeguraee3!
+
+El script limpia los datos existentes antes de insertar, por lo que puede ejecutarse las veces que sea necesario para volver al estado inicial.
+
+
+PASO 6 — VERIFICAR
+--------------------
+Ingresar a http://localhost:4200 y loguearse con:
+
+   Email:    lucas.gomez@test.com
+   Password: PasswordSeguraee3!
+
+Deberían verse los productos con sus fotos.
+
+La aplicación ya está disponible en:
+   Aplicación web: http://localhost:4200
+   API REST:       http://localhost:5080
+
+VOLVER A LEVANTAR SIN RECONSTRUIR
+-----------------------------------
+Una vez creados los contenedores con --build, para volver a levantarlos:
+
+   docker compose up
+
+DETENER LA APLICACIÓN
+----------------------
+Para detener los contenedores:
+   docker compose down
+
+Para detener y eliminar todos los datos (base de datos y fotos):
+   docker compose down -v
+
+Si se usa down -v, al volver a levantar hay que repetir los pasos 2 al 5.

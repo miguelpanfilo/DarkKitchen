@@ -1,6 +1,6 @@
 <div class="product-card d-flex flex-column gap-3 p-3 rounded" [class.inactive]="!product.isActive">
   <div class="d-flex justify-content-between align-items-center">
-    <span class="product-code">{{ product.code }} | #{{ product.id }}</span>
+    <span class="product-code">{{ product.code }}<ng-container *appHasRole="['Administrative', 'Preparer']"> | #{{ product.id }}</ng-container></span>
     <span class="product-status" [class.active]="product.isActive">
       {{ product.isActive ? 'Disponible' : 'No disponible' }}
     </span>

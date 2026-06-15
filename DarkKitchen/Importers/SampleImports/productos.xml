@@ -8,7 +8,7 @@
     <Category>Comidas</Category>
     <Price>480.00</Price>
     <PhotoPaths>
-      <string>demo-assets\fotos-productos\verdura.jpg</string>
+      <string>demo-assets/fotos-productos/verdura.jpg</string>
     </PhotoPaths>
   </ImportedProductDto>
   <ImportedProductDto>
@@ -19,7 +19,29 @@
     <Category>Entradas</Category>
     <Price>120.00</Price>
     <PhotoPaths>
-      <string>demo-assets\fotos-productos\cafe2.jpg</string>
+      <string>demo-assets/fotos-productos/cafe2.jpg</string>
+    </PhotoPaths>
+  </ImportedProductDto>
+  <ImportedProductDto>
+    <Code>PIZZA004</Code>
+    <Name>Pizza Fugazzeta</Name>
+    <Description>Pizza con cebolla y aceitunas</Description>
+    <CommercialLine>Italiana</CommercialLine>
+    <Category>Comidas</Category>
+    <Price>440.00</Price>
+    <PhotoPaths>
+      <string>demo-assets/fotos-productos/pizza2.jpg</string>
+    </PhotoPaths>
+  </ImportedProductDto>
+  <ImportedProductDto>
+    <Code>BURG004</Code>
+    <Name>Hamburguesa Crispy</Name>
+    <Description>Hamburguesa con pollo crocante</Description>
+    <CommercialLine>Fast Food</CommercialLine>
+    <Category>Comidas</Category>
+    <Price>360.00</Price>
+    <PhotoPaths>
+      <string>demo-assets/fotos-productos/burga3.jpg</string>
     </PhotoPaths>
   </ImportedProductDto>
 </ArrayOfImportedProductDto>

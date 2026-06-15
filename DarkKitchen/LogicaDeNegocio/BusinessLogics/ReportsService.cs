@@ -1,4 +1,4 @@
-﻿using BusinessLogicsAbstractions;
+using BusinessLogicsAbstractions;
 using Contract;
 using DataAccessAbstractions;
 using Domain;
@@ -9,45 +9,37 @@ public class ReportService(IOrderRepository orderRepository) : IReportService
 {
     private readonly IOrderRepository _orderRepository = orderRepository;
 
-    public List<TopProductReportItemDto> GetTopProducts(DateTime?
-        dateFrom, DateTime? dateTo)
+    public List<TopProductReportItemDto> GetTopProducts(DateTime? dateFrom, DateTime? dateTo)
     {
-        ValidateDateRange(dateFrom, dateTo);
-
-        var from = dateFrom ?? DateTime.MinValue;
-        var to = dateTo ?? DateTime.MaxValue;
-
-        var orders = _orderRepository.GetByFilters(from, to, null,
-            null);
-        var data = new OrderReportData(orders);
         var visitor = new TopProductsReportVisitor();
-
-        data.Accept(visitor);
-
+        ExecuteReport(GetReportData(dateFrom, dateTo), visitor);
         return visitor.Result;
     }
 
-    public SalesReportDto GetSalesReport(DateTime? dateFrom, DateTime?
-        dateTo)
+    public SalesReportDto GetSalesReport(DateTime? dateFrom, DateTime? dateTo)
+    {
+        var visitor = new SalesReportVisitor();
+        ExecuteReport(GetReportData(dateFrom, dateTo), visitor);
+        return visitor.Result;
+    }
+
+    public void ExecuteReport(OrderReportData data, IReportVisitor visitor)
+    {
+        data.Accept(visitor);
+    }
+
+    private OrderReportData GetReportData(DateTime? dateFrom, DateTime? dateTo)
     {
         ValidateDateRange(dateFrom, dateTo);
-
         var from = dateFrom ?? DateTime.MinValue;
         var to = dateTo ?? DateTime.MaxValue;
-
-        var orders = _orderRepository.GetByFilters(from, to, null,
-            null);
-        var data = new OrderReportData(orders);
-        var visitor = new SalesReportVisitor();
-
-        data.Accept(visitor);
-
-        return visitor.Result;
+        var orders = _orderRepository.GetByFilters(from, to, null, null);
+        return new OrderReportData(orders);
     }
 
     public static void ValidateDateRange(DateTime? dateFrom, DateTime? dateTo)
     {
-        if(dateFrom.HasValue && dateTo.HasValue && dateFrom > dateTo)
+        if (dateFrom.HasValue && dateTo.HasValue && dateFrom > dateTo)
         {
             throw new ValidationException("Fecha inicio no puede ser posterior a fecha fin");
         }

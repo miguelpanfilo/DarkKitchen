@@ -9,7 +9,6 @@ import { SubmitButtonComponent } from '../../../../shared/components/submit-butt
 import { CancelButtonComponent } from '../../../../shared/components/cancel-button/cancel-button.component';
 import { FormCardComponent } from '../../../../shared/components/form-card/form-card.component';
 import { PatchPhotoRequest } from '../../models/product-photo.model';
-import { environment } from '../../../../../environments/environment';
 import { HasUnsavedChanges } from '../../../../core/guards/pending-changes.guard';
 
 @Component({
@@ -95,7 +94,7 @@ export class EditProductPageComponent implements OnInit, OnDestroy, HasUnsavedCh
     }
 
     if (photo.path) {
-      return `${environment.webApiBaseUrl}${photo.path}`;
+      return photo.path;
     }
 
     return '';

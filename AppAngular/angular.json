@@ -59,6 +59,12 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.production.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
@@ -78,17 +84,7 @@
               "extractLicenses": false,
               "sourceMap": true
             },
-            "lan": {
-              "optimization": false,
-              "extractLicenses": false,
-              "sourceMap": true,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.lan.ts"
-                }
-              ]
-            }
+
           },
           "defaultConfiguration": "production"
         },

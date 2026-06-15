@@ -4,7 +4,6 @@ import { Product } from '../../models/product.model';
 import { HasRoleDirective } from '../../../../shared/directives/has-role.directive';
 import { EditButtonComponent } from '../../../../shared/components/edit-button/edit-button.component';
 import { DeleteButtonComponent } from '../../../../shared/components/delete-button/delete-button.component';
-
 @Component({
   selector: 'app-product-card',
   imports: [CommonModule, HasRoleDirective, EditButtonComponent, DeleteButtonComponent],

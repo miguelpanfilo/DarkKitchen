@@ -6,7 +6,6 @@ import { Observable, Subscription } from 'rxjs';
 import { SubmitButtonComponent } from '../../../../shared/components/submit-button/submit-button.component';
 import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
 import { CancelButtonComponent } from '../../../../shared/components/cancel-button/cancel-button.component';
-import { environment } from '../../../../../environments/environment';
 import { Router } from '@angular/router';
 
 @Component({
@@ -30,7 +29,6 @@ export class ProductImportersPageComponent implements OnInit, OnDestroy {
   errorMessage: string = '';
   loading: boolean = false;
   importedProducts: any[] = [];
-  readonly apiUrl = environment.webApiBaseUrl;
 
   private subs = new Subscription();
 

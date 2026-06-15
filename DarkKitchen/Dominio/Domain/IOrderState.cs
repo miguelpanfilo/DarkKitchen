@@ -2,11 +2,11 @@ namespace Domain;
 
 public interface IOrderState
 {
-    IOrderState Prepare();
-    IOrderState Cancel();
-    IOrderState Dispatch();
-    IOrderState Deliver();
-    IOrderState MarkNotDelivered();
-    IOrderState Delay();
-    OrderStatus GetStatus();
+    string Name { get; }
+    void Prepare(Order order);
+    void Cancel(Order order);
+    void Dispatch(Order order);
+    void Deliver(Order order);
+    void MarkNotDelivered(Order order);
+    void Delay(Order order);
 }

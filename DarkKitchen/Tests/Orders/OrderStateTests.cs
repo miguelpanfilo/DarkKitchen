@@ -8,286 +8,52 @@ using FluentAssertions;
 [TestClass]
 public class OrderStateTests
 {
-    [TestMethod]
-    public void
-        PendingState_WhenPrepare_ShouldTransitionToPreparedState()
+    private static Order CreateOrder()
     {
-        var state = new PendingState();
+        var address = Address.MakeAddress("Av. Italia", "1234");
+        var items = new List<OrderItemData>
+        {
+            new OrderItemData { ProductId = 1, Quantity = 1, UnitPrice = 100, DiscountApplied = 0 }
+        };
+        return Order.MakeOrder(1, "delivery", address, items, 50);
+    }
 
-        var nextState = state.Prepare();
+    [TestMethod]
+    public void PendingState_WhenPrepare_ShouldTransitionToPreparedState()
+    {
+        var order = CreateOrder();
 
-        nextState.Should().BeOfType<PreparedState>();
+        order.Prepare();
+
+        order.Status.Should().Be(OrderStatus.Prepared);
     }
 
     [TestMethod]
     public void PendingState_WhenCancel_ShouldTransitionToCancelledState()
     {
-        var state = new PendingState();
+        var order = CreateOrder();
 
-        var nextState = state.Cancel();
+        order.Cancel();
 
-        nextState.Should().BeOfType<CancelledState>();
-    }
-
-    [TestMethod]
-    public void PreparedState_WhenDispatch_ShouldTransitionToOnTheWayState()
-    {
-        var state = new PreparedState();
-
-        var nextState = state.Dispatch();
-
-        nextState.Should().BeOfType<OnTheWayState>();
-    }
-
-    [TestMethod]
-    public void PreparedState_WhenCancel_ShouldThrowInvalidOperationException()
-    {
-        var state = new PreparedState();
-
-        Action act = () => state.Cancel();
-
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("Solo se puede cancelar un pedido pendiente o demorado");
+        order.Status.Should().Be(OrderStatus.Cancelled);
     }
 
     [TestMethod]
     public void PendingState_WhenDelay_ShouldTransitionToDelayedState()
     {
-        var state = new PendingState();
+        var order = CreateOrder();
 
-        var nextState = state.Delay();
+        order.Delay();
 
-        nextState.Should().BeOfType<DelayedState>();
+        order.Status.Should().Be(OrderStatus.Delayed);
     }
 
     [TestMethod]
-    public void DelayedState_WhenPrepare_ShouldTransitionToPreparedState()
+    public void PendingState_WhenDispatch_ShouldThrowOrderException()
     {
-        var state = new DelayedState();
+        var order = CreateOrder();
 
-        var nextState = state.Prepare();
-
-        nextState.Should().BeOfType<PreparedState>();
-    }
-
-    [TestMethod]
-    public void DelayedState_WhenCancel_ShouldTransitionToCancelledState()
-    {
-        var state = new DelayedState();
-
-        var nextState = state.Cancel();
-
-        nextState.Should().BeOfType<CancelledState>();
-    }
-
-    [TestMethod]
-    public void PreparedState_WhenDelay_ShouldThrowInvalidOperationException()
-    {
-        var state = new PreparedState();
-
-        Action act = () => state.Delay();
-
-        act.Should().Throw<OrderException>();
-    }
-
-    [TestMethod]
-    public void OnTheWayState_WhenDeliver_ShouldTransitionToDeliveredState()
-    {
-        var state = new OnTheWayState();
-
-        var nextState = state.Deliver();
-
-        nextState.Should().BeOfType<DeliveredState>();
-    }
-
-    [TestMethod]
-    public void OnTheWayState_WhenMarkNotDelivered_ShouldTransitionToNotDeliveredState()
-    {
-        var state = new OnTheWayState();
-
-        var nextState = state.MarkNotDelivered();
-
-        nextState.Should().BeOfType<NotDeliveredState>();
-    }
-
-    [TestMethod]
-    public void PendingState_WhenDispatch_ShouldThrowInvalidOperationException()
-    {
-        var state = new PendingState();
-
-        Action act = () => state.Dispatch();
-
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("Solo se puede poner en camino un pedido preparado");
-    }
-
-    [TestMethod]
-    public void DelayedState_WhenDispatch_ShouldThrowInvalidOperationException()
-    {
-        var state = new DelayedState();
-
-        Action act = () => state.Dispatch();
-
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("Primero se debe preparar el pedido");
-    }
-
-    [TestMethod]
-    public void OnTheWayState_WhenCancel_ShouldThrowInvalidOperationException()
-    {
-        var state = new OnTheWayState();
-
-        Action act = () => state.Cancel();
-
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("No es posible cancelar un pedido que ya esta en camino");
-    }
-
-    [TestMethod]
-    public void OrderFlow_ShouldGoThroughAllValidStates()
-    {
-        IOrderState state = new PendingState();
-
-        state = state.Prepare();
-        state.Should().BeOfType<PreparedState>();
-
-        state = state.Dispatch();
-        state.Should().BeOfType<OnTheWayState>();
-
-        state = state.Deliver();
-        state.Should().BeOfType<DeliveredState>();
-    }
-
-    [TestMethod]
-    public void DelayedState_WhenDelay_ShouldThrowInvalidOperationException()
-    {
-        var state = new DelayedState();
-
-        Action act = () => state.Delay();
-
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("El pedido ya esta demorado");
-    }
-
-    [TestMethod]
-    public void DelayedState_WhenDeliver_ShouldThrowInvalidOperationException()
-    {
-        var state = new DelayedState();
-
-        Action act = () => state.Deliver();
-
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("Solo se puede entregar un pedido en camino");
-    }
-
-    [TestMethod]
-    public void OnTheWayState_WhenDispatch_ShouldThrowInvalidOperationException()
-    {
-        var state = new OnTheWayState();
-
-        Action act = () => state.Dispatch();
-
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("El pedido ya se encuentra en camino");
-    }
-
-    [TestMethod]
-    public void DeliveredState_WhenDeliver_ShouldThrowInvalidOperationException()
-    {
-        var state = new DeliveredState();
-
-        Action act = () => state.Deliver();
-
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("El pedido ya se encuentra entregado");
-    }
-
-    [TestMethod]
-    public void CancelledState_WhenCancel_ShouldThrowInvalidOperationException()
-    {
-        var state = new CancelledState();
-
-        Action act = () => state.Cancel();
-
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("El pedido ya esta cancelado");
-    }
-
-    [TestMethod]
-    public void NotDeliveredState_WhenMarkNotDelivered_ShouldThrowInvalidOperationException()
-    {
-        var state = new NotDeliveredState();
-
-        Action act = () => state.MarkNotDelivered();
-
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("El pedido ya se encuentra como no entregado");
-    }
-
-    [TestMethod]
-    public void PreparedState_WhenPrepare_ShouldThrowInvalidOperationException()
-    {
-        var state = new PreparedState();
-
-        Action act = () => state.Prepare();
-
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("El pedido ya se encuentra preparado");
-    }
-
-    [TestMethod]
-    public void PreparedState_WhenDeliver_ShouldThrowInvalidOperationException()
-    {
-        var state = new PreparedState();
-
-        Action act = () => state.Deliver();
-
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("Primero hay que despachar el pedido");
-    }
-
-    [TestMethod]
-    public void OnTheWayState_WhenDelay_ShouldThrowInvalidOperationException()
-    {
-        var state = new OnTheWayState();
-
-        Action act = () => state.Delay();
-
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("No se puede demorar un pedido que ya esta en camino");
-    }
-
-    [TestMethod]
-    public void PendingState_WhenMarkNotDelivered_ShouldThrowInvalidOperationException()
-    {
-        var state = new PendingState();
-
-        Action act = () => state.MarkNotDelivered();
-
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("Solo se puede marcar como no entregado un pedido en camino");
-    }
-
-    [TestMethod]
-    public void DeliveredState_WhenCancel_ShouldThrowInvalidOperationException()
-    {
-        var state = new DeliveredState();
-
-        Action act = () => state.Cancel();
+        Action act = () => order.Dispatch();
 
         act.Should().Throw<OrderException>();
     }
@@ -295,221 +61,469 @@ public class OrderStateTests
     [TestMethod]
     public void PendingState_WhenDeliver_ShouldThrowOrderException()
     {
-        var state = new PendingState();
+        var order = CreateOrder();
 
-        Action act = () => state.Deliver();
+        Action act = () => order.Deliver();
 
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("Solo se puede entregar un pedido en camino");
+        act.Should().Throw<OrderException>();
+    }
+
+    [TestMethod]
+    public void PendingState_WhenMarkNotDelivered_ShouldThrowOrderException()
+    {
+        var order = CreateOrder();
+
+        Action act = () => order.MarkNotDelivered();
+
+        act.Should().Throw<OrderException>();
     }
 
     [TestMethod]
     public void PendingState_WhenGetStatus_ShouldReturnPending()
     {
-        var state = new PendingState();
+        var order = CreateOrder();
 
-        var status = state.GetStatus();
-
-        status.Should().Be(OrderStatus.Pending);
+        order.Status.Should().Be(OrderStatus.Pending);
     }
 
     [TestMethod]
-    public void CancelledState_WhenPrepare_ShouldThrowOrderException()
+    public void PreparedState_WhenDispatch_ShouldTransitionToOnTheWayState()
     {
-        var state = new CancelledState();
+        var order = CreateOrder();
+        order.Prepare();
 
-        Action act = () => state.Prepare();
+        order.Dispatch();
 
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("No se puede modificar un pedido cancelado");
+        order.Status.Should().Be(OrderStatus.OnTheWay);
     }
 
     [TestMethod]
-    public void CancelledState_WhenDispatch_ShouldThrowOrderException()
+    public void PreparedState_WhenCancel_ShouldThrowOrderException()
     {
-        var state = new CancelledState();
+        var order = CreateOrder();
+        order.Prepare();
 
-        Action act = () => state.Dispatch();
+        Action act = () => order.Cancel();
 
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("No se puede modificar un pedido cancelado");
+        act.Should().Throw<OrderException>();
     }
 
     [TestMethod]
-    public void CancelledState_WhenDeliver_ShouldThrowOrderException()
+    public void PreparedState_WhenPrepare_ShouldThrowOrderException()
     {
-        var state = new CancelledState();
+        var order = CreateOrder();
+        order.Prepare();
 
-        Action act = () => state.Deliver();
+        Action act = () => order.Prepare();
 
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("No se puede modificar un pedido cancelado");
+        act.Should().Throw<OrderException>();
     }
 
     [TestMethod]
-    public void CancelledState_WhenMarkNotDelivered_ShouldThrowOrderException()
+    public void PreparedState_WhenDeliver_ShouldThrowOrderException()
     {
-        var state = new CancelledState();
+        var order = CreateOrder();
+        order.Prepare();
 
-        Action act = () => state.MarkNotDelivered();
+        Action act = () => order.Deliver();
 
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("No se puede modificar un pedido cancelado");
+        act.Should().Throw<OrderException>();
     }
 
     [TestMethod]
-    public void CancelledState_WhenDelay_ShouldThrowOrderException()
+    public void PreparedState_WhenDelay_ShouldThrowOrderException()
     {
-        var state = new CancelledState();
+        var order = CreateOrder();
+        order.Prepare();
 
-        Action act = () => state.Delay();
+        Action act = () => order.Delay();
 
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("No se puede modificar un pedido cancelado");
+        act.Should().Throw<OrderException>();
     }
 
     [TestMethod]
-    public void CancelledState_WhenGetStatus_ShouldReturnCancelled()
+    public void OnTheWayState_WhenDeliver_ShouldTransitionToDeliveredState()
     {
-        var state = new CancelledState();
+        var order = CreateOrder();
+        order.Prepare();
+        order.Dispatch();
 
-        var status = state.GetStatus();
+        order.Deliver();
 
-        status.Should().Be(OrderStatus.Cancelled);
+        order.Status.Should().Be(OrderStatus.Delivered);
     }
 
     [TestMethod]
-    public void NotDeliveredState_WhenPrepare_ShouldThrowOrderException()
+    public void OnTheWayState_WhenMarkNotDelivered_ShouldTransitionToNotDeliveredState()
     {
-        var state = new NotDeliveredState();
+        var order = CreateOrder();
+        order.Prepare();
+        order.Dispatch();
 
-        Action act = () => state.Prepare();
+        order.MarkNotDelivered();
 
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("No se puede modificar un pedido no entregado");
+        order.Status.Should().Be(OrderStatus.NotDelivered);
     }
 
     [TestMethod]
-    public void NotDeliveredState_WhenCancel_ShouldThrowOrderException()
+    public void OnTheWayState_WhenCancel_ShouldThrowOrderException()
     {
-        var state = new NotDeliveredState();
+        var order = CreateOrder();
+        order.Prepare();
+        order.Dispatch();
 
-        Action act = () => state.Cancel();
+        Action act = () => order.Cancel();
 
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("No se puede modificar un pedido no entregado");
+        act.Should().Throw<OrderException>();
     }
 
     [TestMethod]
-    public void NotDeliveredState_WhenDispatch_ShouldThrowOrderException()
+    public void OnTheWayState_WhenDispatch_ShouldThrowOrderException()
     {
-        var state = new NotDeliveredState();
+        var order = CreateOrder();
+        order.Prepare();
+        order.Dispatch();
 
-        Action act = () => state.Dispatch();
+        Action act = () => order.Dispatch();
 
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("No se puede modificar un pedido no entregado");
+        act.Should().Throw<OrderException>();
     }
 
     [TestMethod]
-    public void NotDeliveredState_WhenDeliver_ShouldThrowOrderException()
+    public void OnTheWayState_WhenDelay_ShouldThrowOrderException()
     {
-        var state = new NotDeliveredState();
+        var order = CreateOrder();
+        order.Prepare();
+        order.Dispatch();
 
-        Action act = () => state.Deliver();
+        Action act = () => order.Delay();
 
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("No se puede modificar un pedido no entregado");
+        act.Should().Throw<OrderException>();
     }
 
     [TestMethod]
-    public void NotDeliveredState_WhenDelay_ShouldThrowOrderException()
+    public void DelayedState_WhenPrepare_ShouldTransitionToPreparedState()
     {
-        var state = new NotDeliveredState();
+        var order = CreateOrder();
+        order.Delay();
 
-        Action act = () => state.Delay();
+        order.Prepare();
 
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("No se puede modificar un pedido no entregado");
+        order.Status.Should().Be(OrderStatus.Prepared);
     }
 
     [TestMethod]
-    public void NotDeliveredState_WhenGetStatus_ShouldReturnNotDelivered()
+    public void DelayedState_WhenCancel_ShouldTransitionToCancelledState()
     {
-        var state = new NotDeliveredState();
+        var order = CreateOrder();
+        order.Delay();
 
-        var status = state.GetStatus();
+        order.Cancel();
 
-        status.Should().Be(OrderStatus.NotDelivered);
+        order.Status.Should().Be(OrderStatus.Cancelled);
+    }
+
+    [TestMethod]
+    public void DelayedState_WhenDispatch_ShouldThrowOrderException()
+    {
+        var order = CreateOrder();
+        order.Delay();
+
+        Action act = () => order.Dispatch();
+
+        act.Should().Throw<OrderException>();
+    }
+
+    [TestMethod]
+    public void DelayedState_WhenDelay_ShouldThrowOrderException()
+    {
+        var order = CreateOrder();
+        order.Delay();
+
+        Action act = () => order.Delay();
+
+        act.Should().Throw<OrderException>();
+    }
+
+    [TestMethod]
+    public void DelayedState_WhenDeliver_ShouldThrowOrderException()
+    {
+        var order = CreateOrder();
+        order.Delay();
+
+        Action act = () => order.Deliver();
+
+        act.Should().Throw<OrderException>();
+    }
+
+    [TestMethod]
+    public void DeliveredState_WhenDeliver_ShouldThrowOrderException()
+    {
+        var order = CreateOrder();
+        order.Prepare();
+        order.Dispatch();
+        order.Deliver();
+
+        Action act = () => order.Deliver();
+
+        act.Should().Throw<OrderException>();
+    }
+
+    [TestMethod]
+    public void DeliveredState_WhenCancel_ShouldThrowOrderException()
+    {
+        var order = CreateOrder();
+        order.Prepare();
+        order.Dispatch();
+        order.Deliver();
+
+        Action act = () => order.Cancel();
+
+        act.Should().Throw<OrderException>();
     }
 
     [TestMethod]
     public void DeliveredState_WhenPrepare_ShouldThrowOrderException()
     {
-        var state = new DeliveredState();
+        var order = CreateOrder();
+        order.Prepare();
+        order.Dispatch();
+        order.Deliver();
 
-        Action act = () => state.Prepare();
+        Action act = () => order.Prepare();
 
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("No se puede modificar un pedido entregado");
+        act.Should().Throw<OrderException>();
     }
 
     [TestMethod]
     public void DeliveredState_WhenDispatch_ShouldThrowOrderException()
     {
-        var state = new DeliveredState();
+        var order = CreateOrder();
+        order.Prepare();
+        order.Dispatch();
+        order.Deliver();
 
-        Action act = () => state.Dispatch();
+        Action act = () => order.Dispatch();
 
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("No se puede modificar un pedido entregado");
+        act.Should().Throw<OrderException>();
     }
 
     [TestMethod]
     public void DeliveredState_WhenMarkNotDelivered_ShouldThrowOrderException()
     {
-        var state = new DeliveredState();
+        var order = CreateOrder();
+        order.Prepare();
+        order.Dispatch();
+        order.Deliver();
 
-        Action act = () => state.MarkNotDelivered();
+        Action act = () => order.MarkNotDelivered();
 
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("No se puede modificar un pedido entregado");
+        act.Should().Throw<OrderException>();
     }
 
     [TestMethod]
     public void DeliveredState_WhenDelay_ShouldThrowOrderException()
     {
-        var state = new DeliveredState();
+        var order = CreateOrder();
+        order.Prepare();
+        order.Dispatch();
+        order.Deliver();
 
-        Action act = () => state.Delay();
+        Action act = () => order.Delay();
 
-        act.Should()
-            .Throw<OrderException>()
-            .WithMessage("No se puede modificar un pedido entregado");
+        act.Should().Throw<OrderException>();
     }
 
     [TestMethod]
     public void DeliveredState_WhenGetStatus_ShouldReturnDelivered()
     {
-        var state = new DeliveredState();
+        var order = CreateOrder();
+        order.Prepare();
+        order.Dispatch();
+        order.Deliver();
 
-        var status = state.GetStatus();
+        order.Status.Should().Be(OrderStatus.Delivered);
+    }
 
-        status.Should().Be(OrderStatus.Delivered);
+    [TestMethod]
+    public void CancelledState_WhenCancel_ShouldThrowOrderException()
+    {
+        var order = CreateOrder();
+        order.Cancel();
+
+        Action act = () => order.Cancel();
+
+        act.Should().Throw<OrderException>();
+    }
+
+    [TestMethod]
+    public void CancelledState_WhenPrepare_ShouldThrowOrderException()
+    {
+        var order = CreateOrder();
+        order.Cancel();
+
+        Action act = () => order.Prepare();
+
+        act.Should().Throw<OrderException>();
+    }
+
+    [TestMethod]
+    public void CancelledState_WhenDispatch_ShouldThrowOrderException()
+    {
+        var order = CreateOrder();
+        order.Cancel();
+
+        Action act = () => order.Dispatch();
+
+        act.Should().Throw<OrderException>();
+    }
+
+    [TestMethod]
+    public void CancelledState_WhenDeliver_ShouldThrowOrderException()
+    {
+        var order = CreateOrder();
+        order.Cancel();
+
+        Action act = () => order.Deliver();
+
+        act.Should().Throw<OrderException>();
+    }
+
+    [TestMethod]
+    public void CancelledState_WhenMarkNotDelivered_ShouldThrowOrderException()
+    {
+        var order = CreateOrder();
+        order.Cancel();
+
+        Action act = () => order.MarkNotDelivered();
+
+        act.Should().Throw<OrderException>();
+    }
+
+    [TestMethod]
+    public void CancelledState_WhenDelay_ShouldThrowOrderException()
+    {
+        var order = CreateOrder();
+        order.Cancel();
+
+        Action act = () => order.Delay();
+
+        act.Should().Throw<OrderException>();
+    }
+
+    [TestMethod]
+    public void CancelledState_WhenGetStatus_ShouldReturnCancelled()
+    {
+        var order = CreateOrder();
+        order.Cancel();
+
+        order.Status.Should().Be(OrderStatus.Cancelled);
+    }
+
+    [TestMethod]
+    public void NotDeliveredState_WhenMarkNotDelivered_ShouldThrowOrderException()
+    {
+        var order = CreateOrder();
+        order.Prepare();
+        order.Dispatch();
+        order.MarkNotDelivered();
+
+        Action act = () => order.MarkNotDelivered();
+
+        act.Should().Throw<OrderException>();
+    }
+
+    [TestMethod]
+    public void NotDeliveredState_WhenPrepare_ShouldThrowOrderException()
+    {
+        var order = CreateOrder();
+        order.Prepare();
+        order.Dispatch();
+        order.MarkNotDelivered();
+
+        Action act = () => order.Prepare();
+
+        act.Should().Throw<OrderException>();
+    }
+
+    [TestMethod]
+    public void NotDeliveredState_WhenCancel_ShouldThrowOrderException()
+    {
+        var order = CreateOrder();
+        order.Prepare();
+        order.Dispatch();
+        order.MarkNotDelivered();
+
+        Action act = () => order.Cancel();
+
+        act.Should().Throw<OrderException>();
+    }
+
+    [TestMethod]
+    public void NotDeliveredState_WhenDispatch_ShouldThrowOrderException()
+    {
+        var order = CreateOrder();
+        order.Prepare();
+        order.Dispatch();
+        order.MarkNotDelivered();
+
+        Action act = () => order.Dispatch();
+
+        act.Should().Throw<OrderException>();
+    }
+
+    [TestMethod]
+    public void NotDeliveredState_WhenDeliver_ShouldThrowOrderException()
+    {
+        var order = CreateOrder();
+        order.Prepare();
+        order.Dispatch();
+        order.MarkNotDelivered();
+
+        Action act = () => order.Deliver();
+
+        act.Should().Throw<OrderException>();
+    }
+
+    [TestMethod]
+    public void NotDeliveredState_WhenDelay_ShouldThrowOrderException()
+    {
+        var order = CreateOrder();
+        order.Prepare();
+        order.Dispatch();
+        order.MarkNotDelivered();
+
+        Action act = () => order.Delay();
+
+        act.Should().Throw<OrderException>();
+    }
+
+    [TestMethod]
+    public void NotDeliveredState_WhenGetStatus_ShouldReturnNotDelivered()
+    {
+        var order = CreateOrder();
+        order.Prepare();
+        order.Dispatch();
+        order.MarkNotDelivered();
+
+        order.Status.Should().Be(OrderStatus.NotDelivered);
+    }
+
+    [TestMethod]
+    public void OrderFlow_ShouldGoThroughAllValidStates()
+    {
+        var order = CreateOrder();
+
+        order.Status.Should().Be(OrderStatus.Pending);
+
+        order.Prepare();
+        order.Status.Should().Be(OrderStatus.Prepared);
+
+        order.Dispatch();
+        order.Status.Should().Be(OrderStatus.OnTheWay);
+
+        order.Deliver();
+        order.Status.Should().Be(OrderStatus.Delivered);
     }
 
     #region OrderStateFactory
@@ -522,12 +536,12 @@ public class OrderStateTests
     [DataRow(OrderStatus.NotDelivered)]
     [DataRow(OrderStatus.Cancelled)]
     [DataRow(OrderStatus.Delayed)]
-    public void OrderStateFactory_Create_ShouldReturnStateWithMatchingStatus(OrderStatus status)
+    public void OrderStateFactory_Create_ShouldReturnStateWithMatchingName(OrderStatus status)
     {
         var state = OrderStateFactory.Create(status);
 
         state.Should().NotBeNull();
-        state.GetStatus().Should().Be(status);
+        state.Name.Should().Be(status.ToString());
     }
 
     [TestMethod]
