@@ -20,11 +20,6 @@ Desde la raíz del repositorio (donde está el archivo docker-compose.yml):
 Esperar hasta que aparezca en los logs:
    dk-webapi | Now listening on: http://[::]:8080
 
-La aplicación ya está disponible en:
-   Aplicación web:          http://localhost:4200
-   API REST:                http://localhost:5080
-   Adminer (base de datos): http://localhost:8100
-
 
 PASO 3 — COPIAR LAS IMÁGENES DE DEMO
 --------------------------------------
@@ -78,6 +73,9 @@ Ingresar a http://localhost:4200 y loguearse con:
 
 Deberían verse los productos con sus fotos.
 
+La aplicación ya está disponible en:
+   Aplicación web: http://localhost:4200
+   API REST:       http://localhost:5080
 
 VOLVER A LEVANTAR SIN RECONSTRUIR
 -----------------------------------

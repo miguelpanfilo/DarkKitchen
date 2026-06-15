@@ -1,6 +1,6 @@
 <div class="promotion-card d-flex flex-column gap-3 p-3 rounded">
   <div class="d-flex justify-content-between align-items-center">
-    <span class="promotion-id">#{{ promotion.id }}</span>
+    <span *appHasRole="['Administrative', 'Preparer']" class="promotion-id">#{{ promotion.id }}</span>
     <span class="promotion-discount">{{ promotion.discountPercentage }}% OFF</span>
   </div>
 
@@ -12,7 +12,7 @@
   <div *ngIf="promotion.products.length > 0" class="promotion-products">
     <p class="products-label">Productos:</p>
     <ul class="products-list">
-      <li *ngFor="let product of promotion.products">{{ product.name }} | #{{ product.id }}</li>
+      <li *ngFor="let product of promotion.products">{{ product.name }}<ng-container *appHasRole="['Administrative', 'Preparer']"> | #{{ product.id }}</ng-container></li>
     </ul>
   </div>
   <p *ngIf="promotion.products.length === 0" class="no-products">Sin productos asociados</p>
