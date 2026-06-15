@@ -40,7 +40,8 @@ Abrir DBeaver y crear una nueva conexión :
    Contraseña:    Passw1rd
 
 Tildar "Trust server certificate" y "Show all schemas" en las opciones de conexión.
-Hacer click "Finalizar".
+Hacer click "Finalizar" 
+Click en el botón verde "Conectar".
 
 
 PASO 5 — CARGAR LOS DATOS DE PRUEBA
