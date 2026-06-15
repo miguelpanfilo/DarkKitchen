@@ -7,11 +7,9 @@ import { TopProduct, SalesReport } from '../../models/report.model';
 import { FilterButtonComponent } from '../../../../shared/components/filter-button/filter-button.component';
 import { ClearButtonComponent } from '../../../../shared/components/clear-button/clear-button.component';
 import { StatusMessagesComponent } from '../../../../shared/components/status-messages/status-messages.component';
-import { SafeImagePipe } from '../../../../shared/pipes/safe-image.pipe';
-
 @Component({
   selector: 'app-reports-page',
-  imports: [CommonModule, FormsModule, FilterButtonComponent, ClearButtonComponent, StatusMessagesComponent, SafeImagePipe],
+  imports: [CommonModule, FormsModule, FilterButtonComponent, ClearButtonComponent, StatusMessagesComponent],
   templateUrl: './reports-page.component.html',
   styleUrl: './reports-page.component.css'
 })

@@ -122,7 +122,7 @@
                 <ng-container *ngIf="product.photos?.length > 0; else noPhoto">
                   <img
                     *ngFor="let photo of product.photos"
-                    [src]="apiUrl + photo.path | safeImage | async"
+                    [src]="photo.path"
                     class="product-photo"
                     alt="Foto del producto {{ product.name }}" />
                 </ng-container>

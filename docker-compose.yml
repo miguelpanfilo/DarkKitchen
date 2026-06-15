@@ -1,15 +1,54 @@
 services:
   sqlserver:
-    image: mcr.microsoft.com/azure-sql-edge
+    image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: sqlserver
+    platform: linux/amd64
     environment:
       SA_PASSWORD: "Passw1rd"
       ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
     ports:
       - "1433:1433"
     volumes:
       - sql_data:/var/opt/mssql
     restart: unless-stopped
 
+  adminer:
+    image: adminer:latest
+    container_name: adminer
+    ports:
+      - "8100:8080"
+    depends_on:
+      - sqlserver
+
+  webapi:
+    build:
+      context: ./DarkKitchen
+      dockerfile: Dockerfile
+    container_name: dk-webapi
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=DarkKitchenDb;User ID=sa;Password=Passw1rd;TrustServerCertificate=true"
+      PhotoStorage__Path: "/app/photos"
+    ports:
+      - "5080:8080"
+    volumes:
+      - photos_data:/app/photos
+    depends_on:
+      - sqlserver
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./AppAngular
+      dockerfile: Dockerfile
+    container_name: dk-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - webapi
+
 volumes:
   sql_data:
+  photos_data:

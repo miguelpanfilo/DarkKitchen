@@ -37,7 +37,7 @@
         <td>
           <div class="report-photos">
             <a *ngFor="let img of product.images" [href]="img" target="_blank" class="report-photo-link">
-              <img [src]="img | safeImage | async" alt="{{ product.name }}" class="report-photo" />
+              <img [src]="img" alt="{{ product.name }}" class="report-photo" />
             </a>
             <span *ngIf="product.images.length === 0" class="no-photos">Sin fotos</span>
           </div>

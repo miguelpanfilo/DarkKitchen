@@ -4,11 +4,9 @@ import { Product } from '../../models/product.model';
 import { HasRoleDirective } from '../../../../shared/directives/has-role.directive';
 import { EditButtonComponent } from '../../../../shared/components/edit-button/edit-button.component';
 import { DeleteButtonComponent } from '../../../../shared/components/delete-button/delete-button.component';
-import { SafeImagePipe } from '../../../../shared/pipes/safe-image.pipe';
-
 @Component({
   selector: 'app-product-card',
-  imports: [CommonModule, HasRoleDirective, EditButtonComponent, DeleteButtonComponent, SafeImagePipe],
+  imports: [CommonModule, HasRoleDirective, EditButtonComponent, DeleteButtonComponent],
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.css'
 })
