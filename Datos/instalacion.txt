@@ -1,0 +1,113 @@
+GUÍA DE INSTALACIÓN — DARK KITCHEN
+====================================
+
+REQUISITO PREVIO
+----------------
+Tener instalado Docker Desktop en la máquina.
+
+
+PASOS PARA EJECUTAR LA APLICACIÓN
+----------------------------------
+1. Clonar el repositorio:
+   git clone https://github.com/IngSoft-DA2/255968_307265_329136.git
+
+2. Desde la raíz del repositorio (donde se encuentra el archivo docker-compose.yml), ejecutar:
+   docker compose up --build
+
+3. Esperar a que todos los contenedores estén listos.
+   La aplicación está lista cuando aparece en los logs:
+   dk-webapi | Now listening on: http://[::]:8080
+
+4. Abrir una nueva terminal en la raíz del repositorio y copiar las imágenes
+   de demo al contenedor:
+   docker cp DarkKitchen/demo-assets/fotos-productos/. dk-webapi:/app/photos/
+
+5. Cargar los datos de prueba en DBeaver (ver sección "CARGAR DATOS DE PRUEBA").
+
+
+URLS DE ACCESO
+--------------
+Aplicación web:          http://localhost:4200
+API REST:                http://localhost:5080
+Adminer (base de datos): http://localhost:8100
+
+
+ACCESO A LA BASE DE DATOS (Adminer)
+-------------------------------------
+Ingresar en http://localhost:8100 con las siguientes credenciales:
+
+  Sistema:       MS SQL (2022)
+  Servidor:      sqlserver
+  Usuario:       sa
+  Contraseña:    Passw1rd
+  Base de datos: DarkKitchenDb
+
+
+ACCESO A LA BASE DE DATOS DESDE DBEAVER
+-----------------------------------------
+Los contenedores deben estar corriendo antes de conectarse.
+
+Crear una nueva conexión en DBeaver con los siguientes datos:
+
+  Tipo:          SQL Server
+  Host:          localhost
+  Puerto:        1433
+  Base de datos: DarkKitchenDb
+  Usuario:       sa
+  Contraseña:    Passw1rd
+
+Asegurarse de tildar "Trust server certificate" en las opciones de conexión.
+
+
+CARGAR DATOS DE PRUEBA
+-----------------------
+1. Asegurarse de que los contenedores estén corriendo y de haber ejecutado
+   el docker cp del paso 4.
+
+2. Abrir DBeaver y crear una nueva conexión (ícono de enchufe con +):
+   - Tipo:          SQL Server (no Azure)
+   - Host:          localhost
+   - Puerto:        1433
+   - Base de datos: DarkKitchenDb
+   - Usuario:       sa
+   - Contraseña:    Passw1rd
+   Tildar "Trust server certificate" y verificar con "Probar conexión".
+
+3. Abrir el archivo Datos/db_with_data.sql (Archivo → Abrir archivo).
+
+4. Verificar que la base activa en el editor sea DarkKitchenDb.
+
+5. Ejecutar el script completo con Ctrl + Alt + X.
+
+Este script carga:
+- 8 usuarios (admin + clientes + preparadores + admin extra)
+- 10 productos con fotos
+- 6 promociones con sus productos asociados
+- 12 órdenes en distintos estados con sus items
+
+Todas las cuentas usan la contraseña: PasswordSeguraee3!
+
+El script limpia los datos existentes antes de insertar, por lo que
+puede ejecutarse las veces que sea necesario para volver al estado inicial.
+
+
+VOLVER A LEVANTAR LA APLICACIÓN
+--------------------------------
+Una vez que los contenedores fueron creados con --build, para volver a levantarlos
+sin reconstruir las imágenes alcanza con ejecutar:
+   docker compose up
+
+Esto es más rápido ya que reutiliza las imágenes ya construidas.
+Las imágenes copiadas con docker cp persisten en el volumen mientras
+no se elimine con docker compose down -v.
+
+
+DETENER LA APLICACIÓN
+----------------------
+Para detener los contenedores:
+   docker compose down
+
+Para detener y eliminar también los datos persistidos (base de datos y fotos):
+   docker compose down -v
+
+Si se elimina con -v, al volver a levantar hay que repetir los pasos 4 y 5.
