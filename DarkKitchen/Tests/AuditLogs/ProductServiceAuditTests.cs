@@ -1,0 +1,285 @@
+﻿using BusinessLogics;
+using BusinessLogicsAbstractions;
+using Contract;
+using DataAccessAbstractions;
+using Domain;
+using Domain;
+using Moq;
+
+namespace Tests.AuditLogs;
+
+[TestClass]
+public class ProductServiceAuditTests
+{
+    [TestMethod]
+    public void Create_ValidProduct_RegistersAuditLog()
+    {
+        var repoMock = new
+            Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new
+            Mock<IProductPhotoStorage>(MockBehavior.Strict);
+        var auditMock = new
+            Mock<IAuditLogService>(MockBehavior.Strict);
+
+        storageMock
+            .Setup(s => s.Save(It.IsAny<string>(), It.IsAny<string>()))
+            .Returns("uploads/photo1.jpg");
+
+        repoMock
+            .Setup(r => r.Create(It.IsAny<Product>()))
+            .Returns((Product p) => p);
+
+        auditMock
+            .Setup(a => a.Register(AuditedEntities.Product, It.IsAny<int>(),
+                AuditDescriptions.ProductCreated, It.IsAny<string>()));
+
+        var currentUserMock = new Mock<ICurrentUserService>(MockBehavior.Strict);
+        currentUserMock.Setup(s => s.GetEmail()).Returns("admin@dark.com");
+
+        var photoService = new ProductPhotoService(storageMock.Object);
+        var service = new ProductService(repoMock.Object, photoService, auditMock.Object, currentUserMock.Object);
+
+        service.Create(new ProductDTO(
+            "CODE12345",
+            "Producto valido 1",
+            "Descripcion valida con mas de veinte caracteres",
+            "Linea",
+            "Categoria",
+            100,
+            new List<PhotoDTO> { new PhotoDTO("photo", ".jpg", 1024, "dGVzdA==") }
+        ));
+
+        auditMock.Verify(a => a.Register(AuditedEntities.Product, It.IsAny<int>(),
+            AuditDescriptions.ProductCreated, It.IsAny<string>()));
+    }
+
+    [TestMethod]
+    public void Update_ValidProduct_RegistersAuditLog()
+    {
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new
+            Mock<IProductPhotoStorage>(MockBehavior.Strict);
+        var auditMock = new Mock<IAuditLogService>(MockBehavior.Strict);
+
+        var existingProduct = new ProductBuilder()
+            .WithCode("CODE12345")
+            .WithName("Producto valido 1")
+            .WithDescription("Descripcion valida con mas de veinte caracteres")
+            .WithCommercialLine("Linea")
+            .WithCategory("Categoria")
+            .WithPrice(100)
+            .WithPhotos(new List<ProductPhoto>
+            {
+                new
+                    ProductPhoto("photo.jpg")
+            })
+            .Build();
+
+        repoMock
+            .Setup(r => r.GetById(7))
+            .Returns(existingProduct);
+
+        repoMock
+            .Setup(r => r.Update(It.IsAny<Product>()))
+            .Returns((Product p) => p);
+
+        auditMock
+            .Setup(a => a.Register(AuditedEntities.Product, It.IsAny<int>(),
+                AuditDescriptions.ProductModified, It.IsAny<string>()));
+
+        var currentUserMock = new Mock<ICurrentUserService>(MockBehavior.Strict);
+        currentUserMock.Setup(s => s.GetEmail()).Returns("admin@dark.com");
+        var photoService = new ProductPhotoService(storageMock.Object);
+        var service = new ProductService(repoMock.Object, photoService,
+            auditMock.Object, currentUserMock.Object);
+
+        service.Update(7, new ProductPatchDto { Name = "Nuevo nombre valido" });
+        auditMock.Verify(a => a.Register(AuditedEntities.Product, It.IsAny<int>(),
+            AuditDescriptions.ProductModified, It.IsAny<string>()));
+    }
+
+    [TestMethod]
+    public void Delete_ValidProduct_RegistersAuditLog()
+    {
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new
+            Mock<IProductPhotoStorage>(MockBehavior.Strict);
+        var auditMock = new Mock<IAuditLogService>(MockBehavior.Strict);
+
+        var existingProduct = new ProductBuilder()
+            .WithCode("CODE12345")
+            .WithName("Producto valido 1")
+            .WithDescription("Descripcion valida con mas de veinte caracteres")
+            .WithCommercialLine("Linea")
+            .WithCategory("Categoria")
+            .WithPrice(100)
+            .WithPhotos(new List<ProductPhoto>
+            {
+                new
+                    ProductPhoto("photo.jpg")
+            })
+            .Build();
+
+        repoMock
+            .Setup(r => r.GetById(5))
+            .Returns(existingProduct);
+
+        repoMock
+            .Setup(r => r.Update(It.IsAny<Product>()))
+            .Returns((Product p) => p);
+
+        auditMock
+            .Setup(a => a.Register(AuditedEntities.Product, It.IsAny<int>(),
+                AuditDescriptions.ProductDeleted, It.IsAny<string>()));
+        var currentUserMock = new Mock<ICurrentUserService>(MockBehavior.Strict);
+        currentUserMock.Setup(s => s.GetEmail()).Returns("admin@dark.com");
+        var photoService = new ProductPhotoService(storageMock.Object);
+        var service = new ProductService(repoMock.Object, photoService,
+            auditMock.Object, currentUserMock.Object);
+
+        service.Delete(5);
+
+        auditMock.Verify(a => a.Register(AuditedEntities.Product, It.IsAny<int>(),
+            AuditDescriptions.ProductDeleted, It.IsAny<string>()));
+    }
+
+    [TestMethod]
+    public void Create_ValidProduct_GetsResponsibleUserFromCurrentUserService()
+    {
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new Mock<IProductPhotoStorage>(MockBehavior.Strict);
+        var auditMock = new Mock<IAuditLogService>(MockBehavior.Strict);
+        var currentUserMock = new Mock<ICurrentUserService>(MockBehavior.Strict);
+
+        currentUserMock
+            .Setup(s => s.GetEmail())
+            .Returns("admin@dark.com");
+
+        storageMock
+            .Setup(s => s.Save(It.IsAny<string>(), It.IsAny<string>()))
+            .Returns("uploads/photo1.jpg");
+
+        repoMock
+            .Setup(r => r.Create(It.IsAny<Product>()))
+            .Returns((Product p) => p);
+
+        auditMock
+            .Setup(a => a.Register(AuditedEntities.Product,
+                It.IsAny<int>(),
+                AuditDescriptions.ProductCreated, "admin@dark.com"));
+
+        var photoService = new ProductPhotoService(storageMock.Object);
+        var service = new ProductService(repoMock.Object, photoService,
+            auditMock.Object, currentUserMock.Object);
+
+        service.Create(new ProductDTO(
+            "CODE12345",
+            "Producto valido 1",
+            "Descripcion valida con mas de veinte caracteres",
+            "Linea",
+            "Categoria",
+            100,
+            new List<PhotoDTO>
+            {
+                new PhotoDTO("photo", ".jpg", 1024,
+                    "dGVzdA==")
+            }
+        ));
+
+        currentUserMock.Verify(s => s.GetEmail(), Times.Once);
+        auditMock.Verify(a => a.Register(AuditedEntities.Product,
+                It.IsAny<int>(),
+                AuditDescriptions.ProductCreated, "admin@dark.com"),
+            Times.Once);
+    }
+
+    [TestMethod]
+    public void Update_ValidProduct_GetsResponsibleUserFromCurrentUserService()
+    {
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new
+            Mock<IProductPhotoStorage>(MockBehavior.Strict);
+        var auditMock = new Mock<IAuditLogService>(MockBehavior.Strict);
+        var currentUserMock = new
+            Mock<ICurrentUserService>(MockBehavior.Strict);
+
+        currentUserMock
+            .Setup(s => s.GetEmail())
+            .Returns("admin@dark.com");
+
+        var existingProduct = new ProductBuilder()
+            .WithCode("CODE12345")
+            .WithName("Producto valido 1")
+            .WithDescription("Descripcion valida con mas de veinte caracteres")
+            .WithCommercialLine("Linea")
+            .WithCategory("Categoria")
+            .WithPrice(100)
+            .WithPhotos(new List<ProductPhoto> { new ProductPhoto("photo.jpg") })
+            .Build();
+
+        repoMock.Setup(r => r.GetById(7)).Returns(existingProduct);
+        repoMock.Setup(r =>
+            r.Update(It.IsAny<Product>())).Returns((Product p) => p);
+        auditMock.Setup(a => a.Register(AuditedEntities.Product,
+            It.IsAny<int>(),
+            AuditDescriptions.ProductModified, "admin@dark.com"));
+
+        var photoService = new ProductPhotoService(storageMock.Object);
+        var service = new ProductService(repoMock.Object, photoService,
+            auditMock.Object, currentUserMock.Object);
+
+        service.Update(7, new ProductPatchDto { Name = "Nuevo nombre valido" });
+
+        currentUserMock.Verify(s => s.GetEmail(), Times.Once);
+        auditMock.Verify(a => a.Register(AuditedEntities.Product,
+            It.IsAny<int>(), AuditDescriptions.ProductModified, "admin@dark.com"), Times.Once);
+    }
+
+    [TestMethod]
+    public void Delete_ValidProduct_GetsResponsibleUserFromCurrentUserService()
+    {
+        var repoMock = new Mock<IProductRepository>(MockBehavior.Strict);
+        var storageMock = new
+            Mock<IProductPhotoStorage>(MockBehavior.Strict);
+        var auditMock = new Mock<IAuditLogService>(MockBehavior.Strict);
+        var currentUserMock = new
+            Mock<ICurrentUserService>(MockBehavior.Strict);
+
+        currentUserMock
+            .Setup(s => s.GetEmail())
+            .Returns("admin@dark.com");
+
+        var existingProduct = new ProductBuilder()
+            .WithCode("CODE12345")
+            .WithName("Producto valido 1")
+            .WithDescription("Descripcion valida con mas de veinte caracteres")
+            .WithCommercialLine("Linea")
+            .WithCategory("Categoria")
+            .WithPrice(100)
+            .WithPhotos(new List<ProductPhoto>
+            {
+                new
+                ProductPhoto("photo.jpg")
+            })
+            .Build();
+
+        repoMock.Setup(r => r.GetById(5)).Returns(existingProduct);
+        repoMock.Setup(r =>
+            r.Update(It.IsAny<Product>())).Returns((Product p) => p);
+        auditMock.Setup(a => a.Register(AuditedEntities.Product,
+            It.IsAny<int>(),
+            AuditDescriptions.ProductDeleted, "admin@dark.com"));
+
+        var photoService = new ProductPhotoService(storageMock.Object);
+        var service = new ProductService(repoMock.Object, photoService,
+            auditMock.Object, currentUserMock.Object);
+
+        service.Delete(5);
+
+        currentUserMock.Verify(s => s.GetEmail(), Times.Once);
+        auditMock.Verify(a => a.Register(AuditedEntities.Product,
+                It.IsAny<int>(),
+                AuditDescriptions.ProductDeleted, "admin@dark.com"),
+            Times.Once);
+    }
+}

@@ -1,7 +1,6 @@
-using Contratos.Promotions;
-using Contratos.Users;
+﻿using BusinessLogicsAbstractions;
+using Contract;
 using DarkKitchen.Filters;
-using LogicaDeNegocioAbstracciones.Promotions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DarkKitchen.Controllers;
@@ -50,6 +49,14 @@ public class PromotionsController(IPromotionService promotionService) : Controll
     {
         var response = _promotionService.DisassociateProduct(promotionId, productId);
         return Ok(response);
+    }
+
+    [HttpGet("{id:int}")]
+    [RoleAuthorization(UserRolesDto.Administrative, UserRolesDto.Client)]
+    public IActionResult GetById([FromRoute] int id)
+    {
+        var result = _promotionService.GetById(id);
+        return Ok(result);
     }
 
     [HttpGet]

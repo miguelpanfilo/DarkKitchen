@@ -1,0 +1,140 @@
+<div class="product-importers-container">
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="mb-0">Importar productos</h1>
+    <button type="button" class="btn btn-outline-dark btn-sm" (click)="onBack()">← Volver</button>
+  </div>
+
+  <ng-container *ngIf="importers$ | async as importers">
+    <section class="import-card">
+      <h2>Formatos disponibles</h2>
+
+      <div *ngIf="importers.length > 0; else empty" class="importers-grid">
+        <div class="importer-item" *ngFor="let importer of importers">
+          <div class="importer-name">
+            {{ importer.name }}
+          </div>
+
+          <div class="importer-id">
+            {{ importer.id }}
+          </div>
+        </div>
+      </div>
+
+      <ng-template #empty>
+        <p class="empty">No hay importadores disponibles actualmente.</p>
+      </ng-template>
+    </section>
+
+    <section class="import-card">
+      <h2>Archivo a importar</h2>
+
+      <div class="import-form">
+        <div class="form-group">
+          <label for="selectedImporterName">
+            Importador
+          </label>
+
+          <select
+            id="selectedImporterName"
+            name="selectedImporterName"
+            [(ngModel)]="selectedImporterName"
+            (ngModelChange)="onImporterChange()">
+            <option value="">-- Seleccioná un importador --</option>
+
+            <option
+              *ngFor="let importer of importers"
+              [value]="importer.name">
+              {{ importer.name }}
+            </option>
+          </select>
+        </div>
+
+        <div
+          class="drop-zone"
+          (dragover)="onDragOver($event)"
+          (drop)="onFileDrop($event)">
+
+          <p>Arrastrá un archivo acá</p>
+
+          <span>o</span>
+
+          <div class="form-group file-group">
+            <label for="fileToImport" class="btn-file">
+              Seleccionar archivo
+            </label>
+            <span class="file-name">{{ selectedFile ? selectedFile.name : 'Ningún archivo seleccionado' }}</span>
+            <input
+              id="fileToImport"
+              name="fileToImport"
+              #fileInput
+              type="file"
+              class="hidden-input"
+              (change)="onFileChange($event)" />
+          </div>
+
+          <p *ngIf="loading" class="loading-text">
+            Importando...
+          </p>
+        </div>
+
+        <div class="actions">
+          <app-submit-button
+            label="Importar"
+            [disabled]="loading || !selectedImporterName || !selectedFile"
+            (click)="import(fileInput)" />
+
+          <app-cancel-button
+            (cancelled)="onCancel(fileInput)" />
+        </div>
+
+        <app-status-messages
+          [errorMessage]="errorMessage"
+          [successMessage]="successMessage"
+          [isLoading]="loading"
+          loadingText="Importando productos..." />
+      </div>
+    </section>
+
+    <section *ngIf="importedProducts.length > 0" class="import-section">
+      <h2>Productos importados</h2>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>Línea comercial</th>
+              <th>Categoría</th>
+              <th>Precio</th>
+              <th>Fotos</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let product of importedProducts">
+              <td>{{ product.code }}</td>
+              <td>{{ product.name }}</td>
+              <td>{{ product.commercialLine }}</td>
+              <td>{{ product.category }}</td>
+              <td>{{ product.price }}</td>
+              <td>
+                <ng-container *ngIf="product.photos?.length > 0; else noPhoto">
+                  <img
+                    *ngFor="let photo of product.photos"
+                    [src]="photo.path"
+                    class="product-photo"
+                    alt="Foto del producto {{ product.name }}" />
+                </ng-container>
+
+                <ng-template #noPhoto>
+                  <span class="muted">Sin fotos</span>
+                </ng-template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </ng-container>
+</div>

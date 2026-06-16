@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\AlmacenamientoAbstracciones\DataAccessAbstractions\DataAccessAbstractions.csproj" />
+        <ProjectReference Include="..\..\Almacenamiento\DataAccess\DataAccess.csproj" />
+        <ProjectReference Include="..\..\Contratos\Contract\Contract.csproj" />
+        <ProjectReference Include="..\..\Dominio\Domain\Domain.csproj" />
+        <ProjectReference Include="..\..\LogicaDeNegocioAbstracciones\BusinessLogicsAbstractions\BusinessLogicsAbstractions.csproj" />
+        <ProjectReference Include="..\..\Mapeo\Mappers\Mappers.csproj" />
+    </ItemGroup>
+
+   
+
+</Project>

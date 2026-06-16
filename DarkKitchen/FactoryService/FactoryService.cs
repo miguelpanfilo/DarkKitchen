@@ -1,19 +1,8 @@
-using Almacenamiento;
-using Almacenamiento.Repositories;
-using AlmacenamientoAbstracciones;
-using LogicaDeNegocio.Initialization;
-using LogicaDeNegocio.Orders;
-using LogicaDeNegocio.Products;
-using LogicaDeNegocio.Promotions;
-using LogicaDeNegocio.Reports;
-using LogicaDeNegocio.Sessions;
-using LogicaDeNegocio.Shared;
-using LogicaDeNegocio.Users;
-using LogicaDeNegocioAbstracciones.Orders;
-using LogicaDeNegocioAbstracciones.Products;
-using LogicaDeNegocioAbstracciones.Promotions;
-using LogicaDeNegocioAbstracciones.Reports;
-using LogicaDeNegocioAbstracciones.Users;
+﻿using BusinessLogics;
+using BusinessLogicsAbstractions;
+using DataAccess;
+using DataAccess.Repositories;
+using DataAccessAbstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,11 +20,22 @@ public static class ServiceCollectionExtensions
         services.AddOrderServices();
         services.AddSharedServices();
         services.AddInitializationServices();
+        services.AddAuditServices();
+        services.AddImportServices();
 
         return services;
     }
 
-    private static IServiceCollection AddPersistence(
+    private static IServiceCollection AddAuditServices(this IServiceCollection
+        services)
+    {
+        services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+        services.AddScoped<IAuditLogService, AuditLogService>();
+
+        return services;
+    }
+
+   private static IServiceCollection AddPersistence(
         this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -47,8 +47,14 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IPromotionRepository, PromotionRepository>();
+        services.AddScoped<IShippingTypeRepository, ShippingTypeRepository>();
 
-        services.AddScoped<IProductPhotoStorage>(_ => new ProductPhotoStorage("C:\\temp\\photos"));
+        services.AddScoped<IProductPhotoStorage>(provider =>
+        {
+            var config = provider.GetRequiredService<IConfiguration>();
+            var path = config["PhotoStorage:Path"]!;
+            return new ProductPhotoStorage(path);
+        });
 
         return services;
     }
@@ -76,7 +82,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IReportService, ReportService>();
 
         services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<IProductCreatorService, ProductService>();
         services.AddScoped<IPromotionService, PromotionService>();
+        services.AddScoped<IShippingTypeService, ShippingTypeService>();
         services.AddScoped<ProductPhotoService>();
 
         return services;
@@ -93,6 +101,42 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddInitializationServices(this IServiceCollection services)
     {
         services.AddScoped<IInitializationService, InitializationService>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddImportServices(this IServiceCollection services)
+    {
+        services.AddSingleton<IPluginAssemblyLoader, PluginAssemblyLoader>();
+
+        services.AddSingleton<IProductImporterProvider>(provider =>
+        {
+            var pluginsPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "plugins"));
+
+            var importerProvider = new ProductImporterProvider(
+                pluginsPath,
+                provider.GetRequiredService<IPluginAssemblyLoader>());
+
+            importerProvider.Reload();
+
+            return importerProvider;
+        });
+
+        services.AddScoped<IProductImporterQueryService, ProductImporterQueryService>();
+        services.AddScoped<IProductImportService, ProductImportService>();
+        services.AddScoped<IImportedProductCreatorService, ImportedProductCreatorService>();
+        services.AddScoped<IImportedProductPhotoConverter, ImportedProductPhotoConverter>();
+
+        services.AddScoped<IProductImportersChangeService, ProductImportersChangeService>();
+
+        services.AddSingleton<ProductImportersWatcher>(provider =>
+        {
+            var pluginsPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "plugins"));
+
+            return new ProductImportersWatcher(
+                provider.GetRequiredService<IProductImportersChangeNotifier>(),
+                pluginsPath);
+        });
 
         return services;
     }

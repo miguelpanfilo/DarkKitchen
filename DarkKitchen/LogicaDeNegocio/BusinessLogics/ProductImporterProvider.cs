@@ -1,0 +1,74 @@
+﻿using BusinessLogicsAbstractions;
+
+namespace BusinessLogics;
+
+public class ProductImporterProvider(string pluginsPath,
+    IPluginAssemblyLoader assemblyLoader) : IProductImporterProvider
+{
+    private List<IProductImporter> _importers = [];
+
+    public List<IProductImporter> GetImporters()
+    {
+        Reload();
+        return _importers;
+    }
+
+    public void Reload()
+    {
+        Directory.CreateDirectory(pluginsPath);
+
+        ClearShadowFolder();
+
+        _importers = Directory
+            .GetFiles(pluginsPath, "*.dll")
+            .SelectMany(LoadImportersFromAssembly)
+            .ToList();
+    }
+
+    private IEnumerable<IProductImporter> LoadImportersFromAssembly(string dllPath)
+    {
+        try
+        {
+            var assembly = assemblyLoader.Load(dllPath);
+
+            return assembly
+                .GetTypes()
+                .Where(type =>
+                    typeof(IProductImporter).IsAssignableFrom(type)
+                    && !type.IsInterface
+                    && !type.IsAbstract)
+                .Select(type => (IProductImporter)Activator.CreateInstance(type)!);
+        }
+        catch (Exception)
+        {
+            return [];
+        }
+    }
+
+    private void ClearShadowFolder()
+    {
+        var shadowFolder = GetShadowFolderPath();
+
+        if(!Directory.Exists(shadowFolder))
+        {
+            return;
+        }
+
+        try
+        {
+            Directory.Delete(shadowFolder, recursive: true);
+        }
+        catch(Exception ex) when (
+            ex is IOException ||
+            ex is UnauthorizedAccessException)
+        {
+        }
+    }
+
+    private string GetShadowFolderPath()
+    {
+        return Path.Combine(
+            pluginsPath,
+            "plugins_shadow");
+    }
+}

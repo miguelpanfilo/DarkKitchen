@@ -1,7 +1,7 @@
-using System.Security.Claims;
-using Contratos.Users;
+﻿using System.Security.Claims;
+using BusinessLogicsAbstractions;
+using Contract;
 using DarkKitchen.Filters;
-using LogicaDeNegocioAbstracciones.Users;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DarkKitchen.Controllers;
@@ -14,7 +14,7 @@ public class UsersController(IUserService userService) : ControllerBase
 
     [RoleAuthorization(UserRolesDto.Administrative)]
     [HttpPost]
-    public IActionResult CreateInternalUser([FromBody] SingUpInternUserRequestDTO request)
+    public IActionResult CreateInternalUser([FromBody] SignUpInternUserRequestDTO request)
     {
         var loggedUserId = GetLoggedUserId();
         if(loggedUserId == null)
@@ -65,6 +65,20 @@ public class UsersController(IUserService userService) : ControllerBase
         }
 
         var response = _userService.FindUserOnSystem(loggedUserId.Value, request);
+        return Ok(response);
+    }
+
+    [RoleAuthorization(UserRolesDto.Administrative)]
+    [HttpGet("{id}")]
+    public IActionResult GetUserById([FromRoute] int id)
+    {
+        var loggedUserId = GetLoggedUserId();
+        if (loggedUserId == null)
+        {
+            return Unauthorized();
+        }
+
+        var response = _userService.GetByIdIncludingInactive(id);
         return Ok(response);
     }
 

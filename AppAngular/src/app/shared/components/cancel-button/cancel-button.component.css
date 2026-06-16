@@ -1,0 +1,9 @@
+.btn-danger {
+  background-color: #c0392b;
+  border-color: #c0392b;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background-color: #962d22;
+  border-color: #962d22;
+}

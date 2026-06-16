@@ -1,9 +1,9 @@
-# Claude Code
-.claude/
-
 # Build Folders (you can keep bin if you'd like, to store dlls and pdbs)
 [Bb]in/
 [Oo]bj/
+
+# Plugin DLLs loaded at runtime
+plugins/
 
 .env*
 

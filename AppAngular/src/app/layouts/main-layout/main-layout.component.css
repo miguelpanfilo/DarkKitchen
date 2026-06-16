@@ -1,0 +1,32 @@
+.nav-email { color: #aaa; }
+
+.navbar-nav .nav-link {
+  border-radius: 6px;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  border-color: rgba(255,255,255,0.3);
+  background-color: rgba(255,255,255,0.08);
+}
+
+@media (max-width: 767px) {
+  nav.navbar {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding-bottom: 0.75rem !important;
+  }
+
+  .navbar-nav {
+    margin: 0 !important;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .nav-user {
+    justify-content: center;
+  }
+}

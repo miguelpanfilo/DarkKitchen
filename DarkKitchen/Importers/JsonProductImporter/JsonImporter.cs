@@ -1,0 +1,27 @@
+using System.Text.Json;
+using BusinessLogicsAbstractions;
+using Contract;
+
+namespace JsonProductImporter;
+
+public class JsonImporter : IProductImporter
+{
+    public string Id => "json";
+    public string Name => "JSON";
+
+    public List<ImportedProductDto> Import(Stream fileStream)
+    {
+        try
+        {
+            using var reader = new StreamReader(fileStream);
+            var json = reader.ReadToEnd();
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var products = JsonSerializer.Deserialize<List<ImportedProductDto>>(json, options);
+            return products ?? [];
+        }
+        catch (JsonException)
+        {
+            throw new ValidationException("El archivo JSON tiene un formato inválido");
+        }
+    }
+}

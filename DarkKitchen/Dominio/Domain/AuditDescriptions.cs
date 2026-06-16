@@ -1,0 +1,13 @@
+namespace Domain;
+
+public static class AuditDescriptions
+{
+    public const string ProductCreated = "Alta de producto";
+    public const string PromotionCreated = "Alta de promoción";
+    public const string ProductModified = "Modificación de producto";
+    public const string ProductDeleted = "Eliminación de producto";
+    public const string PromotionModified = "Modificación de promoción";
+    public const string PromotionDeleted = "Eliminación de promoción";
+    public const string PromotionProductAssociated = "Asociación de producto a promoción";
+    public const string PromotionProductDisassociated = "Desasociación de producto de promoción";
+}

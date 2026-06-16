@@ -1,0 +1,78 @@
+<div class="detail-container">
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="mb-0">Detalle de Orden</h1>
+    <button class="btn btn-outline-dark btn-sm" (click)="onBack()">← Volver</button>
+  </div>
+
+  <app-status-messages [errorMessage]="errorMessage" [isLoading]="isLoading" loadingText="Cargando orden..." />
+
+  <div *ngIf="order && !isLoading">
+    <div class="section-card">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2 class="mb-0" style="font-size:1.2rem; color:#1a1a2e;">{{ order.orderNumber.slice(0, 10) }}</h2>
+        <span class="status-badge status-{{ order.status.toLowerCase() }}">{{ getStatusLabel(order.status) }}</span>
+      </div>
+      <p class="meta">Creada: {{ order.createdAt | date:'dd/MM/yyyy HH:mm' }} &nbsp;|&nbsp; Actualizada: {{ order.statusUpdatedAt | date:'dd/MM/yyyy HH:mm' }}</p>
+    </div>
+
+    <div class="row g-3 mb-3">
+      <div class="col-md-6">
+        <div class="section-card mb-0">
+          <h3>Cliente</h3>
+          <p>{{ order.client.name }} {{ order.client.lastName }}</p>
+          <p class="text-muted-custom">{{ order.client.email }}</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="section-card mb-0">
+          <h3>Dirección de entrega</h3>
+          <p>{{ order.address.street }} {{ order.address.doorNumber }}<span *ngIf="order.address.apartment">, Apto {{ order.address.apartment }}</span></p>
+          <p class="text-muted-custom">Envío: {{ getDeliveryLabel(order.deliveryType) }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h3>Items</h3>
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>Producto</th><th>Cantidad</th><th>Precio unit.</th><th>Descuento</th><th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of order.items">
+            <td>{{ item.productName }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>${{ item.unitPrice | number:'1.2-2' }}</td>
+            <td>{{ item.discountApplied * 100 | number:'1.0-0' }}%</td>
+            <td>${{ item.lineTotal | number:'1.2-2' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-card totals">
+      <div class="total-row"><span>Subtotal</span><span>${{ order.subtotal | number:'1.2-2' }}</span></div>
+      <div class="total-row"><span>Costo de envío</span><span>${{ order.shippingCost | number:'1.2-2' }}</span></div>
+      <div class="total-row"><span>IVA ({{ order.ivaPercentage }}%)</span><span>${{ order.iva | number:'1.2-2' }}</span></div>
+      <div class="total-row total-final"><span>Total</span><span>${{ order.total | number:'1.2-2' }}</span></div>
+    </div>
+
+    <div class="section-card" *ngIf="canPrepare() || canDelay() || canCancel() || canDispatch() || canDeliver() || canMarkNotDelivered()">
+      <h3>Acciones</h3>
+      <div class="d-flex flex-wrap gap-2">
+        <button *ngIf="canPrepare()" class="btn btn-primary" (click)="onPrepare()" [disabled]="actionLoading">Marcar como Preparado</button>
+        <button *ngIf="canDelay()" class="btn btn-warning" (click)="onDelay()" [disabled]="actionLoading">Marcar como Demorado</button>
+        <button *ngIf="canDispatch()" class="btn btn-primary" (click)="onDispatch()" [disabled]="actionLoading">Despachar</button>
+        <button *ngIf="canDeliver()" class="btn btn-success" (click)="onDeliver()" [disabled]="actionLoading">Marcar como Entregado</button>
+        <button *ngIf="canMarkNotDelivered()" class="btn btn-danger" (click)="onMarkNotDelivered()" [disabled]="actionLoading">No Entregado</button>
+        <button *ngIf="canCancel()" class="btn btn-danger" (click)="onCancel()" [disabled]="actionLoading">Cancelar Orden</button>
+      </div>
+      <p *ngIf="actionLoading" class="action-loading">Procesando...</p>
+    </div>
+  </div>
+
+  <app-confirm-dialog [message]="confirmMessage" [visible]="showConfirmDialog"
+    (confirmed)="onConfirmDialog()" (cancelled)="onCancelDialog()" />
+</div>

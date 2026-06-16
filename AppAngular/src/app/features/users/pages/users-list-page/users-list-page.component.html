@@ -1,0 +1,31 @@
+<div class="users-container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Usuarios</h1>
+    <app-add-button label="Agregar usuario" (clicked)="onAdd()" />
+  </div>
+
+  <div class="filters d-flex gap-3 align-items-end flex-wrap">
+    <div class="form-group">
+      <label for="filterName">Nombre</label>
+      <input id="filterName" type="text" [(ngModel)]="filterName" name="filterName" placeholder="Buscar por nombre" />
+    </div>
+    <div class="form-group">
+      <label for="filterLastName">Apellido</label>
+      <input id="filterLastName" type="text" [(ngModel)]="filterLastName" name="filterLastName" placeholder="Buscar por apellido" />
+    </div>
+    <app-filter-button (filtered)="onFiltrar()" />
+    <app-clear-button (cleared)="onLimpiar()" />
+  </div>
+
+  <app-status-messages [errorMessage]="errorMessage" [successMessage]="successMessage"
+    [isLoading]="isLoading" loadingText="Cargando usuarios..." />
+  <p *ngIf="!isLoading && users.length === 0 && !errorMessage" class="empty">No hay usuarios para mostrar.</p>
+  <div *ngIf="users.length > 0" class="d-flex flex-column gap-3">
+    <app-user-card *ngFor="let user of users" [user]="user" (edit)="onEdit($event)" (delete)="onDelete($event)"
+      (changePassword)="onChangePassword($event)" />
+  </div>
+
+  <app-confirm-dialog
+    [message]="'¿Estás seguro que querés eliminar al usuario ' + userToDelete?.name + ' ' + userToDelete?.lastName + '?'"
+    [visible]="showConfirmDialog" (confirmed)="onConfirmDelete()" (cancelled)="onCancelDelete()" />
+</div>

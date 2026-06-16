@@ -1,0 +1,63 @@
+using BusinessLogicsAbstractions;
+using Contract;
+using DarkKitchen.Controllers;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+
+namespace Tests.WebApi;
+
+[TestClass]
+public class ReportsControllerTest
+{
+    [TestMethod]
+    public void GivenValidDates_WhenGettingTopProducts_ThenReturnsOk()
+    {
+        var reportServiceMock = new Mock<IReportService>(MockBehavior.Strict);
+
+        var dateFrom = new DateTime(2026, 1, 1);
+        var dateTo = new DateTime(2026, 1, 31);
+        var expectedResult = new List<TopProductReportItemDto>();
+
+        reportServiceMock
+            .Setup(s => s.GetTopProducts(dateFrom, dateTo))
+            .Returns(expectedResult);
+
+        var controller = new ReportsController(reportServiceMock.Object);
+
+        var result = controller.GetTopProducts(dateFrom, dateTo);
+
+        var okResult = result as OkObjectResult;
+
+        Assert.IsNotNull(okResult);
+        Assert.AreEqual(200, okResult.StatusCode);
+        Assert.AreSame(expectedResult, okResult.Value);
+
+        reportServiceMock.VerifyAll();
+    }
+
+    [TestMethod]
+    public void GivenValidDates_WhenGettingSalesReport_ThenReturnsOk()
+    {
+        var reportServiceMock = new Mock<IReportService>(MockBehavior.Strict);
+
+        var dateFrom = new DateTime(2026, 1, 1);
+        var dateTo = new DateTime(2026, 1, 31);
+        var expectedResult = new SalesReportDto();
+
+        reportServiceMock
+            .Setup(s => s.GetSalesReport(dateFrom, dateTo))
+            .Returns(expectedResult);
+
+        var controller = new ReportsController(reportServiceMock.Object);
+
+        var result = controller.GetSalesReport(dateFrom, dateTo);
+
+        var okResult = result as OkObjectResult;
+
+        Assert.IsNotNull(okResult);
+        Assert.AreEqual(200, okResult.StatusCode);
+        Assert.AreSame(expectedResult, okResult.Value);
+
+        reportServiceMock.VerifyAll();
+    }
+}

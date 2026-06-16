@@ -1,0 +1,154 @@
+.product-importers-container {
+  padding: 2rem;
+}
+
+.helper-text {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.import-card,
+.import-section {
+  background: #f5f5f0;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin-bottom: 2rem;
+}
+
+.import-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 450px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.form-group select {
+  width: 100%;
+  padding: 0.5rem;
+}
+
+.importers-grid {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.importer-item {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem;
+  min-width: 150px;
+}
+
+.importer-name {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.importer-id,
+.muted {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.drop-zone {
+  border: 2px dashed #aaa;
+  background: #fafafa;
+
+  min-height: 180px;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
+  gap: .5rem;
+
+  padding: 2rem;
+
+  text-align: center;
+
+  border-radius: 8px;
+}
+
+.loading-text {
+  color: gray;
+}
+
+.success {
+  color: green;
+}
+
+.error {
+  color: red;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead tr {
+  background: #f0f0f0;
+}
+
+th,
+td {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+}
+
+.product-photo {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  margin-right: 4px;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.hidden-input {
+  display: none;
+}
+
+.btn-file {
+  cursor: pointer;
+  background: #343a40;
+  color: white;
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.btn-file:hover {
+  background: #23272b;
+}
+
+.file-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.file-name {
+  font-size: 0.85rem;
+  color: #3d3d3d;
+}

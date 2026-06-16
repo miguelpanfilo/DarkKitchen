@@ -1,0 +1,85 @@
+.order-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+}
+
+.order-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.13);
+  transform: translateY(-2px);
+}
+
+
+.order-number { font-weight: 700; color: #666; }
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.status-pending      { background: #fff3cd; color: #856404; }
+.status-prepared     { background: #cfe2ff; color: #084298; }
+.status-ontheway     { background: #ffe5d0; color: #7c3c00; }
+.status-delivered    { background: #d1e7dd; color: #0a3622; }
+.status-notdelivered { background: #f8d7da; color: #842029; }
+.status-cancelled    { background: #e2e3e5; color: #41464b; }
+.status-delayed      { background: #e8d5f5; color: #5a2d82; }
+
+.delivery-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #555;
+  background: #f0f0f5;
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin-top: 6px;
+}
+
+.order-client {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin-bottom: 8px;
+}
+
+.order-total { font-size: 1.25rem; font-weight: 800; color: #1a1a2e; }
+
+.order-products {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px 0;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 8px;
+}
+
+.product-item {
+  font-size: 0.8rem;
+  color: #444;
+  padding: 1px 0;
+}
+
+.item-qty {
+  color: #555;
+  font-size: 0.75rem;
+}
+
+.product-item-more {
+  font-size: 0.78rem;
+  color: #555;
+  font-style: italic;
+  padding: 1px 0;
+}
+
+.order-footer {
+  border-top: 1px solid #f0f0f0;
+  padding-top: 10px;
+}
+
+.order-date { font-size: 0.82rem; color: #666; }
+.view-link  { font-size: 0.85rem; color: #b71c3c; font-weight: 600; }

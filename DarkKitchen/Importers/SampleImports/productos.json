@@ -1,0 +1,38 @@
+[
+  {
+    "code": "BURG001",
+    "name": "Hamburguesa Clásica",
+    "description": "Hamburguesa con queso y lechuga",
+    "commercialLine": "Fast Food",
+    "category": "Comidas",
+    "price": 350.00,
+    "photoPaths": ["demo-assets/fotos-productos/panqueue2.jpg"]
+  },
+  {
+    "code": "PIZZ001",
+    "name": "Pizza Mozzarella",
+    "description": "Pizza con salsa y queso",
+    "commercialLine": "Italiana",
+    "category": "Comidas",
+    "price": 520.00,
+    "photoPaths": ["demo-assets/fotos-productos/cafe.jpg"]
+  },
+  {
+    "code": "BURG003",
+    "name": "Hamburguesa Doble",
+    "description": "Doble medallón con cheddar",
+    "commercialLine": "Fast Food",
+    "category": "Comidas",
+    "price": 490.00,
+    "photoPaths": ["demo-assets/fotos-productos/burga2.jpg"]
+  },
+  {
+    "code": "PANQ001",
+    "name": "Panqueque con Dulce",
+    "description": "Panqueque relleno de dulce de leche",
+    "commercialLine": "Postres",
+    "category": "Postres",
+    "price": 180.00,
+    "photoPaths": ["demo-assets/fotos-productos/panqueque.jpg"]
+  }
+]

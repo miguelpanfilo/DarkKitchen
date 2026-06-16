@@ -1,0 +1,45 @@
+<div class="d-flex justify-content-center pt-4">
+  <app-form-card>
+    <h1>Registrar Usuario Interno</h1>
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input id="nombre" type="text" [(ngModel)]="nombre" name="nombre" placeholder="Pedro" [class.input-error]="submitted && !nombre.trim()" />
+        <small *ngIf="submitted && !nombre.trim()" class="field-error">El nombre es obligatorio.</small>
+      </div>
+      <div class="form-group">
+        <label for="apellido">Apellido</label>
+        <input id="apellido" type="text" [(ngModel)]="apellido" name="apellido" placeholder="Pérez" [class.input-error]="submitted && !apellido.trim()" />
+        <small *ngIf="submitted && !apellido.trim()" class="field-error">El apellido es obligatorio.</small>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input id="email" type="email" [(ngModel)]="email" name="email" placeholder="pedroperez@email.com" [class.input-error]="submitted && !email.trim()" />
+        <small *ngIf="submitted && !email.trim()" class="field-error">El email es obligatorio.</small>
+      </div>
+      <div class="form-group">
+        <label for="telefono">Teléfono</label>
+        <input id="telefono" type="text" [(ngModel)]="telefono" name="telefono" placeholder="09X XXX XXX" [class.input-error]="submitted && !telefono.trim()" />
+        <small *ngIf="submitted && !telefono.trim()" class="field-error">El teléfono es obligatorio.</small>
+        <small class="field-hint">Formato uruguayo: 09X XXX XXX (ej: 099123456)</small>
+      </div>
+      <div class="form-group">
+        <label for="contrasena">Contraseña</label>
+        <app-password-input inputId="contrasena" name="contrasena" [(value)]="contrasena" [hasError]="submitted && !contrasena.trim()" />
+        <small *ngIf="submitted && !contrasena.trim()" class="field-error">La contraseña es obligatoria.</small>
+        <small class="field-hint">Entre 15 y 25 caracteres. Debe incluir mayúscula, minúscula, número y carácter especial. Sin dos números consecutivos.</small>
+      </div>
+      <div class="form-group">
+        <label for="rol">Rol</label>
+        <select id="rol" [(ngModel)]="rol" name="rol" [class.input-error]="submitted && !rol">
+          <option value="">Seleccioná un rol</option>
+          <option *ngFor="let role of roles" [value]="role.value">{{ role.label }}</option>
+        </select>
+        <small *ngIf="submitted && !rol" class="field-error">El rol es obligatorio.</small>
+      </div>
+      <app-submit-button label="Registrar" [disabled]="isLoading" />
+      <app-cancel-button (cancelled)="onCancelled()" />
+    </form>
+    <app-status-messages [errorMessage]="errorMessage" [successMessage]="successMessage" />
+  </app-form-card>
+</div>
