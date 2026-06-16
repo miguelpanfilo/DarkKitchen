@@ -3,7 +3,7 @@ GUÍA DE INSTALACIÓN — DARK KITCHEN
 
 REQUISITO PREVIO
 ----------------
-Tener instalado Docker Desktop en la máquina.
+1. Tener instalado Docker Desktop en la máquina.
 
 
 PASO 1 — CLONAR EL REPOSITORIO
@@ -92,3 +92,14 @@ Para detener y eliminar todos los datos (base de datos y fotos):
    docker compose down -v
 
 Si se usa down -v, al volver a levantar hay que repetir los pasos 2 al 5.
+
+
+SOLUCIÓN DE PROBLEMAS
+----------------------
+Si al hacer docker compose up --build aparece el error:
+   "401 Unauthorized" o "429 Too Many Requests" de mcr.microsoft.com
+
+Solución:
+   1. Loguearse en Docker Desktop (cuenta gratuita en https://hub.docker.com).
+   2. Ejecutar: docker buildx create --use --name mybuilder
+   3. Esperar 5 minutos y volver a intentar.
