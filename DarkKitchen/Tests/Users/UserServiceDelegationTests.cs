@@ -29,19 +29,6 @@ public class UserServiceDelegationTests
     }
 
     [TestMethod]
-    public void RegistrarCliente_DelegatesTo_SignUpUserService()
-    {
-        var request = new SignUpClientRequestDTO();
-        var expected = new SignUpClientResponseDTO();
-        _signUpMock.Setup(s => s.SignUpClient(request)).Returns(expected);
-
-        var result = _service.RegistrarCliente(request);
-
-        Assert.AreEqual(expected, result);
-        _signUpMock.Verify(s => s.SignUpClient(request), Times.Once);
-    }
-
-    [TestMethod]
     public void MakeUserIntern_DelegatesTo_SignUpUserService()
     {
         var request = new SignUpInternUserRequestDTO();

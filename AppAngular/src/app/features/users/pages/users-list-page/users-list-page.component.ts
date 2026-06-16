@@ -67,6 +67,7 @@ export class UsersListPageComponent implements OnInit, OnDestroy {
         this.users = response;
       },
       error: (error) => {
+        this.isLoading = false;
         this.errorMessage = error.error?.message || 'Error al cargar los usuarios.';
         this.successMessage = '';
         this.showConfirmDialog = false;
