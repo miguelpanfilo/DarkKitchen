@@ -65,7 +65,23 @@ Todas las cuentas usan la contraseña: PasswordSeguraee3!
 El script limpia los datos existentes antes de insertar, por lo que puede ejecutarse las veces que sea necesario para volver al estado inicial.
 
 
-PASO 6 — VERIFICAR
+PASO 6 — PLUGINS — IMPORTADORES DE PRODUCTOS
+----------------------------------------------
+Una vez que la aplicación está corriendo, se genera automáticamente la carpeta
+de plugins con los importadores de productos disponibles. La carpeta se encuentra en:
+
+   255968_307265_329136/DarkKitchen/plugins/
+
+Los importadores disponibles son:
+   - CsvProductImporter.dll  -> importa productos desde archivos CSV
+   - JsonProductImporter.dll -> importa productos desde archivos JSON
+   - XmlProductImporter.dll  -> importa productos desde archivos XML
+
+Para agregar un nuevo importador, colocar el .dll correspondiente en esa carpeta.
+La aplicación lo detecta automáticamente sin necesidad de reiniciar.
+
+
+PASO 7 — VERIFICAR
 --------------------
 Ingresar a http://localhost:4200 y loguearse con:
 
