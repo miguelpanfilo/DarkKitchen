@@ -67,8 +67,8 @@ El script limpia los datos existentes antes de insertar, por lo que puede ejecut
 
 PASO 6 — PLUGINS — IMPORTADORES DE PRODUCTOS
 ----------------------------------------------
-Una vez que la aplicación está corriendo, se genera automáticamente la carpeta
-de plugins con los importadores de productos disponibles. La carpeta se encuentra en:
+El repositorio incluye la carpeta de plugins con los importadores de productos
+disponibles en:
 
    255968_307265_329136/DarkKitchen/plugins/
 
@@ -78,7 +78,15 @@ Los importadores disponibles son:
    - XmlProductImporter.dll  -> importa productos desde archivos XML
 
 Para agregar un nuevo importador, colocar el .dll correspondiente en esa carpeta.
-La aplicación lo detecta automáticamente sin necesidad de reiniciar.
+La aplicación lo detecta automáticamente, la eliminacion o que se agregó sin necesidad de reiniciar.
+
+Para probar los importadores, se incluyen archivos de muestra en:
+
+   255968_307265_329136/DarkKitchen/Importers/SampleImports/
+
+   - productos.csv  -> archivo de prueba para CsvProductImporter
+   - productos.json -> archivo de prueba para JsonProductImporter
+   - productos.xml  -> archivo de prueba para XmlProductImporter
 
 
 PASO 7 — VERIFICAR

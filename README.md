@@ -40,7 +40,8 @@ Abrir DBeaver y crear una nueva conexión :
    Contraseña:    Passw1rd
 
 Tildar "Trust server certificate" y "Show all schemas" en las opciones de conexión.
-Hacer click "Finalizar".
+Hacer click "Finalizar" 
+Click en el botón verde "Conectar".
 
 
 PASO 5 — CARGAR LOS DATOS DE PRUEBA
@@ -64,7 +65,31 @@ Todas las cuentas usan la contraseña: PasswordSeguraee3!
 El script limpia los datos existentes antes de insertar, por lo que puede ejecutarse las veces que sea necesario para volver al estado inicial.
 
 
-PASO 6 — VERIFICAR
+PASO 6 — PLUGINS — IMPORTADORES DE PRODUCTOS
+----------------------------------------------
+El repositorio incluye la carpeta de plugins con los importadores de productos
+disponibles en:
+
+   255968_307265_329136/DarkKitchen/plugins/
+
+Los importadores disponibles son:
+   - CsvProductImporter.dll  -> importa productos desde archivos CSV
+   - JsonProductImporter.dll -> importa productos desde archivos JSON
+   - XmlProductImporter.dll  -> importa productos desde archivos XML
+
+Para agregar un nuevo importador, colocar el .dll correspondiente en esa carpeta.
+La aplicación lo detecta automáticamente sin necesidad de reiniciar.
+
+Para probar los importadores, se incluyen archivos de muestra en:
+
+   255968_307265_329136/DarkKitchen/Importers/SampleImports/
+
+   - productos.csv  -> archivo de prueba para CsvProductImporter
+   - productos.json -> archivo de prueba para JsonProductImporter
+   - productos.xml  -> archivo de prueba para XmlProductImporter
+
+
+PASO 7 — VERIFICAR
 --------------------
 Ingresar a http://localhost:4200 y loguearse con:
 
