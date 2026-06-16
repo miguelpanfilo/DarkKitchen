@@ -3,7 +3,7 @@ GUÍA DE INSTALACIÓN — DARK KITCHEN
 
 REQUISITO PREVIO
 ----------------
-1. Tener instalado Docker Desktop en la máquina.
+1. Tener instalado Docker Desktop en la máquina y asegurarse de que esté corriendo antes de ejecutar cualquier comando.
 
 
 PASO 1 — CLONAR EL REPOSITORIO
@@ -67,18 +67,22 @@ El script limpia los datos existentes antes de insertar, por lo que puede ejecut
 
 PASO 6 — PLUGINS — IMPORTADORES DE PRODUCTOS
 ----------------------------------------------
-El repositorio incluye la carpeta de plugins con los importadores de productos
-disponibles en:
+El repositorio incluye los DLLs de los importadores en la carpeta raíz:
 
-   255968_307265_329136/DarkKitchen/plugins/
+   DarkKitchenplugins/
+      - CsvProductImporter.dll  -> importa productos desde archivos CSV
+      - JsonProductImporter.dll -> importa productos desde archivos JSON
+      - XmlProductImporter.dll  -> importa productos desde archivos XML
+      - CsvHelper.dll           -> dependencia del importador CSV
 
-Los importadores disponibles son:
-   - CsvProductImporter.dll  -> importa productos desde archivos CSV
-   - JsonProductImporter.dll -> importa productos desde archivos JSON
-   - XmlProductImporter.dll  -> importa productos desde archivos XML
+Luego de ejecutar docker compose up --build (Paso 2), se crea la carpeta:
 
-Para agregar un nuevo importador, colocar el .dll correspondiente en esa carpeta.
-La aplicación lo detecta automáticamente sin necesidad de reiniciar.
+   DarkKitchen/plugins/
+
+Copiá los DLLs de DarkKitchenplugins/ a DarkKitchen/plugins/.
+
+La aplicación detecta automáticamente cualquier importador colocado en esa carpeta,
+sin necesidad de reiniciar.
 
 Para probar los importadores, se incluyen archivos de muestra en:
 
@@ -91,12 +95,19 @@ Para probar los importadores, se incluyen archivos de muestra en:
 
 PASO 7 — VERIFICAR
 --------------------
-Ingresar a http://localhost:4200 y loguearse con:
+Ingresar a http://localhost:4200 y loguearse.
+
+Si se cargó db_with_data.sql (Paso 5), usar:
 
    Email:    lucas.gomez@test.com
    Password: PasswordSeguraee3!
 
-Deberían verse los productos con sus fotos.
+   Deberían verse los productos con sus fotos.
+
+Si se usó db_empty.sql (base vacía), solo existe el usuario admin hardcodeado:
+
+   Email:    admin@gmail.com
+   Password: PasswordSeguraee3!
 
 La aplicación ya está disponible en:
    Aplicación web: http://localhost:4200
