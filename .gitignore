@@ -128,3 +128,11 @@ UpgradeLog*.XML
 # SQL Server database files
 *.mdf
 *.ldf
+
+# Base de datos local, entregas y binarios compilados
+data/
+*.mdf
+*.ldf
+Entrega*.zip
+Entrega2/
+Aplicacion/

@@ -1,141 +1,76 @@
-GUÍA DE INSTALACIÓN — DARK KITCHEN
-====================================
+# DarkKitchen — Plataforma de pedidos para una cocina oculta
 
-REQUISITO PREVIO
-----------------
-1. Tener instalado Docker Desktop en la máquina y asegurarse de que esté corriendo antes de ejecutar cualquier comando.
+Aplicación web full-stack para gestionar una **dark kitchen** (cocina que vende solo por delivery): catálogo de productos con fotos, promociones, pedidos con seguimiento de estado, reportes de ventas e importación de productos mediante **plugins**.
 
+> Proyecto obligatorio de **Diseño de Aplicaciones 2** — Universidad ORT Uruguay (Licenciatura en Sistemas).
+> Desarrollado en equipo por **Miguel Panfilo**, [@marianoapn](https://github.com/marianoapn) y [@agustinaiglesias-ort](https://github.com/agustinaiglesias-ort).
 
-PASO 1 — CLONAR EL REPOSITORIO
---------------------------------
-git clone https://github.com/IngSoft-DA2/255968_307265_329136.git
+---
 
+## ✨ Funcionalidades
 
-PASO 2 — LEVANTAR LA APLICACIÓN
----------------------------------
-Desde la raíz del repositorio (donde está el archivo docker-compose.yml):
+- **Productos y promociones:** alta, edición y baja de productos con fotos; promociones que agrupan productos.
+- **Pedidos con ciclo de vida:** cada pedido pasa por los estados *Pendiente → Preparado → En camino → Entregado*, con casos de *Demorado*, *No entregado* y *Cancelado*.
+- **Tipos de envío e impuestos** aplicados al total del pedido.
+- **Reportes:** ventas por período y productos más vendidos.
+- **Importación de productos por plugins:** importadores de **CSV, JSON y XML** que se cargan dinámicamente desde una carpeta, sin recompilar ni reiniciar la aplicación.
+- **Usuarios, roles y sesiones:** administradores, clientes y preparadores, con autenticación por sesión.
+- **Auditoría:** registro de las acciones relevantes del sistema.
 
-   docker compose up --build
+## 🧩 Diseño
 
-Esperar hasta que aparezca en los logs:
-   dk-webapi | Now listening on: http://[::]:8080
+| Patrón | Dónde se usa |
+|---|---|
+| **State** | Ciclo de vida del pedido (`PendingState`, `PreparedState`, `OnTheWayState`, `DeliveredState`, …) |
+| **Visitor** | Generación de reportes sobre los pedidos (`SalesReportVisitor`, `TopProductsReportVisitor`) |
+| **Builder** | Construcción de productos (`ProductBuilder`) |
+| **Factory** | Creación de estados (`OrderStateFactory`) y de servicios (`FactoryService`) |
+| **Plugins / reflection** | Importadores de productos cargados en tiempo de ejecución |
 
+La solución está separada en capas con abstracciones entre ellas (`Dominio`, `LogicaDeNegocio` / `LogicaDeNegocioAbstracciones`, `Almacenamiento` / `AlmacenamientoAbstracciones`, `Contratos`, `Mapeo`, `DarkKitchenWebApi`), y se midió con **NDepend** (abstracción, inestabilidad y distancia de cada paquete).
 
-PASO 3 — COPIAR LAS IMÁGENES DE DEMO
---------------------------------------
-Abrir una nueva terminal en la raíz del repositorio y ejecutar:
+## 🛠️ Stack
 
-   docker cp DarkKitchen/demo-assets/fotos-productos/. dk-webapi:/app/photos/
+| Capa | Tecnologías |
+|---|---|
+| Frontend | **Angular 19** · TypeScript |
+| Backend | **C# / .NET 8** · ASP.NET Core Web API (REST) · Swagger |
+| Persistencia | **Entity Framework Core 8** · **SQL Server 2022** |
+| Infraestructura | **Docker** y Docker Compose (API, frontend y base de datos) |
+| Testing | **MSTest** · Moq · FluentAssertions · **700+ tests unitarios** · TDD |
+| CI | **GitHub Actions** (build, tests y análisis de código) |
 
+## ▶️ Cómo ejecutarlo
 
-PASO 4 — CONECTARSE A LA BASE DE DATOS EN DBEAVER
----------------------------------------------------
-Abrir DBeaver y crear una nueva conexión :
+Requisito: [Docker Desktop](https://www.docker.com/) corriendo.
 
-   Tipo:          SQL Server  
-   Host:          localhost
-   Puerto:        1433
-   Base de datos: DarkKitchenDb
-   Usuario:       sa
-   Contraseña:    Passw1rd
+```bash
+docker compose up --build
+```
 
-Tildar "Trust server certificate" y "Show all schemas" en las opciones de conexión.
-Hacer click "Finalizar" 
-Click en el botón verde "Conectar".
+- Aplicación web: http://localhost:4200
+- API REST: http://localhost:5080
 
+Para cargar datos de prueba, imágenes de demo y los plugins de importación, seguí la **[guía de instalación completa](Datos/instalacion.txt)**.
 
-PASO 5 — CARGAR LOS DATOS DE PRUEBA
--------------------------------------
-En DBeaver:
-   1. Abrir el archivo Datos/db_with_data.sql con cualquier editor de texto.
-   2. Copiar todo el contenido.
-   3. En DBeaver, click derecho sobre DarkKitchenDb -> "SQL Editor" -> "Nuevo script SQL"
-   4. Pegar el contenido en el editor.
-   5. Verificar que arriba del editor diga DarkKitchenDb como base activa
-   6. Ejecutar el script.
+### Credenciales de prueba
 
-Este script carga:
-   - 8 usuarios (admin, clientes, preparadores y admin extra)
-   - 10 productos con fotos
-   - 6 promociones con sus productos asociados
-   - 12 órdenes en distintos estados con sus items
+| Usuario | Contraseña | Notas |
+|---|---|---|
+| `admin@gmail.com` | `PasswordSeguraee3!` | Administrador (base vacía) |
+| `lucas.gomez@test.com` | `PasswordSeguraee3!` | Disponible si se carga `Datos/db_with_data.sql` |
 
-Todas las cuentas usan la contraseña: PasswordSeguraee3!
+### Tests
 
-El script limpia los datos existentes antes de insertar, por lo que puede ejecutarse las veces que sea necesario para volver al estado inicial.
+```bash
+cd DarkKitchen
+dotnet test
+```
 
+## 📸 Capturas
 
-PASO 6 — PLUGINS — IMPORTADORES DE PRODUCTOS
-----------------------------------------------
-El repositorio incluye los DLLs de los importadores en la carpeta raíz:
+<!-- Agregá acá 2 o 3 capturas: catálogo de productos, seguimiento de pedidos y reportes -->
 
-   DarkKitchenplugins/
-      - CsvProductImporter.dll  -> importa productos desde archivos CSV
-      - JsonProductImporter.dll -> importa productos desde archivos JSON
-      - XmlProductImporter.dll  -> importa productos desde archivos XML
-      - CsvHelper.dll           -> dependencia del importador CSV
+---
 
-Luego de ejecutar docker compose up --build (Paso 2), se crea la carpeta:
-
-   DarkKitchen/plugins/
-
-Copiá los DLLs de DarkKitchenplugins/ a DarkKitchen/plugins/.
-
-La aplicación detecta automáticamente cualquier importador colocado en esa carpeta,
-sin necesidad de reiniciar.
-
-Para probar los importadores, se incluyen archivos de muestra en:
-
-   255968_307265_329136/DarkKitchen/Importers/SampleImports/
-
-   - productos.csv  -> archivo de prueba para CsvProductImporter
-   - productos.json -> archivo de prueba para JsonProductImporter
-   - productos.xml  -> archivo de prueba para XmlProductImporter
-
-
-PASO 7 — VERIFICAR
---------------------
-Ingresar a http://localhost:4200 y loguearse.
-
-Si se cargó db_with_data.sql (Paso 5), usar:
-
-   Email:    lucas.gomez@test.com
-   Password: PasswordSeguraee3!
-
-   Deberían verse los productos con sus fotos.
-
-Si se usó db_empty.sql (base vacía), solo existe el usuario admin hardcodeado:
-
-   Email:    admin@gmail.com
-   Password: PasswordSeguraee3!
-
-La aplicación ya está disponible en:
-   Aplicación web: http://localhost:4200
-   API REST:       http://localhost:5080
-
-VOLVER A LEVANTAR SIN RECONSTRUIR
------------------------------------
-Una vez creados los contenedores con --build, para volver a levantarlos:
-
-   docker compose up
-
-DETENER LA APLICACIÓN
-----------------------
-Para detener los contenedores:
-   docker compose down
-
-Para detener y eliminar todos los datos (base de datos y fotos):
-   docker compose down -v
-
-Si se usa down -v, al volver a levantar hay que repetir los pasos 2 al 5.
-
-
-SOLUCIÓN DE PROBLEMAS
-----------------------
-Si al hacer docker compose up --build aparece el error:
-   "401 Unauthorized" o "429 Too Many Requests" de mcr.microsoft.com
-
-Solución:
-   1. Loguearse en Docker Desktop (cuenta gratuita en https://hub.docker.com).
-   2. Ejecutar: docker buildx create --use --name mybuilder
-   3. Esperar 5 minutos y volver a intentar.
+👤 **Miguel Panfilo** — [LinkedIn](https://www.linkedin.com/in/miguel-panfilo-214aa2127) · [GitHub](https://github.com/miguelpanfilo)
