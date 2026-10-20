@@ -1,5 +1,7 @@
 # DarkKitchen — Plataforma de pedidos para una cocina oculta
 
+   [![Build and Test](https://github.com/miguelpanfilo/DarkKitchen/actions/workflows/build-test.yml/badge.svg)](https://github.com/miguelpanfilo/DarkKitchen/actions/workflows/build-test.yml) [![Code Analysis](https://github.com/miguelpanfilo/DarkKitchen/actions/workflows/code-analysis.yml/badge.svg)](https://github.com/miguelpanfilo/DarkKitchen/actions/workflows/code-analysis.yml)
+
 Aplicación web full-stack para gestionar una **dark kitchen** (cocina que vende solo por delivery): catálogo de productos con fotos, promociones, pedidos con seguimiento de estado, reportes de ventas e importación de productos mediante **plugins**.
 
 > Proyecto obligatorio de **Diseño de Aplicaciones 2** — Universidad ORT Uruguay (Licenciatura en Sistemas).
