@@ -98,12 +98,7 @@ Para el detalle completo, seguí la [guía de instalación](Datos/instalacion.tx
 cd DarkKitchen
 dotnet test
 ```
-### Tests
 
-```bash
-cd DarkKitchen
-dotnet test
-```
 ## Capturas
 
 | Inicio | Catálogo de productos |
