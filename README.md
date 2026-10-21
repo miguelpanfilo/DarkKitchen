@@ -9,7 +9,7 @@ Aplicación web full-stack para gestionar una **dark kitchen** (cocina que vende
 
 ---
 
-## ✨ Funcionalidades
+## Funcionalidades
 
 - **Productos y promociones:** alta, edición y baja de productos con fotos; promociones que agrupan productos.
 - **Pedidos con ciclo de vida:** cada pedido pasa por los estados *Pendiente → Preparado → En camino → Entregado*, con casos de *Demorado*, *No entregado* y *Cancelado*.
@@ -19,7 +19,7 @@ Aplicación web full-stack para gestionar una **dark kitchen** (cocina que vende
 - **Usuarios, roles y sesiones:** administradores, clientes y preparadores, con autenticación por sesión.
 - **Auditoría:** registro de las acciones relevantes del sistema.
 
-## 🧩 Diseño
+## Diseño
 
 | Patrón | Dónde se usa |
 |---|---|
@@ -31,7 +31,7 @@ Aplicación web full-stack para gestionar una **dark kitchen** (cocina que vende
 
 La solución está separada en capas con abstracciones entre ellas (`Dominio`, `LogicaDeNegocio` / `LogicaDeNegocioAbstracciones`, `Almacenamiento` / `AlmacenamientoAbstracciones`, `Contratos`, `Mapeo`, `DarkKitchenWebApi`), y se midió con **NDepend** (abstracción, inestabilidad y distancia de cada paquete).
 
-## 🛠️ Stack
+## Stack
 
 | Capa | Tecnologías |
 |---|---|
@@ -42,26 +42,62 @@ La solución está separada en capas con abstracciones entre ellas (`Dominio`, `
 | Testing | **MSTest** · Moq · FluentAssertions · **700+ tests unitarios** · TDD |
 | CI | **GitHub Actions** (build, tests y análisis de código) |
 
-## ▶️ Cómo ejecutarlo
+## Cómo ejecutarlo
 
-Requisito: [Docker Desktop](https://www.docker.com/) corriendo.
+**Requisito:** [Docker Desktop](https://www.docker.com/) corriendo.
+
+### 1. Levantar los contenedores
 
 ```bash
+git clone https://github.com/miguelpanfilo/DarkKitchen.git
+cd DarkKitchen
 docker compose up --build
 ```
 
-- Aplicación web: http://localhost:4200
-- API REST: http://localhost:5080
+Esperá hasta ver `dk-webapi | Now listening on: http://[::]:8080`.
 
-Para cargar datos de prueba, imágenes de demo y los plugins de importación, seguí la **[guía de instalación completa](Datos/instalacion.txt)**.
+### 2. Cargar las fotos de demo
+
+En otra terminal, desde la carpeta del repo:
+
+```bash
+docker cp DarkKitchen/demo-assets/fotos-productos/. dk-webapi:/app/photos/
+```
+
+### 3. Copiar los plugins de importación
+
+Copiá los `.dll` de `DarkKitchenplugins/` a `DarkKitchen/plugins/`. El sistema los detecta solo, sin reiniciar.
+
+### 4. Cargar los datos de prueba
+
+Conectate a SQL Server con SSMS, Azure Data Studio o la extensión de VS Code:
+
+| Servidor | Usuario | Contraseña |
+|---|---|---|
+| `localhost,1433` | `sa` | `Passw1rd` |
+
+y ejecutá `Datos/db_with_data.sql`.
+
+### 5. Abrir la aplicación
+
+- **Aplicación web:** http://localhost:4200
+- **API REST:** http://localhost:5080
 
 ### Credenciales de prueba
 
-| Usuario | Contraseña | Notas |
+| Usuario | Contraseña | Rol |
 |---|---|---|
-| `admin@gmail.com` | `PasswordSeguraee3!` | Administrador (base vacía) |
-| `lucas.gomez@test.com` | `PasswordSeguraee3!` | Disponible si se carga `Datos/db_with_data.sql` |
+| `admin@gmail.com` | `PasswordSeguraee3!` | Administrador |
+| `lucas.gomez@test.com` | `PasswordSeguraee3!` | Disponible tras cargar los datos de prueba |
 
+Para el detalle completo, seguí la [guía de instalación](Datos/instalacion.txt).
+
+### Tests
+
+```bash
+cd DarkKitchen
+dotnet test
+```
 ### Tests
 
 ```bash
