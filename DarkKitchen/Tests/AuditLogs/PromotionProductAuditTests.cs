@@ -57,8 +57,8 @@ public class PromotionServiceAuditTests
         var promotion = Promotion.MakePromotion(
             "Black Friday",
             10,
-            new DateOnly(2026, 6, 1),
-            new DateOnly(2026, 6, 30));
+            DateOnly.FromDateTime(DateTime.UtcNow),
+            DateOnly.FromDateTime(DateTime.UtcNow).AddDays(30));
 
         promotionRepoMock
             .Setup(r => r.GetById(It.IsAny<int>()))
@@ -94,8 +94,8 @@ public class PromotionServiceAuditTests
         var promotion = Promotion.MakePromotion(
             "Black Friday",
             10,
-            new DateOnly(2026, 6, 1),
-            new DateOnly(2026, 6, 30));
+            DateOnly.FromDateTime(DateTime.UtcNow),
+            DateOnly.FromDateTime(DateTime.UtcNow).AddDays(30));
 
         promotionRepoMock
             .Setup(r => r.GetById(It.IsAny<int>()))
@@ -179,8 +179,8 @@ public class PromotionServiceAuditTests
         var promotion = Promotion.MakePromotion(
             "Black Friday",
             10,
-            new DateOnly(2026, 6, 1),
-            new DateOnly(2026, 6, 30));
+            DateOnly.FromDateTime(DateTime.UtcNow),
+            DateOnly.FromDateTime(DateTime.UtcNow).AddDays(30));
 
         promotionRepoMock
             .Setup(r => r.GetById(1))
@@ -217,8 +217,8 @@ public class PromotionServiceAuditTests
         var promotion = Promotion.MakePromotion(
             "Black Friday",
             10,
-            new DateOnly(2026, 6, 1),
-            new DateOnly(2026, 6, 30));
+            DateOnly.FromDateTime(DateTime.UtcNow),
+            DateOnly.FromDateTime(DateTime.UtcNow).AddDays(30));
 
         var product = new ProductBuilder()
             .WithCode("COD01")
@@ -268,8 +268,8 @@ public class PromotionServiceAuditTests
         var promotion = Promotion.MakePromotion(
             "Black Friday",
             10,
-            new DateOnly(2026, 6, 1),
-            new DateOnly(2026, 6, 30));
+            DateOnly.FromDateTime(DateTime.UtcNow),
+            DateOnly.FromDateTime(DateTime.UtcNow).AddDays(30));
         promotion.AssociateProduct(5);
 
         var product = new ProductBuilder()
@@ -328,8 +328,8 @@ public class PromotionServiceAuditTests
         var promotion = Promotion.MakePromotion(
             "Black Friday",
             10,
-            new DateOnly(2026, 6, 1),
-            new DateOnly(2026, 6, 30));
+            DateOnly.FromDateTime(DateTime.UtcNow),
+            DateOnly.FromDateTime(DateTime.UtcNow).AddDays(30));
 
         promotionRepoMock
             .Setup(r => r.GetById(1))
