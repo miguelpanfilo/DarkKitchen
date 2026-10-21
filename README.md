@@ -68,10 +68,14 @@ Para cargar datos de prueba, imágenes de demo y los plugins de importación, se
 cd DarkKitchen
 dotnet test
 ```
+## Capturas
 
-## 📸 Capturas
+| Inicio | Catálogo de productos |
+|:---:|:---:|
+| <img src="https://github.com/user-attachments/assets/da958aad-5f89-459c-bfb2-193a2afc7f0d" alt="Pantalla de inicio" width="100%"> | <img src="https://github.com/user-attachments/assets/516c225c-a1b6-4a63-9843-9084672890a8" alt="Catálogo de productos" width="100%"> |
+| **Gestión de órdenes** | **Importación de productos por plugins** |
+| <img src="https://github.com/user-attachments/assets/c54d0935-20cf-4f85-b9b8-7ed6398b6b5b" alt="Gestión de órdenes" width="100%"> | <img src="https://github.com/user-attachments/assets/d6aba76f-07e4-433b-807e-2375f24fcefd" alt="Importación de productos" width="100%"> |
 
-<!-- Agregá acá 2 o 3 capturas: catálogo de productos, seguimiento de pedidos y reportes -->
 
 ---
 
